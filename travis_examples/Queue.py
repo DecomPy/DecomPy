@@ -8,9 +8,13 @@ class Queue:
     def dequeue(self):
         del self.items[0]
 
+    @property
     def first(self):
+        if not self.items:
+            return None
         return self.items[0]
 
+    @property
     def last(self):
         return self.items[-1]
 

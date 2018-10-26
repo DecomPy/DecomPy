@@ -1,4 +1,3 @@
-import pytest
 from travis_examples import Queue
 
 
@@ -18,7 +17,7 @@ def test_first_last_dequeue_enqueue():
     q.dequeue()
     q.dequeue()
     q.dequeue()
-    assert q.first() is None
+    assert q.first is None
 
 
 # tests the length of the queue
@@ -33,12 +32,16 @@ def test_length():
     for i in range(20):
         q.enqueue(i)
 
-    assert q.length == 20
+    assert q.length == 21
 
     # assert length for loop dequeues
     for i in range(20):
         q.dequeue()
 
-    assert q.length == 20
+    assert q.length == 1
+
+    # assert
+    q.dequeue()
+    assert q.length == 0
 
 
