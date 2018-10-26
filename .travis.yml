@@ -11,3 +11,9 @@ install:
 # add your test scripts here.
 script:
   pytest
+
+# only run tests on these branches
+#branches:
+#  only:
+#    - master
+#    - development
