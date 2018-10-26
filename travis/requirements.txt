@@ -1,0 +1,4 @@
+numpy=1.15.3
+tensorflow=1.11.0
+Sphinx=1.81
+tensorboard=1.12.0
