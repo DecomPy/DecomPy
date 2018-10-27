@@ -10,10 +10,10 @@
 #include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/CallingConv.h"
-#include "llvm/IR/Verifierm.h"
+#include "llvm/IR/Verifier.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Support/raw_ostream.h"
-#include <iostream>
+//#include <iostream>
 
 using namespace llvm;
 //A module is a piece of code. I kinda think of it as LLVM version of a C or C++ file
@@ -46,12 +46,7 @@ Module* makeLLVMModule(){
 
     Module* mod = new Module("test", TheContext);
     //doesn't return a function. will return cast of existing function if it is there
-    Constant* c = mod->getOrInsertFunction(/*name of fnc*/ "mul_add",
-            /*return type*/ IntegerType::get(TheContext, 32));
-//            /*argument types*/ IntegerType::get(TheContext, 32),
-//                            IntegerType::get(TheContext, 32),
-//                            IntegerType::get(TheContext, 32),
-//            /*args list ends in null*/ NULL);
+    Constant* c = mod->getOrInsertFunction("mul_add", IntegerType::get(TheContext, 32), IntegerType::get(TheContext, 32), IntegerType::get(TheContext, 32), IntegerType::get(TheContext, 32));
     Function* mul_add = cast<Function>(c);
     mul_add->setCallingConv(CallingConv::C); // set the calling convention to C
 
@@ -59,14 +54,14 @@ Module* makeLLVMModule(){
 
     //the following names the arguments. Not strictly necessary, LLVM will name them
     Value* x = args++; //Sets equal to args, then increments to the next arg
-    //x->setName("x"); //sets name
+    x->setName("x"); //sets name
     Value* y = args++; //Sets equal to args, then increments to the next arg
-    //y->setName("y"); //sets name
+    y->setName("y"); //sets name
     Value* z = args++; //Sets equal to args, then increments to the next arg
-    //z->setName("z"); //sets name
+    z->setName("z"); //sets name
     //now we will keep the x, y, and z, pointers because the will be used later
 
-    std::cout <<
+    //std::cout <<
 
     //BasicBlock are... The basic building blocks of a program. Every function has one (the stuff between the curly braces
     //this function needs on, so we make one:
@@ -77,9 +72,9 @@ Module* makeLLVMModule(){
     //creates a binary operation. In this case, it is a multiplication instruction
     //the builder creates and appends this instruction to the end of the block
     // it returns the value returned by the instruction.
-    Value* tmp = builder.CreateMul(x, y);
+    Value* tmp = builder.CreateBinOp(Instruction::Mul, x, y, "tmp");
     //this is an add instruction
-    Value* tmp2 = builder.CreateBinOp(Instruction::Add, tmp, z);
+    Value* tmp2 = builder.CreateBinOp(Instruction::Add, z, tmp, "tmp2");
     //this is a return instruction
     builder.CreateRet(tmp2);
 
