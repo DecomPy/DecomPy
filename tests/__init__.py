@@ -1,1 +1,1 @@
-# intentionally left blank
+from numpy import *
