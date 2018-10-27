@@ -10,9 +10,10 @@
 #include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/CallingConv.h"
-#include "llvm/IR/Verifier.h"
+#include "llvm/IR/Verifierm.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Support/raw_ostream.h"
+#include <iostream>
 
 using namespace llvm;
 //A module is a piece of code. I kinda think of it as LLVM version of a C or C++ file
@@ -23,7 +24,7 @@ int main(){
 
     //verifyModule(*mod, llvm::legacy::PrintMessageAction); //LLVM verifier that will tell you if you messed up making the LLVM
 
-    PrintModulePass* modulePrinter; // this makes a simple pass to print the modul
+    PrintModulePass* modulePrinter = new PrintModulePass(outs(), "", false); // this makes a simple pass to print the modul
     ModuleAnalysisManager modAnalysis;
 
     modulePrinter->run(*mod, modAnalysis); // this runs the pass
@@ -58,12 +59,14 @@ Module* makeLLVMModule(){
 
     //the following names the arguments. Not strictly necessary, LLVM will name them
     Value* x = args++; //Sets equal to args, then increments to the next arg
-    x->setName("x"); //sets name
+    //x->setName("x"); //sets name
     Value* y = args++; //Sets equal to args, then increments to the next arg
-    y->setName("y"); //sets name
+    //y->setName("y"); //sets name
     Value* z = args++; //Sets equal to args, then increments to the next arg
-    z->setName("z"); //sets name
+    //z->setName("z"); //sets name
     //now we will keep the x, y, and z, pointers because the will be used later
+
+    std::cout <<
 
     //BasicBlock are... The basic building blocks of a program. Every function has one (the stuff between the curly braces
     //this function needs on, so we make one:
@@ -74,9 +77,9 @@ Module* makeLLVMModule(){
     //creates a binary operation. In this case, it is a multiplication instruction
     //the builder creates and appends this instruction to the end of the block
     // it returns the value returned by the instruction.
-    Value* tmp = builder.CreateBinOp(Instruction::Mul, x,y, "tmp");
+    Value* tmp = builder.CreateMul(x, y);
     //this is an add instruction
-    Value* tmp2 = builder.CreateBinOp(Instruction::Add, tmp, z, "tmp");
+    Value* tmp2 = builder.CreateBinOp(Instruction::Add, tmp, z);
     //this is a return instruction
     builder.CreateRet(tmp2);
 
