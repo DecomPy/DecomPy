@@ -64,3 +64,31 @@ class Queue:
         """
         return len(self.items)
 
+    def __eq__(self, other):
+        """
+        Creates an equality metric by comparing the values of the two queues.
+
+        :param other: the other queue.
+        :return: false upon failure.
+        :rtype: bool
+        """
+        if self.length == other.length:
+            for i in range(self.length):
+                if self.items[i] != other.items[i]:
+                    return False
+        return True
+
+    def __ne__(self, other):
+        """
+        Creates a not equal metric by comparing the values of the two queues.
+
+        :param other: the other queue.
+        :return: false upon failure.
+        :rtype: bool
+        """
+        if self.length == other.length:
+            for i in range(self.length):
+                if self.items[i] != other.items[i]:
+                    return True
+        return False
+

@@ -1,4 +1,4 @@
-from travis_examples import numpy_test as nt
+from travis_examples import nptest as nt
 import numpy as np
 
 

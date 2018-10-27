@@ -1,4 +1,4 @@
-from travis_examples import Queue
+from travis_examples import queuetest
 
 
 # test for first and last element
@@ -6,7 +6,7 @@ def test_first_last_dequeue_enqueue():
     """
     Tests a dequeue and enqueue on the queue using pytest and asserts None if no element is found.
     """
-    q = Queue.Queue()
+    q = queuetest.Queue()
 
     q.enqueue("hi")
     q.enqueue(100)
@@ -28,7 +28,7 @@ def test_length():
     """
     Tests the length of the queue.
     """
-    q = Queue.Queue()
+    q = queuetest.Queue()
     assert q.length == 0
 
     q.enqueue(1)
