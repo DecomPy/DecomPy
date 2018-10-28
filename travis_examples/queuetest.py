@@ -72,11 +72,17 @@ class Queue:
         :return: false upon failure.
         :rtype: bool
         """
-        if self.length == other.length:
+        # test for none
+        if self.length == 0 and other is None:
+            return False
+
+        # test for same data type
+        elif self.length == other.length:
             for i in range(self.length):
                 if self.items[i] != other.items[i]:
                     return False
-        return True
+            return True
+        return False
 
     def __ne__(self, other):
         """
@@ -86,9 +92,5 @@ class Queue:
         :return: false upon failure.
         :rtype: bool
         """
-        if self.length == other.length:
-            for i in range(self.length):
-                if self.items[i] != other.items[i]:
-                    return True
-        return False
+        return not self == other
 

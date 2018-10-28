@@ -18,7 +18,7 @@ class SquareTest(tf.test.TestCase):
         """
         with self.test_session():
             x = tf.square([2, 3]) # squares
-            self.assertAllEqual(x.eval(), [4, 9]) # asserts equality
+            self.assertAllEqual(x.eval(), [4, 9])  # asserts equality
 
 
 # runs test
