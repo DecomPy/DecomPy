@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import urllib.request
+import re
 
 print ("Start")
 
@@ -7,4 +8,6 @@ rawHTML = urllib.request.urlopen('https://github.com/DecomPy/valid_and_compilabl
 soup = bs(rawHTML, 'html.parser');
 
 for link in soup.find_all('a'):
-    print(link.get('href'))
+	#link = link.title
+	link = link.get('href')
+	print (link)
