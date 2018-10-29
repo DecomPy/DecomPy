@@ -162,5 +162,5 @@ class WebNavigator(object):
 
 
 if __name__ == "__main__":
-    print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/hexagon5un/AVR-Programming"))
+    print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
 
