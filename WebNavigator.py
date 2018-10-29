@@ -165,9 +165,9 @@ class WebNavigator(object):
             for link in absLinks:
                 for subURL in subURLs:
                     if subURL in link:
-                        if "#" in link.split("/")[-1]:  # filters things that are the same as other things
+                        if "#" in link.split("/")[-1]:  # filters URLs that are the same as other URLs
                             continue
-                        if "commits" in link.split("/"):  # filters non-main files
+                        if "commits" in link.split("/"):  # filters files that are not in main
                             continue
                         if "/blob/" in link:  # /blob/ is a marker for files
                             if link in sourceFiles:
