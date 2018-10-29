@@ -143,7 +143,7 @@ class WebNavigator(object):
                             if link in sourceFiles:
                                 continue
                             if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                                sourceFiles.append(link)
+                                sourceFiles.append({link.split("/")[-1], link})
                         else:
                             if link in subFolders:
                                 continue
