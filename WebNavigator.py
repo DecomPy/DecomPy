@@ -173,7 +173,7 @@ class WebNavigator(object):
                             if link in sourceFiles:
                                 continue
                             if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                                sourceFiles.append({link.split("/")[-1], link})
+                                sourceFiles.append((link.split("/")[-1], link))
                         else:
                             if link in subFolders:
                                 continue
@@ -188,8 +188,7 @@ class WebNavigator(object):
             absLinks = WebNavigator.getAbsolute(url, links)
             counter = counter + 1
 
-        return sourceFiles
-
+        return list(set(sourceFiles))
 
 if __name__ == "__main__":
     print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
