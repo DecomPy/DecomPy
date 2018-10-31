@@ -1,4 +1,5 @@
 import json
+from urllib.parse import quote
 
 from WebNavigator import WebNavigator
 
@@ -11,12 +12,15 @@ class RepoFilter:
     def getResults(self, page):
         languageString = ""
         if self.language:
-            languageString = "language=%s" % (self.language)
+            languageString = "language=%s&" % (self.language)
 
-        content = WebNavigator.getContent("https://api.github.com/legacy/repos/search/%s?%s&start_page=%d" % (self.search, languageString, page))
+        url = "https://api.github.com/legacy/repos/search/%s?%sstart_page=%d" % (quote(self.search), languageString, page)
+        print(url)
+        content = WebNavigator.getContent(url)
+        print(content)
         jsonContent = json.loads(content)
         return jsonContent["repositories"]
 
 if __name__ == "__main__":
-    rf = RepoFilter("puff the magic dragon", language="python")
+    rf = RepoFilter("puff the magic dragon")
     print(rf.getResults(1))
