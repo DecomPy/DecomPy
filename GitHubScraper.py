@@ -85,7 +85,7 @@ class GitHubScraper(WebNavigator):
         return list(set(sourceFiles))
 
     @staticmethod
-    def getFilesfromGitHubFileURLs(urls):
+    def getContentfromGitHubFileURLs(urls):
         """
         Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs are not GitHub file URLs
         :param urls: list of URLs to files in GitHub
