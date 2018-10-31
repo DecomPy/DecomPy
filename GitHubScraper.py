@@ -34,7 +34,7 @@ from WebNavigator import WebNavigator
 class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
-    DEBUG = True
+    DEBUG = False   # Whether to print debug info or not
 
     @staticmethod
     def getFileURLSFromGitHubRepo(repoURL):
@@ -43,7 +43,7 @@ class GitHubScraper(WebNavigator):
         within the current master branch of a GitHub repository
 
         :param repoURL: absolute URL to a GitHub repo e.g. "https://github.com/DecomPy/valid_and_compilable_1"
-        :return: a list of absolute URLs to files within the GitHub repo
+        :return: a list of tuples of file names and absolute URLs within the GitHub repo
         """
         url = repoURL
         content = GitHubScraper.getContent(url)
@@ -85,27 +85,61 @@ class GitHubScraper(WebNavigator):
         return list(set(sourceFiles))
 
     @staticmethod
-    def getContentfromGitHubFileURLs(urls):
+    def getContentfromGitHubFileURLs(fileUrlTuples):
         """
         Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs are not GitHub file URLs
-        :param urls: list of URLs to files in GitHub
-        :return: File contents as a list of strings
+        :param fileUrlTuples: a list of tuples of file names and absolute URLs within the GitHub repo. Get this from getFileURLSFromGitHubRepo
+        :return: a list of tuples of file names and contents of those files, but NOT actual files
         """
 
+        urls = [i[1] for i in fileUrlTuples]
         pageLinks = [GitHubScraper.getAbsoluteLinksFromPage(i) for i in urls]  # convert relative URLs to absolute URLs
-        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in
-        # them, because these URLs lead to pages with the content of the file
+        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in them, because these URLs lead to pages with the content of the file
         rawLinks = [i for rawLinksSub in rawLinks for i in rawLinksSub]  # Flatten a list of lists into a list
         content = [GitHubScraper.getContent(i) for i in rawLinks]   # Get the content of the page (file)
+        returnList = []
+        for i,j in zip(fileUrlTuples, content):
+            returnList.append((i[0], j))
         if GitHubScraper.DEBUG:
+            print(fileUrlTuples)
             print("urls ", urls)
             print("pagelinks ", pageLinks)
             print("rawLinks ", rawLinks)
-            print(content)
+            for i in content:
+                print(i)
+            print("return value ", returnList)
+
+        return returnList
+
+    @staticmethod
+    def fileContentIntoStorage(contentUrlTuple):
+        """
+        Writes the content of a string into a file given a list of tuples of filenames and strings
+        :param contentUrlTuple: list of tuples, with each tuple being ("fileName", "fileContent")
+        :return: nothing
+        """
+        for i in contentUrlTuple:
+            with open(i[0], "w") as f:
+                f.write(i[1])
+
+    @staticmethod
+    def downloadAllFiles(repoURL):
+        """
+        Composition of functions to download all files in a GitHub repository
+        :param repoURL: URL of repository
+        :return: nothing
+        """
+
+        fileUrlTuples = GitHubScraper.getFileURLSFromGitHubRepo(repoURL)
+        fileContentTuples = GitHubScraper.getContentfromGitHubFileURLs(fileUrlTuples)
+        GitHubScraper.fileContentIntoStorage(fileContentTuples)
 
 
 if __name__ == "__main__":
-    # print("filename/URL pairs: ", GitHubScraper.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
-    GitHubScraper.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",
-                                                "https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c"])
+    # fileUrlTuples =  GitHubScraper.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")
+    # fileContentTuples = GitHubScraper.getContentfromGitHubFileURLs(fileUrlTuples)
+    # GitHubScraper.fileContentIntoStorage(fileContentTuples)
+    # print("filename/URL pairs: ", fileUrlTuples)
+    # print("filename/content pairs: ", fileContentTuples)
+    GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
