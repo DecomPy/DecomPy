@@ -33,7 +33,7 @@ from bs4 import BeautifulSoup
 import re
 
 
-class GitHubNavigator(object):
+class WebNavigator:
     """Defines methods for navigating web links"""
 
     @staticmethod
@@ -134,81 +134,17 @@ class GitHubNavigator(object):
         :param domain: the domain of the above link to stay within (default is no domain limiting)
         :return:
         """
-        content = GitHubNavigator.getContent(link)
-        links = GitHubNavigator.getLinks(content)
-        absLinks = GitHubNavigator.getAbsolute(link, links)
+        content = WebNavigator.getContent(link)
+        links = WebNavigator.getLinks(content)
+        absLinks = WebNavigator.getAbsolute(link, links)
         localLinks = absLinks
         if domain:
-            localLinks = GitHubNavigator.limitDomain(absLinks, domain)
+            localLinks = WebNavigator.limitDomain(absLinks, domain)
         return localLinks
 
-    @staticmethod
-    def getFileURLSFromGitHubRepo(repoURL):
-        """
-        Finds and returns a list of the absolute URLs of all the files
-        within the current master branch of a GitHub repository
-
-        :param repoURL: absolute URL to a GitHub repo e.g. "https://github.com/DecomPy/valid_and_compilable_1"
-        :return: a list of absolute URLs to files within the GitHub repo
-        """
-        url = repoURL
-        content = GitHubNavigator.getContent(url)
-        links = GitHubNavigator.getLinks(content)
-        absLinks = GitHubNavigator.getAbsolute(url, links)
-
-        subURLs = ["/master/"]
-        subFolders = []
-        sourceFiles = []
-        counter = 0
-
-        while counter <= len(subFolders):
-            for link in absLinks:
-                for subURL in subURLs:
-                    if subURL in link:
-                        if "#" in link.split("/")[-1]:  # filters URLs that are the same as other URLs
-                            continue
-                        if "commits" in link.split("/"):  # filters files that are not in main
-                            continue
-                        if "/blob/" in link:  # /blob/ is a marker for files
-                            if link in sourceFiles:
-                                continue
-                            if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                                sourceFiles.append((link.split("/")[-1], link))
-                        else:
-                            if link in subFolders:
-                                continue
-                            if "master" in link.split("/"):
-                                subFolders.append(link)
-                                subURLs.append("/" + link.split("/")[-1] + "/")
-            if counter >= len(subFolders):
-                break
-            url = subFolders[counter]
-            content = GitHubNavigator.getContent(url)
-            links = GitHubNavigator.getLinks(content)
-            absLinks = GitHubNavigator.getAbsolute(url, links)
-            counter = counter + 1
-
-        return list(set(sourceFiles))
-
-    @staticmethod
-    def getFilesfromGitHubFileURLs(urls):
-        """
-        Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs are not GitHub file URLs
-        :param urls:
-        :return:
-        """
-        print("urls ", urls)
-        pageLinks = [GitHubNavigator.getAbsoluteLinksFromPage(i) for i in urls]
-        print("pagelinks ", pageLinks)
-        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]
-        rawLinks = [i for rawLinksSub in rawLinks for i in rawLinksSub]
-        print("rawLinks ", rawLinks)
-        content = [GitHubNavigator.getContent(i) for i in rawLinks]
-        print(content)
-
-
 if __name__ == "__main__":
-    #print(GitHubNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
-    GitHubNavigator.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",
-                                                "https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c"])
+    print("WebNavigator does nothing in its main")
+    # print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
+    # WebNavigator.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",
+    #                                           "https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c"])
 

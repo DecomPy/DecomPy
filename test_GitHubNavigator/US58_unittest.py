@@ -1,5 +1,5 @@
 import unittest
-from GitHubNavigator import GitHubNavigator
+from WebNavigator import WebNavigator
 
 
 class test_GitHubNavigator(unittest.TestCase):
@@ -10,12 +10,12 @@ class test_GitHubNavigator(unittest.TestCase):
         :return: nothing
         """
         self.assertTrue(
-            GitHubNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")[0] in
+            WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")[0] in
             {('main.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c'), (
                 'main2.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c')})
 
         self.assertTrue(
-            GitHubNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")[1] in
+            WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")[1] in
             {('main.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c'), (
                 'main2.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c')})
 
