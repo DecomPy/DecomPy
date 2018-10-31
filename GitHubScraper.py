@@ -32,7 +32,7 @@ from WebNavigator import WebNavigator
 
 
 class GitHubScraper(WebNavigator):
-    """Defines methods for navigating web links"""
+    """Handles finding GitHub file URLs and downloading their contents"""
 
     DEBUG = True
 
