@@ -190,6 +190,25 @@ class GitHubNavigator(object):
 
         return list(set(sourceFiles))
 
+    @staticmethod
+    def getFilesfromGitHubFileURLs(urls):
+        """
+        Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs are not GitHub file URLs
+        :param urls:
+        :return:
+        """
+        print("urls ", urls)
+        pageLinks = [GitHubNavigator.getAbsoluteLinksFromPage(i) for i in urls]
+        print("pagelinks ", pageLinks)
+        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]
+        rawLinks = [i for rawLinksSub in rawLinks for i in rawLinksSub]
+        print("rawLinks ", rawLinks)
+        content = [GitHubNavigator.getContent(i) for i in rawLinks]
+        print(content)
+
+
 if __name__ == "__main__":
-    print(GitHubNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
+    #print(GitHubNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
+    GitHubNavigator.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",
+                                                "https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c"])
 
