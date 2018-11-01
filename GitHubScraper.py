@@ -129,7 +129,7 @@ class GitHubScraper(WebNavigator):
 
         # Append to config.META
         with open(os.path.join(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4], "config.META"), "a") as f:
-            f.write("File download timestamp: ")
+            f.write("\nFile download timestamp: ")
             f.write(time.asctime(time.localtime(time.time())))
 
         # Creates files with contents of repo files inside of directory.
