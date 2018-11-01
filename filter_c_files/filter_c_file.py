@@ -2,6 +2,7 @@
 # filter by a max of 7000 bytes. Or less than 400 lines.
 # malloc, realloc, threads?
 import os
+import re
 
 class FilterC:
     """
@@ -15,7 +16,12 @@ class FilterC:
     # set maximum bytes of 7000
     MAX_BYTES = 7000
     MAX_LINES = 400
-    C_HEADERS = ["assert", "complex", "ctype", "errno", "float", "limits", "locale", "math"]
+    # questionable ones: complex, fenv, setjmp, stdalign, stdarg, stdbool, tgmath, uchar
+    C_WHITELIST_HEADERS = ("assert.h", "complex.h", "ctype.h", "errno.h", "fenv.h", "float.h", "inttypes.h",
+                           "limits.h", "locale.h", "math.h", "signal.h", "stddef.h", "stdint.h", "stdio.h",
+                           "stdlib.h", "stdnoreturn.h", "string.h", "tgmath.h", "time.h", "wchar.h", "wctype.h")
+    # bad ones: stdatomic, threads,
+    C_BLACKLIST = ("file", "malloc", "realloc", "calloc", "free")
 
     def __init__(self):
         """
@@ -30,44 +36,50 @@ class FilterC:
     #     """
 
     @staticmethod
-    def max_bytes_test(file, preferred_size = MAX_BYTES):
+    def max_bytes_test(file, preferred_size=MAX_BYTES):
         """
-        finds the file size and tests it against the preferred_size in bytes. The default is 7000 bytes.
+        Finds the file size and tests it against the preferred_size in bytes. The default is 7000 bytes.
 
         :param file: the file path to test against
-        :type: the
-        :return:
+        :type: str
+        :param preferred_size: the preferred size to search for, defaults to 7000.
+        :type: int
+        :return: boolean
         """
-
-        file_size = os.stat(file).st_size
-        return preferred_size > file_size
+        return preferred_size > os.stat(file).st_size
 
     @staticmethod
-    def max_lines_test(file, preferred_lines = MAX_LINES):
+    def check_blacklisted_words(line, blacklisted=C_BLACKLIST):
+        """
+        Lowercases the line to evaluate, and returns false if any blacklisted word is found.
+        :param: the string from a file.
+        :type: str
+        :param: the blacklisted array, defaults to
+        :type: str arr
+        :return: boolean
         """
 
-        :param file:
-        :param preferred_lines:
-        :return:
+        line = line.lower()
+        return any(word in line for word in blacklisted) #TODO: check if I need to use ! on it.
+
+    @staticmethod
+    def check_headers(line, whitelisted=C_WHITELIST_HEADERS):
         """
+        Lowercases the line to evaluate, and returns false if any blacklisted word is found.
+        :param: the string from a file.
+        :type: str
+        :param: the blacklisted array, defaults to
+        :type: str arr
+        :return: boolean
+        """
+        line.lower()
 
-        count = 0
-        for line in file:
-            count += 1
-            if count > preferred_lines:
-                return False
-        return True
+        # checks for comments
+        if line.startsWith("//"):
+            return True
+        # check to see if we have a #include line.
+        if re.match('^\s*#include\s+<\w+.h>\s*;'):
+            return any(word in line for word in whitelisted)
 
-
-
-
-
-
-
-    # def max_bytes_test(self):
-    #     """
-    #
-    #     :return:
-    #     """
 
 
