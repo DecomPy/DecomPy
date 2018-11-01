@@ -21,4 +21,4 @@ class test_GitHubNavigator(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    tf.test.main()
+    unittest.main()
