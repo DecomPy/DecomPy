@@ -86,11 +86,11 @@ class GitHubScraper(WebNavigator):
         return list(set(sourceFiles))
 
     @staticmethod
-    def getContentfromGitHubFileURLs(fileUrlTuples):
+    def getContentFromGitHubFileURLs(fileUrlTuples):
         """
         Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs are not GitHub file URLs
         :param fileUrlTuples: a list of tuples of file names and absolute URLs within the GitHub repo. Get this from getFileURLSFromGitHubRepo
-        :return: a list of tuples of file names and contents of those files, but NOT actual files
+        :return: a list of tuples of file names, file URLs, contents of those files, but NOT actual files. Each tuple in the list is formatted ("name", "url", "content")
         """
 
         urls = [i[1] for i in fileUrlTuples]
@@ -99,8 +99,11 @@ class GitHubScraper(WebNavigator):
         rawLinks = [i for rawLinksSub in rawLinks for i in rawLinksSub]  # Flatten a list of lists into a list
         content = [GitHubScraper.getContent(i) for i in rawLinks]   # Get the content of the page (file)
         returnList = []
+        # Creates the list of ("file name", "file URL", "file content") tuples
         for i,j in zip(fileUrlTuples, content):
-            returnList.append((i[0], j))
+            returnList.append((i[0], i[1], j))
+
+        # Change DEBUG variable to true to get more info
         if GitHubScraper.DEBUG:
             print(fileUrlTuples)
             print("urls ", urls)
@@ -116,27 +119,29 @@ class GitHubScraper(WebNavigator):
     def fileContentIntoStorage(contentUrlTuple):
         """
         Writes the content of a string into a file given a list of tuples of filenames and strings
-        :param contentUrlTuple: list of tuples, with each tuple being ("fileName", "fileContent")
+        :param contentUrlTuple: list of tuples, with each tuple being ("fileName", "fileURL", "fileContent"). Get this from getContentFromGitHubFileURLs
         :return: nothing
         """
 
-        if not os.path.exists("fileStorage"):
-            os.mkdir("fileStorage")
+        # Creates a directory for the repository if one does not exist
+        if not os.path.exists(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4]):
+            os.mkdir(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4])
 
+        # Creates files with contents of repo files inside of directory.
         for i in contentUrlTuple:
-            with open(os.path.join("fileStorage", i[0]), "w") as f:
-                f.write(i[1])
+            with open(os.path.join(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4], i[0]), "w") as f:
+                f.write(i[2])
 
     @staticmethod
     def downloadAllFiles(repoURL):
         """
-        Composition of functions to download all files in a GitHub repository
+        Composition of functions to download all files in a GitHub repository. Files will be downloaded into a folder named "username_reponame"
         :param repoURL: URL of repository
         :return: nothing
         """
 
         fileUrlTuples = GitHubScraper.getFileURLSFromGitHubRepo(repoURL)
-        fileContentTuples = GitHubScraper.getContentfromGitHubFileURLs(fileUrlTuples)
+        fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
         GitHubScraper.fileContentIntoStorage(fileContentTuples)
 
 
