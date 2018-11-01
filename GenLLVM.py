@@ -12,7 +12,7 @@ class GenLLVM:
         pass
 
     @staticmethod
-    def unoptimized(filename, bashargs):
+    def unoptimized(filename, bashargs, newlocation):
         """
         Will compile file specified by filename down to optimized llvm using
         the following bash command:
@@ -23,12 +23,12 @@ class GenLLVM:
         """
 
         filename.replace(".c", "")
-        command = "clang " + filename + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + filename + "-unopt.ll"
+        command = "clang " + filename + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + newlocation + filename + "-unopt.ll"
         print(command)
         subprocess.run(command, shell=True)
 
     @staticmethod
-    def optimized(filename, bashargs):
+    def optimized(filepath, bashargs, newlocation):
         """
         Will compile file specified by filename down to optimized llvm using
         the following bash command:
@@ -37,13 +37,15 @@ class GenLLVM:
         :param filename:
         :return:
         """
+        file_ar = filepath.split("/")
+        filename = file_ar[file_ar.size()-1]
         filename.replace(".c", "")
-        command = "clang " + filename + " -S -emit-llvm -o " + filename + "-opt.ll"
+        command = "clang " + filename + " -S -emit-llvm -o " + newlocation + filename + "-opt.ll"
         subprocess.run(command, shell=True)
 
     @staticmethod
-    def genLLVM(filePath):
-        file_of_cfiles = open(filePath, 'r')
-        for cfile in file:
-            GenLLVM.unoptimized(cfile, "")
-            GenLLVM.optimized(cfile, "")
+    def genLLVM(filepath):
+        file_of_cfiles = open(filepath, 'r')
+        for cfile in file_of_cfiles:
+            GenLLVM.unoptimized(cfile, "", "./")
+            GenLLVM.optimized(cfile, "", "./")
