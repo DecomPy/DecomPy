@@ -30,7 +30,7 @@
 
 from WebNavigator import WebNavigator
 import os
-
+import time
 
 class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
@@ -126,6 +126,11 @@ class GitHubScraper(WebNavigator):
         # Creates a directory for the repository if one does not exist
         if not os.path.exists(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4]):
             os.mkdir(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4])
+
+        # Append to config.META
+        with open(os.path.join(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4], "config.META"), "a") as f:
+            f.write("File download timestamp: ")
+            f.write(time.asctime(time.localtime(time.time())))
 
         # Creates files with contents of repo files inside of directory.
         for i in contentUrlTuple:
