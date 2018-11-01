@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from WebNavigator import WebNavigator
+import os
 
 
 class GitHubScraper(WebNavigator):
@@ -118,8 +119,12 @@ class GitHubScraper(WebNavigator):
         :param contentUrlTuple: list of tuples, with each tuple being ("fileName", "fileContent")
         :return: nothing
         """
+
+        if not os.path.exists("fileStorage"):
+            os.mkdir("fileStorage")
+
         for i in contentUrlTuple:
-            with open(i[0], "w") as f:
+            with open(os.path.join("fileStorage", i[0]), "w") as f:
                 f.write(i[1])
 
     @staticmethod
