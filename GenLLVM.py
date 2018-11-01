@@ -22,7 +22,8 @@ class GenLLVM:
         :return:
         """
 
-        command = "clang -O1 -disable-llvm-passes -Xclang -cc1 " + filename + ".c -S -emit-llvm -o " + filename + "-unopt.ll"
+        command = "clang " + filename + ".c -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + filename + "-unopt.ll"
+        print(command)
         subprocess.run(command, shell=True)
 
     @staticmethod
@@ -35,7 +36,7 @@ class GenLLVM:
         :param filename:
         :return:
         """
-        command = "clang " + filename + "-unopt.ll -opt -S -emit-llvm -o " + filename + "-opt.ll"
+        command = "clang " + filename + ".c -S -emit-llvm -o " + filename + "-opt.ll"
         subprocess.run(command, shell=True)
 
 
