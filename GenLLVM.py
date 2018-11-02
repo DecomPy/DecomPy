@@ -12,7 +12,7 @@ class GenLLVM:
         pass
 
     @staticmethod
-    def unoptimized(filename, bashargs, newlocation):
+    def _unoptimized(filepath, bashargs, newlocation):
         """
         Will compile file specified by filename down to optimized llvm using
         the following bash command:
@@ -22,13 +22,16 @@ class GenLLVM:
         :return:
         """
 
-        filename.replace(".c", "")
-        command = "clang " + filename + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + newlocation + filename + "-unopt.ll"
+        file_ar = filepath.split("/")
+        filename = file_ar[len(file_ar)-1]
+        filename = filename.replace(".c", "")
+
+        command = "clang " + bashargs + " " + filepath + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + newlocation + filename + "-unopt.ll"
         print(command)
         subprocess.run(command, shell=True)
 
     @staticmethod
-    def optimized(filepath, bashargs, newlocation):
+    def _optimized(filepath, bashargs, newlocation):
         """
         Will compile file specified by filename down to optimized llvm using
         the following bash command:
@@ -38,14 +41,24 @@ class GenLLVM:
         :return:
         """
         file_ar = filepath.split("/")
-        filename = file_ar[file_ar.size()-1]
-        filename.replace(".c", "")
-        command = "clang " + filename + " -S -emit-llvm -o " + newlocation + filename + "-opt.ll"
+        filename = file_ar[len(file_ar)-1]
+        filename = filename.replace(".c", "")
+
+        command = "clang " + bashargs + " " + filepath + " -S -emit-llvm -o " + newlocation + filename + "-opt.ll"
+        print(command)
         subprocess.run(command, shell=True)
 
     @staticmethod
-    def genLLVM(filepath):
+    def genLLVM(filepath, newlocation, bashargs=""):
+        """
+        Creates optimized and unoptmized llvm files for all c files specified in the file
+        :param filepath: file containing the filpath to the txt file that contains the paths to the c files
+        :param newlocation: new location for the llvm files. must include trailing slash: "./hello"
+        :param bashargs: any arguments required to compile the c files.
+        :return:
+        """
         file_of_cfiles = open(filepath, 'r')
         for cfile in file_of_cfiles:
-            GenLLVM.unoptimized(cfile, "", "./")
-            GenLLVM.optimized(cfile, "", "./")
+            cfile = cfile.rstrip()
+            GenLLVM._unoptimized(cfile, bashargs, newlocation)
+            GenLLVM._optimized(cfile, bashargs, newlocation)
