@@ -62,3 +62,4 @@ class GenLLVM:
             cfile = cfile.rstrip()
             GenLLVM._unoptimized(cfile, bashargs, newlocation)
             GenLLVM._optimized(cfile, bashargs, newlocation)
+        file_of_cfiles.close()

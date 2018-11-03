@@ -1,7 +1,7 @@
 import unittest
 import os
 from pathlib import Path
-from decompy.GenLLVM.GenLLVM import GenLLVM
+from GenLLVM import GenLLVM
 
 
 class TestGenLLVM(unittest.TestCase):
