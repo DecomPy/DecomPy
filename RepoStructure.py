@@ -1,16 +1,21 @@
+import os
+
 
 class RepoStructure:
     def __init__(self, parentDir="."):
         self.parentDir = parentDir
-        #TODO: Create "Repositories" folder in parentDir
+        if os.path.exists(os.path.join(parentDir, "Repositories")):
+            # TODO: Create "Repositories" folder in parentDir
+            pass
 
     @staticmethod
     def formatRepo(self, repo):
-        #TODO: Create repo folder inside "Repositories" folder
-        #TODO: Create metafile in repo folder
+        # TODO: Create repo folder inside "Repositories" folder
+        # TODO: Create metafile in repo folder
+        pass
+
 
 if __name__ == "__main__":
-    import RepoFilter from RepoFilter
-    rf
+    from RepoFilter import RepoFilter
 
     rs = RepoStructure()
