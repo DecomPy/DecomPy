@@ -1,2 +1,0 @@
-example.c
-example2.c

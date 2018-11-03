@@ -53,7 +53,7 @@ class GenLLVM:
         """
         Creates optimized and unoptmized llvm files for all c files specified in the file
         :param filepath: file containing the filpath to the txt file that contains the paths to the c files
-        :param newlocation: new location for the llvm files. must include trailing slash: "./hello"
+        :param newlocation: new location for the llvm files. must include trailing slash: "./llvmDir"
         :param bashargs: any arguments required to compile the c files.
         :return:
         """
