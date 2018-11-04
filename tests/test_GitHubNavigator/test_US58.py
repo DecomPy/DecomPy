@@ -48,20 +48,38 @@ class test_GitHubScraper(unittest.TestCase):
             for f in files:
                 print('{}{}'.format(subindent, f))
 
-        with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
-                  "r") as f:
-            passed = False
-            line = f.readline()
-            while line:
-                if "File download timestamp: " in line:
-                    fileMin = line.split(" ")[-2].split(":")[-2]
-                    year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
-                    minute = int(minute)
-                    fileMin = int(fileMin)
-                    self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
-                    passed = True
+        # For Windows
+        if os.name == "nt":
+            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
+                      "r") as f:
+                passed = False
                 line = f.readline()
-        self.assertTrue(passed)
+                while line:
+                    if "File download timestamp: " in line:
+                        fileMin = line.split(" ")[-2].split(":")[-2]
+                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        minute = int(minute)
+                        fileMin = int(fileMin)
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        passed = True
+                    line = f.readline()
+            self.assertTrue(passed)
+        #For Linux machines
+        else:
+            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"),
+                      "r") as f:
+                passed = False
+                line = f.readline()
+                while line:
+                    if "File download timestamp: " in line:
+                        fileMin = line.split(" ")[-2].split(":")[-2]
+                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        minute = int(minute)
+                        fileMin = int(fileMin)
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        passed = True
+                    line = f.readline()
+            self.assertTrue(passed)
 
         # Makes sure the directory is always clean
         shutil.rmtree("DecomPy_valid_and_compilable_1")
@@ -79,20 +97,38 @@ class test_GitHubScraper(unittest.TestCase):
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
-        with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
-                  "r") as f:
-            passed = False
-            line = f.readline()
-            while line:
-                if "File download timestamp: " in line:
-                    fileMin = line.split(" ")[-2].split(":")[-2]
-                    year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
-                    minute = int(minute)
-                    fileMin = int(fileMin)
-                    self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
-                    passed = True
+        # For Windows machines
+        if os.name == "nt":
+            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
+                      "r") as f:
+                passed = False
                 line = f.readline()
-        self.assertTrue(passed)
+                while line:
+                    if "File download timestamp: " in line:
+                        fileMin = line.split(" ")[-2].split(":")[-2]
+                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        minute = int(minute)
+                        fileMin = int(fileMin)
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        passed = True
+                    line = f.readline()
+            self.assertTrue(passed)
+        # For Linux machines
+        else:
+            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"),
+                      "r") as f:
+                passed = False
+                line = f.readline()
+                while line:
+                    if "File download timestamp: " in line:
+                        fileMin = line.split(" ")[-2].split(":")[-2]
+                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        minute = int(minute)
+                        fileMin = int(fileMin)
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        passed = True
+                    line = f.readline()
+            self.assertTrue(passed)
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
