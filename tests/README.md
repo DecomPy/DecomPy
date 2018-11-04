@@ -10,6 +10,6 @@ SER 401 Team 8- Adaptive Machine Learning Decompiler Testing
 4) Make sure you import unittest and have
 ```
 if __name__ == '__main__':
-    tf.test.main()
+    unittest.main()
 ```
 at the bottom.
