@@ -43,7 +43,7 @@ class WebNavigator:
 
         :param link: An absolute URL
         :return: page content
-        :rtype: str
+        :return: str
         """
         pageSource = ""
         try:
@@ -64,7 +64,7 @@ class WebNavigator:
 
         :param link: An absolute URL
         :return: list of visible text
-        :rtype list of str
+        :return list of str
         """
 
         def visible(element):
@@ -91,7 +91,7 @@ class WebNavigator:
 
         :param str content: HTML content of a page
         :return: a set of links
-        :rtype: set of strings
+        :return: set of strings
         """
         soup = BeautifulSoup(content, 'lxml')
         links = set([link.get('href') for link in soup.find_all('a')])
@@ -107,7 +107,7 @@ class WebNavigator:
         :param str domain: The domain used to filter the links. Should be of form example.com
         (not of www.google.com or https://www.example.com)
         :return: A filtered set of links
-        :rtype set of strings
+        :return: set of strings
         """
         domainRegex = re.compile("%s/" % domain)
         return set(filter(domainRegex.search, absoluteLinks))
@@ -121,7 +121,7 @@ class WebNavigator:
         :param set RelativeLinks: A set containing relative URLs
         :type RelativeLinks: set of strings
         :return: The absolute URLs of the relative URLs
-        :rtype: set of str
+        :return: set of str
         """
         return set(urllib.parse.urljoin(ResolvedParent, RelativeLink) for RelativeLink in RelativeLinks)
 
@@ -132,7 +132,7 @@ class WebNavigator:
 
         :param link: the absolute link to resolve
         :param domain: the domain of the above link to stay within (default is no domain limiting)
-        :return:
+        :return: set of absolute URLs within a page
         """
         content = WebNavigator.getContent(link)
         links = WebNavigator.getLinks(content)
@@ -143,7 +143,8 @@ class WebNavigator:
         return localLinks
 
 if __name__ == "__main__":
-    print("WebNavigator does nothing in its main")
+    print(WebNavigator.getAbsoluteLinksFromPage("https://github.com/DecomPy/DecomPy"))
+    #print("WebNavigator does nothing in its main")
     # print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
     # WebNavigator.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",
     #                                           "https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c"])
