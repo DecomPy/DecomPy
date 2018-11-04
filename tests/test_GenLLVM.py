@@ -1,7 +1,7 @@
 import unittest
 import os
 from pathlib import Path
-from GenLLVM import GenLLVM
+from GenLLVM.GenLLVM import GenLLVM
 
 
 class TestGenLLVM(unittest.TestCase):
@@ -11,17 +11,18 @@ class TestGenLLVM(unittest.TestCase):
         Initializes the test method by creating a blank txt file that will be used as input
         :return:
         """
-        open("../test-input.txt", "w+")
+        self.input_file = open("./test-input.txt", "w+")
 
     def tearDown(self):
         """
         Resets the test method by deleting the input file that was used
         :return:
         """
-        os.remove("../test-input.txt")
-        llvm_dir = Path("../llvmDir")
-        for file in llvm_dir.iterdir():
-            file.unlink()
+        self.input_file.close()
+        # os.remove("./test-input.txt")
+        # llvm_dir = Path("./llvmDir")
+        # for file in llvm_dir.iterdir():
+        #     file.unlink()
 
 
     def test_empty_input(self):
@@ -30,7 +31,7 @@ class TestGenLLVM(unittest.TestCase):
         is empty. A successful test will produce nothing.
         :return:
         """
-        GenLLVM.genLLVM("../test-input.txt", "../llvmDir/")
+        GenLLVM.genLLVM("./test-input.txt", "./llvmDir/")
 
 
     def test_one_c_file(self):
@@ -39,6 +40,9 @@ class TestGenLLVM(unittest.TestCase):
         out of the way. Should compile the optimized and unoptimized code.
         :return:
         """
+        self.input_file.write("./cDir/example.c")
+        GenLLVM.genLLVM("./test-input.txt", "./llvmDir/")
+        #if os.listdir(work_path) =[]:
 
     def test_output_folder_dne(self):
         """
@@ -59,3 +63,6 @@ class TestGenLLVM(unittest.TestCase):
         tests if the input file doesn't exist. Should throw an exception (Which exception?)
         :return:
         """
+
+if __name__=="__main__":
+    unittest.main()
