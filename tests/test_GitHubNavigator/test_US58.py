@@ -38,13 +38,13 @@ class test_GitHubScraper(unittest.TestCase):
         :return: nothing
         """
 
-        passed = False
-
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
-        time.sleep(5)
+        GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
                   "r") as f:
+            passed = False
             line = f.readline()
             while line:
                 if "File download timestamp: " in line:
@@ -66,18 +66,18 @@ class test_GitHubScraper(unittest.TestCase):
         :return: nothing
         """
 
-        passed = False
-
         if not os.path.exists("Decompy_valid_and_compilable_1"):
             os.mkdir("DecomPy_valid_and_compilable_1")
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
             f.write("Text to be appended upon\n")
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
-        time.sleep(5)
+        GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
                   "r") as f:
+            passed = False
             line = f.readline()
             while line:
                 if "File download timestamp: " in line:
