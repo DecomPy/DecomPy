@@ -12,8 +12,8 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = fc.FilterC()
-        self.pass_file = "./files/binary_search_tree.c"
-        self.fail_file = "./files/fibonacciSearch.c"
+        self.fail_file = "tests/test_filter_c_files/files/binary_search_tree.c"
+        self.pass_file = "tests/test_filter_c_files/files/fibonacciSearch.c"
 
     def test_max_bytes(self):
         """
@@ -63,6 +63,11 @@ class FilterCTest(unittest.TestCase):
         # test against
         test_headers = ("assert.h", "string.h")
 
+        # includes comments and whitespace
+        self.assertTrue(self.FilterC.check_headers(" "))
+        self.assertTrue(self.FilterC.check_headers(" //hi"))
+        self.assertTrue(self.FilterC.check_headers("//hi"))
+
         # includes only 1 header
         self.assertTrue(self.FilterC.check_headers("#include <assert.h>; //includes assert", test_headers))
 
@@ -76,7 +81,7 @@ class FilterCTest(unittest.TestCase):
         self.assertTrue(self.FilterC.check_headers("int main { return 0; }"))
 
         # wrong headers
-        self.assertFalse(self.FilterC.check_headers("#include \"stuff.h\"; //includes stuff.h outside"))
+        self.assertFalse(self.FilterC.check_headers('#include "stuff.h"; //includes stuff.h outside'))
 
         # includes correct header format, but not the header we wanted
         self.assertFalse(self.FilterC.check_headers("#include <uchar.h>;"))
@@ -88,6 +93,7 @@ class FilterCTest(unittest.TestCase):
         """
         # test against
         test_headers = ("assert.h", "string.h")
+        test_headers2 = ("stdio.h", "string.h", "stdlib.h")
         test_blacklist_fail = ("main", "return")
 
         # use defaults with a pass file
@@ -100,16 +106,18 @@ class FilterCTest(unittest.TestCase):
         self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 10))
 
         # use whitelisted headers with my headers
-        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 7000, test_headers))
-        self.assertFalse(self.FilterC.check_valid_data(self.fail_file, 7000, test_headers))
+        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 7000, test_headers2))
+
+        # fails because it does not contain the tested headers
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 9000, test_headers))
 
         # use blacklisted words with my headers
-        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 7000, test_headers, test_blacklist_fail))
-        self.assertFalse(self.FilterC.check_valid_data(self.fail_file, 7000, test_headers, test_blacklist_fail))
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 7000, test_headers2, test_blacklist_fail))
+        self.assertFalse(self.FilterC.check_valid_data(self.fail_file, 9000, test_headers, test_blacklist_fail))
 
         # use different byte size with headers
-        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 4000, test_headers))
-        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, test_headers))
+        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 4000, test_headers2))
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, test_headers2))
 
 
 if __name__ == '__main__':

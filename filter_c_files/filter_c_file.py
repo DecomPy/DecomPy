@@ -9,6 +9,9 @@ class FilterC:
     Filters our words that may be too difficult: malloc, FILE, and threading
     """
 
+    # sets current file directory
+    script_dir = os.path.dirname(os.path.realpath('__file__'))
+
     # set maximum bytes of 7000
     MAX_BYTES = 7000
     # questionable ones: complex, fenv, setjmp, stdalign, stdarg, stdbool, tgmath, uchar
@@ -36,6 +39,10 @@ class FilterC:
         :type: int
         :return: boolean
         """
+
+        # combine to get the correct file
+        file = os.path.join(FilterC.script_dir, file)
+
         return preferred_size > os.stat(file).st_size
 
     @staticmethod
@@ -50,7 +57,7 @@ class FilterC:
         """
 
         line = line.lower()
-        return any(word in line for word in blacklisted)  # TODO: check if I need to use ! on it.
+        return any(word in line for word in blacklisted)
 
     @staticmethod
     def check_headers(line, whitelisted=C_WHITELIST_HEADERS):
@@ -62,13 +69,20 @@ class FilterC:
         :type: str arr
         :return: boolean
         """
-
         # checks for comments or empty lines
-        if re.match(line, '^s*//') or line in ('\r', '\r\n'):
+        if re.match('\\s*(//(.*)*)*$', line):
             return True
+
         # check to see if we have a #include line.
-        if re.match(line, '/^(\s*#include\s+<\w+.h>\s*;\s*)+/i'):
-            return any(word in line for word in whitelisted)
+        if re.match('\\s*#include\\s+', line):
+            # matches proper header
+            if re.match('(\\s*#include\\s+<\\w+.h>\\s*)+', line):
+                return any(word in line for word in whitelisted)
+            # otherwise return false
+            else:
+                return False
+        # return true for everything else
+        return True
 
     @staticmethod
     def check_valid_data(file, preferred_size=MAX_BYTES, whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
@@ -87,15 +101,25 @@ class FilterC:
         :return: bool
         """
 
+        # combine to get the correct file
+        file = os.path.join(FilterC.script_dir, file)
+
+        # check file size
         if preferred_size < os.stat(file).st_size:
             return False
 
         try:
             # open file, read line by line so we don't waste memory
             with open(file) as f:
+                # iterate line by line
                 for line in f:
+                    print("whitelist", whitelisted)
+                    print("whitelisted", FilterC.check_headers(line, whitelisted))
+                    print("blacklisted", FilterC.check_blacklisted_words(line, blacklisted))
+
                     # must pass our testing from above.
                     if not FilterC.check_headers(line, whitelisted) or FilterC.check_blacklisted_words(line, blacklisted):
+                        print("fail")
                         return False
             return True
         except IOError as e:
