@@ -41,6 +41,7 @@ class test_GitHubScraper(unittest.TestCase):
         passed = False
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
+        time.sleep(5)
 
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
                   "r") as f:
@@ -73,6 +74,7 @@ class test_GitHubScraper(unittest.TestCase):
             f.write("Text to be appended upon\n")
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
+        time.sleep(5)
 
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
                   "r") as f:
