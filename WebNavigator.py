@@ -38,7 +38,7 @@ class WebNavigator:
     """Defines methods for navigating web links"""
 
     DEBUG = False  # Whether to print debug info or not
-    TIMING = False  # Whether to print timing info or not
+    TIMING = True  # Whether to print timing info or not
     TIMER = 0  # Used if TIMING is enabled
 
     @staticmethod
@@ -65,7 +65,7 @@ class WebNavigator:
             pass
 
         if WebNavigator.TIMING:
-            print("Time to get content from ", link, ": ", time.time() - WebNavigator.TIMER)
+            print("WEBNAVIGATOR: Time to get content from", link, ":", time.time() - WebNavigator.TIMER)
 
         return pageSource
 

@@ -37,7 +37,7 @@ class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
     DEBUG = False   # Whether to print debug info or not
-    TIMING = False  # Whether to print timing info or not
+    TIMING = True  # Whether to print timing info or not
     TIMER = 0       # Used if TIMING is enabled
 
     @staticmethod
@@ -104,13 +104,13 @@ class GitHubScraper(WebNavigator):
             content = GitHubScraper.getContent(url)
 
             if GitHubScraper.TIMING:
-                print("Time to get content: ", time.time() - GitHubScraper.TIMER)
+                print("GITHUBSCRAPER: Time to get content from", url, ":", time.time() - GitHubScraper.TIMER)
                 GitHubScraper.TIMER = time.time()
 
             links = GitHubScraper.getLinks(content)
 
             if GitHubScraper.TIMING:
-                print("Time to get links from content: ", time.time() - GitHubScraper.TIMER)
+                print("GITHUBSCRAPER: Time to get links from content:", time.time() - GitHubScraper.TIMER)
                 GitHubScraper.TIMER = time.time()
 
             # The following block removes links that don't need to be followed
@@ -125,7 +125,7 @@ class GitHubScraper(WebNavigator):
                 links.remove(link)
 
             if GitHubScraper.TIMING:
-                print("Time to get useful links from links: ", time.time() - GitHubScraper.TIMER)
+                print("GITHUBSCRAPER: Time to get useful links from links:", time.time() - GitHubScraper.TIMER)
 
             absLinks = GitHubScraper.getAbsolute(url, links)
             counter = counter + 1
@@ -153,9 +153,9 @@ class GitHubScraper(WebNavigator):
         # Change DEBUG variable to true to get more info
         if GitHubScraper.DEBUG:
             print(fileUrlTuples)
-            print("urls ", urls)
-            print("pagelinks ", pageLinks)
-            print("rawLinks ", rawLinks)
+            print("urls:", urls)
+            print("pagelinks:", pageLinks)
+            print("rawLinks: ", rawLinks)
             for i in content:
                 print(i)
             print("return value ", returnList)
@@ -188,14 +188,14 @@ class GitHubScraper(WebNavigator):
             updateTimeStamp = False
             for line in fileinput.input((os.path.join(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4], "config.META")), inplace=True):
                 if "File download timestamp: " in line:
-                    print("%s" % ("File download timestamp: " + time.asctime(time.localtime(time.time())))),
+                    print("%s" % ("File download timestamp:" + time.asctime(time.localtime(time.time())))),
                     updateTimeStamp = True
                 else:
                     print("%s" % line),
             if not updateTimeStamp:
                 with open(os.path.join(contentUrlTuple[0][1].split("/")[3] + "_" + contentUrlTuple[0][1].split("/")[4],
                                        "config.META"), "a") as f:
-                    f.write("File download timestamp: ")
+                    f.write("File download timestamp:")
                     f.write(time.asctime(time.localtime(time.time())))
 
 
