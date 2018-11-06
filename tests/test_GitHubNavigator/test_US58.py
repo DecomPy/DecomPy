@@ -152,5 +152,15 @@ class test_GitHubScraper(unittest.TestCase):
         if os.path.exists("DecomPy_valid_and_compilable_1"):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
 
+    @classmethod
+    def tearDownClass(self):
+        """
+        Cleans up directory after running all tests
+        :return: nothing
+        """
+        if os.path.exists("DecomPy_valid_and_compilable_1"):
+            shutil.rmtree("DecomPy_valid_and_compilable_1")
+
+
 if __name__ == '__main__':
     unittest.main()
