@@ -37,7 +37,7 @@ class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
     DEBUG = False   # Whether to print debug info or not
-    TIMING = True  # Whether to print timing info or not
+    TIMING = False  # Whether to print timing info or not
     TIMER = 0       # Used if TIMING is enabled
 
     @staticmethod
@@ -225,6 +225,6 @@ if __name__ == "__main__":
     # fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
     # print("filename/content pairs: ", fileContentTuples)
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
-    # GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
-    GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
+    GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
+    # GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
 

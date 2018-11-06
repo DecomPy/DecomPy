@@ -82,7 +82,8 @@ class test_GitHubScraper(unittest.TestCase):
             self.assertTrue(passed)
 
         # Makes sure the directory is always clean
-        shutil.rmtree("DecomPy_valid_and_compilable_1")
+        if os.path.exists("DecomPy_valid_and_compilable_1"):
+            shutil.rmtree("DecomPy_valid_and_compilable_1")
 
     def test_repo_vc_1_download_config_META_append(self):
         """
