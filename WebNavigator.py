@@ -31,10 +31,15 @@
 import urllib.request, urllib.error, urllib.parse
 from bs4 import BeautifulSoup
 import re
+import time
 
 
 class WebNavigator:
     """Defines methods for navigating web links"""
+
+    DEBUG = False  # Whether to print debug info or not
+    TIMING = False  # Whether to print timing info or not
+    TIMER = 0  # Used if TIMING is enabled
 
     @staticmethod
     def getContent(link):
@@ -45,6 +50,10 @@ class WebNavigator:
         :return: page content
         :return: str
         """
+
+        if WebNavigator.TIMING:
+            WebNavigator.TIMER = time.time()
+
         pageSource = ""
         try:
             response = urllib.request.urlopen(link)
@@ -54,6 +63,9 @@ class WebNavigator:
                 pass
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
             pass
+
+        if WebNavigator.TIMING:
+            print("Time to get content from ", link, ": ", time.time() - WebNavigator.TIMER)
 
         return pageSource
 
