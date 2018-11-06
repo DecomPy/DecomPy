@@ -47,7 +47,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -63,7 +63,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -86,7 +86,7 @@ class test_GitHubScraper(unittest.TestCase):
         if not os.path.exists("Decompy_valid_and_compilable_1"):
             os.mkdir("DecomPy_valid_and_compilable_1")
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
-            f.write("Text to be appended upon\n")
+            f.write("Text to be appended upon")
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
@@ -97,7 +97,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -113,7 +113,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -153,7 +153,17 @@ class test_GitHubScraper(unittest.TestCase):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
 
     @classmethod
-    def tearDownClass(self):
+    def setUp(self):
+        """
+        Clean up directory before running any test
+        :return:
+        """
+
+        if os.path.exists("DecomPy_valid_and_compilable_1"):
+            shutil.rmtree("DecomPy_valid_and_compilable_1")
+
+    @classmethod
+    def tearDown(self):
         """
         Cleans up directory after running all tests
         :return: nothing
