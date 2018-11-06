@@ -40,14 +40,6 @@ class test_GitHubScraper(unittest.TestCase):
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
-        for root, dirs, files in os.walk("DecomPy_valid_and_compilable_1"):
-            level = root.replace("DecomPy_valid_and_compilable_1", '').count(os.sep)
-            indent = ' ' * 4 * (level)
-            print('{}{}/'.format(indent, os.path.basename(root)))
-            subindent = ' ' * 4 * (level + 1)
-            for f in files:
-                print('{}{}'.format(subindent, f))
-
         # For Windows
         if os.name == "nt":
             with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
