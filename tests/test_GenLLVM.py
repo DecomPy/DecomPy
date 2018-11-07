@@ -1,5 +1,10 @@
-import unittest
+import sys
 import os
+p = os.path.abspath(os.path.join(__file__, "../.."))
+sys.path.append(p)
+print("SYSPATH", sys.path)
+
+import unittest
 from pathlib import Path
 from GenLLVM.GenLLVM import GenLLVM
 
@@ -11,18 +16,17 @@ class TestGenLLVM(unittest.TestCase):
         Initializes the test method by creating a blank txt file that will be used as input
         :return:
         """
-        self.input_file = open("./test-input.txt", "w+")
+        self.input_file = open("test-input.txt", "w+")
 
     def tearDown(self):
         """
         Resets the test method by deleting the input file that was used
         :return:
         """
-        self.input_file.close()
-        # os.remove("./test-input.txt")
-        # llvm_dir = Path("./llvmDir")
-        # for file in llvm_dir.iterdir():
-        #     file.unlink()
+        self.input_file.unlink()
+        llvm_dir = Path("./llvmDir")
+        for file in llvm_dir.iterdir():
+            file.unlink()
 
 
     def test_empty_input(self):
@@ -41,23 +45,23 @@ class TestGenLLVM(unittest.TestCase):
         :return:
         """
         self.input_file.write("./cDir/example.c\n")
-        self.input_file.write("./cDir/example2.c\n")
         self.input_file.flush()
-        GenLLVM.genLLVM("./test-input.txt", "./llvmDir/")
+        GenLLVM.genLLVM("test-input.txt", "./llvmDir/")
         self.assertTrue(len(os.listdir("./llvmDir")) == 1, "C Directory has too little or too many files." +
                         str(len(os.listdir("./llvmDir"))))
 
-    # def test_output_folder_dne(self):
-    #     """
-    #     tests what happens if the location for the llvm output doesn't exist. Should create
-    #     the folder and save all generated llvm to that folder.
-    #     :return:
-    #     """
-    #     self.input_file.write("./cDir/example.c\n")
-    #     self.input_file.write("./cDir/example2.c\n")
-    #     GenLLVM.genLLVM("./test-input.txt", "./llvmDir2/")
-    #     self.assertTrue(len(os.listdir("./llvmDir2")) == 2, "C Directory has too little or too many files."
-    #                     + str(len(os.listdir("./llvmDir"))))
+    def test_output_folder_dne(self):
+        """
+        tests what happens if the location for the llvm output doesn't exist. Should create
+        the folder and save all generated llvm to that folder.
+        :return:
+        """
+        self.input_file.write("./cDir/example.c\n")
+        self.input_file.write("./cDir/example2.c\n")
+        self.input_file.flush()
+        GenLLVM.genLLVM("test-input.txt", "./llvmDir2/")
+        self.assertTrue(len(os.listdir("./llvmDir2")) == 2, "C Directory has too little or too many files."
+                        + str(len(os.listdir("./llvmDir"))))
 
     def test_c_file_dne(self):
         """
