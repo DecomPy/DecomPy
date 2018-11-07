@@ -32,9 +32,12 @@ class TestGenLLVM(unittest.TestCase):
         for file in llvm_dir:
             file.unlink()
 
-        llvm_dir2 = Path("./llvmDir").iterdir()
-        for file in llvm_dir2:
-            file.unlink()
+        llvm_dir2 = Path("./llvmDir2")
+        if llvm_dir2.is_dir():
+            llvm_dir2_iter = llvm_dir2.iterdir()
+            for file in llvm_dir2_iter:
+                file.unlink()
+            llvm_dir2.rmdir()
 
 
     def test_empty_input(self):
