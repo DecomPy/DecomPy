@@ -40,16 +40,24 @@ class TestGenLLVM(unittest.TestCase):
         out of the way. Should compile the optimized and unoptimized code.
         :return:
         """
-        self.input_file.write("./cDir/example.c")
+        self.input_file.write("./cDir/example.c\n")
+        self.input_file.write("./cDir/example2.c\n")
+        self.input_file.flush()
         GenLLVM.genLLVM("./test-input.txt", "./llvmDir/")
-        #if os.listdir(work_path) =[]:
+        self.assertTrue(len(os.listdir("./llvmDir")) == 1, "C Directory has too little or too many files." +
+                        str(len(os.listdir("./llvmDir"))))
 
-    def test_output_folder_dne(self):
-        """
-        tests what happens if the location for the llvm output doesn't exist. Should create
-        the folder and save all generated llvm to that folder.
-        :return:
-        """
+    # def test_output_folder_dne(self):
+    #     """
+    #     tests what happens if the location for the llvm output doesn't exist. Should create
+    #     the folder and save all generated llvm to that folder.
+    #     :return:
+    #     """
+    #     self.input_file.write("./cDir/example.c\n")
+    #     self.input_file.write("./cDir/example2.c\n")
+    #     GenLLVM.genLLVM("./test-input.txt", "./llvmDir2/")
+    #     self.assertTrue(len(os.listdir("./llvmDir2")) == 2, "C Directory has too little or too many files."
+    #                     + str(len(os.listdir("./llvmDir"))))
 
     def test_c_file_dne(self):
         """

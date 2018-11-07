@@ -1,5 +1,6 @@
 import subprocess
 
+
 class GenLLVM:
     """
 
@@ -23,7 +24,7 @@ class GenLLVM:
         """
 
         file_ar = filepath.split("/")
-        filename = file_ar[len(file_ar)-1]
+        filename = file_ar[len(file_ar) - 1]
         filename = filename.replace(".c", "")
 
         command = "clang " + bashargs + " " + filepath + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + newlocation + filename + "-unopt.ll"
@@ -41,7 +42,7 @@ class GenLLVM:
         :return:
         """
         file_ar = filepath.split("/")
-        filename = file_ar[len(file_ar)-1]
+        filename = file_ar[len(file_ar) - 1]
         filename = filename.replace(".c", "")
 
         command = "clang " + bashargs + " " + filepath + " -S -emit-llvm -o " + newlocation + filename + "-opt.ll"
@@ -59,7 +60,10 @@ class GenLLVM:
         """
         file_of_cfiles = open(filepath, 'r')
         for cfile in file_of_cfiles:
+            print("called")
             cfile = cfile.rstrip()
             GenLLVM._unoptimized(cfile, bashargs, newlocation)
             GenLLVM._optimized(cfile, bashargs, newlocation)
         file_of_cfiles.close()
+
+# GenLLVM.genLLVM("./tests/test-input.txt", "./tests/llvmDir/")
