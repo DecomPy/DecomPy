@@ -24,10 +24,16 @@ class TestGenLLVM(unittest.TestCase):
         :return:
         """
         self.input_file.close()
-        Path("test-input.txt").unlink()
+        input_path =  Path("test-input.txt")
+        if input_path.is_file():
+            input_path.unlink()
 
-        llvm_dir = Path("./llvmDir")
-        for file in llvm_dir.iterdir():
+        llvm_dir = Path("./llvmDir").iterdir()
+        for file in llvm_dir:
+            file.unlink()
+
+        llvm_dir2 = Path("./llvmDir").iterdir()
+        for file in llvm_dir2:
             file.unlink()
 
 
@@ -97,6 +103,9 @@ class TestGenLLVM(unittest.TestCase):
         tests if the input file doesn't exist. Should throw an exception (Which exception?)
         :return:
         """
+        with self.assertRaises(FileNotFoundError):
+            GenLLVM.genLLVM("not_here.txt", "./llvmDir2/")
+
 
 if __name__=="__main__":
     unittest.main()
