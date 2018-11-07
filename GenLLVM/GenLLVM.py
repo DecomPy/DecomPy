@@ -1,5 +1,5 @@
 import subprocess
-
+import os
 
 class GenLLVM:
     """
@@ -27,9 +27,9 @@ class GenLLVM:
         filename = file_ar[len(file_ar) - 1]
         filename = filename.replace(".c", "")
 
-        command = "clang " + bashargs + " " + filepath + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + newlocation + filename + "-unopt.ll"
-        print(command)
-        subprocess.run(command, shell=True)
+        command = "clang " + bashargs + " -Wno-everything " + filepath + " -O1 -Xclang -disable-llvm-passes -S -emit-llvm -o " + newlocation + filename + "-unopt.ll"
+
+        subprocess.run(command, shell=True, check=True)
 
     @staticmethod
     def _optimized(filepath, bashargs, newlocation):
@@ -45,9 +45,9 @@ class GenLLVM:
         filename = file_ar[len(file_ar) - 1]
         filename = filename.replace(".c", "")
 
-        command = "clang " + bashargs + " " + filepath + " -S -emit-llvm -o " + newlocation + filename + "-opt.ll"
-        print(command)
-        subprocess.run(command, shell=True)
+        command = "clang " + bashargs + " -Wno-everything " + filepath + " -S -emit-llvm -o " + newlocation + filename + "-opt.ll"
+
+        subprocess.run(command, shell=True, check=True)
 
     @staticmethod
     def genLLVM(filepath, newlocation, bashargs=""):
@@ -59,8 +59,10 @@ class GenLLVM:
         :return:
         """
         file_of_cfiles = open(filepath, 'r')
+        if not os.path.isdir(newlocation):
+            os.makedirs(newlocation)
+
         for cfile in file_of_cfiles:
-            print("called")
             cfile = cfile.rstrip()
             GenLLVM._unoptimized(cfile, bashargs, newlocation)
             GenLLVM._optimized(cfile, bashargs, newlocation)

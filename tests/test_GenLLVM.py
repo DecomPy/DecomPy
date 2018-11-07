@@ -2,10 +2,10 @@ import sys
 import os
 p = os.path.abspath(os.path.join(__file__, "../.."))
 sys.path.append(p)
-print("SYSPATH", sys.path)
 
 import unittest
 from pathlib import Path
+from subprocess import CalledProcessError
 from GenLLVM.GenLLVM import GenLLVM
 
 
@@ -23,7 +23,9 @@ class TestGenLLVM(unittest.TestCase):
         Resets the test method by deleting the input file that was used
         :return:
         """
-        self.input_file.unlink()
+        self.input_file.close()
+        Path("test-input.txt").unlink()
+
         llvm_dir = Path("./llvmDir")
         for file in llvm_dir.iterdir():
             file.unlink()
@@ -32,7 +34,7 @@ class TestGenLLVM(unittest.TestCase):
     def test_empty_input(self):
         """
         Tests what happens if the input file that should contain the names of c files to compile
-        is empty. A successful test will produce nothing.
+        is empty. A successful test will produce nothing with no errora.
         :return:
         """
         GenLLVM.genLLVM("./test-input.txt", "./llvmDir/")
@@ -47,8 +49,12 @@ class TestGenLLVM(unittest.TestCase):
         self.input_file.write("./cDir/example.c\n")
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir/")
-        self.assertTrue(len(os.listdir("./llvmDir")) == 1, "C Directory has too little or too many files." +
-                        str(len(os.listdir("./llvmDir"))))
+
+        filesmade = Path("./llvmDir").iterdir()
+        opt_file = next(filesmade)
+        unopt_file = next(filesmade)
+        self.assertTrue(opt_file.match("llvmDir/example-opt.ll"), "Correct op file not made. " + str(opt_file))
+        self.assertTrue(unopt_file.match("llvmDir/example-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
 
     def test_output_folder_dne(self):
         """
@@ -60,15 +66,31 @@ class TestGenLLVM(unittest.TestCase):
         self.input_file.write("./cDir/example2.c\n")
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir2/")
-        self.assertTrue(len(os.listdir("./llvmDir2")) == 2, "C Directory has too little or too many files."
-                        + str(len(os.listdir("./llvmDir"))))
+
+        filesMade = Path("./llvmDir2").iterdir()
+        opt_file = next(filesMade)
+        unopt_file = next(filesMade)
+        opt_file2 = next(filesMade)
+        unopt_file2 = next(filesMade)
+
+        self.assertTrue(opt_file.match("llvmDir2/example-opt.ll"), "Correct op file not made. " + str(opt_file))
+        self.assertTrue(unopt_file.match("llvmDir2/example-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
+        self.assertTrue(opt_file2.match("llvmDir2/example2-opt.ll"), "Correct op file not made. " + str(opt_file2))
+        self.assertTrue(unopt_file2.match("llvmDir2/example2-unopt.ll"), "Correct unopy file not made. " + str(unopt_file2))
 
     def test_c_file_dne(self):
         """
-        tests if the input file contains a c file that doesn't exist. Should throw an exception
+        tests if the input file contains a file that doesn't exist. Should throw an exception
         (Which exception?)
         :return:
         """
+        self.input_file.write("./cDir/example.c\n")
+        self.input_file.write("./cDir/example2.c\n")
+        self.input_file.write("./cDir/example3.c\n")
+        self.input_file.flush()
+
+        with self.assertRaises(CalledProcessError):
+            GenLLVM.genLLVM("test-input.txt", "./llvmDir2/")
 
     def test_input_file_dne(self):
         """
