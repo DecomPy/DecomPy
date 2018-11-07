@@ -1,7 +1,7 @@
 import os
 import time
 import unittest
-from DataGathering.GitHubScraper import GitHubScraper
+from decompy.DataGathering.GitHubScraper import GitHubScraper
 import shutil
 
 
