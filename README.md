@@ -2,9 +2,30 @@
 SER 401 Team 8- Adaptive Machine Learning Decompiler
 
 ### Prerequisites
-This project is intended to run on Ubuntu 16.04
-It should run in Windows Ubuntu WSL for those using Windows.
-In order to run this project, you will need to install:
+* This project is intended to run on Ubuntu 16.04
+* It should run in Windows Ubuntu WSL for those using Windows.
+* In order to run this project, it is highly recommended to create a virtual environment, either through `Anaconda` or `python3 virtualenv`.
+* You must have Python3.6 installed as your environment.
+
+#####Anaconda Environment
+If you're using`Anaconda` (make sure it's in your path environment variables), it is recommended to follow these steps:
+```
+conda create -n conda_decompy python=3.6.7 anaconda
+
+```
+
+As always, to remove the environment, you can do `conda env remove --name conda_decompy`
+to remove the environment.
+
+#####Python3 Environment
+If you're using `python3 virtualenv` with python3.6, you can do the following:
+```
+virtualenv -p python3.6 venv_decompy
+source venv_decompy/bin/activate
+pip install -r requirements.txt
+```
+As always, to remove the virtualenv, you can `deactivate` if you're in the environment then `rm -r venv_decompy/`
+
 
 The following python packages:
 ```
