@@ -1,5 +1,5 @@
 import unittest
-import filter_c_files.filter_c_file as fc
+import decompy.filtercfiles.filter_c_file as fc
 
 
 class FilterCTest(unittest.TestCase):
@@ -12,8 +12,8 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = fc.FilterC()
-        self.fail_file = "tests/test_filter_c_files/files/binary_search_tree.c"
-        self.pass_file = "tests/test_filter_c_files/files/fibonacciSearch.c"
+        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search_tree.c"
+        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonacciSearch.c"
 
     def test_max_bytes(self):
         """
