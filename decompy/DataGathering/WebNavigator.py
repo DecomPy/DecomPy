@@ -142,10 +142,10 @@ class WebNavigator:
             localLinks = WebNavigator.limitDomain(absLinks, domain)
         return localLinks
 
+
 if __name__ == "__main__":
     print(WebNavigator.getAbsoluteLinksFromPage("https://github.com/DecomPy/DecomPy"))
-    #print("WebNavigator does nothing in its main")
+    # print("WebNavigator does nothing in its main")
     # print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
     # WebNavigator.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",
     #                                           "https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c"])
-
