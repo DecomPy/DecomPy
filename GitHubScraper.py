@@ -168,15 +168,20 @@ class GitHubScraper(WebNavigator):
         rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in them, because these URLs lead to pages with the content of the file
         rawLinks = [i for rawLinksSub in rawLinks for i in rawLinksSub]  # Flatten a list of lists into a list
 
-        # Threading is used here because each download takes about 0.5 seconds.
+        # Threading is used here because each download takes about 0.5 seconds. Parallel downloads will increase throughput
+        if GitHubScraper.TIMING:
+            GitHubScraper.TIMER = \
+                time.time()
         threads = [None] * len(rawLinks)
         GitHubScraper.pageContents = [None] * len(rawLinks)
         for i in range(len(threads)):
             threads[i] = threading.Thread(target=GitHubScraper.__getContent, args=(rawLinks[i], i))
             threads[i].start()
-
         for i in range(len(threads)):
             threads[i].join(5)
+        if GitHubScraper.TIMING:
+            print("Time to download content:",
+                  time.time() - GitHubScraper.TIMER)
 
         content = GitHubScraper.pageContents
         returnList = []
