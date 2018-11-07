@@ -8,11 +8,16 @@ SER 401 Team 8- Adaptive Machine Learning Decompiler
 * You must have Python3.6 installed as your environment.
 
 #####Anaconda Environment
-If you're using`Anaconda` (make sure it's in your path environment variables), it is recommended to follow these steps:
+If you're using `Anaconda` (make sure it's in your path environment variables), it is recommended to follow these steps:
 ```
 conda create -n conda_decompy python=3.6.7 anaconda
-
+conda activate conda_decompy
+pip install -r requirements.txt
 ```
+If you prefer a more anaconda way to install you can do
+`while read requirement; do conda install --yes $requirement; done < requirements.txt` instead of `pip install -r requirements.txt`
+
+To activate: `conda activate conda_decompy` and to deactivate use `conda deactivate`
 
 As always, to remove the environment, you can do `conda env remove --name conda_decompy`
 to remove the environment.
@@ -27,15 +32,8 @@ pip install -r requirements.txt
 As always, to remove the virtualenv, you can `deactivate` if you're in the environment then `rm -r venv_decompy/`
 
 
-The following python packages:
-```
-numpy 1.15.3
-tensorflow 1.11.0
-Sphinx 1.8.1
-tensorboard 1.12.0
-```
-
-and the following apt packages:
+####Ubuntu 16.04 dependency installation
+apt packages:
 ```
 llvm 1:6.0-41~exp5~ubuntu1
 ```
@@ -62,9 +60,4 @@ apt install llvm
 
 # Recommended:
 apt install -y cmake clang gdb
-
-# Install python libraries
-# (note tensorflow depends on numpy and tensorboard and they will be resolved)
-pip install tensorflow==1.11.0
-pip install sphinx==1.8.1
 ```
