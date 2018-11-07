@@ -113,9 +113,6 @@ class FilterC:
             with open(file) as f:
                 # iterate line by line
                 for line in f:
-                    print("whitelist", whitelisted)
-                    print("whitelisted", FilterC.check_headers(line, whitelisted))
-                    print("blacklisted", FilterC.check_blacklisted_words(line, blacklisted))
 
                     # must pass our testing from above.
                     if not FilterC.check_headers(line, whitelisted) or FilterC.check_blacklisted_words(line, blacklisted):
