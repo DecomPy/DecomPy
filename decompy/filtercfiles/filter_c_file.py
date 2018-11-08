@@ -164,18 +164,19 @@ class FilterC:
                     for basename in files:
                         # unfiltered name
                         unfiltered_path = root + "/" + basename
-                        # checks for valid data
+                        # replace 'unfiltered' with 'filtered' and move
+
+                        # we do this to make sure the file name itself doesn't have 'filter' in it, and only replaces 1
+                        filtered = replace_num_occurrences(root, unfilt_path_name, filt_path_name, 1)
+                        # check to make sure filter path exists, otherwise create it
+                        if not os.path.exists(filtered):
+                            # otherwise make it
+                            os.makedirs(filtered)
+
+                        # checks for valid data, then moves.
                         if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):
-                            # replace 'unfiltered' with 'filtered' and move
-                            # we do this to make sure the file name itself doesn't have 'filter' in it
-                            filtered = replace_num_occurrences(root, unfilt_path_name, filt_path_name, 1)
                             # filtered filename
                             filtered_path = filtered + "/" + basename
-
-                            # check to make sure path exists
-                            if not os.path.exists(filtered):
-                                # otherwise make it
-                                os.makedirs(filtered)
 
                             # now we can move the file to the filtered directory
                             shutil.move(unfiltered_path, filtered_path)
