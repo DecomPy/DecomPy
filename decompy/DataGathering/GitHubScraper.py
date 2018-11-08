@@ -47,6 +47,43 @@ class GitHubScraper(WebNavigator):
     sourceFiles = []    # Used for multithreading in __getFileURLSFromGitRepo
 
     @staticmethod
+    def __getFileURLSFromGitHubRepo(url):
+        content = GitHubScraper.getContent(url)
+        links = GitHubScraper.getLinks(content)
+        # The following block removes links that don't need to be followed
+        linksToRemove = []
+        for link in links:
+            if "/blob/" in link:
+                continue
+            if "master" in link.split("/"):
+                continue
+            linksToRemove.append(link)
+        for link in linksToRemove:
+            links.remove(link)
+
+        absLinks = GitHubScraper.getAbsolute(url, links)
+        for link in absLinks:
+            for subURL in GitHubScraper.subURLs:
+                if subURL in link:
+                    if "#" in link.split("/")[-1]:  # filters URLs that are the same as other URLs
+                        continue
+                    if "commits" in link.split("/"):  # filters files that are not in main
+                        continue
+                    if "/blob/" in link:  # /blob/ is a marker for files
+                        if link in GitHubScraper.sourceFiles:
+                            continue
+                        if ".c" not in link.split("/")[-1]:
+                            continue
+                        if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
+                            GitHubScraper.sourceFiles.append((link.split("/")[-1], link))
+                    else:
+                        if link in GitHubScraper.subFolders:
+                            continue
+                        if "master" in link.split("/"):
+                            GitHubScraper.subFolders.append(link)
+                            GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
+
+    @staticmethod
     def getFileURLSFromGitHubRepo(repoURL):
         """
         Finds and returns a list of the absolute URLs of all the files
@@ -62,42 +99,15 @@ class GitHubScraper(WebNavigator):
         counter = 0
 
         while counter <= len(GitHubScraper.subFolders):
-            url = GitHubScraper.subFolders[counter]
-            content = GitHubScraper.getContent(url)
-            links = GitHubScraper.getLinks(content)
-            counter = counter + 1
-            # The following block removes links that don't need to be followed
-            linksToRemove = []
-            for link in links:
-                if "/blob/" in link:
-                    continue
-                if "master" in link.split("/"):
-                    continue
-                linksToRemove.append(link)
-            for link in linksToRemove:
-                links.remove(link)
-
-            absLinks = GitHubScraper.getAbsolute(url, links)
-            for link in absLinks:
-                for subURL in GitHubScraper.subURLs:
-                    if subURL in link:
-                        if "#" in link.split("/")[-1]:  # filters URLs that are the same as other URLs
-                            continue
-                        if "commits" in link.split("/"):  # filters files that are not in main
-                            continue
-                        if "/blob/" in link:  # /blob/ is a marker for files
-                            if link in GitHubScraper.sourceFiles:
-                                continue
-                            if ".c" not in link.split("/")[-1]:
-                                continue
-                            if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                                GitHubScraper.sourceFiles.append((link.split("/")[-1], link))
-                        else:
-                            if link in GitHubScraper.subFolders:
-                                continue
-                            if "master" in link.split("/"):
-                                GitHubScraper.subFolders.append(link)
-                                GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
+            # Threading is used here because each download takes about 0.5 seconds.
+            tempRange  = range(counter, len(GitHubScraper.subFolders))
+            for i in tempRange:
+                thread = threading.Thread(target=GitHubScraper.__getFileURLSFromGitHubRepo,
+                                          args=(GitHubScraper.subFolders[counter],))
+                counter = counter + 1
+                thread.start()
+            for i in tempRange:
+                thread.join(5)
             if counter >= len(GitHubScraper.subFolders):
                 break
 
@@ -223,6 +233,7 @@ class GitHubScraper(WebNavigator):
 
 
 if __name__ == "__main__":
+    timer = time.time()
     # fileUrlTuples = GitHubScraper.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")
     # print("filename/URL pairs: ", fileUrlTuples)
     # fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
@@ -230,4 +241,4 @@ if __name__ == "__main__":
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
     GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-
+    print(time.time() - timer)
