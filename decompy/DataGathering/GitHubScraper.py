@@ -38,13 +38,14 @@ import threading
 class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
-    DEBUG = True   # Whether to print debug info or not
+    DEBUG = False   # Whether to print debug info or not
     TIMING = False  # Whether to print timing info or not
     TIMER = 0       # Used if TIMING is enabled
     pageContents = []   # Used for multithreading in __getContent
     subURLs = []        # Used for multithreading in __getFileURLSFromGitRepo
     subFolders = []     # Used for multithreading in __getFileURLSFromGitRepo
     sourceFiles = []    # Used for multithreading in __getFileURLSFromGitRepo
+    pageLinks = []       # Used for multithreading in __getAbsoluteLinksFromPage
 
     @staticmethod
     def __getFileURLSFromGitHubRepo(url):
@@ -107,7 +108,7 @@ class GitHubScraper(WebNavigator):
         while counter <= len(GitHubScraper.subFolders):
             # Threading is used here because each download takes about 0.5 seconds.
             tempRange  = range(counter, len(GitHubScraper.subFolders))
-            if GitHubScraper:
+            if GitHubScraper.DEBUG:
                 threadSpawningCounter = threadSpawningCounter + 1
                 print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
                       threadSpawningCounter)
@@ -119,6 +120,7 @@ class GitHubScraper(WebNavigator):
                                           args=(GitHubScraper.subFolders[counter],))
                 counter = counter + 1
                 thread.start()
+                time.sleep(0.01)  # Wait some time between new threads so that github server doesn't block me
             for i in tempRange:
                 thread.join(5)
             if counter >= len(GitHubScraper.subFolders):
@@ -149,6 +151,19 @@ class GitHubScraper(WebNavigator):
         GitHubScraper.pageContents[index] = pageSource
 
     @staticmethod
+    def __getAbsoluteLinksFromPage(link):
+        """
+        Finds absolute URLs within a page. This function is used from getContentFromGitHubFileURLs via threading
+
+        :param link: the absolute link to resolve
+        :return: set of absolute URLs within a page
+        """
+        content = WebNavigator.getContent(link)
+        links = WebNavigator.getLinks(content)
+        absLinks = WebNavigator.getAbsolute(link, links)
+        GitHubScraper.pageLinks.append(absLinks)
+
+    @staticmethod
     def getContentFromGitHubFileURLs(fileUrlTuples):
         """
         Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs that are not GitHub file URLs
@@ -162,11 +177,20 @@ class GitHubScraper(WebNavigator):
         if GitHubScraper.DEBUG:
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: urls:", urls);
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting absolute URLS on page with the content we want")
-        #TODO: Refactor the next line to utlize multithreading
-        pageLinks = [GitHubScraper.getAbsoluteLinksFromPage(i, "github.com") for i in urls]  # Get absolute links on page for a .c file
+
+        threads = [None] * len(urls)
+        GitHubScraper.pageLinks = []    # Clear out list in case there are still things in it
+        for i in range(len(urls)):
+            threads[i] = threading.Thread(target=GitHubScraper.__getAbsoluteLinksFromPage, args=(urls[i],))
+            threads[i].start()
+            time.sleep(0.01)  # Wait some time between new threads so that github server doesn't block me
+            # GitHubScraper.__getAbsoluteLinksFromPage(urls[i])
+        for i in range(len(urls)):
+            threads[i].join(5)
+
         if GitHubScraper.DEBUG:
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS")
-        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in
+        rawLinks = [[j for j in i if "raw" in j] for i in GitHubScraper.pageLinks]    # Filter out only URLs that have "raw" in
         # them, because these URLs lead to pages with the content of the file
         if GitHubScraper.DEBUG:
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Flattening list of URLs")
@@ -174,15 +198,16 @@ class GitHubScraper(WebNavigator):
 
         # Threading is used here because each download takes about 0.5 seconds. Parallel downloads will increase throughput
         if GitHubScraper.TIMING:
-            GitHubScraper.TIMER = \
-                time.time()
+            GitHubScraper.TIMER = time.time()
         threads = [None] * len(rawLinks)
         GitHubScraper.pageContents = [None] * len(rawLinks)
         for i in range(len(threads)):
-            print("GITHUBSCRAPER: getContentFromGitHubRepoFileURLS: created thread", i, "to download content from ",
+            if GitHubScraper.DEBUG:
+                print("GITHUBSCRAPER: getContentFromGitHubRepoFileURLS: created thread", i, "to download content from ",
                   rawLinks[i])
             threads[i] = threading.Thread(target=GitHubScraper.__getContent, args=(rawLinks[i], i))
             threads[i].start()
+            time.sleep(0.01) # Wait some time between new threads so that github server doesn't block me
         for i in range(len(threads)):
             threads[i].join(5)
         if GitHubScraper.TIMING:
@@ -200,7 +225,7 @@ class GitHubScraper(WebNavigator):
         if GitHubScraper.DEBUG:
             # print(fileUrlTuples)
             print("urls:", urls)
-            print("pagelinks:", pageLinks)
+            print("pagelinks:", GitHubScraper.pageLinks)
             print("rawLinks: ", rawLinks)
             # for i in content:
             #     print(i)
