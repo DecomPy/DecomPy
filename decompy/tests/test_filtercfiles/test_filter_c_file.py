@@ -1,6 +1,7 @@
 import unittest
 import decompy.filtercfiles.filter_c_file as fc
 import os
+import shutil
 
 
 class FilterCTest(unittest.TestCase):
@@ -120,7 +121,39 @@ class FilterCTest(unittest.TestCase):
 
         # use different byte size with headers
         self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 4000, 21, test_headers2))
-        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, 0, test_headers2))
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, 1, test_headers2))
+
+    def test_valid_folder(self):
+        """
+        tests reading a folder and filtering/unfiltering the files.
+        :return: bool assert
+        :rtype: assert
+        """
+
+        # get length before
+        list1 = os.listdir("decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered")
+        number_fib_files1 = len(list1)
+        list3 = os.listdir("decompy/tests/test_filtercfiles/files/binary_search/unfiltered")
+        number_bin_files1 = len(list3)
+
+        # run valid folder check
+        self.FilterC.check_valid_folder(self.folder)
+
+        # get length after
+        list2 = os.listdir("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered")
+        number_fib_files2 = len(list2)
+        list4 = os.listdir("decompy/tests/test_filtercfiles/files/binary_search/filtered")
+        number_bin_files2 = len(list4)
+
+        # assert assumptions
+        self.assertTrue(number_fib_files1 == number_fib_files2)
+        self.assertFalse(number_bin_files1 == number_bin_files2)
+
+        # move back when done.
+        shutil.move("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered/fibonacciSearch.c",
+                    "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c")
+        shutil.move("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered/test2.c",
+                    "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/test2.c")
 
 
 if __name__ == '__main__':
