@@ -54,28 +54,27 @@ class GitHubScraper(WebNavigator):
         """
 
         subURLs = ["/master/"]
-        subFolders = []
+        subFolders = [repoURL]
         sourceFiles = []
         counter = 0
 
-        url = repoURL
-        content = GitHubScraper.getContent(url)
-        links = GitHubScraper.getLinks(content)
-
-        # The following block removes links that don't need to be followed
-        linksToRemove = []
-        for link in links:
-            if "/blob/" in link:
-                continue
-            if "master" in link.split("/"):
-                continue
-            linksToRemove.append(link)
-        for link in linksToRemove:
-            links.remove(link)
-
-        absLinks = GitHubScraper.getAbsolute(url, links)
-
         while counter <= len(subFolders):
+            url = subFolders[counter]
+            content = GitHubScraper.getContent(url)
+            links = GitHubScraper.getLinks(content)
+            counter = counter + 1
+            # The following block removes links that don't need to be followed
+            linksToRemove = []
+            for link in links:
+                if "/blob/" in link:
+                    continue
+                if "master" in link.split("/"):
+                    continue
+                linksToRemove.append(link)
+            for link in linksToRemove:
+                links.remove(link)
+
+            absLinks = GitHubScraper.getAbsolute(url, links)
             for link in absLinks:
                 for subURL in subURLs:
                     if subURL in link:
@@ -98,38 +97,6 @@ class GitHubScraper(WebNavigator):
                                 subURLs.append("/" + link.split("/")[-1] + "/")
             if counter >= len(subFolders):
                 break
-
-            url = subFolders[counter]
-            if GitHubScraper.TIMING:
-                GitHubScraper.TIMER = time.time()
-            content = GitHubScraper.getContent(url)
-
-            if GitHubScraper.TIMING:
-                print("GITHUBSCRAPER: Time to get content from", url, ":", time.time() - GitHubScraper.TIMER)
-                GitHubScraper.TIMER = time.time()
-
-            links = GitHubScraper.getLinks(content)
-
-            if GitHubScraper.TIMING:
-                print("GITHUBSCRAPER: Time to get links from content:", time.time() - GitHubScraper.TIMER)
-                GitHubScraper.TIMER = time.time()
-
-            # The following block removes links that don't need to be followed
-            linksToRemove = []
-            for link in links:
-                if "/blob/" in link:
-                    continue
-                if "master" in link.split("/"):
-                    continue
-                linksToRemove.append(link)
-            for link in linksToRemove:
-                links.remove(link)
-
-            if GitHubScraper.TIMING:
-                print("GITHUBSCRAPER: Time to get useful links from links:", time.time() - GitHubScraper.TIMER)
-
-            absLinks = GitHubScraper.getAbsolute(url, links)
-            counter = counter + 1
 
         return list(set(sourceFiles))
 
