@@ -48,6 +48,11 @@ class GitHubScraper(WebNavigator):
 
     @staticmethod
     def __getFileURLSFromGitHubRepo(url):
+        """
+        Function for multithreaded web scraping. Called by getFileURLSFromGitHubRepo. Not recommended for outside use
+        :param url: url of GitHub Repo or a folder within that repo
+        :return: Nothing
+        """
         content = GitHubScraper.getContent(url)
         links = GitHubScraper.getLinks(content)
         # The following block removes links that don't need to be followed
