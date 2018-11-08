@@ -41,7 +41,10 @@ class GitHubScraper(WebNavigator):
     DEBUG = False   # Whether to print debug info or not
     TIMING = False  # Whether to print timing info or not
     TIMER = 0       # Used if TIMING is enabled
-    pageContents = []    # Used for multithreading.
+    pageContents = []   # Used for multithreading in __getContent
+    subURLs = []        # Used for multithreading in __getFileURLSFromGitRepo
+    subFolders = []     # Used for multithreading in __getFileURLSFromGitRepo
+    sourceFiles = []    # Used for multithreading in __getFileURLSFromGitRepo
 
     @staticmethod
     def getFileURLSFromGitHubRepo(repoURL):
@@ -53,13 +56,13 @@ class GitHubScraper(WebNavigator):
         :return: a list of tuples of file names and absolute URLs within the GitHub repo
         """
 
-        subURLs = ["/master/"]
-        subFolders = [repoURL]
-        sourceFiles = []
+        GitHubScraper.subURLs = ["/master/"]
+        GitHubScraper.subFolders = [repoURL]
+        GitHubScraper.sourceFiles = []
         counter = 0
 
-        while counter <= len(subFolders):
-            url = subFolders[counter]
+        while counter <= len(GitHubScraper.subFolders):
+            url = GitHubScraper.subFolders[counter]
             content = GitHubScraper.getContent(url)
             links = GitHubScraper.getLinks(content)
             counter = counter + 1
@@ -76,29 +79,29 @@ class GitHubScraper(WebNavigator):
 
             absLinks = GitHubScraper.getAbsolute(url, links)
             for link in absLinks:
-                for subURL in subURLs:
+                for subURL in GitHubScraper.subURLs:
                     if subURL in link:
                         if "#" in link.split("/")[-1]:  # filters URLs that are the same as other URLs
                             continue
                         if "commits" in link.split("/"):  # filters files that are not in main
                             continue
                         if "/blob/" in link:  # /blob/ is a marker for files
-                            if link in sourceFiles:
+                            if link in GitHubScraper.sourceFiles:
                                 continue
                             if ".c" not in link.split("/")[-1]:
                                 continue
                             if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                                sourceFiles.append((link.split("/")[-1], link))
+                                GitHubScraper.sourceFiles.append((link.split("/")[-1], link))
                         else:
-                            if link in subFolders:
+                            if link in GitHubScraper.subFolders:
                                 continue
                             if "master" in link.split("/"):
-                                subFolders.append(link)
-                                subURLs.append("/" + link.split("/")[-1] + "/")
-            if counter >= len(subFolders):
+                                GitHubScraper.subFolders.append(link)
+                                GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
+            if counter >= len(GitHubScraper.subFolders):
                 break
 
-        return list(set(sourceFiles))
+        return list(set(GitHubScraper.sourceFiles))
 
     @staticmethod
     def __getContent(link, index):
