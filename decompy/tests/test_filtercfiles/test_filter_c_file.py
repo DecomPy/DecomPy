@@ -1,5 +1,6 @@
 import unittest
 import decompy.filtercfiles.filter_c_file as fc
+import os
 
 
 class FilterCTest(unittest.TestCase):
@@ -12,25 +13,26 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = fc.FilterC()
-        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search_tree.c"
-        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonacciSearch.c"
+        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree.c"
+        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c"
+        self.folder = "decompy/tests/test_filtercfiles/files/"  # actual folder "decompy/data/Repositories"
 
-    def test_max_bytes(self):
+    def test_bytes(self):
         """
         tests out the max byte functionality from the filter_c_file class.
         :return: bool assert
         """
         # test the default value with a pass file
-        self.assertTrue(self.FilterC.check_max_bytes(self.pass_file))
+        self.assertTrue(self.FilterC.check_byte_size(self.pass_file))
 
         # test the default value with a fail file
-        self.assertFalse(self.FilterC.check_max_bytes(self.fail_file))
+        self.assertFalse(self.FilterC.check_byte_size(self.fail_file))
 
         # test the file with a given value
-        self.assertTrue(self.FilterC.check_max_bytes(self.pass_file, 6000))
+        self.assertTrue(self.FilterC.check_byte_size(self.pass_file, 6000))
 
         # test the file with a given value that will fail
-        self.assertFalse(self.FilterC.check_max_bytes(self.fail_file, 1))
+        self.assertFalse(self.FilterC.check_byte_size(self.fail_file, 1))
 
     def test_blacklisted_words(self):
         """
@@ -64,6 +66,7 @@ class FilterCTest(unittest.TestCase):
         test_headers = ("assert.h", "string.h")
 
         # includes comments and whitespace
+        self.assertTrue(self.FilterC.check_headers(""))
         self.assertTrue(self.FilterC.check_headers(" "))
         self.assertTrue(self.FilterC.check_headers(" //hi"))
         self.assertTrue(self.FilterC.check_headers("//hi"))
@@ -106,18 +109,18 @@ class FilterCTest(unittest.TestCase):
         self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 10))
 
         # use whitelisted headers with my headers
-        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 7000, test_headers2))
+        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 7000, 21, test_headers2))
 
         # fails because it does not contain the tested headers
-        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 9000, test_headers))
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 9000, 21, test_headers))
 
         # use blacklisted words with my headers
-        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 7000, test_headers2, test_blacklist_fail))
-        self.assertFalse(self.FilterC.check_valid_data(self.fail_file, 9000, test_headers, test_blacklist_fail))
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 7000, 21, test_headers2, test_blacklist_fail))
+        self.assertFalse(self.FilterC.check_valid_data(self.fail_file, 9000, 21, test_headers, test_blacklist_fail))
 
         # use different byte size with headers
-        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 4000, test_headers2))
-        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, test_headers2))
+        self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 4000, 21, test_headers2))
+        self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, 0, test_headers2))
 
 
 if __name__ == '__main__':

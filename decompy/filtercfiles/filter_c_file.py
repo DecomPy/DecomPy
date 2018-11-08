@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 
 
 class FilterC:
@@ -12,12 +13,13 @@ class FilterC:
     # sets current file directory
     script_dir = os.path.dirname(os.path.realpath('__file__'))
 
-    # set maximum bytes of 7000
-    MAX_BYTES = 7000
+    # set maximum bytes of 8000, it's around 400 lines of code (including comments and whitespace)
+    MAX_BYTES = 8000
+    MIN_BYTES = 21
     # questionable ones: complex, fenv, setjmp, stdalign, stdarg, stdbool, tgmath, uchar
-    C_WHITELIST_HEADERS = ("assert.h", "complex.h", "ctype.h", "errno.h", "fenv.h", "float.h", "inttypes.h",
-                           "limits.h", "locale.h", "math.h", "signal.h", "stddef.h", "stdint.h", "stdio.h",
-                           "stdlib.h", "stdnoreturn.h", "string.h", "tgmath.h", "time.h", "wchar.h", "wctype.h")
+    C_WHITELIST_HEADERS = ("assert", "complex", "ctype", "errno", "fenv", "float", "inttypes",
+                           "limits", "locale", "math", "signal", "stddef", "stdint", "stdio",
+                           "stdlib", "stdnoreturn", "string", "tgmath", "time", "wchar", "wctype")
     # bad ones: stdatomic, threads (ruben wants to see threads, malloc, realloc, calloc, and free.
     C_BLACKLIST = ("file", "malloc", "realloc", "calloc", "free")
 
@@ -29,21 +31,24 @@ class FilterC:
         """
 
     @staticmethod
-    def check_max_bytes(file, preferred_size=MAX_BYTES):
+    def check_byte_size(file, preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES):
         """
         Finds the file size and tests it against the preferred_size in bytes. The default is 7000 bytes.
 
         :param file: the file path to test against
         :type: str
-        :param preferred_size: the preferred size to search for, defaults to 7000.
+        :param preferred_max_size: the preferred size to search for, defaults to 7000.
+        :type: int
+        :param preferred_min_size: the preferred minimum size to search for, defaults to 21 (for `int main(){return 0;}`)
         :type: int
         :return: boolean
         """
 
         # combine to get the correct file
-        file = os.path.join(FilterC.script_dir, file)
+        # file = os.path.join(FilterC.script_dir, file)
+        file_size = os.stat(file).st_size
 
-        return preferred_size > os.stat(file).st_size
+        return preferred_max_size > file_size >= preferred_min_size
 
     @staticmethod
     def check_blacklisted_words(line, blacklisted=C_BLACKLIST):
@@ -51,7 +56,7 @@ class FilterC:
         Lowercases the line to evaluate, and returns false if any blacklisted word is found.
         :param: the string from a file.
         :type: str
-        :param: the blacklisted array, defaults to
+        :param: the blacklisted array.
         :type: str arr
         :return: boolean
         """
@@ -85,27 +90,28 @@ class FilterC:
         return True
 
     @staticmethod
-    def check_valid_data(file, preferred_size=MAX_BYTES, whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
+    def check_valid_data(file, preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES, whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
         Runs validation testing on a given file string. This includes the correct byte size,
         predetermined whitelisted headers, and predetermined blacklisted headers.
 
         :param file: the file the user wants to validate.
         :type: str
-        :param preferred_size:
+        :param preferred_max_size: the max byte size the user wants
         :type: int
-        :param whitelisted:
+        :param preferred_min_size: the min byte size the user wants
+        :param whitelisted: the whitelisted headers to search for.
         :type: tuple or array
-        :param blacklisted:
+        :param blacklisted: the blacklisted words to exclude.
         :type: tuple or array
         :return: bool
         """
 
         # combine to get the correct file
-        file = os.path.join(FilterC.script_dir, file)
+        # file = os.path.join(FilterC.script_dir, file)
 
         # check file size
-        if preferred_size < os.stat(file).st_size:
+        if not FilterC.check_byte_size(file, preferred_max_size, preferred_min_size):
             return False
 
         try:
@@ -113,16 +119,12 @@ class FilterC:
             with open(file) as f:
                 # iterate line by line
                 for line in f:
-
                     # must pass our testing from above.
                     if not FilterC.check_headers(line, whitelisted) or FilterC.check_blacklisted_words(line, blacklisted):
-                        print("fail")
                         return False
             return True
         except IOError as e:
             print('IOError', str(e))
             return False
-    
-
 
 
