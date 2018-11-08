@@ -7,8 +7,31 @@ SER 401 Team 8- Adaptive Machine Learning Decompiler
 * In order to run this project, it is highly recommended to create a virtual environment, either through `Anaconda` or `python3 virtualenv`.
 * You must have Python3.6 installed as your environment.
 
-#####Anaconda Environment
-If you're using `Anaconda` (make sure it's in your path environment variables), it is recommended to follow these steps:
+####Python3 Environment
+If you're using `python3 virtualenv` with python3.6, you can do the following in the **DecomPy root directory**:
+```
+virtualenv -p python3.6 venv_decompy
+source venv_decompy/bin/activate
+pip install -r requirements.txt
+```
+As always, to remove the virtualenv, you can `deactivate` if you're in the environment then `rm -r venv_decompy/`
+
+Another option is an Anaconda environment if you prefer that over Virtualenv.
+####Anaconda Environment
+If you're using `Anaconda` (must be in path environment variables), it is recommended to follow these steps:
+* Install Anaconda (skip this part if you already have it installed)
+
+```
+cd /tmp
+curl -O https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
+sha256sum Anaconda3-5.0.1-Linux-x86_64.sh
+bash Anaconda3-5.0.1-Linux-x86_64.sh
+```
+More info can be found at: https://www.digitalocean.com/community/tutorials/how-to-install-the-anaconda-python-distribution-on-ubuntu-16-04
+and https://conda.io/docs/user-guide/install/linux.html#install-linux-silent
+
+* Create an Anaconda Environment
+
 ```
 conda create -n conda_decompy python=3.6.7 anaconda
 source activate conda_decompy
@@ -22,14 +45,6 @@ To activate: `source activate conda_decompy` and to deactivate use `source deact
 As always, to remove the environment, you can do `conda env remove --name conda_decompy`
 to remove the environment.
 
-#####Python3 Environment
-If you're using `python3 virtualenv` with python3.6, you can do the following:
-```
-virtualenv -p python3.6 venv_decompy
-source venv_decompy/bin/activate
-pip install -r requirements.txt
-```
-As always, to remove the virtualenv, you can `deactivate` if you're in the environment then `rm -r venv_decompy/`
 
 
 ####Ubuntu 16.04 dependency installation
