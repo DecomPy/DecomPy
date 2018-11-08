@@ -299,4 +299,5 @@ if __name__ == "__main__":
     # GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
     GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming")
+    GitHubScraper.downloadAllFiles("https://github.com/jbush001/PIC-Programmer")
     print(time.time() - timer)
