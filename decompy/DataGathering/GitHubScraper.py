@@ -38,7 +38,7 @@ import threading
 class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
-    DEBUG = False   # Whether to print debug info or not
+    DEBUG = True   # Whether to print debug info or not
     TIMING = False  # Whether to print timing info or not
     TIMER = 0       # Used if TIMING is enabled
     pageContents = []   # Used for multithreading in __getContent
@@ -102,11 +102,19 @@ class GitHubScraper(WebNavigator):
         GitHubScraper.subFolders = [repoURL]
         GitHubScraper.sourceFiles = []
         counter = 0
+        threadSpawningCounter = 0
 
         while counter <= len(GitHubScraper.subFolders):
             # Threading is used here because each download takes about 0.5 seconds.
             tempRange  = range(counter, len(GitHubScraper.subFolders))
+            if GitHubScraper:
+                threadSpawningCounter = threadSpawningCounter + 1
+                print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
+                      threadSpawningCounter)
             for i in tempRange:
+                if GitHubScraper.DEBUG:
+                    print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Thread spawned to look at url",
+                          GitHubScraper.subFolders[i])
                 thread = threading.Thread(target=GitHubScraper.__getFileURLSFromGitHubRepo,
                                           args=(GitHubScraper.subFolders[counter],))
                 counter = counter + 1
@@ -143,25 +151,39 @@ class GitHubScraper(WebNavigator):
     @staticmethod
     def getContentFromGitHubFileURLs(fileUrlTuples):
         """
-        Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs are not GitHub file URLs
+        Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs that are not GitHub file URLs
         :param fileUrlTuples: a list of tuples of file names and absolute URLs within the GitHub repo. Get this from getFileURLSFromGitHubRepo
         :return: a list of tuples of file names, file URLs, contents of those files, but NOT actual files. Each tuple in the list is formatted ("name", "url", "content")
         """
 
+        if GitHubScraper.DEBUG:
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting urls from tuples")
         urls = [i[1] for i in fileUrlTuples]
-        pageLinks = [GitHubScraper.getAbsoluteLinksFromPage(i) for i in urls]  # convert relative URLs to absolute URLs
-        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in them, because these URLs lead to pages with the content of the file
+        if GitHubScraper.DEBUG:
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Converting URLS to absolute URLS")
+        #TODO: Refactor the next line to utlize multithreading
+        pageLinks = [GitHubScraper.getAbsoluteLinksFromPage(i, "github.com") for i in urls]  # convert relative URLs to absolute URLs
+        if GitHubScraper.DEBUG:
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS")
+        rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in
+        # them, because these URLs lead to pages with the content of the file
+        if GitHubScraper.DEBUG:
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Flattening list of URLs")
         rawLinks = [i for rawLinksSub in rawLinks for i in rawLinksSub]  # Flatten a list of lists into a list
 
         # Threading is used here because each download takes about 0.5 seconds.
         threads = [None] * len(rawLinks)
         GitHubScraper.pageContents = [None] * len(rawLinks)
         for i in range(len(threads)):
+            print("GITHUBSCRAPER: getContentFromGitHubRepoFileURLS: created thread", i, "to download content from ",
+                  rawLinks[i])
             threads[i] = threading.Thread(target=GitHubScraper.__getContent, args=(rawLinks[i], i))
             threads[i].start()
 
         for i in range(len(threads)):
             threads[i].join(5)
+            print("GITHUBSCRAPER: getContentFromGitHubRepoFileURLS: Joined thread", i)
+
 
         content = GitHubScraper.pageContents
         returnList = []
@@ -171,13 +193,13 @@ class GitHubScraper(WebNavigator):
 
         # Change DEBUG variable to true to get more info
         if GitHubScraper.DEBUG:
-            print(fileUrlTuples)
+            # print(fileUrlTuples)
             print("urls:", urls)
             print("pagelinks:", pageLinks)
             print("rawLinks: ", rawLinks)
-            for i in content:
-                print(i)
-            print("return value ", returnList)
+            # for i in content:
+            #     print(i)
+            # print("return value ", returnList)
 
         return returnList
 
@@ -244,6 +266,7 @@ if __name__ == "__main__":
     # fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
     # print("filename/content pairs: ", fileContentTuples)
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
-    GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
+    # GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
+    GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming")
     print(time.time() - timer)
