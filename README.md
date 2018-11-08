@@ -11,13 +11,13 @@ SER 401 Team 8- Adaptive Machine Learning Decompiler
 If you're using `Anaconda` (make sure it's in your path environment variables), it is recommended to follow these steps:
 ```
 conda create -n conda_decompy python=3.6.7 anaconda
-conda activate conda_decompy
+source activate conda_decompy
 pip install -r requirements.txt
 ```
 If you prefer a more anaconda way to install you can do
 `while read requirement; do conda install --yes $requirement; done < requirements.txt` instead of `pip install -r requirements.txt`
 
-To activate: `conda activate conda_decompy` and to deactivate use `conda deactivate`
+To activate: `source activate conda_decompy` and to deactivate use `source deactivate`
 
 As always, to remove the environment, you can do `conda env remove --name conda_decompy`
 to remove the environment.
