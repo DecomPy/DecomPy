@@ -160,9 +160,10 @@ class GitHubScraper(WebNavigator):
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting urls from tuples")
         urls = [i[1] for i in fileUrlTuples]
         if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Converting URLS to absolute URLS")
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: urls:", urls);
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting absolute URLS on page with the content we want")
         #TODO: Refactor the next line to utlize multithreading
-        pageLinks = [GitHubScraper.getAbsoluteLinksFromPage(i, "github.com") for i in urls]  # convert relative URLs to absolute URLs
+        pageLinks = [GitHubScraper.getAbsoluteLinksFromPage(i, "github.com") for i in urls]  # Get absolute links on page for a .c file
         if GitHubScraper.DEBUG:
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS")
         rawLinks = [[j for j in i if "raw" in j] for i in pageLinks]    # Filter out only URLs that have "raw" in
