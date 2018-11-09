@@ -1,5 +1,6 @@
 import subprocess
 import os
+from pathlib import Path
 
 class GenLLVM:
     """
@@ -59,13 +60,11 @@ class GenLLVM:
         :return:
         """
         file_of_cfiles = open(filepath, 'r')
-        if not os.path.isdir(newlocation):
-            os.makedirs(newlocation)
+        if not Path.isdir(newlocation):
+            Path(newlocation).mkdir()
 
         for cfile in file_of_cfiles:
             cfile = cfile.rstrip()
             GenLLVM._unoptimized(cfile, bashargs, newlocation)
             GenLLVM._optimized(cfile, bashargs, newlocation)
         file_of_cfiles.close()
-
-# GenLLVM.genLLVM("./tests_GenLLVM/test-input.txt", "./tests_GenLLVM/llvmDir/")

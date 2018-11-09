@@ -1,8 +1,3 @@
-import sys
-import os
-p = os.path.abspath(os.path.join(__file__, "../.."))
-sys.path.append(p)
-
 import unittest
 from pathlib import Path
 from subprocess import CalledProcessError
@@ -10,6 +5,16 @@ from decompy.DataGathering.GenLLVM import GenLLVM
 
 
 class TestGenLLVM(unittest.TestCase):
+
+    def setUpClass(self):
+        """
+        Initializes the test method by creating a blank txt file that will be used as input
+        :return:
+        """
+        Path("./llvmDir").mkdir()
+
+    def tearDown(self):
+        Path("./llvmDir").unlink()
 
     def setUp(self):
         """
