@@ -1,1 +1,1 @@
-clang >= 1:6.0-41~exp5~ubuntu1
+clang
