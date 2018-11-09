@@ -1,15 +1,18 @@
-include:
-  - language python
-    compiler:
-      - clang
-    python: 3.6.6
-
+language: python
 cache: pip
+python:
+  - "3.6"
+
+before_install:
+  - sudo apt update
+  - cat travis-apt-requirements.txt | xargs sudo apt install
 
 # command to install dependencies
 install:
   - pip install -r requirements.txt
 
+
+# add your test scripts here.
 script:
   pytest
 
