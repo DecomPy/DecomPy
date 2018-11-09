@@ -40,14 +40,6 @@ class test_GitHubScraper(unittest.TestCase):
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
-        for root, dirs, files in os.walk("DecomPy_valid_and_compilable_1"):
-            level = root.replace("DecomPy_valid_and_compilable_1", '').count(os.sep)
-            indent = ' ' * 4 * (level)
-            print('{}{}/'.format(indent, os.path.basename(root)))
-            subindent = ' ' * 4 * (level + 1)
-            for f in files:
-                print('{}{}'.format(subindent, f))
-
         # For Windows
         if os.name == "nt":
             with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
@@ -55,7 +47,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -71,7 +63,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -82,7 +74,8 @@ class test_GitHubScraper(unittest.TestCase):
             self.assertTrue(passed)
 
         # Makes sure the directory is always clean
-        shutil.rmtree("DecomPy_valid_and_compilable_1")
+        if os.path.exists("DecomPy_valid_and_compilable_1"):
+            shutil.rmtree("DecomPy_valid_and_compilable_1")
 
     def test_repo_vc_1_download_config_META_append(self):
         """
@@ -93,7 +86,7 @@ class test_GitHubScraper(unittest.TestCase):
         if not os.path.exists("Decompy_valid_and_compilable_1"):
             os.mkdir("DecomPy_valid_and_compilable_1")
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
-            f.write("Text to be appended upon\n")
+            f.write("Text to be appended upon")
 
         GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
 
@@ -104,7 +97,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -120,7 +113,7 @@ class test_GitHubScraper(unittest.TestCase):
                 passed = False
                 line = f.readline()
                 while line:
-                    if "File download timestamp: " in line:
+                    if "File download timestamp:" in line:
                         fileMin = line.split(" ")[-2].split(":")[-2]
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
@@ -158,6 +151,26 @@ class test_GitHubScraper(unittest.TestCase):
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
+
+    @classmethod
+    def setUp(self):
+        """
+        Clean up directory before running any test
+        :return:
+        """
+
+        if os.path.exists("DecomPy_valid_and_compilable_1"):
+            shutil.rmtree("DecomPy_valid_and_compilable_1")
+
+    @classmethod
+    def tearDown(self):
+        """
+        Cleans up directory after running all tests
+        :return: nothing
+        """
+        if os.path.exists("DecomPy_valid_and_compilable_1"):
+            shutil.rmtree("DecomPy_valid_and_compilable_1")
+
 
 if __name__ == '__main__':
     unittest.main()
