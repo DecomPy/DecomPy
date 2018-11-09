@@ -33,7 +33,7 @@ class TestGenLLVM(unittest.TestCase):
         :return:
         """
         self.input_file.close()
-        input_path =  Path("test-input.txt")
+        input_path = Path("test-input.txt")
         if input_path.is_file():
             input_path.unlink()
 
