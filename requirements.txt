@@ -1,5 +1,5 @@
 numpy==1.15.3
-Sphinx==1.8.1
+sphinx_rtd_theme
 tensorflow==1.11.0
 tensorboard==1.11.0
 beautifulsoup4==4.6.3
