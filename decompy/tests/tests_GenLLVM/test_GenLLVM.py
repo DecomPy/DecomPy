@@ -6,7 +6,7 @@ sys.path.append(p)
 import unittest
 from pathlib import Path
 from subprocess import CalledProcessError
-from GenLLVM.GenLLVM import GenLLVM
+from decompy.DataGathering.GenLLVM import GenLLVM
 
 
 class TestGenLLVM(unittest.TestCase):
