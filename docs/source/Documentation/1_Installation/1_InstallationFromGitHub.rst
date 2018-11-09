@@ -1,5 +1,6 @@
-Downloading Decompy
-*******************
+Installation From GitHub
+************************
+
 Decompy is available at our `website
 <http://DecomPy.fun>`_
 or at our `GitHub repo
