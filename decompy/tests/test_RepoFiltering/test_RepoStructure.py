@@ -21,8 +21,8 @@ class test_RepoStructure(unittest.TestCase):
     def test_folder_and_file_generation(self):
         repositories = Path("Repositories")
         repos = [item.name for item in repositories.iterdir() if item.is_dir()]
-        self.assertEqual(repos,
-                         ['10gen-archive-mongo-c-driver-legacy', '21cnbao-training', 'abiggerhammer-hammer',
+        self.assertEqual(set(repos),
+                         {'10gen-archive-mongo-c-driver-legacy', '21cnbao-training', 'abiggerhammer-hammer',
                           'acassen-keepalived', 'aerospike-aerospike-client-c', 'agl-critbit',
                           'Ai-Thinker-Open-GPRS_C_SDK', 'akaedu-c', 'akheron-jansson',
                           'alessandrofrancesconi-gimp-plugin-bimp', 'alexfru-SmallerC', 'aliyun-aliyun-oss-c-sdk',
@@ -94,7 +94,7 @@ class test_RepoStructure(unittest.TestCase):
                           'wolkykim-qlibc', 'wuzhouhui-c_standard_lib', 'xethyrion-c-ipfs', 'Xilinx-qemu', 'xiph-opus',
                           'xiph-speex', 'yaml-libyaml', 'yongboy-c_socket.io_server', 'yunghsianglu-ECE264Assignments',
                           'yusufshakeel-C-Project', 'yuvadm-tiva-c', 'yyang42-moulitest',
-                          'zedshaw-learn-c-the-hard-way-lectures', 'zeromq-czmq', 'zhaozg-lua-openssl']
+                          'zedshaw-learn-c-the-hard-way-lectures', 'zeromq-czmq', 'zhaozg-lua-openssl'}
                          )
 
     def test_meta_file_contents(self):
