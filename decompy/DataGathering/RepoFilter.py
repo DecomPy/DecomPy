@@ -1,7 +1,8 @@
 import json
 from urllib.parse import quote
 
-from WebNavigator import WebNavigator
+from decompy.DataGathering.WebNavigator import WebNavigator
+
 
 
 class RepoFilter:
@@ -23,15 +24,15 @@ class RepoFilter:
         ignore all repos which contain the phrase "C++" in their descriptions), and the number of results to display
         per page. The results per page defaults to 100 as this is the max allowed per page through GitHub's api.
 
-        @param self:
-        @param search: A search string
-        @type: str
-        @param language: The language to limit searches to
-        @type: str
-        @param blacklist: A list of terms to disallow in the description
-        @type: list
-        @param per_page: The number of results to gather "per page"
-        @type: int
+        :param self:
+        :param search: A search string
+        :type: str
+        :param language: The language to limit searches to
+        :type: str
+        :param blacklist: A list of terms to disallow in the description
+        :type: list
+        :param per_page: The number of results to gather "per page"
+        :type: int
         """
 
         if blacklist is None:
@@ -46,9 +47,9 @@ class RepoFilter:
         Makes a single request to the GitGub api for a page with results matching
         the search criteria
 
-        @param self:
-        @param page: Which page of results should be fetched
-        @type: int
+        :param self:
+        :param page: Which page of results should be fetched
+        :type: int
         """
 
         language_string = ""
@@ -57,7 +58,6 @@ class RepoFilter:
 
         url = "https://api.github.com/legacy/repos/search/%s?%sstart_page=%d" % (
             quote(self.search), language_string, page)
-        print(url)
         content = WebNavigator.getContent(url)
         json_content = json.loads(content)
         return json_content["repositories"]
@@ -66,12 +66,12 @@ class RepoFilter:
         """
         Saves the list of all repos for offline usage.
         
-        @param filename: The name that will be given to the generated file
-        @type: str
-        @param start_page: The index of the first page that should be saved
-        @type: int
-        @param end_page: The index of the last page that should be saved
-        @type: int
+        :param filename: The name that will be given to the generated file
+        :type: str
+        :param start_page: The index of the first page that should be saved
+        :type: int
+        :param end_page: The index of the last page that should be saved
+        :type: int
         """
         # TODO: Test me, I require internet access.
         # TODO: Consider renaming me when I have a better IDE
@@ -87,8 +87,8 @@ class RepoFilter:
         Determine if the given Repo matches our desired criteria. Uses the GitHub info beyond what
         a simple search has the options of doing.
 
-        @param repo: The json from the GitHub repo to filter
-        @type: json
+        :param repo: The json from the GitHub repo to filter
+        :type: json
         """
         # TODO: I don't know if "json" is a valid type to put in type for "repo"
         # TODO: Consider double checking GitHub's language feature
@@ -105,8 +105,8 @@ class RepoFilter:
         """
         Filters a list of repositories
 
-        @param unfiltered_repos: The list of unfiltered repositories
-        @tpye list
+        :param unfiltered_repos: The list of unfiltered repositories
+        :tpye list
         """
 
         return list(filter(self.filter_repo, unfiltered_repos))
@@ -115,10 +115,10 @@ class RepoFilter:
         """
         Filter a list of repositories and save it to JSON for persistent usage
         
-        @param filename: The name to save the file as
-        @type: str
-        @param unfiltered_repos: The list of repos to filter
-        @type: list
+        :param filename: The name to save the file as
+        :type: str
+        :param unfiltered_repos: The list of repos to filter
+        :type: list
         """
         # TODO: Definitely need to rename this method
 
@@ -132,8 +132,8 @@ class RepoFilter:
         """
         Read in a json file
 
-        @param filename: The filename to read
-        @type: str
+        :param filename: The filename to read
+        :type: str
         """
         # TODO: Check if the json library can do this directly instead of through a read.
 
