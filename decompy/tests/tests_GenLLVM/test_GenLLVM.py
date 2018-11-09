@@ -8,12 +8,16 @@ class TestGenLLVM(unittest.TestCase):
 
     def setUpClass(self):
         """
-        Initializes the test method by creating a blank txt file that will be used as input
+        Initializes the test method by creating an empty directory that will be used to store the output
         :return:
         """
         Path("./llvmDir").mkdir()
 
     def tearDown(self):
+        """
+        Delete directory that stored the output
+        :return:
+        """
         Path("./llvmDir").unlink()
 
     def setUp(self):
@@ -25,7 +29,7 @@ class TestGenLLVM(unittest.TestCase):
 
     def tearDown(self):
         """
-        Resets the test method by deleting the input file that was used
+        Resets the test method by deleting the input file and all generated files
         :return:
         """
         self.input_file.close()
