@@ -6,19 +6,21 @@ from decompy.DataGathering.GenLLVM import GenLLVM
 
 class TestGenLLVM(unittest.TestCase):
 
-    def setUpClass(self):
+    @classmethod
+    def setUpClass(cls):
         """
         Initializes the test method by creating an empty directory that will be used to store the output
         :return:
         """
         Path("./llvmDir").mkdir()
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         """
         Delete directory that stored the output
         :return:
         """
-        Path("./llvmDir").unlink()
+        Path("./llvmDir").rmdir()
 
     def setUp(self):
         """
@@ -64,7 +66,9 @@ class TestGenLLVM(unittest.TestCase):
         out of the way. Should compile the optimized and unoptimized code.
         :return:
         """
-        self.input_file.write("./cDir/example.c\n")
+        root = Path(__file__).resolve().parent
+
+        self.input_file.write(root.joinpath("./cDir/example.c").resolve().as_posix() +"\n")
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir/")
 
@@ -80,8 +84,10 @@ class TestGenLLVM(unittest.TestCase):
         the folder and save all generated llvm to that folder.
         :return:
         """
-        self.input_file.write("./cDir/example.c\n")
-        self.input_file.write("./cDir/example2.c\n")
+        root = Path(__file__).absolute().parent
+
+        self.input_file.write(root.joinpath("./cDir/example.c").resolve().as_posix() +"\n")
+        self.input_file.write(root.joinpath("./cDir/example2.c").resolve().as_posix() + "\n")
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir2/")
 
@@ -102,9 +108,11 @@ class TestGenLLVM(unittest.TestCase):
         (Which exception?)
         :return:
         """
-        self.input_file.write("./cDir/example.c\n")
-        self.input_file.write("./cDir/example2.c\n")
-        self.input_file.write("./cDir/example3.c\n")
+        root = Path(__file__).absolute().parent
+
+        self.input_file.write(root.joinpath("./cDir/example.c").resolve().as_posix() +"\n")
+        self.input_file.write(root.joinpath("./cDir/example2.c").resolve().as_posix() + "\n")
+        self.input_file.write("/cDir/example3.c\n")
         self.input_file.flush()
 
         with self.assertRaises(CalledProcessError):
@@ -117,7 +125,3 @@ class TestGenLLVM(unittest.TestCase):
         """
         with self.assertRaises(FileNotFoundError):
             GenLLVM.genLLVM("not_here.txt", "./llvmDir2/")
-
-
-if __name__=="__main__":
-    unittest.main()

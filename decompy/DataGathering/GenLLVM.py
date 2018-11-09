@@ -60,8 +60,9 @@ class GenLLVM:
         :return:
         """
         file_of_cfiles = open(filepath, 'r')
-        if not Path.isdir(newlocation):
-            Path(newlocation).mkdir()
+        newLoc = Path(newlocation)
+        if not newLoc.is_dir():
+            newLoc.mkdir()
 
         for cfile in file_of_cfiles:
             cfile = cfile.rstrip()
