@@ -4,6 +4,7 @@ from urllib.parse import quote
 from decompy.DataGathering.WebNavigator import WebNavigator
 
 
+
 class RepoFilter:
     """
     First draft of the RepoFilter using the GitHub api. This class searches for repositories on GitHub matching
