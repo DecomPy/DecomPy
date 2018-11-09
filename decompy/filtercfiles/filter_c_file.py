@@ -1,6 +1,5 @@
 import os
 import re
-import shutil
 
 
 class FilterC:
@@ -134,13 +133,16 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
-                           whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST, filt_path_name="filter",
-                           unfilt_path_name="unfilter"):
+    def check_valid_folder(folder, filt_path_name="unfiltered", append_file="filtered_path.txt", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+                           whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
         Runs check_valid_data for each file in the folder path..
 
         :param folder: the folder the user wants to validate for each C file.
+        :type: str
+        :param filt_path_name: the filtered path word the user is using to store data once filtered.
+        :type: str
+        :param append_file: the file to add lines to.
         :type: str
         :param preferred_max_size: the max byte size the user wants.
         :type: int
@@ -150,59 +152,46 @@ class FilterC:
         :type: tuple or array
         :param blacklisted: the blacklisted words the user wants to exclude.
         :type: tuple or array
-        :param filt_path_name: the filtered path word the user is using to store data once filtered.
-        :param unfilt_path_name: the unfiltered path word the user is using to test data.
-        :return: bool
+        :return: str
         """
+
+        # if no folder exists, then make it.
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        if not os.path.exists(append_file):
+            # open to write to it
+            open(append_file, "w+")
 
         # walk recursively in given folder
         try:
-            for root, dirs, files in os.walk(folder):
-                # look for unfiltered files
-                if filt_path_name in root:
-                    # only look for c files
-                    for basename in files:
-                        # unfiltered name
-                        unfiltered_path = root + "/" + basename
-                        # replace 'unfiltered' with 'filtered' and move
+            # open file
+            with open(append_file, "a") as myfile:
+                for root, dirs, files in os.walk(folder):
+                    # look for unfiltered files and only want unfilter
+                    if root.endswith(filt_path_name):
+                        # only look for c files
+                        for basename in files:
+                            # unfiltered name
+                            unfiltered_path = root + "/" + basename
 
-                        # we do this to make sure the file name itself doesn't have 'filter' in it, and only replaces 1
-                        filtered = replace_num_occurrences(root, unfilt_path_name, filt_path_name, 1)
-                        # check to make sure filter path exists, otherwise create it
-                        if not os.path.exists(filtered):
-                            # otherwise make it
-                            os.makedirs(filtered)
+                            # checks for valid data, then moves.
+                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):
+                                # append path to list
+                                myfile.write(unfiltered_path)
 
-                        # checks for valid data, then moves.
-                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):
-                            # filtered filename
-                            filtered_path = filtered + "/" + basename
+                                # check if OS is windows for \r\n
+                                if os.name == 'nt':
+                                    myfile.write("\r\n")
+                                # otherwise it's \n
+                                else:
+                                    myfile.write("\n")
 
-                            # now we can move the file to the filtered directory
-                            shutil.move(unfiltered_path, filtered_path)
         except Exception as e:
             print("Exception", e)
 
 
-def replace_num_occurrences(s, old, new, occurrence):
-    """
-    replaces the number of occurences in a string. In this case, I change the last occurrence of 'unfiltered' to 'filtered'.
-    :param s: the string to test
-    :type: str
-    :param old: the old value
-    :type: str
-    :param new: the string to test
-    :type: the new value
-    :param occurrence: the number of occurrence
-    :type: the number of tmies to replace
-    :return: the new string
-    """
-    li = s.rsplit(old, occurrence)
-    return new.join(li)
-
-#
-# if __name__ == '__main__':
-#     f = FilterC()
-#     f.check_valid_folder("decompy/tests/test_filtercfiles/files/")
+if __name__ == '__main__':
+    f = FilterC()
+    f.check_valid_folder("decompy/tests/test_filtercfiles/files/")
 
 

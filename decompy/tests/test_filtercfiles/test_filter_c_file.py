@@ -1,7 +1,6 @@
 import unittest
 import decompy.filtercfiles.filter_c_file as fc
 import os
-import shutil
 
 
 class FilterCTest(unittest.TestCase):
@@ -129,31 +128,16 @@ class FilterCTest(unittest.TestCase):
         :return: bool assert
         :rtype: assert
         """
+        self.FilterC.check_valid_folder("decompy/tests/test_filtercfiles/files", "unfiltered", "filt_test.txt")
 
-        # get length before
-        list1 = os.listdir("decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered")
-        number_fib_files1 = len(list1)
-        list3 = os.listdir("decompy/tests/test_filtercfiles/files/binary_search/unfiltered")
-        number_bin_files1 = len(list3)
+        with open("filt_test.txt") as f:
+            size = sum(1 for _ in f)
 
-        # run valid folder check
-        self.FilterC.check_valid_folder(self.folder)
+        # 3 files in it
+        self.assertTrue(size == 3)
 
-        # get length after
-        list2 = os.listdir("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered")
-        number_fib_files2 = len(list2)
-        list4 = os.listdir("decompy/tests/test_filtercfiles/files/binary_search/filtered")
-        number_bin_files2 = len(list4)
-
-        # assert assumptions
-        self.assertTrue(number_fib_files1 == number_fib_files2)
-        self.assertFalse(number_bin_files1 == number_bin_files2)
-
-        # move back when done.
-        shutil.move("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered/fibonacciSearch.c",
-                    "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c")
-        shutil.move("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered/test2.c",
-                    "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/test2.c")
+        # comment out to see the results yourself
+        os.remove("filt_test.txt")
 
 
 if __name__ == '__main__':
