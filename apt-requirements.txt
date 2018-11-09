@@ -1,0 +1,4 @@
+python3.6
+python3-pip
+python3-sphinx
+python3-pytest
