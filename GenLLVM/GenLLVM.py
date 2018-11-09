@@ -68,4 +68,4 @@ class GenLLVM:
             GenLLVM._optimized(cfile, bashargs, newlocation)
         file_of_cfiles.close()
 
-# GenLLVM.genLLVM("./tests/test-input.txt", "./tests/llvmDir/")
+# GenLLVM.genLLVM("./tests_GenLLVM/test-input.txt", "./tests_GenLLVM/llvmDir/")
