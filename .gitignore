@@ -89,6 +89,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv_decompy/
+conda_decompy/
 
 # Spyder project settings
 .spyderproject
@@ -103,3 +105,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 .idea*
+
+# Sphinx
+docs/build

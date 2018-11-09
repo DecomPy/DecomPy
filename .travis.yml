@@ -1,0 +1,19 @@
+language: python
+cache: pip
+python:
+  - "3.6"
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+
+
+# add your test scripts here.
+script:
+  pytest
+
+# only run tests on these branches
+#branches:
+#  only:
+#    - master
+#    - development
