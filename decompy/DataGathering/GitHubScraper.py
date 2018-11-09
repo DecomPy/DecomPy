@@ -38,7 +38,7 @@ import threading
 class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
-    DEBUG = False   # Whether to print debug info or not
+    DEBUG = True   # Whether to print debug info or not
     TIMING = False  # Whether to print timing info or not
     TIMER = 0       # Used if TIMING is enabled
     pageContents = []   # Used for multithreading in __getContent
@@ -56,16 +56,20 @@ class GitHubScraper(WebNavigator):
         """
         content = GitHubScraper.getContent(url)
         links = GitHubScraper.getLinks(content)
+        links = list(filter(None, links))  # Deletes empty urls. Empty URLs somehow come in when getLinks is called above.
         # The following block removes links that don't need to be followed
         linksToRemove = []
-        for link in links:
-            if "/blob/" in link:
-                continue
-            if "master" in link.split("/"):
-                continue
-            linksToRemove.append(link)
-        for link in linksToRemove:
-            links.remove(link)
+        try:
+            for link in links:
+                if "/blob/" in link:
+                    continue
+                if "master" in link.split("/"):
+                    continue
+                linksToRemove.append(link)
+            for link in linksToRemove:
+                links.remove(link)
+        except:
+            print("There was an issue when dealing with url", link, "sourced from url", url, ". List of links: ", links)
 
         absLinks = GitHubScraper.getAbsolute(url, links)
         for link in absLinks:
@@ -120,9 +124,9 @@ class GitHubScraper(WebNavigator):
                                           args=(GitHubScraper.subFolders[counter],))
                 counter = counter + 1
                 thread.start()
-                time.sleep(0.01)  # Wait some time between new threads so that github server doesn't block me
+                time.sleep(0.1)  # Wait some time between new threads so that github server doesn't block me
             for i in tempRange:
-                thread.join(5)
+                thread.join()
             if counter >= len(GitHubScraper.subFolders):
                 break
 
@@ -183,10 +187,10 @@ class GitHubScraper(WebNavigator):
         for i in range(len(urls)):
             threads[i] = threading.Thread(target=GitHubScraper.__getAbsoluteLinksFromPage, args=(urls[i],))
             threads[i].start()
-            time.sleep(0.01)  # Wait some time between new threads so that github server doesn't block me
+            time.sleep(0.1)  # Wait some time between new threads so that github server doesn't block me
             # GitHubScraper.__getAbsoluteLinksFromPage(urls[i])
         for i in range(len(urls)):
-            threads[i].join(5)
+            threads[i].join()
 
         if GitHubScraper.DEBUG:
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS")
@@ -207,9 +211,9 @@ class GitHubScraper(WebNavigator):
                   rawLinks[i])
             threads[i] = threading.Thread(target=GitHubScraper.__getContent, args=(rawLinks[i], i))
             threads[i].start()
-            time.sleep(0.01) # Wait some time between new threads so that github server doesn't block me
+            time.sleep(0.1) # Wait some time between new threads so that github server doesn't block me
         for i in range(len(threads)):
-            threads[i].join(5)
+            threads[i].join()
         if GitHubScraper.TIMING:
             print("Time to download content:",
                   time.time() - GitHubScraper.TIMER)
@@ -298,6 +302,6 @@ if __name__ == "__main__":
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
     # GitHubScraper.downloadAllFiles("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-    GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming")
-    GitHubScraper.downloadAllFiles("https://github.com/jbush001/PIC-Programmer")
+    # GitHubScraper.downloadAllFiles("https://github.com/hexagon5un/AVR-Programming")
+    GitHubScraper.downloadAllFiles("https://github.com/torvalds/linux")
     print(time.time() - timer)
