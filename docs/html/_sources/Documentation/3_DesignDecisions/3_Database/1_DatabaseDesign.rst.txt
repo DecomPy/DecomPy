@@ -31,6 +31,6 @@ Python Sqlite3
     The team has decided to use a sqlite database as per our sponsor’s agreement.
     This means that the ML agent and database will have to be on the same system.
     This is useful because sqlite can be easily transferred and only needs to be
-    written to once instead of transactions repeatedly.
+    written to once and not require consistent write queries.
 
 
