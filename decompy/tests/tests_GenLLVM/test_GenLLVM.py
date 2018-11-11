@@ -91,16 +91,19 @@ class TestGenLLVM(unittest.TestCase):
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir2/")
 
-        filesMade = Path("./llvmDir2").iterdir()
-        opt_file = next(filesMade)
-        unopt_file = next(filesMade)
-        opt_file2 = next(filesMade)
-        unopt_file2 = next(filesMade)
+        files = [Path("./llvmDir2/example-opt.ll"), Path("./llvmDir2/example-unopt.ll"),
+                 Path("./llvmDir2/example2-opt.ll"), Path("./llvmDir2/example2-unopt.ll")]
 
-        self.assertTrue(opt_file.match("llvmDir2/example-opt.ll"), "Correct op file not made. " + str(opt_file))
-        self.assertTrue(unopt_file.match("llvmDir2/example-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
-        self.assertTrue(opt_file2.match("llvmDir2/example2-opt.ll"), "Correct op file not made. " + str(opt_file2))
-        self.assertTrue(unopt_file2.match("llvmDir2/example2-unopt.ll"), "Correct unopy file not made. " + str(unopt_file2))
+        for file in files:
+            self.assertTrue(file.exists())
+        #
+        # for file in files:
+        #
+        #
+        # self.assertTrue(opt_file.match("llvmDir2/example-opt.ll"), "Correct op file not made. " + str(opt_file))
+        # self.assertTrue(unopt_file.match("llvmDir2/example-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
+        # self.assertTrue(opt_file2.match("llvmDir2/example2-opt.ll"), "Correct op file not made. " + str(opt_file2))
+        # self.assertTrue(unopt_file2.match("llvmDir2/example2-unopt.ll"), "Correct unopy file not made. " + str(unopt_file2))
 
     def test_c_file_dne(self):
         """
