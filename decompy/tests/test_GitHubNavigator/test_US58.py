@@ -170,6 +170,8 @@ class test_GitHubScraper(unittest.TestCase):
         """
         if os.path.exists("DecomPy_valid_and_compilable_1"):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
+        if os.path.isfile("DecomPy_valid_and_compilable_1config.META"): # For when running test from linux system
+            os.remove("DecomPy_valid_and_compilable_1config.META")
 
 
 if __name__ == '__main__':
