@@ -96,14 +96,6 @@ class TestGenLLVM(unittest.TestCase):
 
         for file in files:
             self.assertTrue(file.exists())
-        #
-        # for file in files:
-        #
-        #
-        # self.assertTrue(opt_file.match("llvmDir2/example-opt.ll"), "Correct op file not made. " + str(opt_file))
-        # self.assertTrue(unopt_file.match("llvmDir2/example-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
-        # self.assertTrue(opt_file2.match("llvmDir2/example2-opt.ll"), "Correct op file not made. " + str(opt_file2))
-        # self.assertTrue(unopt_file2.match("llvmDir2/example2-unopt.ll"), "Correct unopy file not made. " + str(unopt_file2))
 
     def test_c_file_dne(self):
         """
