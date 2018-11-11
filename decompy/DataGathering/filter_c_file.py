@@ -133,7 +133,7 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, filt_path_name="unfiltered", append_file="filtered_path.txt", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+    def check_valid_folder(folder, filt_path_name="unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
                            whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
         Runs check_valid_data for each file in the folder path..
@@ -155,28 +155,37 @@ class FilterC:
         :return: str
         """
 
-        # if no folder exists, then make it.
+        # if no folder exists, then return file does not exist.
         if not os.path.exists(folder):
-            os.makedirs(folder)
-        if not os.path.exists(append_file):
-            # open to write to it
-            open(append_file, "w+")
+            return "File Does not Exist"
 
         # walk recursively in given folder
         try:
             # open file
-            with open(append_file, "a") as myfile:
-                for root, dirs, files in os.walk(folder):
-                    # look for unfiltered files and only want unfilter
-                    if root.endswith(filt_path_name):
-                        # only look for c files
-                        for basename in files:
-                            # unfiltered name
-                            unfiltered_path = root + "/" + basename
+            for root, dirs, files in os.walk(folder):
+                # look for unfiltered files and only want unfilter (or filt_path_name)
+                if root.endswith(filt_path_name):
+                    # only look for c files
+                    for basename in files:
+                        # unfiltered name
+                        unfiltered_path = root + "/" + basename
 
-                            # checks for valid data, then moves.
-                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):
-                                # append path to list
+                        # checks for valid data, then moves.
+                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):
+                            # base root of new file 1 directory above unfiltered/*.c
+                            base_root = os.path.dirname(root)
+
+                            # store into new directory
+                            new_file = base_root+"/"+append_file
+
+                            # create file if it does not exist
+                            if not os.path.exists(new_file):
+                                # open to write to it
+                                open(new_file, "w+")
+
+                            # append path to list
+                            with open(new_file, "a") as myfile:
+                                # add file path to list.META
                                 myfile.write(unfiltered_path)
 
                                 # check if OS is windows for \r\n
@@ -190,8 +199,8 @@ class FilterC:
             print("Exception", e)
 
 
-if __name__ == '__main__':
-    f = FilterC()
-    f.check_valid_folder("decompy/tests/test_filtercfiles/files/")
+# if __name__ == '__main__':
+#     f = FilterC()
+#     f.check_valid_folder("decompy/tests/test_filtercfiles/")
 
 

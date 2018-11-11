@@ -1,5 +1,5 @@
 import unittest
-import decompy.filtercfiles.filter_c_file as fc
+import decompy.DataGathering.filter_c_file as fc
 import os
 
 
@@ -128,16 +128,23 @@ class FilterCTest(unittest.TestCase):
         :return: bool assert
         :rtype: assert
         """
-        self.FilterC.check_valid_folder("decompy/tests/test_filtercfiles/files", "unfiltered", "filt_test.txt")
+        self.FilterC.check_valid_folder("decompy/tests/test_filtercfiles/files")
 
-        with open("filt_test.txt") as f:
-            size = sum(1 for _ in f)
+        with open("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META") as f:
+            size1 = sum(1 for _ in f)
 
-        # 3 files in it
-        self.assertTrue(size == 3)
+        # 1 files in its directory
+        self.assertTrue(size1 == 1)
 
-        # comment out to see the results yourself
-        os.remove("filt_test.txt")
+        with open("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META") as f:
+            size2 = sum(1 for _ in f)
+
+        # 2 files in its directory
+        self.assertTrue(size2 == 2)
+
+        # remove filtered_list.META
+        os.remove("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META")
+        os.remove("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META")
 
 
 if __name__ == '__main__':
