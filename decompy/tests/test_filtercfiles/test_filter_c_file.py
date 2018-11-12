@@ -1,5 +1,5 @@
 import unittest
-import decompy.DataGathering.filter_c_file as fc
+import decompy.DataGathering.FilterC as fc
 import os
 
 
@@ -13,7 +13,7 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = fc.FilterC()
-        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree.c"
+        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree_fail.c"
         self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c"
         self.folder = "decompy/tests/test_filtercfiles/files/"  # actual folder "decompy/data/Repositories"
 

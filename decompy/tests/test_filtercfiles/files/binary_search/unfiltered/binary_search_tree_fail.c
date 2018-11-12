@@ -9,8 +9,8 @@
 */
 
 // Node, the basic data structure in the tree
-typedef struct node{
-
+typedef struct node{ dfjadlksfjslkflksdf
+asfklasjfklsajflk
     // left child
 	struct node* left;
 
@@ -170,6 +170,96 @@ void main(){
     // event-loop.
 	while (opt != 0){
 		printf("\n\n[1] Insert Node\n[2] Delete Node\n[3] Find a Node\n[4] Get current Height\n[5] Print Tree in Crescent Order\n[0] Quit\n");
+		scanf("%d",&opt); // reads the choice of the user
+
+        // processes the choice
+		switch(opt){
+			case 1:	printf("Enter the new node's value:\n");
+				scanf("%d",&data);
+				root = insert(root,data);
+				break;
+
+			case 2: printf("Enter the value to be removed:\n");
+				if (root != NULL){
+					scanf("%d",&data);
+					root = delete(root,data);
+				}
+				else
+					printf("Tree is already empty!\n");
+				break;
+
+			case 3: printf("Enter the searched value:\n");
+				scanf("%d",&data);
+				find(root,data) ? printf("The value is in the tree.\n") : printf("The value is not in the tree.\n");
+				break;
+
+			case 4: printf("Current height of the tree is: %d\n", height(root));
+				break;
+
+			case 5: inOrder(root);
+				break;
+
+            printf("\n\n[1] Insert Node\n[2] Delete Node\n[3] Find a Node\n[4] Get current Height\n[5] Print Tree in Crescent Order\n[0] Quit\n");
+		scanf("%d",&opt); // reads the choice of the user
+
+        // processes the choice
+		switch(opt){
+			case 1:	printf("Enter the new node's value:\n");
+				scanf("%d",&data);
+				root = insert(root,data);
+				break;
+
+			case 2: printf("Enter the value to be removed:\n");
+				if (root != NULL){
+					scanf("%d",&data);
+					root = delete(root,data);
+				}
+				else
+					printf("Tree is already empty!\n");
+				break;
+
+			case 3: printf("Enter the searched value:\n");
+				scanf("%d",&data);
+				find(root,data) ? printf("The value is in the tree.\n") : printf("The value is not in the tree.\n");
+				break;
+
+			case 4: printf("Current height of the tree is: %d\n", height(root));
+				break;
+
+			case 5: inOrder(root);
+				break;
+
+            printf("\n\n[1] Insert Node\n[2] Delete Node\n[3] Find a Node\n[4] Get current Height\n[5] Print Tree in Crescent Order\n[0] Quit\n");
+		scanf("%d",&opt); // reads the choice of the user
+
+        // processes the choice
+		switch(opt){
+			case 1:	printf("Enter the new node's value:\n");
+				scanf("%d",&data);
+				root = insert(root,data);
+				break;
+
+			case 2: printf("Enter the value to be removed:\n");
+				if (root != NULL){
+					scanf("%d",&data);
+					root = delete(root,data);
+				}
+				else
+					printf("Tree is already empty!\n");
+				break;
+
+			case 3: printf("Enter the searched value:\n");
+				scanf("%d",&data);
+				find(root,data) ? printf("The value is in the tree.\n") : printf("The value is not in the tree.\n");
+				break;
+
+			case 4: printf("Current height of the tree is: %d\n", height(root));
+				break;
+
+			case 5: inOrder(root);
+				break;
+
+            printf("\n\n[1] Insert Node\n[2] Delete Node\n[3] Find a Node\n[4] Get current Height\n[5] Print Tree in Crescent Order\n[0] Quit\n");
 		scanf("%d",&opt); // reads the choice of the user
 
         // processes the choice

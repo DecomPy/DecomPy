@@ -1,5 +1,6 @@
 import os
 import re
+from decompy.DataGathering.FilterCompile import FilterCompile
 
 
 class FilterC:
@@ -170,8 +171,9 @@ class FilterC:
                         # unfiltered name
                         unfiltered_path = root + "/" + basename
 
-                        # checks for valid data, then moves.
-                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):
+                        # checks for valid data, compile, then adds to meta.
+                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted)\
+                                and FilterCompile.compile_file(unfiltered_path):
                             # base root of new file 1 directory above unfiltered/*.c
                             base_root = os.path.dirname(root)
 
