@@ -41,14 +41,16 @@ import urllib.parse
 class GitHubScraper(WebNavigator):
     """Handles finding GitHub file URLs and downloading their contents"""
 
-    DEBUG = True   # Whether to print debug info or not
+    DEBUG = True  # Whether to print debug info or not
     TIMING = False  # Whether to print timing info or not
-    TIMER = 0       # Used if TIMING is enabled
-    pageContents = []   # Used for multi-threading in __getContent
-    subURLs = []        # Used for multi-threading in __getFileURLSFromGitRepo
-    subFolders = []     # Used for multi-threading in __getFileURLSFromGitRepo
-    sourceFiles = []    # Used for multi-threading in __getFileURLSFromGitRepo
-    pageLinks = []      # Used for multi-threading in __getAbsoluteLinksFromPage
+    TIMER = 0  # Used if TIMING is enabled
+    TIME_BETWEEN_THREAD_SPAWN = 0
+    pageContents = []  # Used for multi-threading in __getContent
+    subURLs = []  # Used for multi-threading in __getFileURLSFromGitRepo
+    subFolders = set()  # Used for multi-threading in __getFileURLSFromGitRepo
+    sourceFiles = []  # Used for multi-threading in __getFileURLSFromGitRepo
+    pageLinks = set()  # Used for multi-threading in __getAbsoluteLinksFromPage
+    scrapedURLs = set()
 
     @staticmethod
     def __get_file_urls_from_github_repo(url):
@@ -98,7 +100,7 @@ class GitHubScraper(WebNavigator):
                         if link in GitHubScraper.subFolders:
                             continue
                         if "master" in link.split("/"):
-                            GitHubScraper.subFolders.append(link)
+                            GitHubScraper.subFolders.add(link)
                             GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
 
     @staticmethod
@@ -112,8 +114,9 @@ class GitHubScraper(WebNavigator):
         """
 
         GitHubScraper.subURLs = ["/master/"]
-        GitHubScraper.subFolders = [repo_url]
+        GitHubScraper.subFolders = {repo_url}
         GitHubScraper.sourceFiles = []
+        GitHubScraper.scrapedURLs = set()
         counter = 0
         thread_spawning_counter = 0
 
@@ -122,10 +125,17 @@ class GitHubScraper(WebNavigator):
                 thread_spawning_counter += 1
                 print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
                       thread_spawning_counter)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-                for url in GitHubScraper.subFolders[counter: len(GitHubScraper.subFolders)]:
-                    executor.submit(GitHubScraper.__get_file_urls_from_github_repo, url)
-                    time.sleep(0.2)
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                # for url in GitHubScraper.subFolders[counter: len(GitHubScraper.subFolders)]:
+                while len(GitHubScraper.subFolders) > 0:
+                    next_url_to_scrape = GitHubScraper.subFolders.pop()
+                    if next_url_to_scrape in GitHubScraper.scrapedURLs:
+                        continue
+                    executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape)
+                    GitHubScraper.scrapedURLs.add(next_url_to_scrape)
+                    time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)
+                    if len(GitHubScraper.subFolders) == 0:
+                        time.sleep(1)
             counter += 1
             if counter >= len(GitHubScraper.subFolders):
                 break
@@ -152,10 +162,8 @@ class GitHubScraper(WebNavigator):
                 page_source = response.read().decode(response.headers.get_content_charset())
             except (TypeError, UnicodeDecodeError) as e:
                 print(e)
-                pass
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
             print(e)
-            pass
         GitHubScraper.pageContents[index] = page_source
 
     @staticmethod
@@ -169,7 +177,8 @@ class GitHubScraper(WebNavigator):
         content = WebNavigator.getContent(link)
         links = WebNavigator.getLinks(content)
         abs_links = WebNavigator.getAbsolute(link, links)
-        GitHubScraper.pageLinks.append(abs_links)
+        for i in abs_links:
+            GitHubScraper.pageLinks.add(i)
 
     @staticmethod
     def get_content_from_github_file_urls(file_url_tuples):
@@ -186,25 +195,23 @@ class GitHubScraper(WebNavigator):
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: urls:", urls)
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting absolute URLS on page with the content we want")
 
-        GitHubScraper.pageLinks = []    # Clear out list in case there are still things in it
-        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        GitHubScraper.pageLinks = set()  # Clear out set in case there are still things in it
+        with concurrent.futures.ThreadPoolExecutor() as executor:
             for url in urls:
                 executor.submit(GitHubScraper.__get_absolute_links_from_page, url)
-                time.sleep(0.2)  # So Github server doesn't close connection
+                time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)  # So Github server doesn't close connection
 
         if GitHubScraper.DEBUG:
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS")
-        raw_links = [[j for j in i if "raw" in j] for i in GitHubScraper.pageLinks]
-        # them, because these URLs lead to pages with the content of the file
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Flattening list of URLs")
-        raw_links = [i for rawLinksSub in raw_links for i in rawLinksSub]  # Flatten a list of lists into a list
+        raw_links = [i for i in list(GitHubScraper.pageLinks) if "raw" in i]
 
+        if GitHubScraper.DEBUG:
+            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting content")
         GitHubScraper.pageContents = [None] * len(raw_links)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
             for i in range(len(raw_links)):
                 executor.submit(GitHubScraper.__get_content, raw_links[i], i)
-                time.sleep(0.2)  # So Github server doesn't close connection
+                time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)  # So Github server doesn't close connection
 
         content = GitHubScraper.pageContents
         return_list = []
@@ -236,8 +243,8 @@ class GitHubScraper(WebNavigator):
             os.mkdir(content_url_tuple[0][1].split("/")[3] + "_" + content_url_tuple[0][1].split("/")[4])
 
         # Create config.META if it doesn't exist, place download timestamp there
-        if not(os.path.isfile(os.path.join(content_url_tuple[0][1].split("/")[3]
-                                           + "_" + content_url_tuple[0][1].split("/")[4], "config.META"))):
+        if not (os.path.isfile(os.path.join(content_url_tuple[0][1].split("/")[3]
+                                            + "_" + content_url_tuple[0][1].split("/")[4], "config.META"))):
             with open(os.path.join(content_url_tuple[0][1].split("/")[3] + "_"
                                    + content_url_tuple[0][1].split("/")[4], "config.META"), "w") as f:
                 f.write("File download timestamp: ")
@@ -288,8 +295,9 @@ if __name__ == "__main__":
     # print("filename/content pairs: ", fileContentTuples)
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+    # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files(
     #     "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     GitHubScraper.download_all_files("https://github.com/torvalds/linux")
-    print(time.time() - timer)
+    print((time.time() - timer) / 60, "minutes")
