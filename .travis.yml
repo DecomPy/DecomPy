@@ -3,7 +3,12 @@ cache: pip
 python:
   - "3.6"
 
-# command to install dependencies
+# This will install any apt dependencies in travis-apt-requirements.txt
+before_install:
+  - sudo apt update
+  - cat travis-apt-requirements.txt | xargs sudo apt install
+
+# command to install dependencies for python using pip
 install:
   - pip install -r requirements.txt
 
