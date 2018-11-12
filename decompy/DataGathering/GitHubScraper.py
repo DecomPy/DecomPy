@@ -71,7 +71,7 @@ class GitHubScraper(WebNavigator):
         links_to_remove = []
         try:
             for link in links:
-                if "/blob/" in link:
+                if "blob" in link.split("/"):
                     continue
                 if "master" in link.split("/"):
                     continue
@@ -126,7 +126,6 @@ class GitHubScraper(WebNavigator):
                 print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
                       thread_spawning_counter)
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                # for url in GitHubScraper.subFolders[counter: len(GitHubScraper.subFolders)]:
                 while len(GitHubScraper.subFolders) > 0:
                     next_url_to_scrape = GitHubScraper.subFolders.pop()
                     if next_url_to_scrape in GitHubScraper.scrapedURLs:
@@ -298,6 +297,6 @@ if __name__ == "__main__":
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files(
     #     "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
-    GitHubScraper.download_all_files("https://github.com/torvalds/linux")
+    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
+    # GitHubScraper.download_all_files("https://github.com/torvalds/linux")
     print((time.time() - timer) / 60, "minutes")
