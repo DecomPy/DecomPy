@@ -44,8 +44,7 @@ class GitHubScraperTest(unittest.TestCase):
 
         # For Windows
         if os.name == "nt":
-            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
-                      "r") as f:
+            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META")) as f:
                 passed = False
                 line = f.readline()
                 while line:
@@ -61,8 +60,7 @@ class GitHubScraperTest(unittest.TestCase):
             self.assertTrue(passed)
         # For Linux machines
         else:
-            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"),
-                      "r") as f:
+            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
                 passed = False
                 line = f.readline()
                 while line:
@@ -96,8 +94,7 @@ class GitHubScraperTest(unittest.TestCase):
 
         # For Windows machines
         if os.name == "nt":
-            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"),
-                      "r") as f:
+            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META")) as f:
                 passed = False
                 line = f.readline()
                 while line:
@@ -113,8 +110,7 @@ class GitHubScraperTest(unittest.TestCase):
             self.assertTrue(passed)
         # For Linux machines
         else:
-            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"),
-                      "r") as f:
+            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
                 passed = False
                 line = f.readline()
                 while line:
