@@ -134,7 +134,7 @@ class GitHubScraper(WebNavigator):
                     GitHubScraper.scrapedURLs.add(next_url_to_scrape)
                     time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)
                     if len(GitHubScraper.subFolders) == 0:
-                        time.sleep(1)
+                        time.sleep(3.5)
             counter += 1
             if counter >= len(GitHubScraper.subFolders):
                 break
@@ -226,10 +226,11 @@ class GitHubScraper(WebNavigator):
         return return_list
 
     @staticmethod
-    def file_content_into_storage(content_url_tuple):
+    def file_content_into_storage(content_url_tuple, target_directory=None):
         """
-        Writes the content of a string into a file given a list of tuples of filenames and strings
+        Writes the content of a string into a file given a list of tuples of file names and strings
         :param content_url_tuple: list of tuples, with each tuple being ("fileName", "fileURL", "fileContent").
+        :param target_directory: name of directory to download files into
         :return: True if successful, False otherwise
         """
 
@@ -237,53 +238,55 @@ class GitHubScraper(WebNavigator):
         if len(content_url_tuple) == 0:
             return False
 
-        # Creates a directory for the repository if one does not exist
-        if not os.path.exists(content_url_tuple[0][1].split("/")[3] + "_" + content_url_tuple[0][1].split("/")[4]):
-            os.mkdir(content_url_tuple[0][1].split("/")[3] + "_" + content_url_tuple[0][1].split("/")[4])
+        # Make default name of directory to be downloaded to "username_reponame"
+        if target_directory is None:
+            target_directory = content_url_tuple[0][1].split("/")[3] + "_" + content_url_tuple[0][1].split("/")[4]
+        target_subdirectory = target_directory + "/unfiltered_C_files"
+
+        # Creates a directory for the repository if one does
+        if not os.path.exists(target_directory):
+            os.mkdir(target_directory)
+        if not os.path.exists(target_subdirectory):
+            os.mkdir(target_subdirectory)
 
         # Create config.META if it doesn't exist, place download timestamp there
-        if not (os.path.isfile(os.path.join(content_url_tuple[0][1].split("/")[3]
-                                            + "_" + content_url_tuple[0][1].split("/")[4], "config.META"))):
-            with open(os.path.join(content_url_tuple[0][1].split("/")[3] + "_"
-                                   + content_url_tuple[0][1].split("/")[4], "config.META"), "w") as f:
+        if not (os.path.isfile(target_directory + "config.META")):
+            with open(os.path.join(target_directory, "config.META"), "w") as f:
                 f.write("File download timestamp: ")
                 f.write(time.asctime(time.localtime(time.time())))
         # Otherwise config.META does exist. Update the correct line
         else:
             update_time_stamp = False
-            for line in fileinput.input((os.path.join(content_url_tuple[0][1].split("/")[3] + "_"
-                                                      + content_url_tuple[0][1].split("/")[4],
-                                                      "config.META")), inplace=True):
+            for line in fileinput.input((os.path.join(target_directory, "config.META")), inplace=True):
                 if "File download timestamp: " in line:
                     print("%s" % ("File download timestamp:" + time.asctime(time.localtime(time.time())))),
                     update_time_stamp = True
                 else:
                     print("%s" % line),
             if not update_time_stamp:
-                with open(os.path.join(content_url_tuple[0][1].split("/")[3] + "_"
-                                       + content_url_tuple[0][1].split("/")[4], "config.META"), "a") as f:
+                with open(os.path.join(target_directory, "config.META"), "a") as f:
                     f.write("File download timestamp:")
                     f.write(time.asctime(time.localtime(time.time())))
 
         # Creates files with contents of repo files inside of directory.
         for i in content_url_tuple:
-            with open(os.path.join(content_url_tuple[0][1].split("/")[3] + "_"
-                                   + content_url_tuple[0][1].split("/")[4], i[0]), "w") as f:
+            with open(os.path.join(target_subdirectory, i[0]), "w") as f:
                 f.write(i[2])
 
         return True
 
     @staticmethod
-    def download_all_files(repo_url):
+    def download_all_files(repo_url, target_directory=None):
         """
         Composition of functions to download all files in a GitHub repository.
-        Files will be downloaded into a folder named "username_reponame"
+        Files will be downloaded into a folder named "username_reponame" by default
         :param repo_url: URL of repository
+        :param target_directory: directory to download files into
         :return: nothing
         """
         file_url_tuples = GitHubScraper.get_file_urls_from_github_repo(repo_url)
         file_content_tuples = GitHubScraper.get_content_from_github_file_urls(file_url_tuples)
-        GitHubScraper.file_content_into_storage(file_content_tuples)
+        GitHubScraper.file_content_into_storage(file_content_tuples, target_directory)
 
 
 if __name__ == "__main__":
@@ -293,10 +296,11 @@ if __name__ == "__main__":
     # fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
     # print("filename/content pairs: ", fileContentTuples)
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
+    GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files(
     #     "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
+    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.download_all_files("https://github.com/torvalds/linux")
     print((time.time() - timer) / 60, "minutes")

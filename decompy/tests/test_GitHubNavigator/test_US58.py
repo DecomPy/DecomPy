@@ -145,12 +145,26 @@ class test_GitHubScraper(unittest.TestCase):
         """
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/main.c"))
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/main2.c"))
+        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/unfiltered_C_files/main.c"))
+        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/unfiltered_C_files/main2.c"))
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
+
+    def test_repo_vc_1_does_download_custom_directory(self):
+        """
+        Tests that a repository with valid files are downloaded into a specified directory
+        :return: nothing
+        """
+
+        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
+        self.assertTrue(os.path.isfile("test_dir/unfiltered_C_files/main.c"))
+        self.assertTrue(os.path.isfile("test_dir/unfiltered_C_files/main2.c"))
+
+        # Makes sure the directory is always clean
+        if os.path.exists("test_dir"):
+            shutil.rmtree("test_dir")
 
     @classmethod
     def setUp(self):
