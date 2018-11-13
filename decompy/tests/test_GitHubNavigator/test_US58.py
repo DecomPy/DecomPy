@@ -5,7 +5,7 @@ from decompy.DataGathering.GitHubScraper import GitHubScraper
 import shutil
 
 
-class test_GitHubScraper(unittest.TestCase):
+class GitHubScraperTest(unittest.TestCase):
 
     def test_repo_vc_1_fileURL(self):
         """
@@ -29,8 +29,10 @@ class test_GitHubScraper(unittest.TestCase):
         """
 
         # These repos should have no C files, and therefore should not produce any URLs
-        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo("https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
-        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo("https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
+        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo(
+            "https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
+        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo(
+            "https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
 
     def test_repo_vc_1_download_config_META_update(self):
         """
@@ -52,11 +54,12 @@ class test_GitHubScraper(unittest.TestCase):
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
                         fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
+                                        or fileMin == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
-        #For Linux machines
+        # For Linux machines
         else:
             with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"),
                       "r") as f:
@@ -68,7 +71,8 @@ class test_GitHubScraper(unittest.TestCase):
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
                         fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
+                                        or fileMin == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -102,7 +106,8 @@ class test_GitHubScraper(unittest.TestCase):
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
                         fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
+                                        or fileMin == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -118,7 +123,8 @@ class test_GitHubScraper(unittest.TestCase):
                         year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
                         minute = int(minute)
                         fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60) or fileMin == ((minute - 1) % 60))
+                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
+                                        or fileMin == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -167,7 +173,7 @@ class test_GitHubScraper(unittest.TestCase):
             shutil.rmtree("test_dir")
 
     @classmethod
-    def setUp(self):
+    def setUp(cls):
         """
         Clean up directory before running any test
         :return:
@@ -177,7 +183,7 @@ class test_GitHubScraper(unittest.TestCase):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
 
     @classmethod
-    def tearDown(self):
+    def tearDown(cls):
         """
         Cleans up directory after running all tests
         :return: nothing
@@ -186,7 +192,7 @@ class test_GitHubScraper(unittest.TestCase):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
         if os.path.exists("DecomPy_invalid_and_uncompilable_1"):
             shutil.rmtree("DecomPy_invalid_and_uncompilable_1")
-        if os.path.isfile("DecomPy_valid_and_compilable_1config.META"): # For when running test from linux system
+        if os.path.isfile("DecomPy_valid_and_compilable_1config.META"):  # For when running test from linux system
             os.remove("DecomPy_valid_and_compilable_1config.META")
 
 
