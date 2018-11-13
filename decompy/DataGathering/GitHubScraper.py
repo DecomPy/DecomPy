@@ -126,15 +126,17 @@ class GitHubScraper(WebNavigator):
                 print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
                       thread_spawning_counter)
             with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = set()
                 while len(GitHubScraper.subFolders) > 0:
                     next_url_to_scrape = GitHubScraper.subFolders.pop()
                     if next_url_to_scrape in GitHubScraper.scrapedURLs:
                         continue
-                    executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape)
+                    futures.add(executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape))
                     GitHubScraper.scrapedURLs.add(next_url_to_scrape)
                     time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)
+                    futures = {future for future in futures if not future.done()}
                     if len(GitHubScraper.subFolders) == 0:
-                        time.sleep(3.5)
+                        concurrent.futures.wait(futures)
             counter += 1
             if counter >= len(GitHubScraper.subFolders):
                 break
