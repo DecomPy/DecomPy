@@ -1,21 +1,28 @@
 import sqlite3
 from sqlite3 import Error
 
-sql_transaction = []
-
 
 class Database:
     """
     Class for database. Accepts a name to create a new database, and use the database based off of that name.
     """
-    def __init__(self, database_name="c_source", default_tables=False):
+    def __init__(self, database_name="c_source", default_tables=True):
         """
         Creates a database connection and default tables if enabled.
         :param database_name:
         :param default_tables:
         """
-        self.database_name = database_name
 
+        # create a database connection or the database if not found
+        self.database_name = database_name  # database name to create
+        self.conn = self.create_connection(self.database_name)  # connection
+        self.sql_transaction = []  # transaction builder
+
+        # check if we have the connection and assign the cursor
+        if self.conn is not None:
+            self.cursor = self.conn.cursor()
+
+        # if setting it up by defaults to True, if false, then user must create own database
         if default_tables:
             sql_create_meta_table = """CREATE TABLE IF NOT EXISTS meta_table (
                                             repo_name text PRIMARY KEY,
@@ -39,12 +46,8 @@ class Database:
                                           FOREIGN KEY (repo_name) REFERENCES meta_table (repo_name) ON DELETE CASCADE ON UPDATE CASCADE
                                   );"""
 
-            # create a database connection or the database if not found
-            self.conn = self.create_connection(self.database_name)
-
-            # test if connection was sucessful
+            # test if connection was successful
             if self.conn is not None:
-                self.cursor = self.conn.cursor()
                 # create meta table
                 self.create_table(sql_create_meta_table)
                 # create ML table
@@ -59,7 +62,7 @@ class Database:
         :return: Connection object or None
         """
         try:
-            self.conn = sqlite3.connect(db_file)
+            self.conn = sqlite3.connect("{}.db".format(db_file))
             return self.conn
         except Error as e:
             print(e)
@@ -69,7 +72,6 @@ class Database:
     def create_table(self, create_table_sql):
         """
         create a table from the create_table_sql statement
-        :param conn: Connection object
         :param create_table_sql: a CREATE TABLE statement
         :return:
         """
@@ -145,12 +147,11 @@ class Database:
         populates the database using a transaction
         :return:
         """
-        global sql_transaction  # don't clear it out
-        sql_transaction.append(sql)
-        if len(sql_transaction) > 1000:
+        self.sql_transaction.append(sql)
+        if len(self.sql_transaction) > 1000:
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
-            for s in sql_transaction:
+            for s in self.sql_transaction:
                 try:
                     self.cursor.execute(s)  # execute the transaction
                     # print('executing')
@@ -159,7 +160,7 @@ class Database:
                     pass
 
             self.conn.commit()  # commit once done
-            sql_transaction = []  # empty it out
+            self.sql_transaction = []  # empty it out
 
 
 # if __name__ == '__main__':
