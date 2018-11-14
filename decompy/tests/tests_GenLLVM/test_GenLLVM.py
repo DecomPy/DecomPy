@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 from subprocess import CalledProcessError
-from decompy.DataGathering.GenLLVM import GenLLVM
+from decompy.DataGathering.Compilation.GenLLVM import GenLLVM
 
 
 class TestGenLLVM(unittest.TestCase):
