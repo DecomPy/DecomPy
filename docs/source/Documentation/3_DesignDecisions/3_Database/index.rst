@@ -1,7 +1,0 @@
-Database
-**************
-
-.. toctree::
-    :glob:
-
-    *
