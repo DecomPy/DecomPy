@@ -1,7 +1,0 @@
-Installation
-************
-
-.. toctree::
-    :glob:
-
-    *

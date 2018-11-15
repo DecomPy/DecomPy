@@ -1,5 +1,4 @@
 numpy==1.15.3
-sphinx_rtd_theme
 Sphinx==1.8.1
 tensorflow==1.11.0
 tensorboard==1.11.0
