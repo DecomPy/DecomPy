@@ -116,8 +116,8 @@ class WebNavigator:
 
         :param links A set of absolute links
         :type links: set of strings
-        :param str domain: The domain used to filter the links. Should be of form example.com
-        (not of www.google.com or https://www.example.com)
+        :param str domain: The domain used to filter the links. Should be of form example.txt.com
+        (not of www.google.com or https://www.example.txt.com)
         :return: A filtered set of links
         :return: set of strings
         """

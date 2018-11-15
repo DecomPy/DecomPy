@@ -38,4 +38,4 @@ class FilterCompile:
 
 if __name__ == '__main__':
     f = FilterCompile()
-    f.compile_file("decompy/tests/tests_GenLLVM/cDir/example.c")
+    f.compile_file("decompy/tests/tests_GenLLVM/cDir/example.txt.c")

@@ -8505,7 +8505,7 @@ var
 	rprotocol = /^\/\//,
 
 	/* Prefilters
-	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
+	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example.txt)
 	 * 2) These are called:
 	 *    - BEFORE asking for a transport
 	 *    - AFTER param serialization (s.data is a string if s.processData is true)

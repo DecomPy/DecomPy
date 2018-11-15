@@ -68,15 +68,15 @@ class TestGenLLVM(unittest.TestCase):
         """
         root = Path(__file__).resolve().parent
 
-        self.input_file.write(root.joinpath("./cDir/example.c").resolve().as_posix() +"\n")
+        self.input_file.write(root.joinpath("./cDir/example.txt.c").resolve().as_posix() +"\n")
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir/")
 
         filesmade = Path("./llvmDir").iterdir()
         opt_file = next(filesmade)
         unopt_file = next(filesmade)
-        self.assertTrue(opt_file.match("llvmDir/example-opt.ll"), "Correct op file not made. " + str(opt_file))
-        self.assertTrue(unopt_file.match("llvmDir/example-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
+        self.assertTrue(opt_file.match("llvmDir/example.txt-opt.ll"), "Correct op file not made. " + str(opt_file))
+        self.assertTrue(unopt_file.match("llvmDir/example.txt-unopt.ll"), "Correct unopy file not made. " + str(unopt_file))
 
     def test_output_folder_dne(self):
         """
@@ -86,12 +86,12 @@ class TestGenLLVM(unittest.TestCase):
         """
         root = Path(__file__).absolute().parent
 
-        self.input_file.write(root.joinpath("./cDir/example.c").resolve().as_posix() +"\n")
+        self.input_file.write(root.joinpath("./cDir/example.txt.c").resolve().as_posix() +"\n")
         self.input_file.write(root.joinpath("./cDir/example2.c").resolve().as_posix() + "\n")
         self.input_file.flush()
         GenLLVM.genLLVM("test-input.txt", "./llvmDir2/")
 
-        files = [Path("./llvmDir2/example-opt.ll"), Path("./llvmDir2/example-unopt.ll"),
+        files = [Path("./llvmDir2/example.txt-opt.ll"), Path("./llvmDir2/example.txt-unopt.ll"),
                  Path("./llvmDir2/example2-opt.ll"), Path("./llvmDir2/example2-unopt.ll")]
 
         for file in files:
@@ -105,7 +105,7 @@ class TestGenLLVM(unittest.TestCase):
         """
         root = Path(__file__).absolute().parent
 
-        self.input_file.write(root.joinpath("./cDir/example.c").resolve().as_posix() +"\n")
+        self.input_file.write(root.joinpath("./cDir/example.txt.c").resolve().as_posix() +"\n")
         self.input_file.write(root.joinpath("./cDir/example2.c").resolve().as_posix() + "\n")
         self.input_file.write("/cDir/example3.c\n")
         self.input_file.flush()
