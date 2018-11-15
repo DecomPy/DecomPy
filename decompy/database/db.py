@@ -6,7 +6,7 @@ class Database:
     """
     Class for database. Accepts a name to create a new database, and use the database based off of that name.
     """
-    def __init__(self, database_name="c_source", default_tables=False):
+    def __init__(self, database_name="c_source", default_tables=True):
         """
         Creates a database connection and default tables if enabled.
         :param database_name: the database name to create or use.
@@ -22,8 +22,9 @@ class Database:
         if self.conn is not None:
             self.cursor = self.conn.cursor()
 
-        # if setting it up by defaults to False, if false, then user must create own database
+        # if setting it up by defaults to True, if false, then user must create own database
         if default_tables:
+            # IMPORTANT: dates must be in format YYYY-MM-DD
             sql_create_meta_table = """CREATE TABLE IF NOT EXISTS meta_table (
                                             repo_name text PRIMARY KEY,
                                             license text,
@@ -69,6 +70,18 @@ class Database:
 
         return None
 
+    def create_table(self, create_table_sql):
+        """
+        create a table from the create_table_sql statement
+        :param create_table_sql: a CREATE TABLE statement
+        :return:
+        """
+        try:
+            self.cursor.execute(create_table_sql)
+            return True
+        except Error as e:
+            print(e)
+
     def find_repo(self, repo):
         """
         finds a repo by the name, and get all its files
@@ -91,7 +104,8 @@ class Database:
 
         except Exception as e:
             print("find_parent", str(e))
-            return False
+
+        return False
 
     def find_file(self, file_name):
         """
@@ -115,46 +129,41 @@ class Database:
 
         except Exception as e:
             print("find_parent", str(e))
-            return False
 
-    def create_table(self, create_table_sql):
-        """
-        create a table from the create_table_sql statement
-        :param create_table_sql: a CREATE TABLE statement
-        :return:
-        """
-        try:
-            self.cursor.execute(create_table_sql)
-        except Error as e:
-            print(e)
+        return False
 
-    def insert_meta(self, license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date):
+    def insert_meta(self, repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date):
         """
         inserts or replaces if it existsa new meta row by adding it to the transaction builder into the meta table or replaces existing one.
         :return: nothing
         """
         try:
             # TODO: decide if we want to update or just insert even if we have repeated data
-            sql = """REPLACE INTO meta_table(license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
-                   VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}")""".format(license, url, author, filter_approval_date, llvm_gen_date, filter_date,
+            sql = """REPLACE INTO meta_table(repo_name, license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
+                   VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")""".format(repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date,
                                                                                compilation_date, master_download_date)
             self.transaction_builder(sql)
+            return True
         except Error as e:
             print(e)
 
-    def insert_ml(self, repo_name, source_code, object_file, llvm_unop, llvm_op):
+        return False
+
+    def insert_ml(self, file_path, repo_name, source_code, object_file, llvm_unop, llvm_op):
         """
         inserts or replaces if it exists a new ml row by adding it to the transaction builder
         :return: nothing
         """
         try:
             # TODO: decide if we want to update or just insert even if we have repeated data
-            sql = """REPLACE INTO ml_table(repo_name, source_code, object_file, llvm_unop, llvm_op) VALUES(?,?,?,?,?)
-                  VALUES("{}", "{}", "{}", "{}", "{}", "{}")""".format(repo_name, source_code, object_file, llvm_unop, llvm_op)
+            sql = """REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+                  VALUES("{}", "{}", "{}", "{}", "{}", "{}")""".format(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
             self.transaction_builder(sql)
-
+            return True
         except Error as e:
             print(e)
+
+        return False
 
     def delete_meta(self, repo_name):
         """
@@ -165,6 +174,8 @@ class Database:
         try:
             sql = """DELETE FROM meta_table WHERE repo_name = '{}'""".format(repo_name)
             self.cursor.execute(sql)
+            # self.transaction_builder(sql)
+
         except Error as e:
             print(e)
 
@@ -177,17 +188,20 @@ class Database:
         try:
             sql = """DELETE FROM ml_table WHERE file_name = '{}'""".format(file_name)
             self.cursor.execute(sql)
+            # self.transaction_builder(sql)
+
         except Error as e:
             print(e)
 
-    def transaction_builder(self, sql):
+    def transaction_builder(self, sql, override=False):
         """
         populates the database using transactions instead of 1 by 1
         :param sql: the sql query
+        :param override: override the > 1000
         :return: nothing
         """
         self.sql_transaction.append(sql)
-        if len(self.sql_transaction) > 1000:
+        if len(self.sql_transaction) > 1000 or override:
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
             for s in self.sql_transaction:
