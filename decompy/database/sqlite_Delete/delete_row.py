@@ -120,21 +120,7 @@ def main():
     else:
         print("Error! cannot create the database connection.")
 
-    with conn:
-        # create a new meta
-        meta = ('General Licencing ', 'www.url.com', 'SAL ', '2015-01-01', '2015-01-30', '2015-01-01', '2015-01-30', '2015-01-1');
-        repo_name  = create_meta(conn, meta)
 
-        # ML's
-        ML_1 = ('The name of first repo: ', 'source_1.c', 'source_1.o', 'source_1 llvm unoptimized', 'source_1 llvm optimized');
-        ML_2 = ('The name of second repo: ', 'source_2.c', 'source_2.o', 'source_2 llvm unoptimized', 'source_2 llvm optimized');
- 
-        # create ML tables
-        create_ML(conn, ML_1)
-        create_ML(conn, ML_2)
-
-        delete_ML(conn, 'The name of first repo: ');	# Deletes only the ML_1 row of the ML table.
-        #delete_all_ML(conn);				# Deletes all of the rows of the ML table.
 
 if __name__ == '__main__':
     main()
