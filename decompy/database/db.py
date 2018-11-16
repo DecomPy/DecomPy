@@ -17,6 +17,7 @@ class Database:
         self.database_name = database_name  # database name to create
         self.conn = self.create_connection(self.database_name)  # connection
         self.sql_transaction = []  # transaction builder
+        self.offset = 0
 
         # check if we have the connection and assign the cursor
         if self.conn is not None:
@@ -26,7 +27,7 @@ class Database:
         if default_tables:
             # IMPORTANT: dates must be in format YYYY-MM-DD
             sql_create_meta_table = """CREATE TABLE IF NOT EXISTS meta_table (
-                                            repo_name text PRIMARY KEY,
+                                            repo_name text PRIMARY KEY NOT NULL,
                                             license text,
                                             url text UNIQUE,
                                             author text,
@@ -91,14 +92,14 @@ class Database:
         try:
             # get the repo and its files
             sql = "SELECT * FROM ml_table WHERE repo_name = '{}'".format(repo)
-            self.conn.execute(sql)
+            self.cursor.execute(sql)
 
             # after selecting, get all matching files
-            result = self.conn.fetchall()
+            result = self.cursor.fetchall()
 
             # check if result is there after fetching
             if result is not None:
-                return result[0]
+                return result  # return all results, for just one use result[0]
             else:
                 return False
 
@@ -109,21 +110,21 @@ class Database:
 
     def find_file(self, file_name):
         """
-            finds a file by the name, and get all its files
-            :param file_name: the info for one file.
-            :return: sql info or none
-            """
+        finds a file by the name, and get all its files
+        :param file_name: the info for one file.
+        :return: sql info or none
+        """
         try:
             # get the repo and its files
             sql = "SELECT * FROM ml_table WHERE file_path = '{}'".format(file_name)
-            self.conn.execute(sql)
+            self.cursor.execute(sql)
 
             # after selecting, get all matching files
-            result = self.conn.fetchall()
+            result = self.cursor.fetchall()
 
             # check if result is there after fetching
             if result is not None:
-                return result[0]
+                return result  # return all results, for just one use result[0]
             else:
                 return False
 
@@ -134,11 +135,10 @@ class Database:
 
     def insert_meta(self, repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date):
         """
-        inserts or replaces if it existsa new meta row by adding it to the transaction builder into the meta table or replaces existing one.
+        inserts or replaces if it exists new meta row by adding it to the transaction builder into the meta table or replaces existing one.
         :return: nothing
         """
         try:
-            # TODO: decide if we want to update or just insert even if we have repeated data
             sql = """REPLACE INTO meta_table(repo_name, license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
                    VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")""".format(repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date,
                                                                                compilation_date, master_download_date)
@@ -155,7 +155,6 @@ class Database:
         :return: nothing
         """
         try:
-            # TODO: decide if we want to update or just insert even if we have repeated data
             sql = """REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
                   VALUES("{}", "{}", "{}", "{}", "{}", "{}")""".format(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
             self.transaction_builder(sql)
@@ -169,13 +168,62 @@ class Database:
         """
         delete meta data with this repo name, and the ml data as a result of cascading.
         :param repo_name: the repository name
-        :return: nothing
+        :return: bool
         """
         try:
             sql = """DELETE FROM meta_table WHERE repo_name = '{}'""".format(repo_name)
-            self.cursor.execute(sql)
-            # self.transaction_builder(sql)
+            # self.cursor.execute(sql)
+            self.transaction_builder(sql)
+            return True
+        except Error as e:
+            print(e)
 
+        return False
+
+    def get_repos(self, limit=100):
+        """
+        gets 100 random repos, or the number provided
+        :param limit: the number of random repos to get
+        :return:
+        """
+        try:
+            sql = """SELECT * FROM ml_table ORDER BY RANDOM() LIMIT '{}'""".format(limit)
+            self.cursor.execute(sql)
+
+            # after selecting, get all matching files
+            result = self.cursor.fetchall()
+
+            # check if result is there after fetching
+            if result is not None:
+                return result  # return all results, for just one use result[0]
+            else:
+                return False
+        except Error as e:
+            print(e)
+
+        return False
+
+    def get_repos_pagination(self, limit=100):
+        """
+        get pagination repos, defaults to 100 queries
+        :return: nothing
+        """
+        try:
+            print("offset", self.offset)
+            sql = """SELECT * FROM ml_table LIMIT '{}' OFFSET '{}'""".format(limit, self.offset)
+            self.cursor.execute(sql)
+
+            # after selecting, get all matching files
+            result = self.cursor.fetchall()
+
+            self.offset += limit
+            print("result", result)
+
+            # check if result is there after fetching
+            if result is not None:
+                return result  # return all results, for just one use result[0]
+            else:
+                return False
         except Error as e:
             print(e)
 
@@ -186,12 +234,14 @@ class Database:
         :return: nothing
         """
         try:
-            sql = """DELETE FROM ml_table WHERE file_name = '{}'""".format(file_name)
-            self.cursor.execute(sql)
-            # self.transaction_builder(sql)
+            sql = """DELETE FROM ml_table WHERE file_path = '{}'""".format(file_name)
+            self.transaction_builder(sql)
 
+            return True
         except Error as e:
             print(e)
+
+        return False
 
     def transaction_builder(self, sql, override=False):
         """
@@ -201,38 +251,16 @@ class Database:
         :return: nothing
         """
         self.sql_transaction.append(sql)
-        if len(self.sql_transaction) > 1000 or override:
+        if len(self.sql_transaction) > 0 or override:  # TODO: change to > 1000
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
             for s in self.sql_transaction:
                 try:
                     self.cursor.execute(s)  # execute the transaction
-                    # print('executing')
+                    print('executing transactions')
                 except Error as e:
                     print("error: ", str(e))
                     pass
 
             self.conn.commit()  # commit once done
             self.sql_transaction = []  # empty it out
-
-
-# if __name__ == '__main__':
-
-    # with conn:
-    #     # create a new meta
-    #     meta = ('General Licencing ', 'www.url.com', 'SAL ', '2015-01-01', '2015-01-30', '2015-01-01', '2015-01-30',
-    #             '2015-01-1');
-    #     repo_name = create_meta(conn, meta)
-    #
-    #     # ML's
-    #     ML_1 = (
-    #     'The name of first repo: ', 'source_1.c', 'source_1.o', 'source_1 llvm unoptimized', 'source_1 llvm optimized');
-    #     ML_2 = ('The name of second repo: ', 'source_2.c', 'source_2.o', 'source_2 llvm unoptimized',
-    #             'source_2 llvm optimized');
-    #
-    #     # create ML tables
-    #     create_ML(conn, ML_1)
-    #     create_ML(conn, ML_2)
-    #
-    #     delete_ML(conn, 'The name of first repo: ');  # Deletes only the ML_1 row of the ML table.
-    #     # delete_all_ML(conn);				# Deletes all of the rows of the ML table.

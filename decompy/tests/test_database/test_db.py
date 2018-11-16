@@ -10,6 +10,9 @@ class DatabaseTest(unittest.TestCase):
         """
         self.db_test = db("c_source", True)
 
+        # new element
+        self.assertTrue(self.db_test.insert_ml("test4.c", "c_tutorials4", "source codes 4", "blobby4", "llvm_unop4", "llvm_op4"))
+
     def test_create_table(self):
         """
         tests if table already exists
@@ -32,7 +35,7 @@ class DatabaseTest(unittest.TestCase):
     def test_insert_meta(self):
         """
         tests to insert the meta data and tests to override the transaction builder
-        :return:
+        :return: assert
         """
 
         # base info
@@ -49,20 +52,20 @@ class DatabaseTest(unittest.TestCase):
         # insert meta
         self.assertTrue(self.db_test.insert_meta(repo_name, repo_license, url, author, filter_approval_date,
                                                  llvm_gen_date, filter_date, compilation_date, master_download_date))
-        # insert meta, already exists, fail
-        self.assertFalse( self.db_test.insert_meta(repo_name, repo_license, url, author, filter_approval_date,
+        # insert meta, already exists, replace
+        self.assertTrue(self.db_test.insert_meta(repo_name, repo_license, url, author, filter_approval_date,
                                                    llvm_gen_date, filter_date, compilation_date, master_download_date))
         # insert meta, new url
-        self.assertTrue(self.db_test.insert_meta(repo_name, repo_license, "github.com/stuff2", author,
+        self.assertTrue(self.db_test.insert_meta("decompy1", repo_license, "github.com/stuff1", author,
                                                  filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date))
         # insert meta same url, diff repo_name
-        self.assertFalse(self.db_test.insert_meta("decompy2", repo_license, "github.com/stuff2", author,
+        self.assertTrue(self.db_test.insert_meta("decompy2", repo_license, "github.com/stuff2", author,
                                                  filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date))
 
     def test_insert_ml(self):
         """
         tests to insert the machine learning repo and info
-        :return:
+        :return: assert
         """
         # base info
         file_path = "test123.c"
@@ -76,13 +79,86 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(self.db_test.insert_ml(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op))
 
         # new element, but it's same
-        self.assertFalse(self.db_test.insert_ml(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op))
+        # replaces element
+        self.assertTrue(self.db_test.insert_ml(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op))
 
-        # new element, but source code is same
-        self.assertFalse(self.db_test.insert_ml("test1.c", "c_tutorials", source_code, "blobby", "llvm_unop", "llvm_op"))
+        # new element
+        self.assertTrue(self.db_test.insert_ml("test1.c", "c_tutorials1", "source codes 1", "blobby1", "llvm_unop1", "llvm_op1"))
 
-        # new element, but llvm_unop is same
-        self.assertFalse(self.db_test.insert_ml("test2.c", "c_tutorials", source_code, "blobby", "llvm_unop", "llvm_op"))
+        # new element
+        self.assertTrue(self.db_test.insert_ml("test2.c", "c_tutorials2", "source codes 2", "blobby2", "llvm_unop2", "llvm_op2"))
+
+        # new element
+        self.assertTrue(self.db_test.insert_ml("test3.c", "c_tutorials2", "source codes 3", "blobby3", "llvm_unop3", "llvm_op3"))
+
+    def test_find_repo(self):
+        """
+        tests to find a repo and all its files using the same foreign key
+        :return: assertions
+        """
+
+        # search for repos and get all files with that repo
+        # this is being deleted later on and may have conflicts due to pytest threading
+        # self.assertTrue(len(self.db_test.find_repo("decompy")) == 1)
+        self.assertTrue(len(self.db_test.find_repo("c_tutorials1")) == 1)
+        self.assertTrue(len(self.db_test.find_repo("c_tutorials2")) == 2)
+
+        # no repo exists
+        self.assertFalse(self.db_test.find_repo("unknown repo name here"))
+
+    def test_find_file(self):
+        """
+        tests to find a file name in the database
+        :return: assert
+        """
+        self.assertTrue(len(self.db_test.find_file("test1.c")) == 1)
+        self.assertTrue(len(self.db_test.find_file("test2.c")) == 1)
+        self.assertTrue(len(self.db_test.find_file("test3.c")) == 1)
+
+    def test_delete_ml(self):
+        """
+        tests deleting a file from the ML table
+        :return:
+        """
+
+        # test delete, then test if it exists
+        self.assertTrue(self.db_test.delete_ml("test123.c"))
+        self.assertFalse(self.db_test.find_file("test123.c"))
+
+    def test_delete_meta(self):
+        """
+        tests deleting an element from the meta database and deletes the files in that as well
+        :return:
+        """
+
+        # test delete, then test if it exists
+        self.assertTrue(self.db_test.delete_meta("decompy2"))
+        self.assertFalse(self.db_test.find_repo("decompy2"))
+
+    def test_get_repos(self):
+        """
+        tests getting 100 random repos from the database
+        :return:
+        """
+        # gets these numbers
+        self.assertTrue(len(self.db_test.get_repos()) > 0)
+        self.assertTrue(len(self.db_test.get_repos(50)) > 0)
+
+    def test_get_repos_pagination(self):
+        """
+        tests using pagination on the database to get files
+        :return:
+        """
+
+        # gets pagination, internal value will take care of it
+        self.assertTrue(len(self.db_test.get_repos_pagination(2)) == 2)
+        self.assertTrue(len(self.db_test.get_repos_pagination(2)) == 2)
+
+
+
+
+
+
 
 
 
