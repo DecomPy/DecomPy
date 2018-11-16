@@ -92,7 +92,7 @@ class GitHubScraper(WebNavigator):
                     if "/blob/" in link:  # /blob/ is a marker for files
                         if link in GitHubScraper.sourceFiles:
                             continue
-                        if ".c" not in link.split("/")[-1]:
+                        if not link.split("/")[-1].endswith(".c"):
                             continue
                         if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
                             GitHubScraper.sourceFiles.append((link.split("/")[-1], link))
