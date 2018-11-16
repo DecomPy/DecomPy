@@ -199,6 +199,8 @@ class GitHubScraper(WebNavigator):
         GitHubScraper.pageLinks = set()  # Clear out set in case there are still things in it
         with concurrent.futures.ThreadPoolExecutor() as executor:
             for url in urls:
+                if not url.split('/')[-1].endswith(".c"):  # This check happened before, but bad URLs seem to sneak in
+                    continue
                 executor.submit(GitHubScraper.__get_absolute_links_from_page, url)
                 time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)  # So Github server doesn't close connection
 
@@ -298,11 +300,11 @@ if __name__ == "__main__":
     # fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
     # print("filename/content pairs: ", fileContentTuples)
     # GitHubScraper.fileContentIntoStorage(fileContentTuples)
-    GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
+    # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files(
     #     "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
+    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.download_all_files("https://github.com/torvalds/linux")
     print((time.time() - timer) / 60, "minutes")
