@@ -1,0 +1,7 @@
+Data Gathering
+**************
+
+.. toctree::
+    :glob:
+
+    *
