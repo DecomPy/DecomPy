@@ -133,7 +133,7 @@ class Database:
 
         return False
 
-    def insert_meta(self, repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date):
+    def insert_meta(self, repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date, override=False):
         """
         inserts or replaces if it exists new meta row by adding it to the transaction builder into the meta table or replaces existing one.
         :return: nothing
@@ -142,14 +142,14 @@ class Database:
             sql = """REPLACE INTO meta_table(repo_name, license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
                    VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")""".format(repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date,
                                                                                compilation_date, master_download_date)
-            self.transaction_builder(sql)
+            self.__transaction_builder(sql, override)
             return True
         except Error as e:
             print(e)
 
         return False
 
-    def insert_ml(self, file_path, repo_name, source_code, object_file, llvm_unop, llvm_op):
+    def insert_ml(self, file_path, repo_name, source_code, object_file, llvm_unop, llvm_op, override=False):
         """
         inserts or replaces if it exists a new ml row by adding it to the transaction builder
         :return: nothing
@@ -157,14 +157,14 @@ class Database:
         try:
             sql = """REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
                   VALUES("{}", "{}", "{}", "{}", "{}", "{}")""".format(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
-            self.transaction_builder(sql)
+            self.__transaction_builder(sql, override)
             return True
         except Error as e:
             print(e)
 
         return False
 
-    def delete_meta(self, repo_name):
+    def delete_meta(self, repo_name, override=False):
         """
         delete meta data with this repo name, and the ml data as a result of cascading.
         :param repo_name: the repository name
@@ -173,7 +173,24 @@ class Database:
         try:
             sql = """DELETE FROM meta_table WHERE repo_name = '{}'""".format(repo_name)
             # self.cursor.execute(sql)
-            self.transaction_builder(sql)
+            self.__transaction_builder(sql, override)
+
+            return True
+        except Error as e:
+            print(e)
+
+        return False
+
+    def delete_ml(self, file_name, override=False):
+        """
+        delete ml data with this file name.
+        :param file_name: the file name to delete.
+        :return: nothing
+        """
+        try:
+            sql = """DELETE FROM ml_table WHERE file_path = '{}'""".format(file_name)
+            self.__transaction_builder(sql, override)
+
             return True
         except Error as e:
             print(e)
@@ -209,7 +226,6 @@ class Database:
         :return: nothing
         """
         try:
-            print("offset", self.offset)
             sql = """SELECT * FROM ml_table LIMIT '{}' OFFSET '{}'""".format(limit, self.offset)
             self.cursor.execute(sql)
 
@@ -217,7 +233,6 @@ class Database:
             result = self.cursor.fetchall()
 
             self.offset += limit
-            print("result", result)
 
             # check if result is there after fetching
             if result is not None:
@@ -227,23 +242,7 @@ class Database:
         except Error as e:
             print(e)
 
-    def delete_ml(self, file_name):
-        """
-        delete ml data with this file name.
-        :param file_name: the file name to delete.
-        :return: nothing
-        """
-        try:
-            sql = """DELETE FROM ml_table WHERE file_path = '{}'""".format(file_name)
-            self.transaction_builder(sql)
-
-            return True
-        except Error as e:
-            print(e)
-
-        return False
-
-    def transaction_builder(self, sql, override=False):
+    def __transaction_builder(self, sql, override=False):
         """
         populates the database using transactions instead of 1 by 1
         :param sql: the sql query
@@ -251,13 +250,13 @@ class Database:
         :return: nothing
         """
         self.sql_transaction.append(sql)
-        if len(self.sql_transaction) > 0 or override:  # TODO: change to > 1000
+        if len(self.sql_transaction) > 1000 or override:  # TODO: change to > 1000
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
             for s in self.sql_transaction:
                 try:
                     self.cursor.execute(s)  # execute the transaction
-                    print('executing transactions')
+                    # print('executing transactions')
                 except Error as e:
                     print("error: ", str(e))
                     pass
