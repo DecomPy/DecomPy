@@ -29,6 +29,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import concurrent.futures
+import datetime
+
 from decompy.DataGathering.WebNavigator import WebNavigator
 import os
 import time
@@ -47,10 +49,10 @@ class GitHubScraper(WebNavigator):
     TIME_BETWEEN_THREAD_SPAWN = 0
     pageContents = []  # Used for multi-threading in __getContent
     subURLs = []  # Used for multi-threading in __getFileURLSFromGitRepo
-    subFolders = set()  # Used for multi-threading in __getFileURLSFromGitRepo
+    subFolders = []  # Used for multi-threading in __getFileURLSFromGitRepo
     sourceFiles = []  # Used for multi-threading in __getFileURLSFromGitRepo
-    pageLinks = set()  # Used for multi-threading in __getAbsoluteLinksFromPage
-    scrapedURLs = set()
+    pageLinks = []  # Used for multi-threading in __getAbsoluteLinksFromPage
+    scrapedURLs = []
 
     @staticmethod
     def __get_file_urls_from_github_repo(url):
@@ -100,7 +102,7 @@ class GitHubScraper(WebNavigator):
                         if link in GitHubScraper.subFolders:
                             continue
                         if "master" in link.split("/"):
-                            GitHubScraper.subFolders.add(link)
+                            GitHubScraper.subFolders.append(link)
                             GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
 
     @staticmethod
@@ -114,9 +116,9 @@ class GitHubScraper(WebNavigator):
         """
 
         GitHubScraper.subURLs = ["/master/"]
-        GitHubScraper.subFolders = {repo_url}
+        GitHubScraper.subFolders = [repo_url]
         GitHubScraper.sourceFiles = []
-        GitHubScraper.scrapedURLs = set()
+        GitHubScraper.scrapedURLs = []
         counter = 0
         thread_spawning_counter = 0
 
@@ -126,15 +128,15 @@ class GitHubScraper(WebNavigator):
                 print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
                       thread_spawning_counter)
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                futures = set()
+                futures = []
                 while len(GitHubScraper.subFolders) > 0:
                     next_url_to_scrape = GitHubScraper.subFolders.pop()
                     if next_url_to_scrape in GitHubScraper.scrapedURLs:
                         continue
-                    futures.add(executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape))
-                    GitHubScraper.scrapedURLs.add(next_url_to_scrape)
+                    futures.append(executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape))
+                    GitHubScraper.scrapedURLs.append(next_url_to_scrape)
                     time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)
-                    futures = {future for future in futures if not future.done()}
+                    futures = [future for future in futures if not future.done()]
                     if len(GitHubScraper.subFolders) == 0:
                         concurrent.futures.wait(futures)
             counter += 1
@@ -172,14 +174,13 @@ class GitHubScraper(WebNavigator):
         """
         Finds absolute URLs within a page. This function is used from getContentFromGitHubFileURLs via threading
 
-        :param link: the absolute link to resolve
-        :return: set of absolute URLs within a page
+        :param link: URL to page
         """
         content = WebNavigator.getContent(link)
         links = WebNavigator.getLinks(content)
         abs_links = WebNavigator.getAbsolute(link, links)
         for i in abs_links:
-            GitHubScraper.pageLinks.add(i)
+            GitHubScraper.pageLinks.append(i)
 
     @staticmethod
     def get_content_from_github_file_urls(file_url_tuples):
@@ -196,7 +197,7 @@ class GitHubScraper(WebNavigator):
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: urls:", urls)
             print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting absolute URLS on page with the content we want")
 
-        GitHubScraper.pageLinks = set()  # Clear out set in case there are still things in it
+        GitHubScraper.pageLinks = []  # Clear out list in case there are still things in it
         with concurrent.futures.ThreadPoolExecutor() as executor:
             for url in urls:
                 if not url.split('/')[-1].endswith(".c"):  # This check happened before, but bad URLs seem to sneak in
@@ -245,7 +246,7 @@ class GitHubScraper(WebNavigator):
         # Make default name of directory to be downloaded to "username_reponame"
         if target_directory is None:
             target_directory = content_url_tuple[0][1].split("/")[3] + "_" + content_url_tuple[0][1].split("/")[4]
-        target_subdirectory = target_directory + "/unfiltered_C_files"
+        target_subdirectory = target_directory + "/C_files"
 
         # Creates a directory for the repository if one does
         if not os.path.exists(target_directory):
@@ -257,7 +258,7 @@ class GitHubScraper(WebNavigator):
         if not (os.path.isfile(target_directory + "config.META")):
             with open(os.path.join(target_directory, "config.META"), "w") as f:
                 f.write("File download timestamp: ")
-                f.write(time.asctime(time.localtime(time.time())))
+                f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
         # Otherwise config.META does exist. Update the correct line
         else:
             update_time_stamp = False
@@ -303,8 +304,8 @@ if __name__ == "__main__":
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
     # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-    # GitHubScraper.download_all_files(
-    #     "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
+    GitHubScraper.download_all_files(
+        "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
+    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.download_all_files("https://github.com/torvalds/linux")
     print((time.time() - timer) / 60, "minutes")

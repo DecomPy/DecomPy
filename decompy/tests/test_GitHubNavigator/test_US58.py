@@ -1,5 +1,5 @@
+import datetime
 import os
-import time
 import unittest
 from decompy.DataGathering.GitHubScraper import GitHubScraper
 import shutil
@@ -49,12 +49,12 @@ class GitHubScraperTest(unittest.TestCase):
                 line = f.readline()
                 while line:
                     if "File download timestamp:" in line:
-                        fileMin = line.split(" ")[-2].split(":")[-2]
-                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        file_minute = line.split(":")[-2]
+                        minute = datetime.datetime.today().strftime('%M')
                         minute = int(minute)
-                        fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
-                                        or fileMin == ((minute - 1) % 60))
+                        file_minute = int(file_minute)
+                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                                        or file_minute == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -65,12 +65,12 @@ class GitHubScraperTest(unittest.TestCase):
                 line = f.readline()
                 while line:
                     if "File download timestamp:" in line:
-                        fileMin = line.split(" ")[-2].split(":")[-2]
-                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        file_minute = line.split(":")[-2]
+                        minute = datetime.datetime.today().strftime('%M')
                         minute = int(minute)
-                        fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
-                                        or fileMin == ((minute - 1) % 60))
+                        file_minute = int(file_minute)
+                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                                        or file_minute == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -99,12 +99,12 @@ class GitHubScraperTest(unittest.TestCase):
                 line = f.readline()
                 while line:
                     if "File download timestamp:" in line:
-                        fileMin = line.split(" ")[-2].split(":")[-2]
-                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        file_minute = line.split(":")[-2]
+                        minute = datetime.datetime.today().strftime('%M')
                         minute = int(minute)
-                        fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
-                                        or fileMin == ((minute - 1) % 60))
+                        file_minute = int(file_minute)
+                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                                        or file_minute == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -115,12 +115,12 @@ class GitHubScraperTest(unittest.TestCase):
                 line = f.readline()
                 while line:
                     if "File download timestamp:" in line:
-                        fileMin = line.split(" ")[-2].split(":")[-2]
-                        year, month, day, hour, minute = time.strftime("%Y,%m,%d,%H,%M").split(",")
+                        file_minute = line.split(":")[-2]
+                        minute = datetime.datetime.today().strftime('%M')
                         minute = int(minute)
-                        fileMin = int(fileMin)
-                        self.assertTrue(fileMin == minute or fileMin == ((minute + 1) % 60)
-                                        or fileMin == ((minute - 1) % 60))
+                        file_minute = int(file_minute)
+                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                                        or file_minute == ((minute - 1) % 60))
                         passed = True
                     line = f.readline()
             self.assertTrue(passed)
@@ -147,8 +147,8 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/unfiltered_C_files/main.c"))
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/unfiltered_C_files/main2.c"))
+        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/main.c"))
+        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/main2.c"))
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
@@ -161,8 +161,8 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
-        self.assertTrue(os.path.isfile("test_dir/unfiltered_C_files/main.c"))
-        self.assertTrue(os.path.isfile("test_dir/unfiltered_C_files/main2.c"))
+        self.assertTrue(os.path.isfile("test_dir/C_files/main.c"))
+        self.assertTrue(os.path.isfile("test_dir/C_files/main2.c"))
 
         # Makes sure the directory is always clean
         if os.path.exists("test_dir"):
