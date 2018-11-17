@@ -163,8 +163,13 @@
 <h1>Filtering the Files<a class="headerlink" href="#filtering-the-files" title="Permalink to this headline">¶</a></h1>
 <p>This is a log of major design decisions and reasoning made during the creation of filtering C files of decompy.
 At the time of writing this, this is made up of one class: filter_c_file.py and considers three major components:
-a blacklist, a whitelist, and the file size of each file. Once the file has passed all tests, the path is stored
-into a file, which can be read.</p>
+the file size of each file, a blacklist, a whitelist, and finally compiling. Once the file has passed all tests,
+the path is stored into a file, which can be read.</p>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>File Size</dt>
+<dd>The filter then looks for the file size to filter for around 400 lines of code. This is set to 8000 bytes by default.</dd>
+</dl>
 <hr class="docutils" />
 <dl class="docutils">
 <dt>Blacklist</dt>
@@ -181,8 +186,8 @@ it does not pass the test. The only exception is when a file does not use any he
 </dl>
 <hr class="docutils" />
 <dl class="docutils">
-<dt>File Size</dt>
-<dd>The filter then looks for the file size to filter for around 400 lines of code. This is set to 8000 bytes by default.</dd>
+<dt>Compile Files</dt>
+<dd>The filter finally runs a subprocess with clang. We only need it to compile, so we use the “-fsyntax-only” flag when compiling.</dd>
 </dl>
 </div>
 
@@ -227,11 +232,20 @@ it does not pass the test. The only exception is when a file does not use any he
 
     
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   
