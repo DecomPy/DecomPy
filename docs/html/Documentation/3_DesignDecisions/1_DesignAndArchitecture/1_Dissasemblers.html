@@ -87,7 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">Decompy API</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design and Architecture</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Choosing a Disassembler for DecomPy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Choosing a Disassembler for DecomPy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#descriptions-of-possible-compilers">Descriptions of Possible Compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analysis-of-dissasembler-options">Analysis of Dissasembler Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overall-suggestion-for-the-project">Overall Suggestion for the Project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#capstone">Capstone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#udis86-the-runner-up">udis86 - The runner-up</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
@@ -163,6 +170,8 @@
             
   <div class="section" id="choosing-a-disassembler-for-decompy">
 <h1>Choosing a Disassembler for DecomPy<a class="headerlink" href="#choosing-a-disassembler-for-decompy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="descriptions-of-possible-compilers">
+<h2>Descriptions of Possible Compilers<a class="headerlink" href="#descriptions-of-possible-compilers" title="Permalink to this headline">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
 <div class="active item sphinx-data-tab-0 docutils container">
@@ -379,7 +388,7 @@ which is not a good fit for this project.</p>
 <td>Custom</td>
 <td>n/a</td>
 <td>N</td>
-<td>N</td>
+<td>Y</td>
 <td>N</td>
 <td>Y</td>
 <td>N</td>
@@ -397,6 +406,68 @@ which is not a good fit for this project.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="analysis-of-dissasembler-options">
+<h2>Analysis of Dissasembler Options<a class="headerlink" href="#analysis-of-dissasembler-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="easiest-integration">
+<h3>Easiest Integration<a class="headerlink" href="#easiest-integration" title="Permalink to this headline">¶</a></h3>
+<p>Looking through each of the dissasemblers, there were a number of things that were considered when choosing the “easiest to integrate.”
+The first was that the dissasembler was not solely intended to be used through a graphical or otherwise interactive usage as this would
+be difficult to simulate and impractical. The second was that it had good documentation of usage. Third, the dissasembler, if using a
+library should support bindings that the current chosen languages support. Lastly, and most importantly, the dissasembler’s usage should
+be simple while being adaptable. In a library, this means that doing anything should not take a huge number of lines of code and that
+the lines it takes should be readily apparent for any task (this overlaps good docs somewhat).</p>
+<p>Taking into account each of these things, we can easily rule out a few. GDB, Lida, Dissy, and AsmDis were mainly intended for interactive
+use and therefore not well suited for this project. The Bastard Dissasembler had very little documentation and would be difficult to
+integrate because there was little information on both the library it provides/uses and the dissasembler tool itself. Objdump would also
+not be a good choice because it does not output in an easily processable format and would take a lot of work to fix (essentially, many
+dissasemblers use objdump and interpret it more usefully, so we would be writing a dissasembler).</p>
+<p>This leaves:
+* Capstone
+* udis86
+* Objconv
+* ldasm</p>
+</div>
+<div class="section" id="best-x86-generation">
+<h3>Best x86 Generation<a class="headerlink" href="#best-x86-generation" title="Permalink to this headline">¶</a></h3>
+<p>The next thing to take into account was the end result. We wanted to choose a dissasembler which would generate the most accurate code. This
+would do two things. First, it would make the machine learning’s job easier in the end. Second, it would be more accurate to the paid to use
+dissasemblers we would hope our tool would be paired with.</p>
+<p>Since it would be difficult to make the call of what dissasembler has “good enough” x86, I will simply rank the remaining dissasemblers in terms
+of apparent use and support assuming that more community usage implies that the dissasembler does better.</p>
+<p>Out of the remaining tools, the most supported are:
+1. ldasm
+2. Capstone
+3. udis86
+4. Objconv</p>
+</div>
+</div>
+<div class="section" id="overall-suggestion-for-the-project">
+<h2>Overall Suggestion for the Project<a class="headerlink" href="#overall-suggestion-for-the-project" title="Permalink to this headline">¶</a></h2>
+<p>Out of the 4 remaining options, I believe only 2 will work. Ldasm, despite seeming to work well, does not support linux very well and only supports
+the PE format. Objconv would work, but it is licensed with GPL and therefor does not fit well with the project (GPL requires projects which contain
+them to be GPL license and is not good for commercially usable projects).</p>
+<p>Therefore, my overall suggestion is Capstone, followed by udis86.</p>
+</div>
+<div class="section" id="capstone">
+<h2>Capstone<a class="headerlink" href="#capstone" title="Permalink to this headline">¶</a></h2>
+<p>Capstone has great support from its community. Currently, its github repo has 3,781 commits and counting (unlike many, it is still receiving updates).
+It supports C, Clojure, F#, Common Lisp, Visual Basic, PHP, PowerShell, Emacs, Haskell, Perl, Python, Ruby, C#, NodeJS, Java, GO, C++, OCaml, Lua, Rust,
+Delphi, Free Pascal &amp; Vala, so there is no shortage in choices and C++ and Python are supported (the languages our project will mostly use). It is
+distributed under BSD, the same license as our project. It supports a number of architectures, not just x86: ARM, ARM64 (ARMv8), Ethereum VM, M68K, Mips,
+PPC, Sparc, SystemZ, TMS320C64X, M680X, XCore and X86 (including X86_64), which would allow our project flexibility in the future. It is also focussed
+on malware dissasembly and has “[h]igh performance &amp; [is] suitable for malware analysis (capable of handling various X86 malware tricks).” Two of the
+other dissasemblers in our list had notes from their authors mentioning using this dissasember instead which shows it definitely has a following (and
+156 contributors on GitHub at this time helps with that assertion). Overall this seems like the best choice.</p>
+</div>
+<div class="section" id="udis86-the-runner-up">
+<h2>udis86 - The runner-up<a class="headerlink" href="#udis86-the-runner-up" title="Permalink to this headline">¶</a></h2>
+<p>udis86 is a library for x86 dissasembly written in C. This does not work with our language choices quite as well, however, it would be possible (though
+more work) to write python binding (we are using CPython) for the library, and if not, we could compile a C program which does what we need and run it
+through Popen in python or through similar tools in C++. It has decent documentation, and it seems to have decent support (some of the other more tool
+like dissasemblers like the interactive ones used this library). Overall, it seems a bit overshadowed by Capstone, but it looks like it would do the
+job.</p>
+</div>
 </div>
 
 
