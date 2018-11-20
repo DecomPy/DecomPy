@@ -336,52 +336,56 @@ class GitHubScraper(WebNavigator):
 
         # Does the actual work. Iterates through repo URLs, and stores them to corresponding folder
         for repo_url, target_directory in list(zip(repo_urls, target_directories)):
-            subfolder_links = []
-            file_links = []
             GitHubScraper.file_name_url_content_tuples = []
+            GitHubScraper.subfolder_links = []
+            GitHubScraper.file_links = []
             while True:
-                # Store known files first to keep the amount of data in memory at a minimum to improve performance
-                print("SUBFOLDER LINKS:", subfolder_links)
-                print("FILE LINKS:", file_links)
 
                 with concurrent.futures.ThreadPoolExecutor() as executor:
-                    while len(file_links) > 0:
+                    while len(GitHubScraper.file_links) > 0:
                         print("Submitting a file to be downloaded")
-                        executor.submit(GitHubScraper.__download_file, file_links.pop())
+                        executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop())
+                    # while len(GitHubScraper.subfolder_links) > 0:
+                    #     print("Submitting a page to be scraped")
+                    while len(GitHubScraper.file_name_url_content_tuples) > 0:
+                        print("Storing a file")
+                        GitHubScraper.file_content_into_storage([GitHubScraper.file_name_url_content_tuples.pop()],
+                                                                target_directory)
 
-                # The next line should only ever be running on ONE THREAD. I think. Use the futures
-                # add_done_callback to schedule additional files that need to be stored. Maybe use a separate process?
-                while len(GitHubScraper.file_name_url_content_tuples) > 0:
-                    print("Storing a file")
-                    GitHubScraper.file_content_into_storage([GitHubScraper.file_name_url_content_tuples.pop()],
-                                                            target_directory)
+                # Store known files first to keep the amount of data in memory at a minimum to improve performance
+                print("SUBFOLDER LINKS:", GitHubScraper.subfolder_links)
+                print("FILE LINKS:", GitHubScraper.file_links)
 
                 # If there are no files to store, scrape GitHub for more files
                 # --------------------Start multithreading block here
                 if repo_url is not None:
                     all_links_on_page = list(GitHubScraper.getAbsoluteLinksFromPage(repo_url))
-                    subfolder_links.extend([i for i in all_links_on_page
-                                            if "/tree/master/" in i  # Makes sure that it is looking at files in master
-                                            if "#" not in i  # #'s are redundant links
-                                            if repo_url != i  # Don't save link to current url
-                                            if len(repo_url) < len(i)  # Don't save link to someplace with shorter URL,
-                                            # since it's probably a parent URL
-                                            ])
-                    file_links.extend([i for i in all_links_on_page
-                                       if "/blob/master/" in i  # Makes sure that it is looking at subfolders in master
-                                       if i.endswith(".c")  # Makes sure that the files end with exactly .c
-                                       ])
+                    GitHubScraper.subfolder_links.extend([i for i in all_links_on_page
+                                                          if "/tree/master/" in i
+                                                          # Makes sure that it is looking at files in master
+                                                          if "#" not in i  # #'s are redundant links
+                                                          if repo_url != i  # Don't save link to current url
+                                                          if len(repo_url) < len(i)
+                                                          # Don't save link to someplace with shorter URL,
+                                                          # since it's probably a parent URL
+                                                          ])
+                    GitHubScraper.file_links.extend([i for i in all_links_on_page
+                                                     if "/blob/master/" in i
+                                                     # Makes sure that it is looking at subfolders in master
+                                                     if i.endswith(".c")
+                                                     # Makes sure that the files end with exactly .c
+                                                     ])
                 # --------------------End multithreading block here
 
                 # Break out of loop if there are no files to store and no links to scrape
-                if len(subfolder_links) == 0 \
-                        and len(file_links) == 0 \
+                if len(GitHubScraper.subfolder_links) == 0 \
+                        and len(GitHubScraper.file_links) == 0 \
                         and len(GitHubScraper.file_name_url_content_tuples) == 0:
                     break
 
                 # Scrape next unscraped URL within the repo if there is one
-                if len(subfolder_links) > 0:
-                    repo_url = subfolder_links.pop()
+                if len(GitHubScraper.subfolder_links) > 0:
+                    repo_url = GitHubScraper.subfolder_links.pop()
                 else:
                     repo_url = None
 
@@ -390,7 +394,7 @@ if __name__ == "__main__":
     timer = time.time()
     # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"], "FolderA")
     GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
-                            "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
+                             "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
                             ["FolderA", "FolderB"])
     # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher")
     # GitHubScraper.do_it_all("https://github.com/torvalds/linux")
