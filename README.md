@@ -7,7 +7,7 @@ SER 401 Team 8- Adaptive Machine Learning Decompiler
 * In order to run this project, it is highly recommended to create a virtual environment, either through `Anaconda` or `python3 virtualenv`.
 * You must have Python3.6 installed as your environment.
 
-###### Python3 Environment
+#### Python3 Environment
 If you're using `python3 virtualenv` with python3.6, you can do the following in the **DecomPy root directory**:
 ```
 virtualenv -p python3.6 venv_decompy
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 As always, to remove the virtualenv, you can `deactivate` if you're in the environment then `rm -r venv_decompy/`
 
 Another option is an Anaconda environment if you prefer that over Virtualenv.
-###### Anaconda Environment
+#### Anaconda Environment
 If you're using `Anaconda` (must be in path environment variables), it is recommended to follow these steps:
 * Install Anaconda (skip this part if you already have it installed)
 
@@ -47,7 +47,7 @@ to remove the environment.
 
 
 
-###### Ubuntu 16.04 dependency installation
+#### Ubuntu 16.04 dependency installation
 apt packages:
 ```
 llvm 1:6.0-41~exp5~ubuntu1
