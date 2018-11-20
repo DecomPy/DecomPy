@@ -11,8 +11,8 @@ class RepoStructure:
         :param parent_dir: The parent directory for all files/folders
         that will be created.
         """
-        self.parentDir = parent_dir
-        self.root = os.path.join(parent_dir, "Repositories")
+        self.parentDir = os.path.abspath(parent_dir)
+        self.root = os.path.abspath(os.path.join(parent_dir, "Repositories"))
         RepoStructure.__mkdir(self.root)
 
     def batch_format(self, repos_json, filter_date):
@@ -84,7 +84,7 @@ class RepoStructure:
 
 
 if __name__ == "__main__":
-    from RepoFilter import RepoFilter
+    from decompy.DataGathering.RepoFilter import RepoFilter
     import datetime
 
     rf = RepoFilter("C ", language="C", blacklist=["C++", "C#"])
