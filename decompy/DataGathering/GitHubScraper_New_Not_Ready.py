@@ -49,182 +49,6 @@ class GitHubScraper(WebNavigator):
     file_links = []
 
     @staticmethod
-    def __get_file_urls_from_github_repo(url):
-        """
-        Function for multi-threaded web scraping. Called by getFileURLSFromGitHubRepo. Not recommended for outside use
-        :param url: url of GitHub Repo or a folder within that repo
-        :return: Nothing
-        """
-
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: __get_file_urls_from_github_repo:", url)
-
-        content = GitHubScraper.getContent(url)
-        links = GitHubScraper.getLinks(content)
-        links = list(filter(None, links))  # Deletes empty urls.
-
-        # The following block removes links that don't need to be followed
-        links_to_remove = []
-        try:
-            for link in links:
-                if "blob" in link.split("/"):
-                    continue
-                if "master" in link.split("/"):
-                    continue
-                links_to_remove.append(link)
-            for link in links_to_remove:
-                links.remove(link)
-        except Exception as e:
-            print(e)
-
-        abs_links = GitHubScraper.getAbsolute(url, set(links))
-        for link in abs_links:
-            for subURL in GitHubScraper.subURLs:
-                if subURL in link:
-                    if "#" in link.split("/")[-1]:  # filters URLs that are the same as other URLs
-                        continue
-                    if "commits" in link.split("/"):  # filters files that are not in main
-                        continue
-                    if "/blob/" in link:  # /blob/ is a marker for files
-                        if link in GitHubScraper.sourceFilesLinks:
-                            continue
-                        if not link.split("/")[-1].endswith(".c"):
-                            continue
-                        if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                            GitHubScraper.sourceFilesLinks.append((link.split("/")[-1], link))
-                    else:
-                        if link in GitHubScraper.subFolderLinks:
-                            continue
-                        if "master" in link.split("/"):
-                            GitHubScraper.subFolderLinks.append(link)
-                            GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
-
-    @staticmethod
-    def get_file_urls_from_github_repo(repo_url):
-        """
-        Finds and returns a list of the absolute URLs of all the files
-        within the current master branch of a GitHub repository
-
-        :param repo_url: absolute URL to a GitHub repo e.g. "https://github.com/DecomPy/valid_and_compilable_1"
-        :return: a list of tuples of file names and absolute URLs within the GitHub repo
-        """
-
-        GitHubScraper.subURLs = ["/master/"]
-        GitHubScraper.subFolderLinks = [repo_url]
-        GitHubScraper.sourceFilesLinks = []
-        GitHubScraper.scrapedURLs = []
-        counter = 0
-        thread_spawning_counter = 0
-
-        while counter <= len(GitHubScraper.subFolderLinks):
-            if GitHubScraper.DEBUG:
-                thread_spawning_counter += 1
-                print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
-                      thread_spawning_counter)
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                futures = []
-                while len(GitHubScraper.subFolderLinks) > 0:
-                    next_url_to_scrape = GitHubScraper.subFolderLinks.pop()
-                    if next_url_to_scrape in GitHubScraper.scrapedURLs:
-                        continue
-                    futures.append(executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape))
-                    GitHubScraper.scrapedURLs.append(next_url_to_scrape)
-                    time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)
-                    futures = [future for future in futures if not future.done()]
-                    if len(GitHubScraper.subFolderLinks) == 0:
-                        concurrent.futures.wait(futures)
-            counter += 1
-            if counter >= len(GitHubScraper.subFolderLinks):
-                break
-
-        return list(set(GitHubScraper.sourceFilesLinks))
-
-    @staticmethod
-    def __get_content(link, index):
-        """
-        Retrieves the content from a link. This one is used with multi-threading
-
-        :param link: An absolute URL
-        :return: page content
-        :return: str
-        """
-
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: __get_content:", link)
-
-        page_source = ""
-        try:
-            response = urllib.request.urlopen(link)
-            try:
-                page_source = response.read().decode(response.headers.get_content_charset())
-            except (TypeError, UnicodeDecodeError) as e:
-                print(e)
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
-            print(e)
-        GitHubScraper.pageContents[index] = page_source
-
-    @staticmethod
-    def __get_absolute_links_from_page(link):
-        """
-        Finds absolute URLs within a page. This function is used from getContentFromGitHubFileURLs via threading
-
-        :param link: URL to page
-        """
-        content = WebNavigator.getContent(link)
-        links = WebNavigator.getLinks(content)
-        abs_links = WebNavigator.getAbsolute(link, links)
-        for i in abs_links:
-            GitHubScraper.pageLinks.append(i)
-
-    @staticmethod
-    def get_content_from_github_file_urls(file_url_tuples):
-        """
-        Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs that are not GitHub file URLs
-        :param file_url_tuples: a list of tuples of file names and absolute URLs within the GitHub repo.
-        :return: list of tuples of file names, file URLs, contents of those files.
-        """
-
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting urls from tuples")
-        urls = [i[1] for i in file_url_tuples]
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: urls:", urls)
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting absolute URLS on page with the content we want")
-
-        GitHubScraper.pageLinks = []  # Clear out list in case there are still things in it
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            for url in urls:
-                if not url.split('/')[-1].endswith(".c"):  # This check happened before, but bad URLs seem to sneak in
-                    continue
-                executor.submit(GitHubScraper.__get_absolute_links_from_page, url)
-                time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)  # So Github server doesn't close connection
-
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS")
-        raw_links = [i for i in list(GitHubScraper.pageLinks) if "raw" in i]
-
-        if GitHubScraper.DEBUG:
-            print("GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting content")
-        GitHubScraper.pageContents = [None] * len(raw_links)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            for i in range(len(raw_links)):
-                executor.submit(GitHubScraper.__get_content, raw_links[i], i)
-                time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)  # So Github server doesn't close connection
-
-        content = GitHubScraper.pageContents
-        return_list = []
-        # Creates the list of ("file name", "file URL", "file content") tuples
-        for i, j in zip(file_url_tuples, content):
-            return_list.append((i[0], i[1], j))
-
-        if GitHubScraper.DEBUG:
-            print("urls:", urls)
-            print("pagelinks:", GitHubScraper.pageLinks)
-            print("raw_links: ", raw_links)
-
-        return return_list
-
-    @staticmethod
     def file_content_into_storage(content_url_tuple, target_directory=None, update_meta=False):
         """
         Writes the content of a string into a file given a list of tuples of file names and strings. Never multithread
@@ -346,23 +170,25 @@ class GitHubScraper(WebNavigator):
             subfolderCounter = 0
             linkCounter = 0
             storeCounter = 0
+            confirmLoop = False
+            tuple_to_file = None
+            futures = []
+            min_max_futures = 250
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                tuple_to_file = None
-                futures = []
+
                 while True:
-                    print("len of futures:", len(futures))
-                    print("len of subfolder_links:", len(GitHubScraper.subfolder_links))
-                    print("len of file_links:", len(GitHubScraper.file_links))
-                    print("len of file_name_url_content_tuples:", len(GitHubScraper.file_name_url_content_tuples))
-                    print()
-                    while len(GitHubScraper.subfolder_links) > 0 and len(futures) < len(GitHubScraper.subfolder_links):
+                    while len(GitHubScraper.subfolder_links) > 0 \
+                            and (len(futures) < len(GitHubScraper.subfolder_links) or len(futures) < min_max_futures):
                         print("Submitting a page to be scraped", subfolderCounter)
                         subfolderCounter += 1
                         futures.append(executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
-                    while len(GitHubScraper.file_links) > 0 and len(futures) < len(GitHubScraper.file_links):
+                        confirmLoop = False
+                    while len(GitHubScraper.file_links) > 0 \
+                            and (len(futures) < len(GitHubScraper.file_links) or len(futures) < min_max_futures):
                         print("Submitting a file to be downloaded", linkCounter)
                         linkCounter += 1
                         futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
+                        confirmLoop = False
                     while len(GitHubScraper.file_name_url_content_tuples) > 0:
                         print("Submitting a file to be stored", storeCounter)
                         storeCounter += 1
@@ -370,19 +196,21 @@ class GitHubScraper(WebNavigator):
                         futures.append(executor.submit(GitHubScraper.file_content_into_storage([tuple_to_file], target_directory)))
                     futures = [future for future in futures if not future.done()]
                     # Break out of loop if there are no files to store and no links to scrape and no files to download
-                    if len(futures) == 0:
+                    if len(futures) == 0 and confirmLoop:
                         print("SDFDSFSDFSDF")
                         GitHubScraper.file_content_into_storage([tuple_to_file], target_directory, True)
                         break
+                    elif len(futures) == 0:
+                        confirmLoop = True
 
 
 if __name__ == "__main__":
     timer = time.time()
-    # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
     # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"], "FolderA")
     # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
     #                          "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
     #                         ["FolderA", "FolderB"])
     # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher")
-    GitHubScraper.do_it_all("https://github.com/torvalds/linux", "Huge repo")
+    # GitHubScraper.do_it_all("https://github.com/torvalds/linux", "Huge repo")
     print((time.time() - timer) / 60, "minutes")
