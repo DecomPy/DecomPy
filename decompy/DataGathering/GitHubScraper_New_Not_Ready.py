@@ -334,46 +334,54 @@ class GitHubScraper(WebNavigator):
             print("Length of list of URLs must be either 1 or the same as the length of the list of target directories")
             return
 
-        # Does the actual work. Iterates through repo URLs, and stores them to corresponding folder
+        # Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder
         for repo_url, target_directory in list(zip(repo_urls, target_directories)):
             GitHubScraper.file_name_url_content_tuples = []
             GitHubScraper.subfolder_links = [repo_url]
             GitHubScraper.file_links = []
-            while True:
-
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    print("SUBFOLDER LINKS:", GitHubScraper.subfolder_links)
-                    print("FILE LINKS:", GitHubScraper.file_links)
+            subfolderCounter = 0
+            linkCounter = 0
+            storeCounter = 0
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                finalLoop = False
+                while True:
+                    print("BEFORE SUBMITTING SUBFOLDER LINKS:", GitHubScraper.subfolder_links)
+                    print("BEFORE SUBMITTING FILE LINKS:", GitHubScraper.file_links)
                     futures = []
-                    while len(GitHubScraper.file_links) > 0:
-                        print("Submitting a file to be downloaded")
-                        futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
                     while len(GitHubScraper.subfolder_links) > 0:
-                        print("Submitting a page to be scraped")
+                        print("Submitting a page to be scraped", subfolderCounter)
+                        subfolderCounter += 1
                         futures.append(executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
+                        finalLoop = False
+                    while len(GitHubScraper.file_links) > 0:
+                        print("Submitting a file to be downloaded", linkCounter)
+                        linkCounter += 1
+                        futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
+                        finalLoop = False
+                    print("AFTER SUBMITTING SUBFOLDER LINKS:", GitHubScraper.subfolder_links)
+                    print("AFTER SUBMITTING FILE LINKS:", GitHubScraper.file_links)
+                    print("BEFORE STORING FILES:", GitHubScraper.file_name_url_content_tuples)
                     while len(GitHubScraper.file_name_url_content_tuples) > 0:
-                        print("Storing a file")
+                        print("Storing a file", storeCounter)
+                        storeCounter += 1
                         GitHubScraper.file_content_into_storage([GitHubScraper.file_name_url_content_tuples.pop()], target_directory)
+                    print("AFTER STORING FILES:", GitHubScraper.file_name_url_content_tuples)
 
-                # Break out of loop if there are no files to store and no links to scrape
-                if len(GitHubScraper.subfolder_links) == 0 \
-                        and len(GitHubScraper.file_links) == 0 \
-                        and len(GitHubScraper.file_name_url_content_tuples) == 0:
-                    break
-
-                # Scrape next unscraped URL within the repo if there is one
-                if len(GitHubScraper.subfolder_links) > 0:
-                    repo_url = GitHubScraper.subfolder_links.pop()
-                else:
-                    repo_url = None
+                    print(concurrent.futures.wait(futures, timeout=1))
+                    # Break out of loop if there are no files to store and no links to scrape and no files to download
+                    if len(concurrent.futures.wait(futures, timeout=1)[1]) == 0 and finalLoop:
+                        break
+                    else:
+                        finalLoop = True
 
 
 if __name__ == "__main__":
     timer = time.time()
+    # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
     # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"], "FolderA")
-    GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
-                             "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
-                            ["FolderA", "FolderB"])
+    # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
+    #                          "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
+    #                         ["FolderA", "FolderB"])
     # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher")
-    # GitHubScraper.do_it_all("https://github.com/torvalds/linux")
+    GitHubScraper.do_it_all("https://github.com/torvalds/linux", "Huge repo")
     print((time.time() - timer) / 60, "minutes")
