@@ -29,8 +29,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import concurrent.futures
-import datetime
-
 from decompy.DataGathering.WebNavigator import WebNavigator
 import os
 import time
@@ -49,8 +47,8 @@ class GitHubScraper(WebNavigator):
     TIME_BETWEEN_THREAD_SPAWN = 0
     pageContents = []  # Used for multi-threading in __getContent
     subURLs = []  # Used for multi-threading in __getFileURLSFromGitRepo
-    subFolders = []  # Used for multi-threading in __getFileURLSFromGitRepo
-    sourceFiles = []  # Used for multi-threading in __getFileURLSFromGitRepo
+    subFolderLinks = []  # Used for multi-threading in __getFileURLSFromGitRepo
+    sourceFilesLinks = []  # Used for multi-threading in __getFileURLSFromGitRepo
     pageLinks = []  # Used for multi-threading in __getAbsoluteLinksFromPage
     scrapedURLs = []
 
@@ -92,17 +90,17 @@ class GitHubScraper(WebNavigator):
                     if "commits" in link.split("/"):  # filters files that are not in main
                         continue
                     if "/blob/" in link:  # /blob/ is a marker for files
-                        if link in GitHubScraper.sourceFiles:
+                        if link in GitHubScraper.sourceFilesLinks:
                             continue
                         if not link.split("/")[-1].endswith(".c"):
                             continue
                         if "master" in link.split("/"):  # This makes sure only URLs from master branch are saved
-                            GitHubScraper.sourceFiles.append((link.split("/")[-1], link))
+                            GitHubScraper.sourceFilesLinks.append((link.split("/")[-1], link))
                     else:
-                        if link in GitHubScraper.subFolders:
+                        if link in GitHubScraper.subFolderLinks:
                             continue
                         if "master" in link.split("/"):
-                            GitHubScraper.subFolders.append(link)
+                            GitHubScraper.subFolderLinks.append(link)
                             GitHubScraper.subURLs.append("/" + link.split("/")[-1] + "/")
 
     @staticmethod
@@ -116,34 +114,34 @@ class GitHubScraper(WebNavigator):
         """
 
         GitHubScraper.subURLs = ["/master/"]
-        GitHubScraper.subFolders = [repo_url]
-        GitHubScraper.sourceFiles = []
+        GitHubScraper.subFolderLinks = [repo_url]
+        GitHubScraper.sourceFilesLinks = []
         GitHubScraper.scrapedURLs = []
         counter = 0
         thread_spawning_counter = 0
 
-        while counter <= len(GitHubScraper.subFolders):
+        while counter <= len(GitHubScraper.subFolderLinks):
             if GitHubScraper.DEBUG:
                 thread_spawning_counter += 1
                 print("GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:",
                       thread_spawning_counter)
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 futures = []
-                while len(GitHubScraper.subFolders) > 0:
-                    next_url_to_scrape = GitHubScraper.subFolders.pop()
+                while len(GitHubScraper.subFolderLinks) > 0:
+                    next_url_to_scrape = GitHubScraper.subFolderLinks.pop()
                     if next_url_to_scrape in GitHubScraper.scrapedURLs:
                         continue
                     futures.append(executor.submit(GitHubScraper.__get_file_urls_from_github_repo, next_url_to_scrape))
                     GitHubScraper.scrapedURLs.append(next_url_to_scrape)
                     time.sleep(GitHubScraper.TIME_BETWEEN_THREAD_SPAWN)
                     futures = [future for future in futures if not future.done()]
-                    if len(GitHubScraper.subFolders) == 0:
+                    if len(GitHubScraper.subFolderLinks) == 0:
                         concurrent.futures.wait(futures)
             counter += 1
-            if counter >= len(GitHubScraper.subFolders):
+            if counter >= len(GitHubScraper.subFolderLinks):
                 break
 
-        return list(set(GitHubScraper.sourceFiles))
+        return list(set(GitHubScraper.sourceFilesLinks))
 
     @staticmethod
     def __get_content(link, index):
@@ -258,7 +256,7 @@ class GitHubScraper(WebNavigator):
         if not (os.path.isfile(target_directory + "config.META")):
             with open(os.path.join(target_directory, "config.META"), "w") as f:
                 f.write("File download timestamp: ")
-                f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+                f.write(time.asctime(time.localtime(time.time())))
         # Otherwise config.META does exist. Update the correct line
         else:
             update_time_stamp = False
@@ -293,19 +291,54 @@ class GitHubScraper(WebNavigator):
         file_content_tuples = GitHubScraper.get_content_from_github_file_urls(file_url_tuples)
         GitHubScraper.file_content_into_storage(file_content_tuples, target_directory)
 
+    @staticmethod
+    def do_it_all(repo_url, target_directory=None):
+        GitHubScraper.subURLs = ["/master/"]
+        GitHubScraper.subFolderLinks = [repo_url]
+        GitHubScraper.sourceFilesLinks = []
+
+        subfolder_links = []
+        file_links = []
+
+        while True:
+            all_links = list(GitHubScraper.getAbsoluteLinksFromPage(repo_url))
+            subfolder_links.extend([i for i in all_links
+                                    if "/tree/master/" in i  # Makes sure that it is looking at files in master
+                                    if "#" not in i  # #'s are redundant links
+                                    if repo_url != i  # Don't save link to current url
+                                    if len(repo_url) < len(i)  # Don't save link to someplace with shorter URL,
+                                    # since it's probably a parent URL
+                                    ])
+            file_links.extend([i for i in all_links
+                               if "/blob/master/" in i  # Makes sure that it is looking at subfolders in master
+                               if i.endswith(".c")  # Makes sure that the files end with exactly .c
+                               ])
+
+            if len(file_links) > 0:
+                file_page_link = file_links.pop()
+                file_name = file_page_link.split("/")[-1]
+                file_raw_link = [i for i in GitHubScraper.getAbsoluteLinksFromPage(file_page_link) if "raw" in i][0]
+
+                page_source = ""
+                try:
+                    response = urllib.request.urlopen(file_raw_link)
+                    try:
+                        page_source = response.read().decode(response.headers.get_content_charset())
+                    except (TypeError, UnicodeDecodeError) as e:
+                        print(e)
+                except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+                    print(e)
+
+                GitHubScraper.file_content_into_storage([(file_name, file_raw_link, page_source)])
+
+            if len(subfolder_links) == 0:
+                break
+            repo_url = subfolder_links.pop()
+
 
 if __name__ == "__main__":
     timer = time.time()
-    # fileUrlTuples = GitHubScraper.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1")
-    # print("filename/URL pairs: ", fileUrlTuples)
-    # fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)
-    # print("filename/content pairs: ", fileContentTuples)
-    # GitHubScraper.fileContentIntoStorage(fileContentTuples)
-    # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
-    # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-    # GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-    GitHubScraper.download_all_files(
-        "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input")
-    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
-    # GitHubScraper.download_all_files("https://github.com/torvalds/linux")
+    GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM")
+    # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher")
+    # GitHubScraper.do_it_all("https://github.com/torvalds/linux")
     print((time.time() - timer) / 60, "minutes")
