@@ -14,7 +14,7 @@ class Clang:
         pass
 
     @staticmethod
-    def compile_cfile(file_in, outfile, newlocation, output_type, args):
+    def compile_cfile(file_in, outfile, newlocation, output_type, filter_file, args):
         """
 
         :param file_in:
@@ -34,10 +34,12 @@ class Clang:
         result = subprocess.run(command, shell=True).returncode #, check=True)
 
         if result == 0:
-            outfile.write(file_out + "\ngit ")
+            outfile.write(file_out + "\n")
+            if filter_file:
+                filter_file.write(file_in + "\n")
 
     @staticmethod
-    def compile_all(input_file, output_file, newlocation, out_type, args=""):
+    def compile_all(input_file, output_file, newlocation, out_type, filter_file="", args=""):
         """
 
         :param input_file:
@@ -62,9 +64,18 @@ class Clang:
         else:
             outfile = open(output_file, 'a+')
 
+        filteredC = None
+        if filter_file:
+            filteredC = Path(filter_file)
+            if not filteredC.is_file():
+                filteredC = open(filter_file, 'w+')
+            else:
+                filteredC = open(filter_file, 'a+')
+
         for cfile in file_of_cfiles:
             cfile = cfile.rstrip()
-            Clang.compile_cfile(cfile, outfile, newlocation, out_type, args)
+            Clang.compile_cfile(cfile, outfile, newlocation, out_type,
+                                filter_file=filteredC, args=args)
         file_of_cfiles.close()
 
     @staticmethod
@@ -79,10 +90,10 @@ class Clang:
         """
         args = "-S -masm=intel"
         out_type = "-assembly.asm"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, args)
+        Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
 
     @staticmethod
-    def to_elf(input_file, output_file, newlocation):
+    def to_elf(input_file, output_file, newlocation, filter_file):
         """
         compiles all C files listed in the directory to assembly
         :param input_file: File to get C file names from
@@ -92,7 +103,7 @@ class Clang:
         :return:
         """
         out_type = "-elf.elf"
-        Clang.compile_all(input_file, output_file, newlocation, out_type)
+        Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file)
 
     @staticmethod
     def to_llvm_opt(input_file, output_file, newlocation, optlevel = ""):
@@ -126,6 +137,6 @@ class Clang:
 
 if __name__ == "__main__":
     Clang.to_assembly("example.txt", "./assembly/assembly.txt", "./assembly")
-    Clang.to_elf("example.txt", "./elf/elf.txt", "./elf")
+    Clang.to_elf("example.txt", "./elf/elf.txt", "./elf", "./compilableC.txt")
     Clang.to_llvm_opt("example.txt", "./llvm_opt/llvm_opt.txt", "./llvm_opt")
     Clang.to_llvm_unopt("example.txt", "./llvm_unopt/llvm_unopt.txt", "./llvm_unopt")
