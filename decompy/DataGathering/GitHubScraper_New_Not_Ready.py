@@ -30,7 +30,6 @@
 
 import concurrent.futures
 import datetime
-import threading
 
 from decompy.DataGathering.WebNavigator import WebNavigator
 import os
@@ -49,11 +48,35 @@ class GitHubScraper(WebNavigator):
     file_links = []
 
     @staticmethod
-    def file_content_into_storage(content_url_tuple, target_directory=None, update_meta=False):
+    def __update_meta(target_directory=None):
         """
-        Writes the content of a string into a file given a list of tuples of file names and strings. Never multithread
-        this function because it can cause multiple threads to write to the same META file unless you want to do a lot
-        more work.
+        Updates the download time in the META file to the current time in target directory
+        :param target_directory: Directory to update the META file
+        :return: Nothing
+        """
+        # Create config.META if it doesn't exist, place download timestamp there
+        if not (os.path.isfile(target_directory + "config.META")):
+            with open(os.path.join(target_directory, "config.META"), "w") as f:
+                f.write("File download timestamp: ")
+                f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+        # Otherwise config.META does exist. Update the correct line
+        else:
+            update_time_stamp = False
+            for line in fileinput.input((os.path.join(target_directory, "config.META")), inplace=True):
+                if "File download timestamp: " in line:
+                    print("%s" % ("File download timestamp:" + time.asctime(time.localtime(time.time())))),
+                    update_time_stamp = True
+                else:
+                    print("%s" % line),
+            if not update_time_stamp:
+                with open(os.path.join(target_directory, "config.META"), "a") as f:
+                    f.write("File download timestamp:")
+                    f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+
+    @staticmethod
+    def __file_content_into_storage(content_url_tuple, target_directory):
+        """
+        Writes the content of a string into a file given a list of tuples of file names and strings.
         :param content_url_tuple: list of tuples, with each tuple being ("fileName", "fileURL", "fileContent").
         :param target_directory: name of directory to download files into
         :return: True if successful, False otherwise
@@ -63,9 +86,6 @@ class GitHubScraper(WebNavigator):
         if len(content_url_tuple) == 0:
             return False
 
-        # Make default name of directory to be downloaded to "username_reponame"
-        if target_directory is None:
-            target_directory = content_url_tuple[0][1].split("/")[3] + "_" + content_url_tuple[0][1].split("/")[4]
         target_subdirectory = target_directory + "/C_files"
 
         # Creates a directory for the repository if one does
@@ -74,26 +94,6 @@ class GitHubScraper(WebNavigator):
         if not os.path.exists(target_subdirectory):
             os.mkdir(target_subdirectory)
 
-        if update_meta:
-            # Create config.META if it doesn't exist, place download timestamp there
-            if not (os.path.isfile(target_directory + "config.META")):
-                with open(os.path.join(target_directory, "config.META"), "w") as f:
-                    f.write("File download timestamp: ")
-                    f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
-            # Otherwise config.META does exist. Update the correct line
-            else:
-                update_time_stamp = False
-                for line in fileinput.input((os.path.join(target_directory, "config.META")), inplace=True):
-                    if "File download timestamp: " in line:
-                        print("%s" % ("File download timestamp:" + time.asctime(time.localtime(time.time())))),
-                        update_time_stamp = True
-                    else:
-                        print("%s" % line),
-                if not update_time_stamp:
-                    with open(os.path.join(target_directory, "config.META"), "a") as f:
-                        f.write("File download timestamp:")
-                        f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
-
         # Creates files with contents of repo files inside of directory.
         for i in content_url_tuple:
             with open(os.path.join(target_subdirectory, i[0]), "w") as f:
@@ -101,11 +101,17 @@ class GitHubScraper(WebNavigator):
                     f.write(i[2])
                 except UnicodeEncodeError as e:
                     print(e)
+                    return False
 
         return True
 
     @staticmethod
     def __download_file(file_page_link):
+        """
+        Downloads a file and stores it for filing later
+        :param file_page_link: Link to file to download.
+        :return: Nothing
+        """
         file_name = file_page_link.split("/")[-1]
         file_raw_link = [i for i in GitHubScraper.getAbsoluteLinksFromPage(file_page_link) if "raw" in i][0]
 
@@ -115,14 +121,19 @@ class GitHubScraper(WebNavigator):
             try:
                 page_source = response.read().decode(response.headers.get_content_charset())
             except (TypeError, UnicodeDecodeError) as e:
-                print("Thread:", threading.get_ident(), ":", e)
+                print(e)
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
-            print("Thread:", threading.get_ident(), ":", e)
+            print(e)
 
         GitHubScraper.file_name_url_content_tuples.append((file_name, file_raw_link, page_source))
 
     @staticmethod
     def __scrape_page_urls(url):
+        """
+        Scrapes all the links from a page, and filters them into links to subfolders and links to files
+        :param url: page to scrape
+        :return: Nothing
+        """
         all_links_on_page = list(GitHubScraper.getAbsoluteLinksFromPage(url))
         GitHubScraper.subfolder_links.extend([i for i in all_links_on_page
                                               if "/tree/master/" in i  # Make sure that it is looking at files in master
@@ -164,41 +175,42 @@ class GitHubScraper(WebNavigator):
 
         # Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder
         for repo_url, target_directory in list(zip(repo_urls, target_directories)):
+            # Make default name of directory to be downloaded to "username_reponame"
+            if target_directory is None:
+                target_directory = repo_url.split("/")[3] + "_" + repo_url.split("/")[4]
+
             GitHubScraper.file_name_url_content_tuples = []
             GitHubScraper.subfolder_links = [repo_url]
             GitHubScraper.file_links = []
-            subfolderCounter = 0
-            linkCounter = 0
-            storeCounter = 0
+
             confirmLoop = False
-            tuple_to_file = None
+
             futures = []
             min_max_futures = 250
             with concurrent.futures.ThreadPoolExecutor() as executor:
-
                 while True:
-                    while len(GitHubScraper.subfolder_links) > 0 \
-                            and (len(futures) < len(GitHubScraper.subfolder_links) or len(futures) < min_max_futures):
-                        print("Submitting a page to be scraped", subfolderCounter)
-                        subfolderCounter += 1
-                        futures.append(executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
+                    while len(GitHubScraper.subfolder_links) > 0 and (
+                            len(futures) < len(GitHubScraper.subfolder_links) or len(futures) < min_max_futures):
+                        print("Submitting scrape:", time.asctime())
+                        futures.append(
+                            executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
                         confirmLoop = False
-                    while len(GitHubScraper.file_links) > 0 \
-                            and (len(futures) < len(GitHubScraper.file_links) or len(futures) < min_max_futures):
-                        print("Submitting a file to be downloaded", linkCounter)
-                        linkCounter += 1
+                    while len(GitHubScraper.file_links) > 0 and (
+                            len(futures) < len(GitHubScraper.file_links) or len(futures) < min_max_futures):
+                        print("Submitting download:", time.asctime())
                         futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
                         confirmLoop = False
                     while len(GitHubScraper.file_name_url_content_tuples) > 0:
-                        print("Submitting a file to be stored", storeCounter)
-                        storeCounter += 1
-                        tuple_to_file = GitHubScraper.file_name_url_content_tuples.pop()
-                        futures.append(executor.submit(GitHubScraper.file_content_into_storage([tuple_to_file], target_directory)))
+                        print("Submitting storage:", time.asctime())
+                        futures.append(
+                            executor.submit(
+                                GitHubScraper.__file_content_into_storage(
+                                    [GitHubScraper.file_name_url_content_tuples.pop()], target_directory)))
                     futures = [future for future in futures if not future.done()]
-                    # Break out of loop if there are no files to store and no links to scrape and no files to download
+
+                    # Break out of loop when everything else is confirmed done. Also update META
                     if len(futures) == 0 and confirmLoop:
-                        print("SDFDSFSDFSDF")
-                        GitHubScraper.file_content_into_storage([tuple_to_file], target_directory, True)
+                        GitHubScraper.__update_meta(target_directory)
                         break
                     elif len(futures) == 0:
                         confirmLoop = True
