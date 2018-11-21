@@ -40,4 +40,4 @@ A video demoing the use of the tool is below:
 
 .. raw:: html
 
-    <video controls src="_static/videos/compileC.mp4"></video>
+    <video controls src="../../_static/videos/compileC.mp4"></video>
