@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Designing the Database &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Creating and Using the Database &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Creating and Using the Database" href="2_DatabaseCreation.html" />
-    <link rel="prev" title="Database" href="index.html" /> 
+    <link rel="prev" title="Designing the Database" href="1_DatabaseDesign.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -85,8 +84,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Database</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Designing the Database</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_DatabaseCreation.html">Creating and Using the Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_DatabaseDesign.html">Designing the Database</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Creating and Using the Database</a></li>
 </ul>
 </li>
 </ul>
@@ -140,13 +139,13 @@
         
           <li><a href="index.html">Database</a> &raquo;</li>
         
-      <li>Designing the Database</li>
+      <li>Creating and Using the Database</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/3_Database/1_DatabaseDesign.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/3_Database/2_DatabaseCreation.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,33 +158,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="designing-the-database">
-<h1>Designing the Database<a class="headerlink" href="#designing-the-database" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="creating-and-using-the-database">
+<h1>Creating and Using the Database<a class="headerlink" href="#creating-and-using-the-database" title="Permalink to this headline">¶</a></h1>
 <p>This is a log of major design decisions and reasoning made during creation of the database section of decompy.
 At the time of writing this, this is made up of one class based off of the design diagram.</p>
 <hr class="docutils" />
-<a class="reference internal image-reference" href="../../../_images/initial-db-design.png"><img alt="database design." class="align-center" src="../../../_images/initial-db-design.png" style="width: 642.0px; height: 407.5px;" /></a>
 <dl class="docutils">
-<dt>Diagram</dt>
-<dd>The diagram shows that the “alldata” table is the overall collection and shall not be used.
-It only serves as visual representation of the data we collect from each repo.
-The tables to use with the sqlite database include “meta” and “ml”.
-The meta data is all of the data that the ML agent will not use, but needs a reference to.
-In this case, it is the repo name, license, url, author, and dates.
-The ML agent table then uses this as a primary key and foreign key.
-The ML table then stores the file_path as a primary key, and because the repo name must be unique,
-we are storing unique pairs of repo name and file path for each file.
-The C source code as text, the object file, as a blob to store as is, the llvm unoptimized and
-optimized as text as well. This table represents what the ML agent will be using for training
-and testing against for an accurate model.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Python Sqlite3</dt>
-<dd>The team has decided to use a sqlite database as per our sponsor’s agreement.
-This means that the ML agent and database will have to be on the same system.
-This is useful because sqlite can be easily transferred and only needs to be
-written to once and not require consistent write queries.</dd>
+<dt>Creating the Database and Purpose</dt>
+<dd>The Decompy team shall be using sqlite3 with Python’s built in package. It is object oriented, meaning that each object
+represents its own database (or a reference to the same one). For example, supplying a name and passing a default flag
+for whether or not to create default tables (ml_table and meta_table) will allow a new database to be made or add to
+an existing database. From here we can utilize the functions for machine learning. It is important to keep only one
+connection (one object) reference to a database because it can cause conflicts with sqlite. Additionally, each query involving a delete, or insert/replace, is
+handled by the transaction builder, which is used to make the process much faster and less prone to errors when inserting
+data. Lastly, the database has many UNIQUE constraints to make sure we are not populating with the same data.
+This means that the data is less likely to lead us to a bias model when training. For this reason, it is simply ignored or replaced.</dd>
 </dl>
 </div>
 
@@ -197,10 +184,8 @@ written to once and not require consistent write queries.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="2_DatabaseCreation.html" class="btn btn-neutral float-right" title="Creating and Using the Database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="index.html" class="btn btn-neutral" title="Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="1_DatabaseDesign.html" class="btn btn-neutral" title="Designing the Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
