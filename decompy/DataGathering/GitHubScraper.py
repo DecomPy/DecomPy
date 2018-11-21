@@ -200,32 +200,14 @@ class GitHubScraper(WebNavigator):
                 while True:
                     while len(GitHubScraper.subfolder_links) > 0 and (
                             len(futures) < len(GitHubScraper.subfolder_links) or len(futures) < min_max_futures):
-                        print("Submitting scrape:", time.asctime())
-                        print("len futures:\t", len(futures),
-                              "\t\tlen subfolder_links:\t", len(GitHubScraper.subfolder_links),
-                              "\t\tlen file_links:\t", len(GitHubScraper.file_links),
-                              "\t\tlen file_name_url_content_tuples:\t",
-                              len(GitHubScraper.file_name_url_content_tuples))
                         futures.append(
                             executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
                         confirm_loop = False
                     while len(GitHubScraper.file_links) > 0 and (
                             len(futures) < len(GitHubScraper.file_links) or len(futures) < min_max_futures):
-                        print("Submitting download:", time.asctime())
-                        print("len futures:\t", len(futures),
-                              "\t\tlen subfolder_links:\t", len(GitHubScraper.subfolder_links),
-                              "\t\tlen file_links:\t", len(GitHubScraper.file_links),
-                              "\t\tlen file_name_url_content_tuples:\t",
-                              len(GitHubScraper.file_name_url_content_tuples))
                         futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
                         confirm_loop = False
                     while len(GitHubScraper.file_name_url_content_tuples) > 0:
-                        print("Submitting storage:", time.asctime())
-                        print("len futures:\t", len(futures),
-                              "\t\tlen subfolder_links:\t", len(GitHubScraper.subfolder_links),
-                              "\t\tlen file_links:\t", len(GitHubScraper.file_links),
-                              "\t\tlen file_name_url_content_tuples:\t",
-                              len(GitHubScraper.file_name_url_content_tuples))
                         futures.append(
                             executor.submit(
                                 GitHubScraper.__file_content_into_storage(

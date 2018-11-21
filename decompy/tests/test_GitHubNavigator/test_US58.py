@@ -1,7 +1,7 @@
 import datetime
 import os
 import unittest
-from decompy.DataGathering.GitHubScraper_New_Not_Ready import GitHubScraper
+from decompy.DataGathering.GitHubScraper import GitHubScraper
 import shutil
 
 
@@ -13,7 +13,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 
         # For Windows
         if os.name == "nt":
@@ -63,7 +63,7 @@ class GitHubScraperTest(unittest.TestCase):
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
             f.write("Text to be appended upon")
 
-        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 
         # For Windows machines
         if os.name == "nt":
@@ -108,7 +108,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.do_it_all("https://github.com/DecomPy/invalid_and_uncompilable_1")
+        GitHubScraper.download_all_files("https://github.com/DecomPy/invalid_and_uncompilable_1")
         self.assertTrue(not os.path.exists("Decompy_invalid_and_uncompilable_1"))
         if os.path.exists("Decompy_invalid_and_uncompilable_1"):
             shutil.rmtree("Decompy_invalid_and_uncompilable_1")
@@ -119,7 +119,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
         self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/main.c"))
         self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/main2.c"))
 
@@ -133,7 +133,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
+        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
         self.assertTrue(os.path.isfile("test_dir/C_files/main.c"))
         self.assertTrue(os.path.isfile("test_dir/C_files/main2.c"))
 
