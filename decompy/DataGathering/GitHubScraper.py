@@ -48,7 +48,7 @@ class GitHubScraper(WebNavigator):
     file_links = []
 
     @staticmethod
-    def __update_meta(target_directory=None):
+    def __update_meta(target_directory):
         """
         Updates the download time in the META file to the current time in target directory
         :param target_directory: Directory to update the META file
@@ -69,7 +69,8 @@ class GitHubScraper(WebNavigator):
             update_time_stamp = False
             for line in fileinput.input((os.path.join(target_directory, "config.META")), inplace=True):
                 if "File download timestamp: " in line:
-                    print("%s" % ("File download timestamp:" + time.asctime(time.localtime(time.time())))),
+                    print("%s" % ("File download timestamp:" +
+                                  datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))),
                     update_time_stamp = True
                 else:
                     print("%s" % line),
@@ -224,7 +225,7 @@ class GitHubScraper(WebNavigator):
 
 if __name__ == "__main__":
     timer = time.time()
-    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
     #                                  "FolderA")
@@ -232,5 +233,5 @@ if __name__ == "__main__":
     #                          "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
     #                         ["FolderA", "FolderB"])
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher")
-    GitHubScraper.download_all_files("https://github.com/torvalds/linux", "Huge repo")
+    # GitHubScraper.download_all_files("https://github.com/torvalds/linux", "Huge repo")
     print((time.time() - timer) / 60, "minutes")

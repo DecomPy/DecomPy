@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Database" href="../3_Database/index.html" />
+    <link rel="next" title="Scraping and Downloading Files from GitHub using GitHubScraper" href="3_ScrapingDownloading.html" />
     <link rel="prev" title="Filtering the Repositories" href="1_RepoFiltering.html" /> 
 
   
@@ -86,6 +86,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="1_RepoFiltering.html">Filtering the Repositories</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Filtering the Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
@@ -163,8 +164,13 @@
 <h1>Filtering the Files<a class="headerlink" href="#filtering-the-files" title="Permalink to this headline">¶</a></h1>
 <p>This is a log of major design decisions and reasoning made during the creation of filtering C files of decompy.
 At the time of writing this, this is made up of one class: filter_c_file.py and considers three major components:
-a blacklist, a whitelist, and the file size of each file. Once the file has passed all tests, the path is stored
-into a file, which can be read.</p>
+the file size of each file, a blacklist, a whitelist, and finally compiling. Once the file has passed all tests,
+the path is stored into a file, which can be read.</p>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>File Size</dt>
+<dd>The filter then looks for the file size to filter for around 400 lines of code. This is set to 8000 bytes by default.</dd>
+</dl>
 <hr class="docutils" />
 <dl class="docutils">
 <dt>Blacklist</dt>
@@ -181,8 +187,8 @@ it does not pass the test. The only exception is when a file does not use any he
 </dl>
 <hr class="docutils" />
 <dl class="docutils">
-<dt>File Size</dt>
-<dd>The filter then looks for the file size to filter for around 400 lines of code. This is set to 8000 bytes by default.</dd>
+<dt>Compile Files</dt>
+<dd>The filter finally runs a subprocess with clang. We only need it to compile, so we use the “-fsyntax-only” flag when compiling.</dd>
 </dl>
 </div>
 
@@ -194,7 +200,7 @@ it does not pass the test. The only exception is when a file does not use any he
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../3_Database/index.html" class="btn btn-neutral float-right" title="Database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="3_ScrapingDownloading.html" class="btn btn-neutral float-right" title="Scraping and Downloading Files from GitHub using GitHubScraper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="1_RepoFiltering.html" class="btn btn-neutral" title="Filtering the Repositories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
