@@ -7,40 +7,13 @@ import shutil
 
 class GitHubScraperTest(unittest.TestCase):
 
-    def test_repo_vc_1_fileURL(self):
-        """
-        Tests if GitHubNavigator can find all the file URLs in a valid repository
-        :return: nothing
-        """
-        self.assertTrue(
-            GitHubScraper.get_file_urls_from_github_repo("https://github.com/DecomPy/valid_and_compilable_1")[0] in
-            {('main.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c'), (
-                'main2.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c')})
-
-        self.assertTrue(
-            GitHubScraper.get_file_urls_from_github_repo("https://github.com/DecomPy/valid_and_compilable_1")[1] in
-            {('main.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c'), (
-                'main2.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c')})
-
-    def test_repo_iu_1_fileURL(self):
-        """
-        Tests if GitHubNavigator filters out all the non-C URLs within a repo
-        :return: nothing
-        """
-
-        # These repos should have no C files, and therefore should not produce any URLs
-        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo(
-            "https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
-        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo(
-            "https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
-
     def test_repo_vc_1_download_config_META_update(self):
         """
         Tests if the config.META download time timestamp is approximately correct when updating
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1")
 
         # For Windows
         if os.name == "nt":
@@ -90,7 +63,7 @@ class GitHubScraperTest(unittest.TestCase):
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
             f.write("Text to be appended upon")
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1")
 
         # For Windows machines
         if os.name == "nt":
@@ -135,7 +108,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/invalid_and_uncompilable_1")
+        GitHubScraper.do_it_all("https://github.com/DecomPy/invalid_and_uncompilable_1")
         self.assertTrue(not os.path.exists("Decompy_invalid_and_uncompilable_1"))
         if os.path.exists("Decompy_invalid_and_uncompilable_1"):
             shutil.rmtree("Decompy_invalid_and_uncompilable_1")
@@ -146,7 +119,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1")
         self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/main.c"))
         self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/main2.c"))
 
@@ -160,7 +133,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
+        GitHubScraper.do_it_all("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
         self.assertTrue(os.path.isfile("test_dir/C_files/main.c"))
         self.assertTrue(os.path.isfile("test_dir/C_files/main2.c"))
 

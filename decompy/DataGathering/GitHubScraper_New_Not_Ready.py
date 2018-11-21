@@ -54,6 +54,11 @@ class GitHubScraper(WebNavigator):
         :param target_directory: Directory to update the META file
         :return: Nothing
         """
+
+        # Don't do anything if there is no directory
+        if not os.path.exists(target_directory):
+            return
+
         # Create config.META if it doesn't exist, place download timestamp there
         if not (os.path.isfile(target_directory + "config.META")):
             with open(os.path.join(target_directory, "config.META"), "w") as f:
@@ -168,6 +173,10 @@ class GitHubScraper(WebNavigator):
         if type(target_directories) is str:
             target_directories = [target_directories]
 
+        # Attempt to generate a name for the target directory if there is not one already
+        if target_directories is None and len(repo_urls) == 1:
+            target_directories = [repo_urls[0].split("/")[3] + "_" + repo_urls[0].split("/")[4]]
+
         # Don't want to download files from multiple repos into one folder, do we?
         if len(repo_urls) != len(target_directories):
             print("Length of list of URLs must be either 1 or the same as the length of the list of target directories")
@@ -218,7 +227,8 @@ class GitHubScraper(WebNavigator):
 
 if __name__ == "__main__":
     timer = time.time()
-    GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    # GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    GitHubScraper.do_it_all("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"], "FolderA")
     # GitHubScraper.do_it_all(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
     #                          "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
