@@ -1,7 +1,0 @@
-Decompy API
-***********
-
-.. toctree::
-    :glob:
-
-    *
