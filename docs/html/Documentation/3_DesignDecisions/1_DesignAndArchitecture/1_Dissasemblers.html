@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Choosing a Disassembler for DecomPy &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Data Gathering" href="../2_DataGathering/index.html" />
+    <link rel="prev" title="Design and Architecture" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">Decompy API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design and Architecture</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Choosing a Disassembler for DecomPy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#descriptions-of-possible-compilers">Descriptions of Possible Compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analysis-of-dissasembler-options">Analysis of Dissasembler Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overall-suggestion-for-the-project">Overall Suggestion for the Project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#capstone">Capstone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#udis86-the-runner-up">udis86 - The runner-up</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">Design and Architecture</a> &raquo;</li>
+        
+      <li>Choosing a Disassembler for DecomPy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/1_DesignAndArchitecture/1_Dissasemblers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="choosing-a-disassembler-for-decompy">
+<h1>Choosing a Disassembler for DecomPy<a class="headerlink" href="#choosing-a-disassembler-for-decompy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="descriptions-of-possible-compilers">
+<h2>Descriptions of Possible Compilers<a class="headerlink" href="#descriptions-of-possible-compilers" title="Permalink to this headline">¶</a></h2>
+<div class="sphinx-tabs docutils container">
+<div class="ui top attached tabular menu sphinx-menu docutils container">
+<div class="active item sphinx-data-tab-0-0 docutils container">
+<div class="docutils container">
+Capstone</div>
+</div>
+<div class="item sphinx-data-tab-0-1 docutils container">
+<div class="docutils container">
+Bastard Disassembler / libdiasm</div>
+</div>
+<div class="item sphinx-data-tab-0-2 docutils container">
+<div class="docutils container">
+udis86</div>
+</div>
+<div class="item sphinx-data-tab-0-3 docutils container">
+<div class="docutils container">
+Objconv</div>
+</div>
+<div class="item sphinx-data-tab-0-4 docutils container">
+<div class="docutils container">
+objdump</div>
+</div>
+<div class="item sphinx-data-tab-0-5 docutils container">
+<div class="docutils container">
+gdb</div>
+</div>
+<div class="item sphinx-data-tab-0-6 docutils container">
+<div class="docutils container">
+lida interactive disassembler</div>
+</div>
+<div class="item sphinx-data-tab-0-7 docutils container">
+<div class="docutils container">
+dissy</div>
+</div>
+<div class="item sphinx-data-tab-0-8 docutils container">
+<div class="docutils container">
+ldasm</div>
+</div>
+<div class="item sphinx-data-tab-0-9 docutils container">
+<div class="docutils container">
+AsmDis</div>
+</div>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-0 active docutils container">
+<p>Capstone is open source (BSD), supports bindings in a huge list of languages including Python, C, and C++, and is up
+to date. It is specifically designed with dissasembling malware programs in mind and designed to handle the
+tricks that they employ. It is supported on Windows, Mac, IOS (not sure why), Android (again..,) BSD, Solaris,
+Linux. It has a full wiki and a website which will be useful for documentation.</p>
+<p><a class="reference external" href="http://www.capstone-engine.org/">Capstone’s Website</a>.</p>
+<p><a class="reference external" href="https://github.com/aquynh/capstone">Github Repo</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-1 docutils container">
+<p>The Bastard Disassembler is a disassembler built for Linux / FreeBSD. It provides a library (libdiasm) which
+is intended to be used programmatically. It is written in C, but appears to have a python binding. There is poor
+documentation and it is difficult to find much on the usage. It also appears to be inactive.</p>
+<p><a class="reference external" href="http://bastard.sourceforge.net/libdisasm.html">libdiasm Website</a>.</p>
+<p><a class="reference external" href="http://bastard.sourceforge.net/">Bastard Disassembler Website</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-2 docutils container">
+<p>Open source (2-clause BSD) C library for x86 and x86_64 dissasembly. It doesn’t appear to have the best
+documentation, but it is at least present and usage seems simple, especially for what we would need to start.
+It does handle ELF files.</p>
+<p><a class="reference external" href="http://udis86.sourceforge.net/">udis86 Website</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-3 docutils container">
+<p>Supports Windows, 32 and 64 bit x86, Linux, 32 and 64 bit x86, BSD, 32 and 64 bit x86 and Mac OS X, 32 and 64 bit
+x86 (Darwin, Intel based). The docs actually say that the tool is “only intended for experts” and “not to send
+your programming questions to” the author as he will flat out ignore you. It seems to have a decent and simple
+command line interface and seems more like something we would invoke then to actually use as a library. It uses
+the GPL license though, so likely this crosses it off of our lists. It also seems to have no maintained repo
+and is basically just a zip from this website. It is written in CPP from glancing at the source files.</p>
+<p><a class="reference external" href="https://www.agner.org/optimize/objconv-instructions.pdf">Paper on objconv from author</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-4 docutils container">
+This is the built in linux tool for analyzing machine code files. While it is increadibly useful, it does not provide
+much besides a straight forward analysis and is not overly useful by itself. Many dissasemblers have been built on top
+of it which do further analysis to improve result and which would be better suited towards our project. It is also built
+specifically for gcc and does not do much for detecting/understanding other compilers at all.</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-5 docutils container">
+GDB has some dissasembly tool built in, but many of them are based on objdump and are inteded for an analysis of the code, not
+for a programatic dissasembly process. Mostly, gdb is not even directly inteded for reverse engineering but more for determining
+error in the machine code for low level optimizations, despite the fact that it has many applications in direct analysis. It is
+also released under GPL which could be an annoyance, though it is easily installable on any Linux computer and we would not have
+to include it.</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-6 docutils container">
+<p>This is an interactive dissasembler which defeats most of the purpose of use. It is also built on top of libdiasm (similar to Bastard Dissasembler)
+which literally has a note saying to go use Capstone instead. Lida itself also seems out of date. It is even inteded to be used in a TK GUI.</p>
+<p><a class="reference external" href="https://code.google.com/archive/p/libdasm/">Go use Capstone instead</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-7 docutils container">
+<p>I had trouble even finding this one after seeing the name and googling it. It is hosted on google code, but there is a semi active (a year ago)
+branch that shows it is still updated. It is, like lida, interactive and likely not well suited for our project. It heavily utilizes objdump
+which from what I can tell seems to be the easy approach unlikely to get the best results. The google code site has been archived, which also
+worries me.</p>
+<p><a class="reference external" href="https://github.com/SimonKagstrom/emilpro/">GitHub Repo</a>.</p>
+<p><a class="reference external" href="https://code.google.com/archive/p/dissy/">Google code site</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-8 docutils container">
+<p>Ldasm is Microsofts tool. It has the ability to be compiled for ubuntu, but it doesn’t seem like this is the intent. It really likes visual studio
+which is not a good fit for this project.</p>
+<p><a class="reference external" href="https://docs.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler">Microsoft’s docs page</a>.</p>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-9 docutils container">
+<p><a class="reference external" href="https://sourceforge.net/projects/asmdis/">AsmDis Website</a>.</p>
+<p>Yet another interactive dissasembler. The last update was 2016, so it also seems a little out of date, if not as much as some others.</p>
+</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="13%" />
+<col width="12%" />
+<col width="10%" />
+<col width="11%" />
+<col width="3%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tool</th>
+<th class="head">License</th>
+<th class="head">Language</th>
+<th class="head">Library</th>
+<th class="head">Command Line</th>
+<th class="head">Interactive</th>
+<th class="head">Good Docs</th>
+<th class="head">Up to date</th>
+<th class="head">ELF</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Capstone</td>
+<td>BSD</td>
+<td>Too many</td>
+<td>Y</td>
+<td>Y</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr class="row-odd"><td>Bastard Disassembler</td>
+<td>?</td>
+<td>C/Python</td>
+<td>Y</td>
+<td>Y</td>
+<td>N</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr class="row-even"><td>udis86</td>
+<td>BSD</td>
+<td>C</td>
+<td>Y</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr class="row-odd"><td>Objconv</td>
+<td>GPL</td>
+<td>CPP</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr class="row-even"><td>objdump</td>
+<td>many</td>
+<td>n/a</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr class="row-odd"><td>gdb</td>
+<td>GPL</td>
+<td>n/a</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr class="row-even"><td>lida interactive</td>
+<td>GPL</td>
+<td>Perl/TK</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr class="row-odd"><td>dissy</td>
+<td>GPL</td>
+<td>C++</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+<td>?</td>
+<td>Y</td>
+</tr>
+<tr class="row-even"><td>ldasm</td>
+<td>Custom</td>
+<td>n/a</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>N</td>
+</tr>
+<tr class="row-odd"><td>AsmDis</td>
+<td>?</td>
+<td>n/a</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="analysis-of-dissasembler-options">
+<h2>Analysis of Dissasembler Options<a class="headerlink" href="#analysis-of-dissasembler-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="easiest-integration">
+<h3>Easiest Integration<a class="headerlink" href="#easiest-integration" title="Permalink to this headline">¶</a></h3>
+<p>Looking through each of the dissasemblers, there were a number of things that were considered when choosing the “easiest to integrate.”
+The first was that the dissasembler was not solely intended to be used through a graphical or otherwise interactive usage as this would
+be difficult to simulate and impractical. The second was that it had good documentation of usage. Third, the dissasembler, if using a
+library should support bindings that the current chosen languages support. Lastly, and most importantly, the dissasembler’s usage should
+be simple while being adaptable. In a library, this means that doing anything should not take a huge number of lines of code and that
+the lines it takes should be readily apparent for any task (this overlaps good docs somewhat).</p>
+<p>Taking into account each of these things, we can easily rule out a few. GDB, Lida, Dissy, and AsmDis were mainly intended for interactive
+use and therefore not well suited for this project. The Bastard Dissasembler had very little documentation and would be difficult to
+integrate because there was little information on both the library it provides/uses and the dissasembler tool itself. Objdump would also
+not be a good choice because it does not output in an easily processable format and would take a lot of work to fix (essentially, many
+dissasemblers use objdump and interpret it more usefully, so we would be writing a dissasembler).</p>
+<p>This leaves:
+* Capstone
+* udis86
+* Objconv
+* ldasm</p>
+</div>
+<div class="section" id="best-x86-generation">
+<h3>Best x86 Generation<a class="headerlink" href="#best-x86-generation" title="Permalink to this headline">¶</a></h3>
+<p>The next thing to take into account was the end result. We wanted to choose a dissasembler which would generate the most accurate code. This
+would do two things. First, it would make the machine learning’s job easier in the end. Second, it would be more accurate to the paid to use
+dissasemblers we would hope our tool would be paired with.</p>
+<p>Since it would be difficult to make the call of what dissasembler has “good enough” x86, I will simply rank the remaining dissasemblers in terms
+of apparent use and support assuming that more community usage implies that the dissasembler does better.</p>
+<p>Out of the remaining tools, the most supported are:
+1. ldasm
+2. Capstone
+3. udis86
+4. Objconv</p>
+</div>
+</div>
+<div class="section" id="overall-suggestion-for-the-project">
+<h2>Overall Suggestion for the Project<a class="headerlink" href="#overall-suggestion-for-the-project" title="Permalink to this headline">¶</a></h2>
+<p>Out of the 4 remaining options, I believe only 2 will work. Ldasm, despite seeming to work well, does not support linux very well and only supports
+the PE format. Objconv would work, but it is licensed with GPL and therefor does not fit well with the project (GPL requires projects which contain
+them to be GPL license and is not good for commercially usable projects).</p>
+<p>Therefore, my overall suggestion is Capstone, followed by udis86.</p>
+</div>
+<div class="section" id="capstone">
+<h2>Capstone<a class="headerlink" href="#capstone" title="Permalink to this headline">¶</a></h2>
+<p>Capstone has great support from its community. Currently, its github repo has 3,781 commits and counting (unlike many, it is still receiving updates).
+It supports C, Clojure, F#, Common Lisp, Visual Basic, PHP, PowerShell, Emacs, Haskell, Perl, Python, Ruby, C#, NodeJS, Java, GO, C++, OCaml, Lua, Rust,
+Delphi, Free Pascal &amp; Vala, so there is no shortage in choices and C++ and Python are supported (the languages our project will mostly use). It is
+distributed under BSD, the same license as our project. It supports a number of architectures, not just x86: ARM, ARM64 (ARMv8), Ethereum VM, M68K, Mips,
+PPC, Sparc, SystemZ, TMS320C64X, M680X, XCore and X86 (including X86_64), which would allow our project flexibility in the future. It is also focussed
+on malware dissasembly and has “[h]igh performance &amp; [is] suitable for malware analysis (capable of handling various X86 malware tricks).” Two of the
+other dissasemblers in our list had notes from their authors mentioning using this dissasember instead which shows it definitely has a following (and
+156 contributors on GitHub at this time helps with that assertion). Overall this seems like the best choice.</p>
+</div>
+<div class="section" id="udis86-the-runner-up">
+<h2>udis86 - The runner-up<a class="headerlink" href="#udis86-the-runner-up" title="Permalink to this headline">¶</a></h2>
+<p>udis86 is a library for x86 dissasembly written in C. This does not work with our language choices quite as well, however, it would be possible (though
+more work) to write python binding (we are using CPython) for the library, and if not, we could compile a C program which does what we need and run it
+through Popen in python or through similar tools in C++. It has decent documentation, and it seems to have decent support (some of the other more tool
+like dissasemblers like the interactive ones used this library). Overall, it seems a bit overshadowed by Capstone, but it looks like it would do the
+job.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../2_DataGathering/index.html" class="btn btn-neutral float-right" title="Data Gathering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Design and Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
