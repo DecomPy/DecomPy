@@ -1,0 +1,10 @@
+@import url("theme.css");
+
+.wy-nav-content {
+    max-width: none;
+}
+
+.ui.top.attached.tabular.menu.sphinx-menu.docutils.container {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
