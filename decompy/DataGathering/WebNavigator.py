@@ -59,9 +59,11 @@ class WebNavigator:
             response = urllib.request.urlopen(link)
             try:
                 pageSource = response.read().decode(response.headers.get_content_charset())
-            except (TypeError, UnicodeDecodeError):
+            except (TypeError, UnicodeDecodeError) as e:
+                print(e)
                 pass
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+            print(e)
             pass
 
         if WebNavigator.TIMING:
@@ -93,7 +95,8 @@ class WebNavigator:
             visibleSource = list(filter(visible, data))
             return visibleSource
 
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+            print(e)
             return ""
 
     @staticmethod
