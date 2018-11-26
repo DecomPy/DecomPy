@@ -35,5 +35,3 @@ class GatherData:
         self.clang = Clang()
 
 
-    def hundred(self, ):
-

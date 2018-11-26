@@ -1,6 +1,6 @@
 from decompy.DataGathering.GitHubScraper import GitHubScraper
 from decompy.DataGathering.RepoFilter import RepoFilter
 from decompy.DataGathering.RepoStructure import RepoStructure
-from decompy.DataGathering.GenLLVM import GenLLVM
+from decompy.DataGathering.ClangSubprocess import Clang
 
-__all__ = ["GenLLVM", "GitHubScraper", "RepoFilter", "RepoStructure"]
+__all__ = ["Clang", "GitHubScraper", "RepoFilter", "RepoStructure"]
