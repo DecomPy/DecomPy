@@ -108,3 +108,5 @@ conda_decompy/
 
 # Sphinx
 docs/build
+docs/doctrees/
+.buildinfo

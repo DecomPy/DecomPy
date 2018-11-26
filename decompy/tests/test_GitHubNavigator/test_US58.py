@@ -7,33 +7,6 @@ import shutil
 
 class GitHubScraperTest(unittest.TestCase):
 
-    def test_repo_vc_1_fileURL(self):
-        """
-        Tests if GitHubNavigator can find all the file URLs in a valid repository
-        :return: nothing
-        """
-        self.assertTrue(
-            GitHubScraper.get_file_urls_from_github_repo("https://github.com/DecomPy/valid_and_compilable_1")[0] in
-            {('main.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c'), (
-                'main2.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c')})
-
-        self.assertTrue(
-            GitHubScraper.get_file_urls_from_github_repo("https://github.com/DecomPy/valid_and_compilable_1")[1] in
-            {('main.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c'), (
-                'main2.c', 'https://github.com/DecomPy/valid_and_compilable_1/blob/master/subfolder/main2.c')})
-
-    def test_repo_iu_1_fileURL(self):
-        """
-        Tests if GitHubNavigator filters out all the non-C URLs within a repo
-        :return: nothing
-        """
-
-        # These repos should have no C files, and therefore should not produce any URLs
-        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo(
-            "https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
-        self.assertTrue(len(GitHubScraper.get_file_urls_from_github_repo(
-            "https://github.com/DecomPy/invalid_and_uncompilable_1")) == 0)
-
     def test_repo_vc_1_download_config_META_update(self):
         """
         Tests if the config.META download time timestamp is approximately correct when updating
