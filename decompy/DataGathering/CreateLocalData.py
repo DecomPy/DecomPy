@@ -35,12 +35,9 @@ class CreateLocalData:
         stage 2 of the data gathering process: Scrape all the files from GitHub.
         :return:
         """
-        # TODO: Modify this so that JJ's gets created in my Repositories folders
         if self.filtered_repos:  # if we have repos, then sort through each rep in our json
             for repo in self.filtered_repos:
                 url = repo["url"]  # grab the url from the json to scrape
-
-                # TODO: decide if we need to limit even further
                 GitHubScraper.download_all_files(url, self.folder)  # scrape all the urls into our destined folder
 
     def stage3(self):
@@ -48,7 +45,7 @@ class CreateLocalData:
         stage 3 of the data gathering process: Filter the C files out. Get the good ones.
         :return:
         """
-        FilterC.check_valid_folder(self.folder)  # seeks the folder and recursively filters them out: uses default val
+        FilterC.check_valid_folder(self.folder)  # seeks the folder and recursively filters them out: uses default param
 
     def stage4(self):
         """
