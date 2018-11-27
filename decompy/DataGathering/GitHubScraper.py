@@ -111,7 +111,7 @@ class GitHubScraper(WebNavigator):
                 new_file_name += j
                 if split_addr[-1] == j:
                     break
-                new_file_name += '-'
+                new_file_name += '_'
             with open(os.path.join(target_subdirectory, new_file_name), "w") as f:
                 try:
                     f.write(i[2])
