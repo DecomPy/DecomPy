@@ -120,8 +120,8 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/DecomPy_valid_and_compilable_1_main.c"))
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/"
+        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/Unfiltered/DecomPy_valid_and_compilable_1_main.c"))
+        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/Unfiltered/"
                                        "DecomPy_valid_and_compilable_1_subfolder_main2.c"))
 
         # Makes sure the directory is always clean
@@ -135,8 +135,8 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
-        self.assertTrue(os.path.isfile("test_dir/C_files/DecomPy_valid_and_compilable_1_main.c"))
-        self.assertTrue(os.path.isfile("test_dir/C_files/"
+        self.assertTrue(os.path.isfile("test_dir/Unfiltered/DecomPy_valid_and_compilable_1_main.c"))
+        self.assertTrue(os.path.isfile("test_dir/Unfiltered/"
                                        "DecomPy_valid_and_compilable_1_subfolder_main2.c"))
 
         # Makes sure the directory is always clean

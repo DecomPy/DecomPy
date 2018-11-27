@@ -92,7 +92,7 @@ class GitHubScraper(WebNavigator):
         if len(content_url_tuple) == 0:
             return False
 
-        target_subdirectory = target_directory + "/C_files"
+        target_subdirectory = target_directory + "/Unfiltered"
 
         # Creates a directory for the repository if one does
         if not os.path.exists(target_directory):
