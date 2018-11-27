@@ -11,13 +11,16 @@ class CreateLocalDataTest(unittest.TestCase):
         initializes the test cases for CreateLocalDataTest
         :return:
         """
-        cld = CreateLocalData()
-        cld.stage1()
+        self.cld = CreateLocalData()
+
+    def test_stage1(self):
+        self.cld.stage1()
         print("stage 1 done")
-        cld.stage2()
+        self.cld.stage2()
         print("stage 2 done")
-        cld.stage3()
+        self.cld.stage3()
         print("stage 3 done")
-        cld.stage4()
+        self.cld.stage4()
         print("stage 4 done")
+        self.assertTrue(False)
 
