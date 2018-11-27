@@ -112,12 +112,16 @@ class GitHubScraper(WebNavigator):
                 if split_addr[-1] == j:
                     break
                 new_file_name += '_'
-            with open(os.path.join(target_subdirectory, new_file_name), "w") as f:
-                try:
-                    f.write(i[2])
-                except UnicodeEncodeError as e:
-                    print(e)
-                    return False
+            try:
+                with open(os.path.join(target_subdirectory, new_file_name), "w") as f:
+                    try:
+                        f.write(i[2])
+                    except UnicodeEncodeError as e:
+                        print(e)
+                        return False
+            except FileNotFoundError as e:
+                print("Couldn't write file. Name was probably too long", e)
+                return False
 
         return True
 
@@ -130,16 +134,16 @@ class GitHubScraper(WebNavigator):
         """
         file_name = file_page_link.split("/")[-1]
         file_raw_link = [i for i in GitHubScraper.getAbsoluteLinksFromPage(file_page_link) if "raw" in i][0]
-
         page_source = ""
         try:
             response = urllib.request.urlopen(file_raw_link)
             try:
                 page_source = response.read().decode(response.headers.get_content_charset())
             except (TypeError, UnicodeDecodeError) as e:
-                print(e)
+                print("Error with type or decoding, will not store file later:", file_raw_link, e)
+                return
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
-            print(e)
+            print("URLLIB error", e)
 
         GitHubScraper.file_name_url_content_tuples.append((file_name, file_raw_link, page_source))
 
@@ -235,10 +239,10 @@ class GitHubScraper(WebNavigator):
 
 if __name__ == "__main__":
     timer = time.time()
-    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
-    GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
-                                     "FolderA")
+    # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
+    #                                  "FolderA")
     # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
     #                          "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
     #                         ["FolderA", "FolderB"])
