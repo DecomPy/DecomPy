@@ -11,7 +11,7 @@ class CreateLocalData:
     """
     def __init__(self):
         """
-        initiliazes a new object, containing the other classes, one to rule them all.
+        initializes a new object, containing the other classes, one to rule them all.
         """
         self.rf = RepoFilter("C ", language="C", blacklist=["C++", "C#", "css"])  # gets 100 results
         self.rs = RepoStructure()
