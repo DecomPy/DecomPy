@@ -120,7 +120,6 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-        print(os.listdir("Decompy_valid_and_compilable_1/C_files"))
         self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/DecomPy_valid_and_compilable_1_main.c"))
         self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/C_files/"
                                        "DecomPy_valid_and_compilable_1_subfolder_main2.c"))
