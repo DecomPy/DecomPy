@@ -102,7 +102,17 @@ class GitHubScraper(WebNavigator):
 
         # Creates files with contents of repo files inside of directory.
         for i in content_url_tuple:
-            with open(os.path.join(target_subdirectory, i[0]), "w") as f:
+            split_addr = i[1].split('/')
+            split_addr = split_addr[3:]
+            new_file_name = ""
+            for j in split_addr:
+                if j == "raw" or j == "master":
+                    continue
+                new_file_name += j
+                if split_addr[-1] == j:
+                    break
+                new_file_name += '-'
+            with open(os.path.join(target_subdirectory, new_file_name), "w") as f:
                 try:
                     f.write(i[2])
                 except UnicodeEncodeError as e:
@@ -225,10 +235,10 @@ class GitHubScraper(WebNavigator):
 
 if __name__ == "__main__":
     timer = time.time()
-    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
-    # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
-    #                                  "FolderA")
+    GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
+                                     "FolderA")
     # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM",
     #                          "https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input"],
     #                         ["FolderA", "FolderB"])
