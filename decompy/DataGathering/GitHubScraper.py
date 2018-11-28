@@ -87,9 +87,6 @@ class GitHubScraper(WebNavigator):
         :param target_directory: name of directory to download files into
         :return: True if successful, False otherwise
         """
-
-        # print("Starting filing")
-
         # If the input list is empty, can't create folder
         if len(content_url_tuple) == 0:
             return False
@@ -125,7 +122,6 @@ class GitHubScraper(WebNavigator):
                 print("Couldn't write file. Name was probably too long, or name is malformed", new_file_name, e)
                 return False
 
-        # print("Finishing filing")
         return True
 
     @staticmethod
@@ -135,7 +131,6 @@ class GitHubScraper(WebNavigator):
         :param file_page_link: Link to file to download.
         :return: Nothing
         """
-        # print("Starting download")
         file_name = file_page_link.split("/")[-1]
         file_raw_link = [i for i in GitHubScraper.getAbsoluteLinksFromPage(file_page_link) if "raw" in i][0]
         page_source = ""
@@ -150,7 +145,6 @@ class GitHubScraper(WebNavigator):
             print("URLLIB error", e)
 
         GitHubScraper.file_name_url_content_tuples.append((file_name, file_raw_link, page_source))
-        # print("Finishing download")
 
     @staticmethod
     def __scrape_page_urls(url):
@@ -159,7 +153,6 @@ class GitHubScraper(WebNavigator):
         :param url: page to scrape
         :return: Nothing
         """
-        # print("Executing scrape")
         all_links_on_page = list(GitHubScraper.getAbsoluteLinksFromPage(url))
         GitHubScraper.subfolder_links.extend([i for i in all_links_on_page
                                               if "/tree/master/" in i  # Make sure that it is looking at files in master
@@ -173,7 +166,6 @@ class GitHubScraper(WebNavigator):
                                          # Makes sure that it is looking at subfolders in master
                                          if i.endswith(".c")  # Makes sure that the files end with exactly .c
                                          ])
-        # print("Finishing scrape")
 
     @staticmethod
     def download_all_files(repo_urls, target_directories=None):
@@ -215,7 +207,7 @@ class GitHubScraper(WebNavigator):
             GitHubScraper.file_links = []
 
             confirm_loop = False
-            futures_change_timeout = 20  # seconds
+            futures_change_timeout = 60  # seconds
             time_of_last_futures_change = time.time()  # used for when things get stuck
 
             futures = []
@@ -224,28 +216,16 @@ class GitHubScraper(WebNavigator):
                 while True:
                     while len(GitHubScraper.subfolder_links) > 0 and (
                             len(futures) < len(GitHubScraper.subfolder_links) or len(futures) < min_max_futures):
-                        # print("Appending scrape future")
-                        print("len futures:", len(futures), "\tlen subfolder_links", len(GitHubScraper.subfolder_links),
-                              "\tlen file_links", len(GitHubScraper.file_links), "\tlen file_name_url_content_tuples",
-                              len(GitHubScraper.file_name_url_content_tuples))
                         futures.append(
                             executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
                         time_of_last_futures_change = time.time()
                         confirm_loop = False
                     while len(GitHubScraper.file_links) > 0 and (
                             len(futures) < len(GitHubScraper.file_links) or len(futures) < min_max_futures):
-                        # print("Appending download future")
-                        print("len futures:", len(futures), "\tlen subfolder_links", len(GitHubScraper.subfolder_links),
-                              "\tlen file_links", len(GitHubScraper.file_links), "\tlen file_name_url_content_tuples",
-                              len(GitHubScraper.file_name_url_content_tuples))
                         futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
                         time_of_last_futures_change = time.time()
                         confirm_loop = False
                     while len(GitHubScraper.file_name_url_content_tuples) > 0:
-                        # print("Appending file storage future")
-                        print("len futures:", len(futures), "\tlen subfolder_links", len(GitHubScraper.subfolder_links),
-                              "\tlen file_links", len(GitHubScraper.file_links), "\tlen file_name_url_content_tuples",
-                              len(GitHubScraper.file_name_url_content_tuples))
                         futures.append(
                             executor.submit(
                                 GitHubScraper.__file_content_into_storage(
