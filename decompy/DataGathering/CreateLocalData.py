@@ -37,8 +37,11 @@ class CreateLocalData:
         """
         if self.filtered_repos:  # if we have repos, then sort through each rep in our json
             for repo in self.filtered_repos:
+                print(repo)
                 url = repo["url"]  # grab the url from the json to scrape
-                GitHubScraper.download_all_files(url, self.folder)  # scrape all the urls into our destined folder
+                GitHubScraper.download_all_files(
+                    url, os.path.join("Repositories", repo["username"] + "-" + repo["name"]))  # scrape all the urls
+                # into our destined folder
 
     def stage3(self):
         """
