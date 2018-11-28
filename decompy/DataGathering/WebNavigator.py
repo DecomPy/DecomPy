@@ -56,7 +56,7 @@ class WebNavigator:
 
         pageSource = ""
         try:
-            response = urllib.request.urlopen(link)
+            response = urllib.request.urlopen(link, timeout=10)
             try:
                 pageSource = response.read().decode(response.headers.get_content_charset())
             except (TypeError, UnicodeDecodeError) as e:

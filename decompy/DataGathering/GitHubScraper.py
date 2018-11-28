@@ -87,12 +87,11 @@ class GitHubScraper(WebNavigator):
         :param target_directory: name of directory to download files into
         :return: True if successful, False otherwise
         """
-
         # If the input list is empty, can't create folder
         if len(content_url_tuple) == 0:
             return False
 
-        target_subdirectory = target_directory + "/C_files"
+        target_subdirectory = target_directory + "/Unfiltered"
 
         # Creates a directory for the repository if one does
         if not os.path.exists(target_directory):
@@ -102,12 +101,26 @@ class GitHubScraper(WebNavigator):
 
         # Creates files with contents of repo files inside of directory.
         for i in content_url_tuple:
-            with open(os.path.join(target_subdirectory, i[0]), "w") as f:
-                try:
-                    f.write(i[2])
-                except UnicodeEncodeError as e:
-                    print(e)
-                    return False
+            split_addr = i[1].split('/')
+            split_addr = split_addr[3:]
+            new_file_name = ""
+            for j in split_addr:
+                if j == "raw" or j == "master":
+                    continue
+                new_file_name += j
+                if split_addr[-1] == j:
+                    break
+                new_file_name += '_'
+            try:
+                with open(os.path.join(target_subdirectory, new_file_name), "w") as f:
+                    try:
+                        f.write(i[2])
+                    except UnicodeEncodeError as e:
+                        print("Error with", new_file_name, e)
+                        return False
+            except (FileNotFoundError, OSError) as e:
+                print("Couldn't write file. Name was probably too long, or name is malformed", new_file_name, e)
+                return False
 
         return True
 
@@ -120,16 +133,16 @@ class GitHubScraper(WebNavigator):
         """
         file_name = file_page_link.split("/")[-1]
         file_raw_link = [i for i in GitHubScraper.getAbsoluteLinksFromPage(file_page_link) if "raw" in i][0]
-
         page_source = ""
         try:
-            response = urllib.request.urlopen(file_raw_link)
+            response = urllib.request.urlopen(file_raw_link, timeout=10)
             try:
                 page_source = response.read().decode(response.headers.get_content_charset())
             except (TypeError, UnicodeDecodeError) as e:
-                print(e)
+                print("Error with type or decoding, will not store file later:", file_raw_link, e)
+                return
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
-            print(e)
+            print("URLLIB error", e)
 
         GitHubScraper.file_name_url_content_tuples.append((file_name, file_raw_link, page_source))
 
@@ -194,6 +207,8 @@ class GitHubScraper(WebNavigator):
             GitHubScraper.file_links = []
 
             confirm_loop = False
+            futures_change_timeout = 60  # seconds
+            time_of_last_futures_change = time.time()  # used for when things get stuck
 
             futures = []
             min_max_futures = 250
@@ -203,17 +218,24 @@ class GitHubScraper(WebNavigator):
                             len(futures) < len(GitHubScraper.subfolder_links) or len(futures) < min_max_futures):
                         futures.append(
                             executor.submit(GitHubScraper.__scrape_page_urls, GitHubScraper.subfolder_links.pop()))
+                        time_of_last_futures_change = time.time()
                         confirm_loop = False
                     while len(GitHubScraper.file_links) > 0 and (
                             len(futures) < len(GitHubScraper.file_links) or len(futures) < min_max_futures):
                         futures.append(executor.submit(GitHubScraper.__download_file, GitHubScraper.file_links.pop()))
+                        time_of_last_futures_change = time.time()
                         confirm_loop = False
                     while len(GitHubScraper.file_name_url_content_tuples) > 0:
                         futures.append(
                             executor.submit(
                                 GitHubScraper.__file_content_into_storage(
                                     [GitHubScraper.file_name_url_content_tuples.pop()], target_directory)))
+                        time_of_last_futures_change = time.time()
                     futures = [future for future in futures if not future.done()]
+
+                    if time.time() - time_of_last_futures_change > futures_change_timeout:
+                        # futures hasn't changed in 20 seconds, something went wrong. Cancel all remaining futures
+                        input("Something got stuck. Press enter to continue...")
 
                     # Break out of loop when everything else is confirmed done. Also update META
                     if len(futures) == 0 and confirm_loop:
@@ -225,7 +247,8 @@ class GitHubScraper(WebNavigator):
 
 if __name__ == "__main__":
     timer = time.time()
-    GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
+    GitHubScraper.download_all_files("https://github.com/vim/vim")
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
     #                                  "FolderA")
