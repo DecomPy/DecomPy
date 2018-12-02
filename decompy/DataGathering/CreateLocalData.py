@@ -55,6 +55,8 @@ class CreateLocalData:
         stage 4 of the data gathering process: Generate LLVM and other data
         :return:
         """
+        cwd = os.getcwd()  # get current working directory
+
         # recursively loop through all
         try:
             # open file
@@ -64,10 +66,18 @@ class CreateLocalData:
                     if basename.endswith(".c"):
                         # get name without *.c
                         name, extension = os.path.splitext(basename)  # won't use extension
-                        folder = os.getcwd()                          # get current working directory
 
-                        Clang.to_llvm_opt(basename, name+"_op.ll", folder)  # compile optimized
-                        Clang.to_llvm_unopt(basename, name+"_unop.ll", folder)  # compile unoptimized
+                        print("root", root)
+                        print("dirs", dirs)
+                        print("files", files)
+                        print("name", name)
+                        print("extension", extension)
+                        print("basename", basename)
+
+                        Clang.to_llvm_opt(root+"/"+basename, root+"/"+name, cwd+"/"+root)  # compile optimized
+                        # Clang.to_llvm_unopt(root+"/"+basename, root+"/"+name+"_unop.ll", cwd+"/"+root)  # compile unoptimized
+                        # Clang.to_llvm_unopt(root + "/" + basename, root + "/" + name,  cwd + "/" + root)  # compile unoptimized
+
 
         except Exception as e:
             print("Exception", e)
@@ -76,12 +86,12 @@ class CreateLocalData:
 
 if __name__ == "__main__":
     cld = CreateLocalData()
-    cld.stage1()
-    print("stage 1 done")
-    cld.stage2()
-    print("stage 2 done")
-    cld.stage3()
-    print("stage 3 done")
+    # cld.stage1()
+    # print("stage 1 done")
+    # cld.stage2()
+    # print("stage 2 done")
+    # cld.stage3()
+    # print("stage 3 done")
     cld.stage4()
     print("stage 4 done")
 

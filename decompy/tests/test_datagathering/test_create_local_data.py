@@ -22,10 +22,6 @@ class CreateLocalDataTest(unittest.TestCase):
         # print("stage 3 done")
         # self.cld.stage4()
         # print("stage 4 done")
-<<<<<<< HEAD
         self.assertTrue(False)  # intentionally don't pass
-=======
-        # self.assertTrue(False)  # intentionally don't pass
-        self.assertTrue(True)   # intentionally pass
->>>>>>> 1d40e84da432a8b2370a4bb3e8feea98f29f1a32
+        # self.assertTrue(True)   # intentionally pass
 

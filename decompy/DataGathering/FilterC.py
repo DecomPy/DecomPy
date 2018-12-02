@@ -134,7 +134,7 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, filt_path_name="unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+    def check_valid_folder(folder, filt_path_name="Unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
                            whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
         Runs check_valid_data for each file in the folder path..
@@ -158,23 +158,23 @@ class FilterC:
 
         # if no folder exists, then return file does not exist.
         if not os.path.exists(folder):
-            return "File Does not Exist"
+            return print("Folder does not exist")
 
         # walk recursively in given folder
         try:
             # open file
             for root, dirs, files in os.walk(folder):
-                # look for unfiltered files and only want unfilter (or filt_path_name)
+                # look for Unfiltered files and only want unfilter (or filt_path_name)
                 if root.endswith(filt_path_name):
                     # only look for c files
                     for basename in files:
-                        # unfiltered name
+                        # Unfiltered name
                         unfiltered_path = root + "/" + basename
 
                         # checks for valid data, compile, then adds to meta.
                         if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted)\
                                 and FilterCompile.compile_file(unfiltered_path):
-                            # base root of new file 1 directory above unfiltered/*.c
+                            # base root of new file 1 directory above Unfiltered/*.c
                             base_root = os.path.dirname(root)
 
                             # store into new directory
@@ -201,8 +201,10 @@ class FilterC:
             print("Exception", e)
 
 
-# if __name__ == '__main__':
-#     f = FilterC()
-#     f.check_valid_folder("decompy/tests/test_filtercfiles/")
+if __name__ == '__main__':
+    f = FilterC()
+    print("starting")
+    f.check_valid_folder("Repositories")
+    print("done")
 
 

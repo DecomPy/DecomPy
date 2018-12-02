@@ -110,3 +110,8 @@ conda_decompy/
 docs/build
 docs/doctrees/
 .buildinfo
+
+
+# Our Info
+c_source.db
+Repositories/

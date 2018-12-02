@@ -18,5 +18,5 @@ class FilterCompileTest(unittest.TestCase):
         :return: assertion
         """
 
-        self.assertTrue(self.FilterCompile.compile_file("decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree.c"))
-        self.assertFalse(self.FilterCompile.compile_file("decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree_fail.c"))
+        self.assertTrue(self.FilterCompile.compile_file("decompy/tests/test_filtercfiles/files/binary_search/Unfiltered/binary_search_tree.c"))
+        self.assertFalse(self.FilterCompile.compile_file("decompy/tests/test_filtercfiles/files/binary_search/Unfiltered/binary_search_tree_fail.c"))

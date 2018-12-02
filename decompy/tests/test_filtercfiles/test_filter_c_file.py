@@ -13,8 +13,8 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = FilterC()
-        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree_fail.c"
-        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c"
+        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/Unfiltered/binary_search_tree_fail.c"
+        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnaci_search/Unfiltered/fibonacciSearch.c"
         self.folder = "decompy/tests/test_filtercfiles/files/"  # actual folder "decompy/data/Repositories"
 
     def test_bytes(self):
