@@ -1,4 +1,5 @@
 from decompy.DataGathering import *
+from pathlib import Path
 import datetime
 import os
 
@@ -64,10 +65,35 @@ class CreateLocalData:
                     if basename.endswith(".c"):
                         # get name without *.c
                         name, extension = os.path.splitext(basename)  # won't use extension
-                        folder = os.getcwd()                          # get current working directory
+                        cwd = os.getcwd()                          # get current working directory
+                        base_root = os.path.dirname(root)
 
-                        Clang.to_llvm_opt(basename, name+"_op.ll", folder)  # compile optimized
-                        Clang.to_llvm_unopt(basename, name+"_unop.ll", folder)  # compile unoptimized
+                        print("basename", basename)
+                        print("name", name)
+                        print("root", root)
+                        print("dirs", dirs)
+                        print("base_root", base_root)
+
+                        # check if file exists, get the path from string concat
+                        file = cwd + "/" + base_root + "/filtered_list.META"
+                        print("file", file)
+                        my_file = Path(file)
+
+                        # folder for LLVM
+                        folder = cwd + "/" + root + "/LLVM"
+                        # new files
+                        llvm_file = cwd + "/" + root + "/" + name
+
+                        # check if file exists or wasting time
+                        if my_file.exists():
+                            Clang.to_llvm_opt(file, llvm_file, folder)  # compile optimized
+                            Clang.to_llvm_unopt(file, llvm_file, folder)  # compile unoptimized
+
+                        else:
+                            print("Stage 4: File Does Not Exist in this directory. Exiting...")
+
+                        # if file does not exist (filtered_list.META) then break out of this directory loop.
+                        break
 
         except Exception as e:
             print("Exception", e)
@@ -76,12 +102,12 @@ class CreateLocalData:
 
 if __name__ == "__main__":
     cld = CreateLocalData()
-    cld.stage1()
-    print("stage 1 done")
-    cld.stage2()
-    print("stage 2 done")
-    cld.stage3()
-    print("stage 3 done")
+    # cld.stage1()
+    # print("stage 1 done")
+    # cld.stage2()
+    # print("stage 2 done")
+    # cld.stage3()
+    # print("stage 3 done")
     cld.stage4()
     print("stage 4 done")
 

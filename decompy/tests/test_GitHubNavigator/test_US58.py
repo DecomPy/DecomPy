@@ -60,8 +60,15 @@ class GitHubScraperTest(unittest.TestCase):
 
         if not os.path.exists("Decompy_valid_and_compilable_1"):
             os.mkdir("DecomPy_valid_and_compilable_1")
-        with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
-            f.write("Text to be appended upon")
+
+        # windows
+        if os.name == "nt":
+            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
+                f.write("Text to be appended upon")
+        # linux
+        else:
+            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"), "w") as f:
+                f.write("Text to be appended upon")
 
         GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 

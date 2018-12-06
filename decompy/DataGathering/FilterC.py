@@ -134,7 +134,7 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, filt_path_name="unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+    def check_valid_folder(folder, filt_path_name="Unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
                            whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
         Runs check_valid_data for each file in the folder path..
@@ -164,42 +164,56 @@ class FilterC:
         try:
             # open file
             for root, dirs, files in os.walk(folder):
-                # look for unfiltered files and only want unfilter (or filt_path_name)
+                # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
                 if root.endswith(filt_path_name):
                     # only look for c files
                     for basename in files:
                         # unfiltered name
                         unfiltered_path = root + "/" + basename
 
-                        # checks for valid data, compile, then adds to meta.
-                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted)\
-                                and FilterCompile.compile_file(unfiltered_path):
-                            # base root of new file 1 directory above unfiltered/*.c
-                            base_root = os.path.dirname(root)
+                        # base root of new file 1 directory above unfiltered/*.c
+                        base_root = os.path.dirname(root)
+                        # store into new directory, check if it exists already in file
+                        new_file = base_root + "/" + append_file
 
-                            # store into new directory
-                            new_file = base_root+"/"+append_file
+                        # check if path already exists, so we don't waste time computing or adding more
+                        if not FilterC.duplicate_text_file(new_file, unfiltered_path):
 
-                            # create file if it does not exist
-                            if not os.path.exists(new_file):
-                                # open to write to it
-                                open(new_file, "w+")
+                            # checks for valid data, compile, then adds to meta.
+                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted)\
+                                    and FilterCompile.compile_file(unfiltered_path):
 
-                            # append path to list
-                            with open(new_file, "a") as myfile:
-                                # add file path to list.META
-                                myfile.write(unfiltered_path)
+                                # create file if it does not exist
+                                if not os.path.exists(new_file):
+                                    # open to write to it
+                                    open(new_file, "w+")
 
-                                # check if OS is windows for \r\n
-                                if os.name == 'nt':
-                                    myfile.write("\r\n")
-                                # otherwise it's \n
-                                else:
-                                    myfile.write("\n")
+                                # append path to list
+                                with open(new_file, "a") as myfile:
+                                    # add file path to list.META
+                                    myfile.write(unfiltered_path)
+
+                                    # check if OS is windows for \r\n
+                                    if os.name == 'nt':
+                                        myfile.write("\r\n")
+                                    # otherwise it's \n
+                                    else:
+                                        myfile.write("\n")
 
         except Exception as e:
             print("Exception", e)
 
+    @staticmethod
+    def file_text_exists(file, phrase):
+        """
+        Checks for duplicate lines in a file.
+        :param file: the file path
+        :type: str
+        :param phrase: the phrase we are looking for
+        :type: str
+        :return: true if duplicate exists in file.
+        """
+        return phrase in open(file, 'r').read()
 
 # if __name__ == '__main__':
 #     f = FilterC()
