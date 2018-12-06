@@ -175,48 +175,48 @@
 <h2>Descriptions of Possible Compilers<a class="headerlink" href="#descriptions-of-possible-compilers" title="Permalink to this headline">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
-<div class="active item sphinx-data-tab-0 docutils container">
+<div class="active item sphinx-data-tab-0-0 docutils container">
 <div class="docutils container">
 Capstone</div>
 </div>
-<div class="item sphinx-data-tab-1 docutils container">
+<div class="item sphinx-data-tab-0-1 docutils container">
 <div class="docutils container">
 Bastard Disassembler / libdiasm</div>
 </div>
-<div class="item sphinx-data-tab-2 docutils container">
+<div class="item sphinx-data-tab-0-2 docutils container">
 <div class="docutils container">
 udis86</div>
 </div>
-<div class="item sphinx-data-tab-3 docutils container">
+<div class="item sphinx-data-tab-0-3 docutils container">
 <div class="docutils container">
 Objconv</div>
 </div>
-<div class="item sphinx-data-tab-4 docutils container">
+<div class="item sphinx-data-tab-0-4 docutils container">
 <div class="docutils container">
 objdump</div>
 </div>
-<div class="item sphinx-data-tab-5 docutils container">
+<div class="item sphinx-data-tab-0-5 docutils container">
 <div class="docutils container">
 gdb</div>
 </div>
-<div class="item sphinx-data-tab-6 docutils container">
+<div class="item sphinx-data-tab-0-6 docutils container">
 <div class="docutils container">
 lida interactive disassembler</div>
 </div>
-<div class="item sphinx-data-tab-7 docutils container">
+<div class="item sphinx-data-tab-0-7 docutils container">
 <div class="docutils container">
 dissy</div>
 </div>
-<div class="item sphinx-data-tab-8 docutils container">
+<div class="item sphinx-data-tab-0-8 docutils container">
 <div class="docutils container">
 ldasm</div>
 </div>
-<div class="item sphinx-data-tab-9 docutils container">
+<div class="item sphinx-data-tab-0-9 docutils container">
 <div class="docutils container">
 AsmDis</div>
 </div>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0 active docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-0 active docutils container">
 <p>Capstone is open source (BSD), supports bindings in a huge list of languages including Python, C, and C++, and is up
 to date. It is specifically designed with dissasembling malware programs in mind and designed to handle the
 tricks that they employ. It is supported on Windows, Mac, IOS (not sure why), Android (again..,) BSD, Solaris,
@@ -224,20 +224,20 @@ Linux. It has a full wiki and a website which will be useful for documentation.<
 <p><a class="reference external" href="http://www.capstone-engine.org/">Capstone’s Website</a>.</p>
 <p><a class="reference external" href="https://github.com/aquynh/capstone">Github Repo</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-1 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-1 docutils container">
 <p>The Bastard Disassembler is a disassembler built for Linux / FreeBSD. It provides a library (libdiasm) which
 is intended to be used programmatically. It is written in C, but appears to have a python binding. There is poor
 documentation and it is difficult to find much on the usage. It also appears to be inactive.</p>
 <p><a class="reference external" href="http://bastard.sourceforge.net/libdisasm.html">libdiasm Website</a>.</p>
 <p><a class="reference external" href="http://bastard.sourceforge.net/">Bastard Disassembler Website</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-2 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-2 docutils container">
 <p>Open source (2-clause BSD) C library for x86 and x86_64 dissasembly. It doesn’t appear to have the best
 documentation, but it is at least present and usage seems simple, especially for what we would need to start.
 It does handle ELF files.</p>
 <p><a class="reference external" href="http://udis86.sourceforge.net/">udis86 Website</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-3 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-3 docutils container">
 <p>Supports Windows, 32 and 64 bit x86, Linux, 32 and 64 bit x86, BSD, 32 and 64 bit x86 and Mac OS X, 32 and 64 bit
 x86 (Darwin, Intel based). The docs actually say that the tool is “only intended for experts” and “not to send
 your programming questions to” the author as he will flat out ignore you. It seems to have a decent and simple
@@ -246,23 +246,23 @@ the GPL license though, so likely this crosses it off of our lists. It also seem
 and is basically just a zip from this website. It is written in CPP from glancing at the source files.</p>
 <p><a class="reference external" href="https://www.agner.org/optimize/objconv-instructions.pdf">Paper on objconv from author</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-4 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-4 docutils container">
 This is the built in linux tool for analyzing machine code files. While it is increadibly useful, it does not provide
 much besides a straight forward analysis and is not overly useful by itself. Many dissasemblers have been built on top
 of it which do further analysis to improve result and which would be better suited towards our project. It is also built
 specifically for gcc and does not do much for detecting/understanding other compilers at all.</div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-5 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-5 docutils container">
 GDB has some dissasembly tool built in, but many of them are based on objdump and are inteded for an analysis of the code, not
 for a programatic dissasembly process. Mostly, gdb is not even directly inteded for reverse engineering but more for determining
 error in the machine code for low level optimizations, despite the fact that it has many applications in direct analysis. It is
 also released under GPL which could be an annoyance, though it is easily installable on any Linux computer and we would not have
 to include it.</div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-6 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-6 docutils container">
 <p>This is an interactive dissasembler which defeats most of the purpose of use. It is also built on top of libdiasm (similar to Bastard Dissasembler)
 which literally has a note saying to go use Capstone instead. Lida itself also seems out of date. It is even inteded to be used in a TK GUI.</p>
 <p><a class="reference external" href="https://code.google.com/archive/p/libdasm/">Go use Capstone instead</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-7 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-7 docutils container">
 <p>I had trouble even finding this one after seeing the name and googling it. It is hosted on google code, but there is a semi active (a year ago)
 branch that shows it is still updated. It is, like lida, interactive and likely not well suited for our project. It heavily utilizes objdump
 which from what I can tell seems to be the easy approach unlikely to get the best results. The google code site has been archived, which also
@@ -270,12 +270,12 @@ worries me.</p>
 <p><a class="reference external" href="https://github.com/SimonKagstrom/emilpro/">GitHub Repo</a>.</p>
 <p><a class="reference external" href="https://code.google.com/archive/p/dissy/">Google code site</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-8 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-8 docutils container">
 <p>Ldasm is Microsofts tool. It has the ability to be compiled for ubuntu, but it doesn’t seem like this is the intent. It really likes visual studio
 which is not a good fit for this project.</p>
 <p><a class="reference external" href="https://docs.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler">Microsoft’s docs page</a>.</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-9 docutils container">
+<div class="ui bottom attached sphinx-tab tab segment sphinx-data-tab-0-9 docutils container">
 <p><a class="reference external" href="https://sourceforge.net/projects/asmdis/">AsmDis Website</a>.</p>
 <p>Yet another interactive dissasembler. The last update was 2016, so it also seems a little out of date, if not as much as some others.</p>
 </div>
