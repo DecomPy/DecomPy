@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.DataGathering.GitHubScraper &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>decompy.DataGathering.GitHubScraper</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for decompy.DataGathering.GitHubScraper</h1><div class="highlight"><pre>
+<span></span><span class="c1"># BSD 3-Clause License</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2018, Zachary Lynn Monroe, YiZhuang Garrard</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Redistribution and use in source and binary forms, with or without</span>
+<span class="c1"># modification, are permitted provided that the following conditions are met:</span>
+<span class="c1">#</span>
+<span class="c1"># * Redistributions of source code must retain the above copyright notice, this</span>
+<span class="c1">#   list of conditions and the following disclaimer.</span>
+<span class="c1">#</span>
+<span class="c1"># * Redistributions in binary form must reproduce the above copyright notice,</span>
+<span class="c1">#   this list of conditions and the following disclaimer in the documentation</span>
+<span class="c1">#   and/or other materials provided with the distribution.</span>
+<span class="c1">#</span>
+<span class="c1"># * Neither the name of the copyright holder nor the names of its</span>
+<span class="c1">#   contributors may be used to endorse or promote products derived from</span>
+<span class="c1">#   this software without specific prior written permission.</span>
+<span class="c1">#</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</span>
+<span class="c1"># DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE</span>
+<span class="c1"># FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL</span>
+<span class="c1"># DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</span>
+<span class="c1"># SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER</span>
+<span class="c1"># CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,</span>
+<span class="c1"># OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</span>
+<span class="c1"># OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span>
+
+<span class="kn">from</span> <span class="nn">decompy.DataGathering.WebNavigator</span> <span class="k">import</span> <span class="n">WebNavigator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">fileinput</span>
+<span class="kn">import</span> <span class="nn">urllib.request</span><span class="o">,</span> <span class="nn">urllib.error</span><span class="o">,</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<div class="viewcode-block" id="GitHubScraper"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.GitHubScraper.GitHubScraper">[docs]</a><span class="k">class</span> <span class="nc">GitHubScraper</span><span class="p">(</span><span class="n">WebNavigator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handles finding GitHub file URLs and downloading their contents&quot;&quot;&quot;</span>
+
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>   <span class="c1"># Whether to print debug info or not</span>
+    <span class="n">TIMING</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Whether to print timing info or not</span>
+    <span class="n">TIMER</span> <span class="o">=</span> <span class="mi">0</span>       <span class="c1"># Used if TIMING is enabled</span>
+    <span class="n">pageContents</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># Used for multithreading in __getContent</span>
+    <span class="n">subURLs</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c1"># Used for multithreading in __getFileURLSFromGitRepo</span>
+    <span class="n">subFolders</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c1"># Used for multithreading in __getFileURLSFromGitRepo</span>
+    <span class="n">sourceFiles</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c1"># Used for multithreading in __getFileURLSFromGitRepo</span>
+    <span class="n">pageLinks</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c1"># Used for multithreading in __getAbsoluteLinksFromPage</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__getFileURLSFromGitHubRepo</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function for multithreaded web scraping. Called by getFileURLSFromGitHubRepo. Not recommended for outside use</span>
+<span class="sd">        :param url: url of GitHub Repo or a folder within that repo</span>
+<span class="sd">        :return: Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">getContent</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">getLinks</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">links</span><span class="p">))</span>  <span class="c1"># Deletes empty urls. Empty URLs somehow come in when getLinks is called above.</span>
+        <span class="c1"># The following block removes links that don&#39;t need to be followed</span>
+        <span class="n">linksToRemove</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;/blob/&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="s2">&quot;master&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">linksToRemove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">linksToRemove</span><span class="p">:</span>
+                <span class="n">links</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There was an issue when dealing with url&quot;</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="s2">&quot;sourced from url&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="s2">&quot;. List of links: &quot;</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
+
+        <span class="n">absLinks</span> <span class="o">=</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">getAbsolute</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">absLinks</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">subURL</span> <span class="ow">in</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subURLs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">subURL</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># filters URLs that are the same as other URLs</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="s2">&quot;commits&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>  <span class="c1"># filters files that are not in main</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="s2">&quot;/blob/&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>  <span class="c1"># /blob/ is a marker for files</span>
+                        <span class="k">if</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">sourceFiles</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c&quot;</span><span class="p">):</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="s2">&quot;master&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>  <span class="c1"># This makes sure only URLs from master branch are saved</span>
+                            <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">sourceFiles</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">link</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="s2">&quot;master&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                            <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                            <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subURLs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GitHubScraper.getFileURLSFromGitHubRepo"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.GitHubScraper.GitHubScraper.getFileURLSFromGitHubRepo">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">getFileURLSFromGitHubRepo</span><span class="p">(</span><span class="n">repoURL</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds and returns a list of the absolute URLs of all the files</span>
+<span class="sd">        within the current master branch of a GitHub repository</span>
+
+<span class="sd">        :param repoURL: absolute URL to a GitHub repo e.g. &quot;https://github.com/DecomPy/valid_and_compilable_1&quot;</span>
+<span class="sd">        :return: a list of tuples of file names and absolute URLs within the GitHub repo</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subURLs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/master/&quot;</span><span class="p">]</span>
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span> <span class="o">=</span> <span class="p">[</span><span class="n">repoURL</span><span class="p">]</span>
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">sourceFiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">threadSpawningCounter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">counter</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="p">):</span>
+            <span class="c1"># Threading is used here because each download takes about 0.5 seconds.</span>
+            <span class="n">tempRange</span>  <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+                <span class="n">threadSpawningCounter</span> <span class="o">=</span> <span class="n">threadSpawningCounter</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getFileURLSFromGitHubRepo: Number of time threads are created:&quot;</span><span class="p">,</span>
+                      <span class="n">threadSpawningCounter</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tempRange</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getFileURLSFromGitHubRepo: Thread spawned to look at url&quot;</span><span class="p">,</span>
+                          <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">__getFileURLSFromGitHubRepo</span><span class="p">,</span>
+                                          <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="p">[</span><span class="n">counter</span><span class="p">],))</span>
+                <span class="n">counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Wait some time between new threads so that github server doesn&#39;t block me</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tempRange</span><span class="p">:</span>
+                <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">subFolders</span><span class="p">):</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">sourceFiles</span><span class="p">))</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__getContent</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the content from a link. This one is used with multithreading</span>
+
+<span class="sd">        :param link: An absolute URL</span>
+<span class="sd">        :return: page content</span>
+<span class="sd">        :return: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pageSource</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pageSource</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get_content_charset</span><span class="p">())</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">UnicodeDecodeError</span><span class="p">):</span>
+                <span class="k">pass</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">,</span> <span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">URLError</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageContents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">pageSource</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__getAbsoluteLinksFromPage</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds absolute URLs within a page. This function is used from getContentFromGitHubFileURLs via threading</span>
+
+<span class="sd">        :param link: the absolute link to resolve</span>
+<span class="sd">        :return: set of absolute URLs within a page</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">WebNavigator</span><span class="o">.</span><span class="n">getContent</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="n">WebNavigator</span><span class="o">.</span><span class="n">getLinks</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">absLinks</span> <span class="o">=</span> <span class="n">WebNavigator</span><span class="o">.</span><span class="n">getAbsolute</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageLinks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">absLinks</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GitHubScraper.getContentFromGitHubFileURLs"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.GitHubScraper.GitHubScraper.getContentFromGitHubFileURLs">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">getContentFromGitHubFileURLs</span><span class="p">(</span><span class="n">fileUrlTuples</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs that are not GitHub file URLs</span>
+<span class="sd">        :param fileUrlTuples: a list of tuples of file names and absolute URLs within the GitHub repo. Get this from getFileURLSFromGitHubRepo</span>
+<span class="sd">        :return: a list of tuples of file names, file URLs, contents of those files, but NOT actual files. Each tuple in the list is formatted (&quot;name&quot;, &quot;url&quot;, &quot;content&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting urls from tuples&quot;</span><span class="p">)</span>
+        <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fileUrlTuples</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubFileURLS: urls:&quot;</span><span class="p">,</span> <span class="n">urls</span><span class="p">);</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubFileURLS: Getting absolute URLS on page with the content we want&quot;</span><span class="p">)</span>
+
+        <span class="n">threads</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageLinks</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c1"># Clear out list in case there are still things in it</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)):</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">__getAbsoluteLinksFromPage</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">urls</span><span class="p">[</span><span class="n">i</span><span class="p">],))</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Wait some time between new threads so that github server doesn&#39;t block me</span>
+            <span class="c1"># GitHubScraper.__getAbsoluteLinksFromPage(urls[i])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)):</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubFileURLS: Filtering URLS to get raw file URLS&quot;</span><span class="p">)</span>
+        <span class="n">rawLinks</span> <span class="o">=</span> <span class="p">[[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span> <span class="k">if</span> <span class="s2">&quot;raw&quot;</span> <span class="ow">in</span> <span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageLinks</span><span class="p">]</span>    <span class="c1"># Filter out only URLs that have &quot;raw&quot; in</span>
+        <span class="c1"># them, because these URLs lead to pages with the content of the file</span>
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubFileURLS: Flattening list of URLs&quot;</span><span class="p">)</span>
+        <span class="n">rawLinks</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">rawLinksSub</span> <span class="ow">in</span> <span class="n">rawLinks</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rawLinksSub</span><span class="p">]</span>  <span class="c1"># Flatten a list of lists into a list</span>
+
+        <span class="c1"># Threading is used here because each download takes about 0.5 seconds. Parallel downloads will increase throughput</span>
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">TIMING</span><span class="p">:</span>
+            <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">TIMER</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">threads</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">rawLinks</span><span class="p">)</span>
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageContents</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">rawLinks</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">threads</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubRepoFileURLS: created thread&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;to download content from &quot;</span><span class="p">,</span>
+                  <span class="n">rawLinks</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">__getContent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">rawLinks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">))</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="c1"># Wait some time between new threads so that github server doesn&#39;t block me</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">threads</span><span class="p">)):</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">TIMING</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time to download content:&quot;</span><span class="p">,</span>
+                  <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">TIMER</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GITHUBSCRAPER: getContentFromGitHubRepoFileURLS: Joined thread&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageContents</span>
+        <span class="n">returnList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Creates the list of (&quot;file name&quot;, &quot;file URL&quot;, &quot;file content&quot;) tuples</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fileUrlTuples</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+            <span class="n">returnList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">))</span>
+
+        <span class="c1"># Change DEBUG variable to true to get more info</span>
+        <span class="k">if</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="c1"># print(fileUrlTuples)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;urls:&quot;</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pagelinks:&quot;</span><span class="p">,</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">pageLinks</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rawLinks: &quot;</span><span class="p">,</span> <span class="n">rawLinks</span><span class="p">)</span>
+            <span class="c1"># for i in content:</span>
+            <span class="c1">#     print(i)</span>
+            <span class="c1"># print(&quot;return value &quot;, returnList)</span>
+
+        <span class="k">return</span> <span class="n">returnList</span></div>
+
+<div class="viewcode-block" id="GitHubScraper.fileContentIntoStorage"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.GitHubScraper.GitHubScraper.fileContentIntoStorage">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fileContentIntoStorage</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes the content of a string into a file given a list of tuples of filenames and strings</span>
+<span class="sd">        :param contentUrlTuple: list of tuples, with each tuple being (&quot;fileName&quot;, &quot;fileURL&quot;, &quot;fileContent&quot;). Get this from getContentFromGitHubFileURLs</span>
+<span class="sd">        :return: True if successful, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># If the input list is empty, can&#39;t create folder</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Creates a directory for the repository if one does not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="c1"># Create config.META if it doesn&#39;t exist, place download timestamp there</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;config.META&quot;</span><span class="p">))):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;config.META&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;File download timestamp: &quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+        <span class="c1"># Otherwise config.META does exist. Update the correct line</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">updateTimeStamp</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileinput</span><span class="o">.</span><span class="n">input</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;config.META&quot;</span><span class="p">)),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">&quot;File download timestamp: &quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;File download timestamp:&quot;</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))),</span>
+                    <span class="n">updateTimeStamp</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">),</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">updateTimeStamp</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">],</span>
+                                       <span class="s2">&quot;config.META&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;File download timestamp:&quot;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+
+
+        <span class="c1"># Creates files with contents of repo files inside of directory.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">contentUrlTuple</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">contentUrlTuple</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="GitHubScraper.downloadAllFiles"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.GitHubScraper.GitHubScraper.downloadAllFiles">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">downloadAllFiles</span><span class="p">(</span><span class="n">repoURL</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Composition of functions to download all files in a GitHub repository. Files will be downloaded into a folder named &quot;username_reponame&quot;</span>
+<span class="sd">        :param repoURL: URL of repository</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fileUrlTuples</span> <span class="o">=</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">getFileURLSFromGitHubRepo</span><span class="p">(</span><span class="n">repoURL</span><span class="p">)</span>
+        <span class="n">fileContentTuples</span> <span class="o">=</span> <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">getContentFromGitHubFileURLs</span><span class="p">(</span><span class="n">fileUrlTuples</span><span class="p">)</span>
+        <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">fileContentIntoStorage</span><span class="p">(</span><span class="n">fileContentTuples</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">timer</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1"># fileUrlTuples = GitHubScraper.getFileURLSFromGitHubRepo(&quot;https://github.com/DecomPy/valid_and_compilable_1&quot;)</span>
+    <span class="c1"># print(&quot;filename/URL pairs: &quot;, fileUrlTuples)</span>
+    <span class="c1"># fileContentTuples = GitHubScraper.getContentFromGitHubFileURLs(fileUrlTuples)</span>
+    <span class="c1"># print(&quot;filename/content pairs: &quot;, fileContentTuples)</span>
+    <span class="c1"># GitHubScraper.fileContentIntoStorage(fileContentTuples)</span>
+    <span class="c1"># GitHubScraper.downloadAllFiles(&quot;https://github.com/DecomPy/valid_and_compilable_1&quot;)</span>
+    <span class="c1"># GitHubScraper.downloadAllFiles(&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input&quot;)</span>
+    <span class="c1"># GitHubScraper.downloadAllFiles(&quot;https://github.com/hexagon5un/AVR-Programming&quot;)</span>
+    <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">downloadAllFiles</span><span class="p">(</span><span class="s2">&quot;https://github.com/torvalds/linux&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">timer</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

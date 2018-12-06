@@ -1,0 +1,870 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.DataGathering package &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="decompy.database package" href="decompy.database.html" />
+    <link rel="prev" title="decompy package" href="decompy.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Decompy API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="decompy.html">decompy package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="decompy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">decompy.DataGathering package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html">decompy.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.html#module-decompy">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">decompy.DataGathering package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.FilterC">decompy.DataGathering.FilterC module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.FilterCompile">decompy.DataGathering.FilterCompile module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.GenLLVM">decompy.DataGathering.GenLLVM module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.GitHubScraper">decompy.DataGathering.GitHubScraper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.RepoFilter">decompy.DataGathering.RepoFilter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.RepoStructure">decompy.DataGathering.RepoStructure module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering.WebNavigator">decompy.DataGathering.WebNavigator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.DataGathering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.database.html">decompy.database package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">decompy</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="decompy.html">decompy package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="decompy.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.html#module-decompy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3_DesignDecisions/index.html">Design Decisions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Decompy API</a> &raquo;</li>
+        
+          <li><a href="decompy.html">decompy package</a> &raquo;</li>
+        
+      <li>decompy.DataGathering package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Documentation/2_Decompy/decompy.DataGathering.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="decompy-datagathering-package">
+<h1>decompy.DataGathering package<a class="headerlink" href="#decompy-datagathering-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-decompy.DataGathering.FilterC">
+<span id="decompy-datagathering-filterc-module"></span><h2>decompy.DataGathering.FilterC module<a class="headerlink" href="#module-decompy.DataGathering.FilterC" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.FilterC.FilterC">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.FilterC.</code><code class="descname">FilterC</code><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterC.html#FilterC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Filters C files to our standards. This includes c header files that we find appropraite for machine learning.
+Filters out the maximum amount of bytes we would like in a file. As of now, this is 7000 bytes.
+Filters our words that may be too difficult: malloc, FILE, and threading</p>
+<dl class="attribute">
+<dt id="decompy.DataGathering.FilterC.FilterC.C_BLACKLIST">
+<code class="descname">C_BLACKLIST</code><em class="property"> = ('file', 'malloc', 'realloc', 'calloc', 'free')</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.C_BLACKLIST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.FilterC.FilterC.C_WHITELIST_HEADERS">
+<code class="descname">C_WHITELIST_HEADERS</code><em class="property"> = ('assert', 'complex', 'ctype', 'errno', 'fenv', 'float', 'inttypes', 'limits', 'locale', 'math', 'signal', 'stddef', 'stdint', 'stdio', 'stdlib', 'stdnoreturn', 'string', 'tgmath', 'time', 'wchar', 'wctype')</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.C_WHITELIST_HEADERS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.FilterC.FilterC.FILE_TYPE">
+<code class="descname">FILE_TYPE</code><em class="property"> = '.c'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.FILE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.FilterC.FilterC.MAX_BYTES">
+<code class="descname">MAX_BYTES</code><em class="property"> = 8000</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.MAX_BYTES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.FilterC.FilterC.MIN_BYTES">
+<code class="descname">MIN_BYTES</code><em class="property"> = 21</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.MIN_BYTES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.FilterC.FilterC.check_blacklisted_words">
+<em class="property">static </em><code class="descname">check_blacklisted_words</code><span class="sig-paren">(</span><em>line</em>, <em>blacklisted=('file'</em>, <em>'malloc'</em>, <em>'realloc'</em>, <em>'calloc'</em>, <em>'free')</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterC.html#FilterC.check_blacklisted_words"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.check_blacklisted_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowercases the line to evaluate, and returns false if any blacklisted word is found.
+:param: the string from a file.
+:type: str
+:param: the blacklisted array.
+:type: str arr
+:return: boolean</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.FilterC.FilterC.check_byte_size">
+<em class="property">static </em><code class="descname">check_byte_size</code><span class="sig-paren">(</span><em>file</em>, <em>preferred_max_size=8000</em>, <em>preferred_min_size=21</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterC.html#FilterC.check_byte_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.check_byte_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the file size and tests it against the preferred_size in bytes. The default is 7000 bytes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> – the file path to test against</li>
+<li><strong>preferred_max_size</strong> – the preferred size to search for, defaults to 7000.</li>
+<li><strong>preferred_min_size</strong> – the preferred minimum size to search for, defaults to 21 (for <cite>int main(){return 0;}</cite>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.FilterC.FilterC.check_headers">
+<em class="property">static </em><code class="descname">check_headers</code><span class="sig-paren">(</span><em>line</em>, <em>whitelisted=('assert'</em>, <em>'complex'</em>, <em>'ctype'</em>, <em>'errno'</em>, <em>'fenv'</em>, <em>'float'</em>, <em>'inttypes'</em>, <em>'limits'</em>, <em>'locale'</em>, <em>'math'</em>, <em>'signal'</em>, <em>'stddef'</em>, <em>'stdint'</em>, <em>'stdio'</em>, <em>'stdlib'</em>, <em>'stdnoreturn'</em>, <em>'string'</em>, <em>'tgmath'</em>, <em>'time'</em>, <em>'wchar'</em>, <em>'wctype')</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterC.html#FilterC.check_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.check_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses a regex to evaluate the line, ignoring the case, and returns false if any unknown header is found.
+:param: the string from a file.
+:type: str
+:param: the blacklisted array, defaults to
+:type: str arr
+:return: boolean</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.FilterC.FilterC.check_valid_data">
+<em class="property">static </em><code class="descname">check_valid_data</code><span class="sig-paren">(</span><em>file</em>, <em>preferred_max_size=8000</em>, <em>preferred_min_size=21</em>, <em>whitelisted=('assert'</em>, <em>'complex'</em>, <em>'ctype'</em>, <em>'errno'</em>, <em>'fenv'</em>, <em>'float'</em>, <em>'inttypes'</em>, <em>'limits'</em>, <em>'locale'</em>, <em>'math'</em>, <em>'signal'</em>, <em>'stddef'</em>, <em>'stdint'</em>, <em>'stdio'</em>, <em>'stdlib'</em>, <em>'stdnoreturn'</em>, <em>'string'</em>, <em>'tgmath'</em>, <em>'time'</em>, <em>'wchar'</em>, <em>'wctype')</em>, <em>blacklisted=('file'</em>, <em>'malloc'</em>, <em>'realloc'</em>, <em>'calloc'</em>, <em>'free')</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterC.html#FilterC.check_valid_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.check_valid_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs validation testing on a given file string. This includes the correct byte size,
+predetermined whitelisted headers, and predetermined blacklisted headers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> – the file the user wants to validate.</li>
+<li><strong>preferred_max_size</strong> – the max byte size the user wants</li>
+<li><strong>preferred_min_size</strong> – the min byte size the user wants</li>
+<li><strong>whitelisted</strong> – the whitelisted headers to search for.</li>
+<li><strong>blacklisted</strong> – the blacklisted words to exclude.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">tuple or array</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">tuple or array</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.FilterC.FilterC.check_valid_folder">
+<em class="property">static </em><code class="descname">check_valid_folder</code><span class="sig-paren">(</span><em>folder</em>, <em>filt_path_name='unfiltered'</em>, <em>append_file='filtered_list.META'</em>, <em>preferred_max_size=8000</em>, <em>preferred_min_size=21</em>, <em>whitelisted=('assert'</em>, <em>'complex'</em>, <em>'ctype'</em>, <em>'errno'</em>, <em>'fenv'</em>, <em>'float'</em>, <em>'inttypes'</em>, <em>'limits'</em>, <em>'locale'</em>, <em>'math'</em>, <em>'signal'</em>, <em>'stddef'</em>, <em>'stdint'</em>, <em>'stdio'</em>, <em>'stdlib'</em>, <em>'stdnoreturn'</em>, <em>'string'</em>, <em>'tgmath'</em>, <em>'time'</em>, <em>'wchar'</em>, <em>'wctype')</em>, <em>blacklisted=('file'</em>, <em>'malloc'</em>, <em>'realloc'</em>, <em>'calloc'</em>, <em>'free')</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterC.html#FilterC.check_valid_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.check_valid_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs check_valid_data for each file in the folder path..</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>folder</strong> – the folder the user wants to validate for each C file.</li>
+<li><strong>filt_path_name</strong> – the filtered path word the user is using to store data once filtered.</li>
+<li><strong>append_file</strong> – the file to add lines to.</li>
+<li><strong>preferred_max_size</strong> – the max byte size the user wants.</li>
+<li><strong>preferred_min_size</strong> – the max byte size the user wants.</li>
+<li><strong>whitelisted</strong> – the whitelisted headers the user wants.</li>
+<li><strong>blacklisted</strong> – the blacklisted words the user wants to exclude.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">tuple or array</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">tuple or array</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.FilterC.FilterC.script_dir">
+<code class="descname">script_dir</code><em class="property"> = '/mnt/c/users/zlmonroe/Documents/Fall2018/SER401/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering.FilterCompile">
+<span id="decompy-datagathering-filtercompile-module"></span><h2>decompy.DataGathering.FilterCompile module<a class="headerlink" href="#module-decompy.DataGathering.FilterCompile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.FilterCompile.FilterCompile">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.FilterCompile.</code><code class="descname">FilterCompile</code><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterCompile.html#FilterCompile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterCompile.FilterCompile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Compiles a File returning true or false whether the file could be compiled.</p>
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.FilterCompile.FilterCompile.compile_file">
+<em class="property">static </em><code class="descname">compile_file</code><span class="sig-paren">(</span><em>file</em>, <em>commands='clang -fsyntax-only'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FilterCompile.html#FilterCompile.compile_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FilterCompile.FilterCompile.compile_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>compiles the file with given arguments or default clang.
+:param file: the file to compile.
+:type: string
+:param commands: the commands to run when compiling.
+:type: array or tuple
+:return: bool</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering.GenLLVM">
+<span id="decompy-datagathering-genllvm-module"></span><h2>decompy.DataGathering.GenLLVM module<a class="headerlink" href="#module-decompy.DataGathering.GenLLVM" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.GenLLVM.GenLLVM">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.GenLLVM.</code><code class="descname">GenLLVM</code><a class="reference internal" href="../../_modules/decompy/DataGathering/GenLLVM.html#GenLLVM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GenLLVM.GenLLVM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.GenLLVM.GenLLVM.genLLVM">
+<em class="property">static </em><code class="descname">genLLVM</code><span class="sig-paren">(</span><em>filepath</em>, <em>newlocation</em>, <em>opt_level=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GenLLVM.html#GenLLVM.genLLVM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GenLLVM.GenLLVM.genLLVM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates optimized and unoptmized llvm files for all c files specified in the file
+:param opt_level: the optimization level for optimized llvm. defaults to base line opt level, 0
+:param filepath: file containing the filpath to the txt file that contains the paths to the c files
+:param newlocation: new location for the llvm files. must include trailing slash: “./llvmDir”
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering.GitHubScraper">
+<span id="decompy-datagathering-githubscraper-module"></span><h2>decompy.DataGathering.GitHubScraper module<a class="headerlink" href="#module-decompy.DataGathering.GitHubScraper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.GitHubScraper.</code><code class="descname">GitHubScraper</code><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#decompy.DataGathering.WebNavigator.WebNavigator" title="decompy.DataGathering.WebNavigator.WebNavigator"><code class="xref py py-class docutils literal notranslate"><span class="pre">decompy.DataGathering.WebNavigator.WebNavigator</span></code></a></p>
+<p>Handles finding GitHub file URLs and downloading their contents</p>
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = True</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.TIMER">
+<code class="descname">TIMER</code><em class="property"> = 0</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.TIMER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.TIMING">
+<code class="descname">TIMING</code><em class="property"> = False</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.TIMING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.downloadAllFiles">
+<em class="property">static </em><code class="descname">downloadAllFiles</code><span class="sig-paren">(</span><em>repoURL</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper.downloadAllFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.downloadAllFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Composition of functions to download all files in a GitHub repository. Files will be downloaded into a folder named “username_reponame”
+:param repoURL: URL of repository
+:return: nothing</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.fileContentIntoStorage">
+<em class="property">static </em><code class="descname">fileContentIntoStorage</code><span class="sig-paren">(</span><em>contentUrlTuple</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper.fileContentIntoStorage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.fileContentIntoStorage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the content of a string into a file given a list of tuples of filenames and strings
+:param contentUrlTuple: list of tuples, with each tuple being (“fileName”, “fileURL”, “fileContent”). Get this from getContentFromGitHubFileURLs
+:return: True if successful, False otherwise</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.getContentFromGitHubFileURLs">
+<em class="property">static </em><code class="descname">getContentFromGitHubFileURLs</code><span class="sig-paren">(</span><em>fileUrlTuples</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper.getContentFromGitHubFileURLs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.getContentFromGitHubFileURLs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads the raw files from GitHub file URLs. Unknown behaviour is URLs that are not GitHub file URLs
+:param fileUrlTuples: a list of tuples of file names and absolute URLs within the GitHub repo. Get this from getFileURLSFromGitHubRepo
+:return: a list of tuples of file names, file URLs, contents of those files, but NOT actual files. Each tuple in the list is formatted (“name”, “url”, “content”)</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.getFileURLSFromGitHubRepo">
+<em class="property">static </em><code class="descname">getFileURLSFromGitHubRepo</code><span class="sig-paren">(</span><em>repoURL</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper.getFileURLSFromGitHubRepo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.getFileURLSFromGitHubRepo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds and returns a list of the absolute URLs of all the files
+within the current master branch of a GitHub repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>repoURL</strong> – absolute URL to a GitHub repo e.g. “<a class="reference external" href="https://github.com/DecomPy/valid_and_compilable_1">https://github.com/DecomPy/valid_and_compilable_1</a>”</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list of tuples of file names and absolute URLs within the GitHub repo</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.pageContents">
+<code class="descname">pageContents</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.pageContents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.pageLinks">
+<code class="descname">pageLinks</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.pageLinks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.sourceFiles">
+<code class="descname">sourceFiles</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.sourceFiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.subFolders">
+<code class="descname">subFolders</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.subFolders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.subURLs">
+<code class="descname">subURLs</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.subURLs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering.RepoFilter">
+<span id="decompy-datagathering-repofilter-module"></span><h2>decompy.DataGathering.RepoFilter module<a class="headerlink" href="#module-decompy.DataGathering.RepoFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.RepoFilter.</code><code class="descname">RepoFilter</code><span class="sig-paren">(</span><em>search</em>, <em>language=None</em>, <em>blacklist=None</em>, <em>per_page=100</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>First draft of the RepoFilter using the GitHub api. This class searches for repositories on GitHub matching
+a search. It was written with offline queries in mind as I did not have access to the internet most of the
+time while writing it. This might be useful in the end for backups / redundancy however and provides the
+ability save a list so that another query does not have to be made to GitHub and so that results will not
+change as repositories change. Using too old of a list might be bad however as the content will not match
+what is being filtered on.</p>
+<dl class="method">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter.filter_repo">
+<code class="descname">filter_repo</code><span class="sig-paren">(</span><em>repo</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.filter_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.filter_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the given Repo matches our desired criteria. Uses the GitHub info beyond what
+a simple search has the options of doing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>repo</strong> – The json from the GitHub repo to filter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">json</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter.get_filtered_list">
+<code class="descname">get_filtered_list</code><span class="sig-paren">(</span><em>unfiltered_repos</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_filtered_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.get_filtered_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters a list of repositories</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>unfiltered_repos</strong> – The list of unfiltered repositories</td>
+</tr>
+</tbody>
+</table>
+<p>:tpye list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter.get_results">
+<code class="descname">get_results</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a single request to the GitGub api for a page with results matching
+the search criteria</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> – </li>
+<li><strong>page</strong> – Which page of results should be fetched</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter.offline_filtered_list">
+<code class="descname">offline_filtered_list</code><span class="sig-paren">(</span><em>filename</em>, <em>unfiltered_repos</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_filtered_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.offline_filtered_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter a list of repositories and save it to JSON for persistent usage</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – The name to save the file as</li>
+<li><strong>unfiltered_repos</strong> – The list of repos to filter</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter.offline_read_json">
+<em class="property">static </em><code class="descname">offline_read_json</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_read_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.offline_read_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in a json file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – The filename to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="decompy.DataGathering.RepoFilter.RepoFilter.offline_results">
+<code class="descname">offline_results</code><span class="sig-paren">(</span><em>filename</em>, <em>start_page</em>, <em>end_page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.offline_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the list of all repos for offline usage.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – The name that will be given to the generated file</li>
+<li><strong>start_page</strong> – The index of the first page that should be saved</li>
+<li><strong>end_page</strong> – The index of the last page that should be saved</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering.RepoStructure">
+<span id="decompy-datagathering-repostructure-module"></span><h2>decompy.DataGathering.RepoStructure module<a class="headerlink" href="#module-decompy.DataGathering.RepoStructure" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.RepoStructure.RepoStructure">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.RepoStructure.</code><code class="descname">RepoStructure</code><span class="sig-paren">(</span><em>parent_dir='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure.RepoStructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="decompy.DataGathering.RepoStructure.RepoStructure.batch_format">
+<code class="descname">batch_format</code><span class="sig-paren">(</span><em>repos_json</em>, <em>filter_date</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure.batch_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure.RepoStructure.batch_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a batch of repos from a json list
+:param repos_json: A list of repos from the (legacy) GitHub api
+:param filter_date: The date that the files were filtered</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="decompy.DataGathering.RepoStructure.RepoStructure.format_repo">
+<code class="descname">format_repo</code><span class="sig-paren">(</span><em>repo_json</em>, <em>filter_date</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure.format_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure.RepoStructure.format_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a single repo from the GitHub API
+:param repo_json: The json from a single GitHub repo
+:param filter_date: The filter date</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering.WebNavigator">
+<span id="decompy-datagathering-webnavigator-module"></span><h2>decompy.DataGathering.WebNavigator module<a class="headerlink" href="#module-decompy.DataGathering.WebNavigator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.WebNavigator.</code><code class="descname">WebNavigator</code><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Defines methods for navigating web links</p>
+<dl class="attribute">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = False</em><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.TIMER">
+<code class="descname">TIMER</code><em class="property"> = 0</em><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.TIMER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.TIMING">
+<code class="descname">TIMING</code><em class="property"> = False</em><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.TIMING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getAbsolute">
+<em class="property">static </em><code class="descname">getAbsolute</code><span class="sig-paren">(</span><em>ResolvedParent</em>, <em>RelativeLinks</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getAbsolute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getAbsolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates absolute URLs from a set of links and their parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ResolvedParent</strong> (<em>str</em>) – Any resolved parent URL</li>
+<li><strong>RelativeLinks</strong> (<em>set of strings</em>) – A set containing relative URLs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The absolute URLs of the relative URLs</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">set of str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getAbsoluteLinksFromPage">
+<em class="property">static </em><code class="descname">getAbsoluteLinksFromPage</code><span class="sig-paren">(</span><em>link</em>, <em>domain=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getAbsoluteLinksFromPage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getAbsoluteLinksFromPage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines above methods into single explore method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>link</strong> – the absolute link to resolve</li>
+<li><strong>domain</strong> – the domain of the above link to stay within (default is no domain limiting)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">set of absolute URLs within a page</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getContent">
+<em class="property">static </em><code class="descname">getContent</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the content from a link</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>link</strong> – An absolute URL</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">page content</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getLinks">
+<em class="property">static </em><code class="descname">getLinks</code><span class="sig-paren">(</span><em>content</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getLinks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getLinks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all links contained on a page from a link</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> (<em>str</em>) – HTML content of a page</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a set of links</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">set of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getVisibleTextContent">
+<em class="property">static </em><code class="descname">getVisibleTextContent</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getVisibleTextContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getVisibleTextContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves only the visible text from a link (no tags, etc.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>link</strong> – An absolute URL</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of visible text</td>
+</tr>
+</tbody>
+</table>
+<p>:return list of str</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="decompy.DataGathering.WebNavigator.WebNavigator.limitDomain">
+<em class="property">static </em><code class="descname">limitDomain</code><span class="sig-paren">(</span><em>absoluteLinks</em>, <em>domain</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.limitDomain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.limitDomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prunes all links outside of a given domain</p>
+<p>:param links A set of absolute links
+:type links: set of strings
+:param str domain: The domain used to filter the links. Should be of form example.com
+(not of www.google.com or <a class="reference external" href="https://www.example.com">https://www.example.com</a>)
+:return: A filtered set of links
+:return: set of strings</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.DataGathering">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-decompy.DataGathering" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="decompy.database.html" class="btn btn-neutral float-right" title="decompy.database package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="decompy.html" class="btn btn-neutral" title="decompy package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

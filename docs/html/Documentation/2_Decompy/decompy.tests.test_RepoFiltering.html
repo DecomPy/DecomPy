@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.tests.test_RepoFiltering package &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="decompy.tests.test_filtercfiles package" href="decompy.tests.test_filtercfiles.html" />
+    <link rel="prev" title="decompy.tests.test_GitHubNavigator package" href="decompy.tests.test_GitHubNavigator.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Decompy API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="decompy.html">decompy package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="decompy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html">decompy.database package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.html#module-decompy">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.database.html">decompy.database package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="decompy.tests.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">decompy.tests.test_RepoFiltering package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.tests.html#module-decompy.tests">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">decompy.tests.test_RepoFiltering package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.tests.test_RepoFiltering.test_RepoStructure">decompy.tests.test_RepoFiltering.test_RepoStructure module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy.tests.test_RepoFiltering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">decompy</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="decompy.html">decompy package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="decompy.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.html#module-decompy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3_DesignDecisions/index.html">Design Decisions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Decompy API</a> &raquo;</li>
+        
+          <li><a href="decompy.html">decompy package</a> &raquo;</li>
+        
+          <li><a href="decompy.tests.html">decompy.tests package</a> &raquo;</li>
+        
+      <li>decompy.tests.test_RepoFiltering package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Documentation/2_Decompy/decompy.tests.test_RepoFiltering.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="decompy-tests-test-repofiltering-package">
+<h1>decompy.tests.test_RepoFiltering package<a class="headerlink" href="#decompy-tests-test-repofiltering-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-decompy.tests.test_RepoFiltering.test_RepoStructure">
+<span id="decompy-tests-test-repofiltering-test-repostructure-module"></span><h2>decompy.tests.test_RepoFiltering.test_RepoStructure module<a class="headerlink" href="#module-decompy.tests.test_RepoFiltering.test_RepoStructure" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure">
+<em class="property">class </em><code class="descclassname">decompy.tests.test_RepoFiltering.test_RepoStructure.</code><code class="descname">test_RepoStructure</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/tests/test_RepoFiltering/test_RepoStructure.html#test_RepoStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="classmethod">
+<dt id="decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/tests/test_RepoFiltering/test_RepoStructure.html#test_RepoStructure.setUpClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.tearDownClass">
+<em class="property">classmethod </em><code class="descname">tearDownClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/tests/test_RepoFiltering/test_RepoStructure.html#test_RepoStructure.tearDownClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.tearDownClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the class fixture after running all tests in the class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.test_folder_and_file_generation">
+<code class="descname">test_folder_and_file_generation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/tests/test_RepoFiltering/test_RepoStructure.html#test_RepoStructure.test_folder_and_file_generation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.test_folder_and_file_generation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.test_meta_file_contents">
+<code class="descname">test_meta_file_contents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/tests/test_RepoFiltering/test_RepoStructure.html#test_RepoStructure.test_meta_file_contents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.test_meta_file_contents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decompy.tests.test_RepoFiltering">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-decompy.tests.test_RepoFiltering" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="decompy.tests.test_filtercfiles.html" class="btn btn-neutral float-right" title="decompy.tests.test_filtercfiles package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="decompy.tests.test_GitHubNavigator.html" class="btn btn-neutral" title="decompy.tests.test_GitHubNavigator package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
