@@ -158,7 +158,8 @@ class FilterC:
 
         # if no folder exists, then return file does not exist.
         if not os.path.exists(folder):
-            return "File Does not Exist"
+            print("Folder or File Does Not Exist.")
+            return False
 
         # walk recursively in given folder
         try:
@@ -176,12 +177,12 @@ class FilterC:
                         # store into new directory, check if it exists already in file
                         new_file = base_root + "/" + append_file
 
-                        # check if path already exists, so we don't waste time computing or adding more
+                        # check if path already exists in the file, so we don't waste time computing or adding more
                         if not FilterC.file_text_exists(new_file, unfiltered_path):
 
                             # checks for valid data, compile, then adds to meta.
-                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted)\
-                                    and FilterCompile.compile_file(unfiltered_path):
+                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
+                                                        whitelisted, blacklisted) and FilterCompile.compile_file(unfiltered_path):
 
                                 # create file if it does not exist
                                 if not os.path.exists(new_file):
@@ -213,6 +214,11 @@ class FilterC:
         :type: str
         :return: true if duplicate exists in file.
         """
+
+        # check if file exists. If it does not then return False
+        if not os.path.exists(file):
+            return False
+
         return phrase in open(file, 'r').read()
 
 # if __name__ == '__main__':

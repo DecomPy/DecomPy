@@ -132,15 +132,13 @@ class FilterCTest(unittest.TestCase):
 
         with open("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META") as f:
             size1 = sum(1 for _ in f)
-
-        # 1 files in its directory
-        self.assertTrue(size1 == 1)
+            # 1 files in its directory
+            self.assertTrue(size1 == 1)
 
         with open("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META") as f:
             size2 = sum(1 for _ in f)
-
-        # 2 files in its directory
-        self.assertTrue(size2 == 2)
+            # 2 files in its directory
+            self.assertTrue(size2 == 2)
 
         # remove filtered_list.META
         os.remove("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META")
@@ -160,17 +158,22 @@ class FilterCTest(unittest.TestCase):
         with open(file_path, "w+") as my_file:
             my_file.write(test_phrase)
 
-            # add the duplicate text to the file
-            if FilterC.file_text_exists(file_path, test_phrase):
-                my_file.write(test_phrase)
-            if FilterC.file_text_exists(file_path, test_phrase):
-                my_file.write(test_phrase)
+        # check if we have it
+        if not FilterC.file_text_exists(file_path, test_phrase):
+            with open(file_path, "w+") as my_file:
+                # add the duplicate text to the file
+                    my_file.write(test_phrase)
 
-            # check if the file has duplicate text again
-            self.assertFalse(FilterC.file_text_exists(file_path, test_phrase))
+        # check if the file has the phrase in it
+        self.assertTrue(FilterC.file_text_exists(file_path, test_phrase))
 
-            # remove once done
-            os.remove(file_path)
+        # open file to check for sum of lines
+        with open(file_path, "r") as my_file:
+            size1 = sum(1 for _ in my_file)
+            self.assertTrue(size1 == 1)
+
+        # remove once done
+        os.remove(file_path)
 
 
 if __name__ == '__main__':
