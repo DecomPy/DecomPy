@@ -38,7 +38,7 @@ class Clang:
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
         command = "clang -Wno-everything " + file_in + " " + args + " -o " +\
                   file_out
-        result = subprocess.run(command, shell=True).returncode #, check=True)
+        result = subprocess.run(command, shell=True).returncode  #, check=True)
 
         if result == 0:
             outfile.write(file_out + "\n")
@@ -64,32 +64,42 @@ class Clang:
         :return:
         """
 
-        file_of_cfiles = open(input_file, 'r')
+        # check if file exists
+        input_file_path = Path(input_file)
 
-        location_path = Path(newlocation)
+        # check if my file exists
+        if input_file_path.exists():
+            file_of_cfiles = open(input_file, 'r')
 
-        if not location_path.is_dir():
-            location_path.mkdir()
+            location_path = Path(newlocation)
 
-        outpath = Path(output_file)
-        if not outpath.is_file():
-            outfile = open(output_file, 'w+')
-        else:
-            outfile = open(output_file, 'a+')
+            print(location_path)
 
-        filteredC = None
-        if filter_file:
-            filteredC = Path(filter_file)
-            if not filteredC.is_file():
-                filteredC = open(filter_file, 'w+')
+            # creates new directory if one does not exist.
+            if not location_path.is_dir():
+                location_path.mkdir()
+
+            outpath = Path(output_file)
+            if not outpath.is_file():
+                outfile = open(output_file, 'w+')
             else:
-                filteredC = open(filter_file, 'a+')
+                outfile = open(output_file, 'a+')
 
-        for cfile in file_of_cfiles:
-            cfile = cfile.rstrip()
-            Clang.compile_cfile(cfile, outfile, newlocation, out_type,
-                                filter_file=filteredC, args=args)
-        file_of_cfiles.close()
+            filteredC = None
+            if filter_file:
+                filteredC = Path(filter_file)
+                if not filteredC.is_file():
+                    filteredC = open(filter_file, 'w+')
+                else:
+                    filteredC = open(filter_file, 'a+')
+
+            for cfile in file_of_cfiles:
+                cfile = cfile.rstrip()
+                Clang.compile_cfile(cfile, outfile, newlocation, out_type,
+                                    filter_file=filteredC, args=args)
+            file_of_cfiles.close()
+        else:
+            print("File not Found", input_file)
 
     @staticmethod
     def to_assembly(input_file, output_file, newlocation):

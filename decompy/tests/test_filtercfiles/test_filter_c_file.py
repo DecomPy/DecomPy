@@ -146,6 +146,32 @@ class FilterCTest(unittest.TestCase):
         os.remove("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META")
         os.remove("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META")
 
+    def test_file_text_file(self):
+        """
+        tests if a duplicate phrase is in the file. This way we can rerun the check_valid_folder function
+        or the stage 3 of the scraping and not have duplicates.
+        :return:
+        """
+        # test phrases
+        file_path = "decompy/tests/test_filtercfiles/files/test_duplicate.META"
+        test_phrase = "decompy/is/cool/wow.c"
+
+        # open file to write to
+        with open(file_path, "w+") as my_file:
+            my_file.write(test_phrase)
+
+            # add the duplicate text to the file
+            if FilterC.file_text_exists(file_path, test_phrase):
+                my_file.write(test_phrase)
+            if FilterC.file_text_exists(file_path, test_phrase):
+                my_file.write(test_phrase)
+
+            # check if the file has duplicate text again
+            self.assertFalse(FilterC.file_text_exists(file_path, test_phrase))
+
+            # remove once done
+            os.remove(file_path)
+
 
 if __name__ == '__main__':
     unittest.main()

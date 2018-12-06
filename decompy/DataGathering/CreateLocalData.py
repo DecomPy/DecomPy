@@ -1,4 +1,5 @@
 from decompy.DataGathering import *
+from pathlib import Path
 import datetime
 import os
 
@@ -55,8 +56,6 @@ class CreateLocalData:
         stage 4 of the data gathering process: Generate LLVM and other data
         :return:
         """
-        cwd = os.getcwd()  # get current working directory
-
         # recursively loop through all
         try:
             # open file
@@ -66,18 +65,35 @@ class CreateLocalData:
                     if basename.endswith(".c"):
                         # get name without *.c
                         name, extension = os.path.splitext(basename)  # won't use extension
+                        cwd = os.getcwd()                          # get current working directory
+                        base_root = os.path.dirname(root)
 
+                        print("basename", basename)
+                        print("name", name)
                         print("root", root)
                         print("dirs", dirs)
-                        print("files", files)
-                        print("name", name)
-                        print("extension", extension)
-                        print("basename", basename)
+                        print("base_root", base_root)
 
-                        Clang.to_llvm_opt(root+"/"+basename, root+"/"+name, cwd+"/"+root)  # compile optimized
-                        # Clang.to_llvm_unopt(root+"/"+basename, root+"/"+name+"_unop.ll", cwd+"/"+root)  # compile unoptimized
-                        # Clang.to_llvm_unopt(root + "/" + basename, root + "/" + name,  cwd + "/" + root)  # compile unoptimized
+                        # check if file exists, get the path from string concat
+                        file = cwd + "/" + base_root + "/filtered_list.META"
+                        print("file", file)
+                        my_file = Path(file)
 
+                        # folder for LLVM
+                        folder = cwd + "/" + root + "/LLVM"
+                        # new files
+                        llvm_file = cwd + "/" + root + "/" + name
+
+                        # check if file exists or wasting time
+                        if my_file.exists():
+                            Clang.to_llvm_opt(file, llvm_file, folder)  # compile optimized
+                            Clang.to_llvm_unopt(file, llvm_file, folder)  # compile unoptimized
+
+                        else:
+                            print("Stage 4: File Does Not Exist in this directory. Exiting...")
+
+                        # if file does not exist (filtered_list.META) then break out of this directory loop.
+                        break
 
         except Exception as e:
             print("Exception", e)
