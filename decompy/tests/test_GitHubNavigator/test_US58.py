@@ -1,7 +1,7 @@
 import datetime
 import os
 import unittest
-from decompy.DataGathering.GitHubScraper import GitHubScraper
+from decompy.DataGathering.FileGetter import FileGetter
 import shutil
 
 
@@ -13,7 +13,7 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 
         # For Windows
         if os.name == "nt":
@@ -63,7 +63,7 @@ class GitHubScraperTest(unittest.TestCase):
         with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
             f.write("Text to be appended upon")
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 
         # For Windows machines
         if os.name == "nt":
@@ -107,9 +107,8 @@ class GitHubScraperTest(unittest.TestCase):
         Tests that a repository that is not supposed to be downloaded are not downloaded
         :return: nothing
         """
-
-        GitHubScraper.download_all_files("https://github.com/DecomPy/invalid_and_uncompilable_1")
-        self.assertTrue(not os.path.exists("Decompy_invalid_and_uncompilable_1"))
+        FileGetter.download_all_files("https://github.com/DecomPy/invalid_and_uncompilable_1")
+        self.assertTrue(len(next(os.walk("Decompy_invalid_and_uncompilable_1/Unfiltered"))[2]) == 0)
         if os.path.exists("Decompy_invalid_and_uncompilable_1"):
             shutil.rmtree("Decompy_invalid_and_uncompilable_1")
 
@@ -119,10 +118,8 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/Unfiltered/DecomPy_valid_and_compilable_1_main.c"))
-        self.assertTrue(os.path.isfile("DecomPy_valid_and_compilable_1/Unfiltered/"
-                                       "DecomPy_valid_and_compilable_1_subfolder_main2.c"))
+        FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        self.assertTrue(len(next(os.walk("Decompy_valid_and_compilable_1/Unfiltered"))[2]) == 2)
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
@@ -134,10 +131,8 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
 
-        GitHubScraper.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
-        self.assertTrue(os.path.isfile("test_dir/Unfiltered/DecomPy_valid_and_compilable_1_main.c"))
-        self.assertTrue(os.path.isfile("test_dir/Unfiltered/"
-                                       "DecomPy_valid_and_compilable_1_subfolder_main2.c"))
+        FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
+        self.assertTrue(len(next(os.walk("test_dir/Unfiltered"))[2]) == 2)
 
         # Makes sure the directory is always clean
         if os.path.exists("test_dir"):
