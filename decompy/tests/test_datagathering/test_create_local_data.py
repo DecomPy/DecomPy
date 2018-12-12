@@ -14,10 +14,10 @@ class CreateLocalDataTest(unittest.TestCase):
         self.cld = CreateLocalData()
 
     def test_stage1(self):
-        self.cld.stage1()
-        print("stage 1 done")
-        self.cld.stage2()
-        print("stage 2 done")
+        # self.cld.stage1()
+        # print("stage 1 done")
+        # self.cld.stage2()
+        # print("stage 2 done")
         # self.cld.stage3()  # don't use the below stages for now.
         # print("stage 3 done")
         # self.cld.stage4()

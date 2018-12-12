@@ -138,6 +138,19 @@ class GitHubScraperTest(unittest.TestCase):
         if os.path.exists("test_dir"):
             shutil.rmtree("test_dir")
 
+    def test_UTF_in_file_name(self):
+        """
+        Tests that getting files that have UTF characters doesn't crash the program
+        :return:
+        """
+
+        # This will cause a problem if unable to handle UTF characters like 解
+        FileGetter.download_all_files("https://github.com/swiftchao/mzzopublic")
+
+        # Clean up directory
+        if os.path.exists("swiftchao_mzzopublic"):
+            shutil.rmtree("swiftchao_mzzopublic")
+
     @classmethod
     def setUp(cls):
         """
