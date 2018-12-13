@@ -108,7 +108,13 @@ class GitHubScraperTest(unittest.TestCase):
         :return: nothing
         """
         FileGetter.download_all_files("https://github.com/DecomPy/invalid_and_uncompilable_1")
-        self.assertTrue(len(next(os.walk("Decompy_invalid_and_uncompilable_1/Unfiltered"))[2]) == 0)
+
+        file_count = 0
+        for root, dirs, files in os.walk("Decompy_invalid_and_uncompilable_1/Unfiltered"):
+            for _ in files:
+                file_count += 1
+        self.assertTrue(file_count == 0)
+
         if os.path.exists("Decompy_invalid_and_uncompilable_1"):
             shutil.rmtree("Decompy_invalid_and_uncompilable_1")
 
