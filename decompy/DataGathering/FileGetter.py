@@ -90,6 +90,7 @@ class FileGetter:
         # Attempt to generate a name for the target directory if there is not one already
         if target_directories is None and len(repo_urls) == 1:
             target_directories = [repo_urls[0].split("/")[3] + "_" + repo_urls[0].split("/")[4]]
+            print(target_directories[0])
 
         # Don't want to download files from multiple repos into one folder, do we?
         if len(repo_urls) != len(target_directories):
@@ -98,9 +99,6 @@ class FileGetter:
 
         # Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder
         for repo_url, target_directory in list(zip(repo_urls, target_directories)):
-            # Make default name of directory to be downloaded to "username_reponame/Unfiltered"
-            if target_directory is None:
-                target_directory = repo_url.split("/")[3] + "_" + repo_url.split("/")[4]
             target_subdirectory = target_directory + "/Unfiltered"
 
             # Create the directories needed to make sure files have a place to be stored

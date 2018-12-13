@@ -15,38 +15,20 @@ class GitHubScraperTest(unittest.TestCase):
 
         FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 
-        # For Windows
-        if os.name == "nt":
-            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META")) as f:
-                passed = False
+        with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
+            passed = False
+            line = f.readline()
+            while line:
+                if "File download timestamp:" in line:
+                    file_minute = line.split(":")[-2]
+                    minute = datetime.datetime.today().strftime('%M')
+                    minute = int(minute)
+                    file_minute = int(file_minute)
+                    self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                                    or file_minute == ((minute - 1) % 60))
+                    passed = True
                 line = f.readline()
-                while line:
-                    if "File download timestamp:" in line:
-                        file_minute = line.split(":")[-2]
-                        minute = datetime.datetime.today().strftime('%M')
-                        minute = int(minute)
-                        file_minute = int(file_minute)
-                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
-                                        or file_minute == ((minute - 1) % 60))
-                        passed = True
-                    line = f.readline()
-            self.assertTrue(passed)
-        # For Linux machines
-        else:
-            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
-                passed = False
-                line = f.readline()
-                while line:
-                    if "File download timestamp:" in line:
-                        file_minute = line.split(":")[-2]
-                        minute = datetime.datetime.today().strftime('%M')
-                        minute = int(minute)
-                        file_minute = int(file_minute)
-                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
-                                        or file_minute == ((minute - 1) % 60))
-                        passed = True
-                    line = f.readline()
-            self.assertTrue(passed)
+        self.assertTrue(passed)
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
@@ -60,43 +42,25 @@ class GitHubScraperTest(unittest.TestCase):
 
         if not os.path.exists("Decompy_valid_and_compilable_1"):
             os.mkdir("DecomPy_valid_and_compilable_1")
-        with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META"), "w") as f:
+        with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"), "w") as f:
             f.write("Text to be appended upon")
 
         FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
 
-        # For Windows machines
-        if os.name == "nt":
-            with open(os.path.join("DecomPy_valid_and_compilable_1\\config.META")) as f:
-                passed = False
+        with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
+            passed = False
+            line = f.readline()
+            while line:
+                if "File download timestamp:" in line:
+                    file_minute = line.split(":")[-2]
+                    minute = datetime.datetime.today().strftime('%M')
+                    minute = int(minute)
+                    file_minute = int(file_minute)
+                    self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                                    or file_minute == ((minute - 1) % 60))
+                    passed = True
                 line = f.readline()
-                while line:
-                    if "File download timestamp:" in line:
-                        file_minute = line.split(":")[-2]
-                        minute = datetime.datetime.today().strftime('%M')
-                        minute = int(minute)
-                        file_minute = int(file_minute)
-                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
-                                        or file_minute == ((minute - 1) % 60))
-                        passed = True
-                    line = f.readline()
-            self.assertTrue(passed)
-        # For Linux machines
-        else:
-            with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
-                passed = False
-                line = f.readline()
-                while line:
-                    if "File download timestamp:" in line:
-                        file_minute = line.split(":")[-2]
-                        minute = datetime.datetime.today().strftime('%M')
-                        minute = int(minute)
-                        file_minute = int(file_minute)
-                        self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
-                                        or file_minute == ((minute - 1) % 60))
-                        passed = True
-                    line = f.readline()
-            self.assertTrue(passed)
+        self.assertTrue(passed)
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
@@ -132,8 +96,7 @@ class GitHubScraperTest(unittest.TestCase):
                 file_count += 1
         print(file_count)
 
-        # This was having trouble with Travis. This test should now just not crash
-        # self.assertTrue(file_count == 2)
+        self.assertTrue(file_count == 2)
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
