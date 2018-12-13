@@ -119,7 +119,11 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-        self.assertTrue(len(next(os.walk("Decompy_valid_and_compilable_1/Unfiltered"))[2]) == 2)
+        file_count = 0
+        for root, dirs, files in os.walk("Decompy_valid_and_compilable_1/Unfiltered"):
+            for _ in files:
+                file_count += 1
+        self.assertTrue(file_count == 2)
 
         # Makes sure the directory is always clean
         if os.path.exists("DecomPy_valid_and_compilable_1"):
@@ -132,7 +136,11 @@ class GitHubScraperTest(unittest.TestCase):
         """
 
         FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1", "test_dir")
-        self.assertTrue(len(next(os.walk("test_dir/Unfiltered"))[2]) == 2)
+        file_count = 0
+        for root, dirs, files in os.walk("test_dir/Unfiltered"):
+            for _ in files:
+                file_count += 1
+        self.assertTrue(file_count == 2)
 
         # Makes sure the directory is always clean
         if os.path.exists("test_dir"):
