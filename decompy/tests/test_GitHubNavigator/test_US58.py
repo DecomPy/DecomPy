@@ -113,6 +113,7 @@ class GitHubScraperTest(unittest.TestCase):
         for root, dirs, files in os.walk("Decompy_invalid_and_uncompilable_1/Unfiltered"):
             for _ in files:
                 file_count += 1
+        print(file_count)
         self.assertTrue(file_count == 0)
 
         if os.path.exists("Decompy_invalid_and_uncompilable_1"):
@@ -129,6 +130,7 @@ class GitHubScraperTest(unittest.TestCase):
         for root, dirs, files in os.walk("Decompy_valid_and_compilable_1/Unfiltered"):
             for _ in files:
                 file_count += 1
+        print(file_count)
         self.assertTrue(file_count == 2)
 
         # Makes sure the directory is always clean
@@ -146,6 +148,7 @@ class GitHubScraperTest(unittest.TestCase):
         for root, dirs, files in os.walk("test_dir/Unfiltered"):
             for _ in files:
                 file_count += 1
+        print(file_count)
         self.assertTrue(file_count == 2)
 
         # Makes sure the directory is always clean
