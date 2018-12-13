@@ -106,6 +106,7 @@ class FileGetter:
                 os.mkdir(target_directory)
             if not os.path.exists(target_subdirectory):
                 os.mkdir(target_subdirectory)
+            print(target_subdirectory)
 
             # Download the zip of the repository
             response = requests.get(repo_url + "/archive/master.zip")
