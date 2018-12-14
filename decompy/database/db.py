@@ -250,7 +250,7 @@ class Database:
         :return: nothing
         """
         self.sql_transaction.append(sql)
-        if len(self.sql_transaction) > 1000 or override:  # TODO: change to > 1000
+        if len(self.sql_transaction) > 1000 or override:
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
             for s in self.sql_transaction:

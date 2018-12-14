@@ -73,8 +73,6 @@ class Clang:
 
             location_path = Path(newlocation)
 
-            print(location_path)
-
             # creates new directory if one does not exist.
             if not location_path.is_dir():
                 location_path.mkdir()
@@ -146,7 +144,7 @@ class Clang:
         """
         args = "-S -emit-llvm " + optlevel
         out_type = "-opt.ll"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, args)
+        Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
 
     @staticmethod
     def to_llvm_unopt(input_file, output_file, newlocation):
@@ -161,4 +159,4 @@ class Clang:
         """
         args = "-O1 -Xclang -disable-llvm-passes -S -emit-llvm"
         out_type = "-unopt.ll"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, args)
+        Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)

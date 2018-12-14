@@ -68,19 +68,12 @@ class CreateLocalData:
                         cwd = os.getcwd()                          # get current working directory
                         base_root = os.path.dirname(root)
 
-                        print("basename", basename)
-                        print("name", name)
-                        print("root", root)
-                        print("dirs", dirs)
-                        print("base_root", base_root)
-
                         # check if file exists, get the path from string concat
                         file = cwd + "/" + base_root + "/filtered_list.META"
-                        print("file", file)
                         my_file = Path(file)
 
                         # folder for LLVM
-                        folder = cwd + "/" + root + "/LLVM"
+                        folder = cwd + "/" + base_root + "/LLVM"
                         # new files
                         llvm_file = cwd + "/" + root + "/" + name
 
@@ -90,7 +83,7 @@ class CreateLocalData:
                             Clang.to_llvm_unopt(file, llvm_file, folder)  # compile unoptimized
 
                         else:
-                            print("Stage 4: File Does Not Exist in this directory. Exiting...")
+                            print("Stage 4: filtered_list.META does not exist in this directory. Exiting folder...") # comment out if you want
 
                         # if file does not exist (filtered_list.META) then break out of this directory loop.
                         break
@@ -99,15 +92,31 @@ class CreateLocalData:
             print("Exception", e)
             pass
 
+    @staticmethod
+    def all_four_stages():
+        """
+        runs all four stages.
+        :return: void
+        """
+        cld = CreateLocalData()
+        cld.stage1()
+        print("stage 1 done")
+        cld.stage2()
+        print("stage 2 done")
+        cld.stage3()
+        print("stage 3 done")
+        cld.stage4()
+        print("stage 4 done")
 
-if __name__ == "__main__":
-    cld = CreateLocalData()
-    # cld.stage1()
-    # print("stage 1 done")
-    # cld.stage2()
-    # print("stage 2 done")
-    # cld.stage3()
-    # print("stage 3 done")
-    cld.stage4()
-    print("stage 4 done")
+
+# if __name__ == "__main__":
+#     cld = CreateLocalData()
+#     cld.stage1()
+#     print("stage 1 done")
+#     cld.stage2()
+#     print("stage 2 done")
+#     cld.stage3()
+#     print("stage 3 done")
+#     cld.stage4()
+#     print("stage 4 done")
 

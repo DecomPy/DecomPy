@@ -115,3 +115,5 @@ docs/doctrees/
 # Our Info
 c_source.db
 Repositories/
+filteredOfflineResults.json
+offlineResults.json

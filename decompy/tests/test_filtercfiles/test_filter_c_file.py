@@ -141,8 +141,8 @@ class FilterCTest(unittest.TestCase):
             self.assertTrue(size2 == 2)
 
         # remove filtered_list.META
-        os.remove("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META")
-        os.remove("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META")
+        # os.remove("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META")
+        # os.remove("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META")
 
     def test_file_text_file(self):
         """
