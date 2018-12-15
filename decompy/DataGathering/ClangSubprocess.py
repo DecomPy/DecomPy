@@ -20,6 +20,7 @@ class Clang:
         Stores this file in the specified location and lists the new file in
         the output file. If this is being used to filter the input file and
         if the C file successfully compiles it will be entered in the filter file
+
         :param file_in: File with list of C file names to compile
         :param outfile: If the file is successfully compiled, the output
         file is listed in this file
@@ -51,7 +52,8 @@ class Clang:
         Compiles all C files listed in the input file with Clang, using the
         specified args. Stores these files in the specified location and lists
         the new files in the output file. If this is being used to filter the
-        input files, the C files that successfully compile will be entered in
+        input files, the C files that successfully compile will be entered in.
+
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
         file is listed in this file
@@ -103,7 +105,8 @@ class Clang:
     def to_assembly(input_file, output_file, newlocation):
         """
         compiles all C files listed in the input file to x86 assembly.
-        Writes the name of successful files to output file
+        Writes the name of successful files to output file.
+
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
         file is listed in this file
@@ -119,7 +122,8 @@ class Clang:
         """
         compiles all C files listed in the input file to elf executables.
         Writes the name of successful files to output file. Writes the name of
-        successful C files to filter file
+        successful C files to filter file.
+
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
         file is listed in this file
@@ -136,6 +140,7 @@ class Clang:
         """
         compiles all C files listed in the input file to optimized LLVM IR, at
         the specified opt level. Writes the name of successful files to output file
+
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
         file is listed in this file
@@ -150,7 +155,8 @@ class Clang:
     def to_llvm_unopt(input_file, output_file, newlocation):
         """
         compiles all C files listed in the input file to unoptimized LLVM IR.
-        Writes the name of successful files to output file
+        Writes the name of successful files to output file.
+
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
         file is listed in this file

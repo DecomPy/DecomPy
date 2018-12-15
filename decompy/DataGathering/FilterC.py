@@ -55,6 +55,7 @@ class FilterC:
     def check_blacklisted_words(line, blacklisted=C_BLACKLIST):
         """
         Lowercases the line to evaluate, and returns false if any blacklisted word is found.
+
         :param: the string from a file.
         :type: str
         :param: the blacklisted array.
@@ -69,6 +70,7 @@ class FilterC:
     def check_headers(line, whitelisted=C_WHITELIST_HEADERS):
         """
         Uses a regex to evaluate the line, ignoring the case, and returns false if any unknown header is found.
+
         :param: the string from a file.
         :type: str
         :param: the blacklisted array, defaults to
@@ -208,6 +210,7 @@ class FilterC:
     def file_text_exists(file, phrase):
         """
         Checks for duplicate lines in a file.
+
         :param file: the file path
         :type: str
         :param phrase: the phrase we are looking for

@@ -105,9 +105,8 @@ class RepoFilter:
         Filters a list of repositories
 
         :param unfiltered_repos: The list of Unfiltered repositories
-        :tpye list
+        :tpye: list
         """
-
         return list(filter(self.filter_repo, unfiltered_repos))
 
     def offline_filtered_list(self, filename, unfiltered_repos):

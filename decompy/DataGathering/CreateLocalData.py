@@ -13,6 +13,7 @@ class CreateLocalData:
     def __init__(self):
         """
         initializes a new object, containing the other classes, one to rule them all.
+
         """
         self.rf = RepoFilter("C ", language="C", blacklist=["C++", "C#", "css"])  # gets 100 results
         self.rs = RepoStructure()
@@ -22,6 +23,7 @@ class CreateLocalData:
     def stage1(self):
         """
         stage 1 of the data gathering process: Gather the data from the repos and store it into a json file.
+
         :return:
         """
         self.rf.offline_results("offlineResults.json", 1, 2)  # gather the data and store into the json for later use
@@ -34,6 +36,7 @@ class CreateLocalData:
     def stage2(self):
         """
         stage 2 of the data gathering process: Scrape all the files from GitHub.
+
         :return:
         """
         if self.filtered_repos:  # if we have repos, then sort through each rep in our json
@@ -54,6 +57,7 @@ class CreateLocalData:
     def stage4(self):
         """
         stage 4 of the data gathering process: Generate LLVM and other data
+
         :return:
         """
         # recursively loop through all

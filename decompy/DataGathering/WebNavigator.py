@@ -50,7 +50,6 @@ class WebNavigator:
         :return: page content
         :return: str
         """
-
         if WebNavigator.TIMING:
             WebNavigator.TIMER = time.time()
 
@@ -80,7 +79,6 @@ class WebNavigator:
         :return: list of visible text
         :return list of str
         """
-
         def visible(element):
             if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
                 return False

@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.tests.test_RepoFiltering.test_RepoStructure &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>decompy.tests.test_RepoFiltering.test_RepoStructure</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for decompy.tests.test_RepoFiltering.test_RepoStructure</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">decompy.DataGathering.RepoStructure</span> <span class="k">import</span> <span class="n">RepoStructure</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PurePath</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="test_RepoStructure"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_RepoFiltering.html#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure">[docs]</a><span class="k">class</span> <span class="nc">test_RepoStructure</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="test_RepoStructure.setUpClass"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_RepoFiltering.html#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.setUpClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">rs</span> <span class="o">=</span> <span class="n">RepoStructure</span><span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">filtered</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;filteredOfflineResults.json&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">batch_format</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">filtered</span><span class="o">.</span><span class="n">read</span><span class="p">()),</span> <span class="s2">&quot;2018-11-08 16:02:43.266002&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_RepoStructure.tearDownClass"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_RepoFiltering.html#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.tearDownClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">root</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_RepoStructure.test_folder_and_file_generation"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_RepoFiltering.html#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.test_folder_and_file_generation">[docs]</a>    <span class="k">def</span> <span class="nf">test_folder_and_file_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">repositories</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;Repositories&quot;</span><span class="p">)</span>
+        <span class="n">repos</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">repositories</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">repos</span><span class="p">),</span>
+                         <span class="p">{</span><span class="s1">&#39;10gen-archive-mongo-c-driver-legacy&#39;</span><span class="p">,</span> <span class="s1">&#39;21cnbao-training&#39;</span><span class="p">,</span> <span class="s1">&#39;abiggerhammer-hammer&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;acassen-keepalived&#39;</span><span class="p">,</span> <span class="s1">&#39;aerospike-aerospike-client-c&#39;</span><span class="p">,</span> <span class="s1">&#39;agl-critbit&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Ai-Thinker-Open-GPRS_C_SDK&#39;</span><span class="p">,</span> <span class="s1">&#39;akaedu-c&#39;</span><span class="p">,</span> <span class="s1">&#39;akheron-jansson&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;alessandrofrancesconi-gimp-plugin-bimp&#39;</span><span class="p">,</span> <span class="s1">&#39;alexfru-SmallerC&#39;</span><span class="p">,</span> <span class="s1">&#39;aliyun-aliyun-oss-c-sdk&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;amzn-ion-c&#39;</span><span class="p">,</span> <span class="s1">&#39;anael-seghezzi-CToy&#39;</span><span class="p">,</span> <span class="s1">&#39;AndreaCensi-csm&#39;</span><span class="p">,</span> <span class="s1">&#39;angband-angband&#39;</span><span class="p">,</span> <span class="s1">&#39;armon-bloomd&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;armon-hlld&#39;</span><span class="p">,</span> <span class="s1">&#39;armon-libart&#39;</span><span class="p">,</span> <span class="s1">&#39;asterisk-asterisk&#39;</span><span class="p">,</span> <span class="s1">&#39;atheme-atheme&#39;</span><span class="p">,</span> <span class="s1">&#39;attractivechaos-klib&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;awslabs-s2n&#39;</span><span class="p">,</span> <span class="s1">&#39;Azure-azure-c-shared-utility&#39;</span><span class="p">,</span> <span class="s1">&#39;Azure-azure-iot-sdk-c&#39;</span><span class="p">,</span> <span class="s1">&#39;Azure-azure-uamqp-c&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;balde-balde&#39;</span><span class="p">,</span> <span class="s1">&#39;Battelle-movfuscator&#39;</span><span class="p">,</span> <span class="s1">&#39;benoitc-http-parser&#39;</span><span class="p">,</span> <span class="s1">&#39;bfabiszewski-libmobi&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;bitcoin-core-secp256k1&#39;</span><span class="p">,</span> <span class="s1">&#39;blei-lab-lda-c&#39;</span><span class="p">,</span> <span class="s1">&#39;Blosc-c-blosc&#39;</span><span class="p">,</span> <span class="s1">&#39;boazsegev-facil.io&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;boothj5-profanity&#39;</span><span class="p">,</span> <span class="s1">&#39;boyerjohn-rapidstring&#39;</span><span class="p">,</span> <span class="s1">&#39;breadwallet-breadwallet-core&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;brianmario-yajl-ruby&#39;</span><span class="p">,</span> <span class="s1">&#39;buserror-simavr&#39;</span><span class="p">,</span> <span class="s1">&#39;cc65-cc65&#39;</span><span class="p">,</span> <span class="s1">&#39;celery-librabbitmq&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;CESNET-libnetconf&#39;</span><span class="p">,</span> <span class="s1">&#39;CESNET-libnetconf2&#39;</span><span class="p">,</span> <span class="s1">&#39;chmod222-cNBT&#39;</span><span class="p">,</span> <span class="s1">&#39;cofyc-dnscrypt-wrapper&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;commonmark-cmark&#39;</span><span class="p">,</span> <span class="s1">&#39;couchbase-libcouchbase&#39;</span><span class="p">,</span> <span class="s1">&#39;Cronus-Emulator-Cronus&#39;</span><span class="p">,</span> <span class="s1">&#39;cstack-db_tutorial&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;curl-curl&#39;</span><span class="p">,</span> <span class="s1">&#39;cvxgrp-scs&#39;</span><span class="p">,</span> <span class="s1">&#39;Cyan4973-FiniteStateEntropy&#39;</span><span class="p">,</span> <span class="s1">&#39;cypresssemiconductorco-PSoC-4-BLE&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;dake-openVP&#39;</span><span class="p">,</span> <span class="s1">&#39;DaveDavenport-rofi&#39;</span><span class="p">,</span> <span class="s1">&#39;DaveGamble-cJSON&#39;</span><span class="p">,</span> <span class="s1">&#39;davidmoreno-onion&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;dcreager-libcork&#39;</span><span class="p">,</span> <span class="s1">&#39;devkitPro-libnds&#39;</span><span class="p">,</span> <span class="s1">&#39;dinhviethoa-libetpan&#39;</span><span class="p">,</span> <span class="s1">&#39;DNSPod-dplus-c&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;dosgo-ngrok-c&#39;</span><span class="p">,</span> <span class="s1">&#39;dpull-AssetBundleParser&#39;</span><span class="p">,</span> <span class="s1">&#39;drh-cii&#39;</span><span class="p">,</span> <span class="s1">&#39;drh-lcc&#39;</span><span class="p">,</span> <span class="s1">&#39;dryman-opic&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;dspinellis-cscout&#39;</span><span class="p">,</span> <span class="s1">&#39;dunst-project-dunst&#39;</span><span class="p">,</span> <span class="s1">&#39;dvidelabs-flatcc&#39;</span><span class="p">,</span> <span class="s1">&#39;eclipse-paho.mqtt.c&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;eclipse-wakaama&#39;</span><span class="p">,</span> <span class="s1">&#39;eggheads-eggdrop&#39;</span><span class="p">,</span> <span class="s1">&#39;EIPStackGroup-OpENer&#39;</span><span class="p">,</span> <span class="s1">&#39;ElementsProject-lightning&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;elsys-po-homework-2015-1&#39;</span><span class="p">,</span> <span class="s1">&#39;embox-embox&#39;</span><span class="p">,</span> <span class="s1">&#39;endiliey-cs50&#39;</span><span class="p">,</span> <span class="s1">&#39;esnme-ultrajson&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;eudisd-c-compiler&#39;</span><span class="p">,</span> <span class="s1">&#39;Exim-exim&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook-libphenom&#39;</span><span class="p">,</span> <span class="s1">&#39;fakenmc-cf4ocl&#39;</span><span class="p">,</span> <span class="s1">&#39;FFmpeg-FFmpeg&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;fogleman-Craft&#39;</span><span class="p">,</span> <span class="s1">&#39;fredrik-johansson-arb&#39;</span><span class="p">,</span> <span class="s1">&#39;FreeRDP-FreeRDP&#39;</span><span class="p">,</span> <span class="s1">&#39;freifunk-gluon-gluon&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;FSX-misaka&#39;</span><span class="p">,</span> <span class="s1">&#39;gabriel-yajl-objc&#39;</span><span class="p">,</span> <span class="s1">&#39;gentilkiwi-kekeo&#39;</span><span class="p">,</span> <span class="s1">&#39;ggreer-the_silver_searcher&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;GHamrouni-Recommender&#39;</span><span class="p">,</span> <span class="s1">&#39;git-git&#39;</span><span class="p">,</span> <span class="s1">&#39;glfw-glfw&#39;</span><span class="p">,</span> <span class="s1">&#39;go-vgo-robotgo&#39;</span><span class="p">,</span> <span class="s1">&#39;google-honggfuzz&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;google-upb&#39;</span><span class="p">,</span> <span class="s1">&#39;grobian-carbon-c-relay&#39;</span><span class="p">,</span> <span class="s1">&#39;groonga-groonga&#39;</span><span class="p">,</span> <span class="s1">&#39;haiwen-ccnet&#39;</span><span class="p">,</span> <span class="s1">&#39;halayli-lthread&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;HardySimpson-zlog&#39;</span><span class="p">,</span> <span class="s1">&#39;Harvey-OS-harvey&#39;</span><span class="p">,</span> <span class="s1">&#39;hashcat-hashcat&#39;</span><span class="p">,</span> <span class="s1">&#39;hathach-tinyusb&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;HdrHistogram-HdrHistogram_c&#39;</span><span class="p">,</span> <span class="s1">&#39;HerculesWS-Hercules&#39;</span><span class="p">,</span> <span class="s1">&#39;hexchat-hexchat&#39;</span><span class="p">,</span> <span class="s1">&#39;hnes-libaco&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;holmium-dnsforwarder&#39;</span><span class="p">,</span> <span class="s1">&#39;hughsie-fwupd&#39;</span><span class="p">,</span> <span class="s1">&#39;igraph-igraph&#39;</span><span class="p">,</span> <span class="s1">&#39;inivation-libcaer&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;intel-tinycbor&#39;</span><span class="p">,</span> <span class="s1">&#39;jabberd2-jabberd2&#39;</span><span class="p">,</span> <span class="s1">&#39;jdkoftinoff-jdksavdecc-c&#39;</span><span class="p">,</span> <span class="s1">&#39;jedisct1-libsodium&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;jeremy-w-objc-zmq&#39;</span><span class="p">,</span> <span class="s1">&#39;JFreegman-toxic&#39;</span><span class="p">,</span> <span class="s1">&#39;jgarzik-cpuminer&#39;</span><span class="p">,</span> <span class="s1">&#39;jgarzik-picocoin&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;jmcnamara-libxlsxwriter&#39;</span><span class="p">,</span> <span class="s1">&#39;Joezeo-planeswar&#39;</span><span class="p">,</span> <span class="s1">&#39;jonas-tig&#39;</span><span class="p">,</span> <span class="s1">&#39;jonasschnelli-libbtc&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;jplot-Piscine_C-42&#39;</span><span class="p">,</span> <span class="s1">&#39;jserv-facebooc&#39;</span><span class="p">,</span> <span class="s1">&#39;json-c-json-c&#39;</span><span class="p">,</span> <span class="s1">&#39;JuliaMath-openlibm&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;JuliaStrings-utf8proc&#39;</span><span class="p">,</span> <span class="s1">&#39;justin-lathrop-c&#39;</span><span class="p">,</span> <span class="s1">&#39;justinmeza-lci&#39;</span><span class="p">,</span> <span class="s1">&#39;jvirkki-libbloom&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;k-takata-Onigmo&#39;</span><span class="p">,</span> <span class="s1">&#39;Kazade-kazmath&#39;</span><span class="p">,</span> <span class="s1">&#39;Keruspe-GPaste&#39;</span><span class="p">,</span> <span class="s1">&#39;kframework-c-semantics&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Kinetic-kinetic-c&#39;</span><span class="p">,</span> <span class="s1">&#39;KingOfBrian-VocalKit&#39;</span><span class="p">,</span> <span class="s1">&#39;KitSprout-RedBeanSprout&#39;</span><span class="p">,</span> <span class="s1">&#39;KitSprout-SmartIMU&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;kkos-oniguruma&#39;</span><span class="p">,</span> <span class="s1">&#39;kovidgoyal-kitty&#39;</span><span class="p">,</span> <span class="s1">&#39;kronosnet-kronosnet&#39;</span><span class="p">,</span> <span class="s1">&#39;kwgoodman-bottleneck&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;LADSoft-OrangeC&#39;</span><span class="p">,</span> <span class="s1">&#39;larmel-lacc&#39;</span><span class="p">,</span> <span class="s1">&#39;laruence-yaf&#39;</span><span class="p">,</span> <span class="s1">&#39;lawrancej-CompilerKit&#39;</span><span class="p">,</span> <span class="s1">&#39;lc-soft-LCUI&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;lekkas-c-algorithms&#39;</span><span class="p">,</span> <span class="s1">&#39;libcheck-check&#39;</span><span class="p">,</span> <span class="s1">&#39;libretro-RetroArch&#39;</span><span class="p">,</span> <span class="s1">&#39;libssh2-libssh2&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;libtom-libtomcrypt&#39;</span><span class="p">,</span> <span class="s1">&#39;libtom-libtommath&#39;</span><span class="p">,</span> <span class="s1">&#39;libtom-tomsfastmath&#39;</span><span class="p">,</span> <span class="s1">&#39;libusb-libusb&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;libusual-libusual&#39;</span><span class="p">,</span> <span class="s1">&#39;limingth-Linux-C-Programming&#39;</span><span class="p">,</span> <span class="s1">&#39;limingth-NCCL&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;linux4sam-at91bootstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;liuliu-ccv&#39;</span><span class="p">,</span> <span class="s1">&#39;lloyd-yajl&#39;</span><span class="p">,</span> <span class="s1">&#39;Lora-net-LoRaMac-node&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;lp-ObjCHiredis&#39;</span><span class="p">,</span> <span class="s1">&#39;lpereira-hardinfo&#39;</span><span class="p">,</span> <span class="s1">&#39;lpereira-lwan&#39;</span><span class="p">,</span> <span class="s1">&#39;ludocode-mpack&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;LudovicRousseau-PCSC&#39;</span><span class="p">,</span> <span class="s1">&#39;luke-jr-bfgminer&#39;</span><span class="p">,</span> <span class="s1">&#39;lxc-lxc&#39;</span><span class="p">,</span> <span class="s1">&#39;lyjdamzwf-chaos&#39;</span><span class="p">,</span> <span class="s1">&#39;lz4-lz4&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;martanne-vis&#39;</span><span class="p">,</span> <span class="s1">&#39;matthijskooijman-arduino-lmic&#39;</span><span class="p">,</span> <span class="s1">&#39;maxmind-geoip-api-c&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;maxmind-libmaxminddb&#39;</span><span class="p">,</span> <span class="s1">&#39;mi3-dev-android_device_xiaomi_cancro&#39;</span><span class="p">,</span> <span class="s1">&#39;Microsoft-checkedc&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;miniponps-42-Piscine-C&#39;</span><span class="p">,</span> <span class="s1">&#39;MoarVM-MoarVM&#39;</span><span class="p">,</span> <span class="s1">&#39;mongodb-mongo-c-driver&#39;</span><span class="p">,</span> <span class="s1">&#39;mono-libgdiplus&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;mortie-snow&#39;</span><span class="p">,</span> <span class="s1">&#39;mpv-player-mpv&#39;</span><span class="p">,</span> <span class="s1">&#39;munificent-wren&#39;</span><span class="p">,</span> <span class="s1">&#39;Mzzopublic-C&#39;</span><span class="p">,</span> <span class="s1">&#39;naev-naev&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;nanopb-nanopb&#39;</span><span class="p">,</span> <span class="s1">&#39;nasa-cFE&#39;</span><span class="p">,</span> <span class="s1">&#39;nats-io-cnats&#39;</span><span class="p">,</span> <span class="s1">&#39;nbs-system-naxsi&#39;</span><span class="p">,</span> <span class="s1">&#39;Netflix-dynomite&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Netsukuku-netsukuku&#39;</span><span class="p">,</span> <span class="s1">&#39;NetworkBlockDevice-nbd&#39;</span><span class="p">,</span> <span class="s1">&#39;neutrinolabs-xrdp&#39;</span><span class="p">,</span> <span class="s1">&#39;nfc-tools-libnfc&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;nigma-pywt&#39;</span><span class="p">,</span> <span class="s1">&#39;ninia-jep&#39;</span><span class="p">,</span> <span class="s1">&#39;NMSSH-NMSSH&#39;</span><span class="p">,</span> <span class="s1">&#39;obgm-libcoap&#39;</span><span class="p">,</span> <span class="s1">&#39;OPCFoundation-UA-AnsiC&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;open-mpi-hwloc&#39;</span><span class="p">,</span> <span class="s1">&#39;open-mpi-ompi&#39;</span><span class="p">,</span> <span class="s1">&#39;open-quantum-safe-liboqs&#39;</span><span class="p">,</span> <span class="s1">&#39;OpenChannelSSD-linux&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;openslide-openslide&#39;</span><span class="p">,</span> <span class="s1">&#39;orangeduck-Cello&#39;</span><span class="p">,</span> <span class="s1">&#39;orangeduck-Corange&#39;</span><span class="p">,</span> <span class="s1">&#39;Orc-discount&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;osxfuse-fuse&#39;</span><span class="p">,</span> <span class="s1">&#39;payden-libwebsock&#39;</span><span class="p">,</span> <span class="s1">&#39;phpredis-phpredis&#39;</span><span class="p">,</span> <span class="s1">&#39;PJK-libcbor&#39;</span><span class="p">,</span> <span class="s1">&#39;PromyLOPh-pianobar&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;pubnub-c-core&#39;</span><span class="p">,</span> <span class="s1">&#39;pusher-libPusher&#39;</span><span class="p">,</span> <span class="s1">&#39;qmk-qmk_firmware&#39;</span><span class="p">,</span> <span class="s1">&#39;R4stl1n-cAudio&#39;</span><span class="p">,</span> <span class="s1">&#39;radare-radare2&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;rampantpixels-foundation_lib&#39;</span><span class="p">,</span> <span class="s1">&#39;raphydaphy-Q-Operating-System&#39;</span><span class="p">,</span> <span class="s1">&#39;raysan5-raylib&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;RIOT-OS-RIOT&#39;</span><span class="p">,</span> <span class="s1">&#39;rougier-freetype-gl&#39;</span><span class="p">,</span> <span class="s1">&#39;rpm-software-management-createrepo_c&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;rspamd-rspamd&#39;</span><span class="p">,</span> <span class="s1">&#39;rsyslog-rsyslog&#39;</span><span class="p">,</span> <span class="s1">&#39;ruby-openssl&#39;</span><span class="p">,</span> <span class="s1">&#39;ruby-psych&#39;</span><span class="p">,</span> <span class="s1">&#39;rui314-8cc&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;rustyrussell-ccan&#39;</span><span class="p">,</span> <span class="s1">&#39;sahib-rmlint&#39;</span><span class="p">,</span> <span class="s1">&#39;samee-obliv-c&#39;</span><span class="p">,</span> <span class="s1">&#39;samtools-htslib&#39;</span><span class="p">,</span> <span class="s1">&#39;samtools-samtools&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;shadowsocks-ChinaDNS&#39;</span><span class="p">,</span> <span class="s1">&#39;Simprints-libAFIS&#39;</span><span class="p">,</span> <span class="s1">&#39;skiselkov-BetterPushbackC&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Skycrab-Linux-C-Web-Server&#39;</span><span class="p">,</span> <span class="s1">&#39;sosy-lab-cpachecker&#39;</span><span class="p">,</span> <span class="s1">&#39;srdja-Collections-C&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;statsite-statsite&#39;</span><span class="p">,</span> <span class="s1">&#39;stephane-libmodbus&#39;</span><span class="p">,</span> <span class="s1">&#39;stevedekorte-vertexdb&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;sumatrapdfreader-sumatrapdf&#39;</span><span class="p">,</span> <span class="s1">&#39;sustrik-libdill&#39;</span><span class="p">,</span> <span class="s1">&#39;sustrik-libmill&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;swift-nav-libswiftnav-legacy&#39;</span><span class="p">,</span> <span class="s1">&#39;systemd-systemd&#39;</span><span class="p">,</span> <span class="s1">&#39;syzygy1-Cfish&#39;</span><span class="p">,</span> <span class="s1">&#39;tass-belgium-picotcp&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;tatsuhiro-t-spdylay&#39;</span><span class="p">,</span> <span class="s1">&#39;tboox-tbox&#39;</span><span class="p">,</span> <span class="s1">&#39;Tencent-xLua&#39;</span><span class="p">,</span> <span class="s1">&#39;TheAlgorithms-C&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;ThrowTheSwitch-Unity&#39;</span><span class="p">,</span> <span class="s1">&#39;tianocore-edk2&#39;</span><span class="p">,</span> <span class="s1">&#39;TinyCC-tinycc&#39;</span><span class="p">,</span> <span class="s1">&#39;tj-luna&#39;</span><span class="p">,</span> <span class="s1">&#39;troydhanson-uthash&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;twcamper-c-programming&#39;</span><span class="p">,</span> <span class="s1">&#39;uclouvain-openjpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;Unidata-netcdf-c&#39;</span><span class="p">,</span> <span class="s1">&#39;Uninett-mod_auth_mellon&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;UnknownShadow200-ClassicalSharp&#39;</span><span class="p">,</span> <span class="s1">&#39;urbit-urbit&#39;</span><span class="p">,</span> <span class="s1">&#39;vim-vim&#39;</span><span class="p">,</span> <span class="s1">&#39;Visgean-Zeus&#39;</span><span class="p">,</span> <span class="s1">&#39;vlm-asn1c&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;vmg-sundown&#39;</span><span class="p">,</span> <span class="s1">&#39;vonzhou-CSAPP&#39;</span><span class="p">,</span> <span class="s1">&#39;vozlt-nginx-module-vts&#39;</span><span class="p">,</span> <span class="s1">&#39;vurtun-nuklear&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;wesleykendall-mpitutorial&#39;</span><span class="p">,</span> <span class="s1">&#39;WickrInc-wickr-crypto-c&#39;</span><span class="p">,</span> <span class="s1">&#39;Wilfred-babyc&#39;</span><span class="p">,</span> <span class="s1">&#39;wmkhoo-taintgrind&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;wolkykim-qlibc&#39;</span><span class="p">,</span> <span class="s1">&#39;wuzhouhui-c_standard_lib&#39;</span><span class="p">,</span> <span class="s1">&#39;xethyrion-c-ipfs&#39;</span><span class="p">,</span> <span class="s1">&#39;Xilinx-qemu&#39;</span><span class="p">,</span> <span class="s1">&#39;xiph-opus&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xiph-speex&#39;</span><span class="p">,</span> <span class="s1">&#39;yaml-libyaml&#39;</span><span class="p">,</span> <span class="s1">&#39;yongboy-c_socket.io_server&#39;</span><span class="p">,</span> <span class="s1">&#39;yunghsianglu-ECE264Assignments&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;yusufshakeel-C-Project&#39;</span><span class="p">,</span> <span class="s1">&#39;yuvadm-tiva-c&#39;</span><span class="p">,</span> <span class="s1">&#39;yyang42-moulitest&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;zedshaw-learn-c-the-hard-way-lectures&#39;</span><span class="p">,</span> <span class="s1">&#39;zeromq-czmq&#39;</span><span class="p">,</span> <span class="s1">&#39;zhaozg-lua-openssl&#39;</span><span class="p">}</span>
+                         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_RepoStructure.test_meta_file_contents"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_RepoFiltering.html#decompy.tests.test_RepoFiltering.test_RepoStructure.test_RepoStructure.test_meta_file_contents">[docs]</a>    <span class="k">def</span> <span class="nf">test_meta_file_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">meta_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">open</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*/Config.META&quot;</span><span class="p">)]</span>
+
+        <span class="k">def</span> <span class="nf">correct_meta</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">({</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;filter-date&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">meta_files</span><span class="p">:</span>
+            <span class="n">correct_meta</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

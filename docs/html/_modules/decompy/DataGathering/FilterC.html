@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.DataGathering.FilterC &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>decompy.DataGathering.FilterC</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for decompy.DataGathering.FilterC</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">decompy.DataGathering.FilterCompile</span> <span class="k">import</span> <span class="n">FilterCompile</span>
+
+
+<div class="viewcode-block" id="FilterC"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC">[docs]</a><span class="k">class</span> <span class="nc">FilterC</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filters C files to our standards. This includes c header files that we find appropraite for machine learning.</span>
+<span class="sd">    Filters out the maximum amount of bytes we would like in a file. As of now, this is 7000 bytes.</span>
+<span class="sd">    Filters our words that may be too difficult: malloc, FILE, and threading</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># sets current file directory</span>
+    <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;__file__&#39;</span><span class="p">))</span>
+
+    <span class="c1"># set maximum bytes of 8000, it&#39;s around 400 lines of code (including comments and whitespace)</span>
+    <span class="n">MAX_BYTES</span> <span class="o">=</span> <span class="mi">8000</span>
+    <span class="n">MIN_BYTES</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">FILE_TYPE</span> <span class="o">=</span> <span class="s2">&quot;.c&quot;</span>
+    <span class="c1"># questionable ones: complex, fenv, setjmp, stdalign, stdarg, stdbool, tgmath, uchar</span>
+    <span class="n">C_WHITELIST_HEADERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;assert&quot;</span><span class="p">,</span> <span class="s2">&quot;complex&quot;</span><span class="p">,</span> <span class="s2">&quot;ctype&quot;</span><span class="p">,</span> <span class="s2">&quot;errno&quot;</span><span class="p">,</span> <span class="s2">&quot;fenv&quot;</span><span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;inttypes&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;limits&quot;</span><span class="p">,</span> <span class="s2">&quot;locale&quot;</span><span class="p">,</span> <span class="s2">&quot;math&quot;</span><span class="p">,</span> <span class="s2">&quot;signal&quot;</span><span class="p">,</span> <span class="s2">&quot;stddef&quot;</span><span class="p">,</span> <span class="s2">&quot;stdint&quot;</span><span class="p">,</span> <span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;stdlib&quot;</span><span class="p">,</span> <span class="s2">&quot;stdnoreturn&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;tgmath&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;wchar&quot;</span><span class="p">,</span> <span class="s2">&quot;wctype&quot;</span><span class="p">)</span>
+    <span class="c1"># bad ones: stdatomic, threads (ruben wants to see threads, malloc, realloc, calloc, and free.</span>
+    <span class="n">C_BLACKLIST</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;malloc&quot;</span><span class="p">,</span> <span class="s2">&quot;realloc&quot;</span><span class="p">,</span> <span class="s2">&quot;calloc&quot;</span><span class="p">,</span> <span class="s2">&quot;free&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        init</span>
+
+<span class="sd">        Initializes an object to filter C files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FilterC.check_byte_size"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.check_byte_size">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_byte_size</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="o">=</span><span class="n">MAX_BYTES</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="o">=</span><span class="n">MIN_BYTES</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the file size and tests it against the preferred_size in bytes. The default is 7000 bytes.</span>
+
+<span class="sd">        :param file: the file path to test against</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param preferred_max_size: the preferred size to search for, defaults to 7000.</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param preferred_min_size: the preferred minimum size to search for, defaults to 21 (for `int main(){return 0;}`)</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># combine to get the correct file</span>
+        <span class="c1"># file = os.path.join(FilterC.script_dir, file)</span>
+        <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+
+        <span class="k">return</span> <span class="n">preferred_max_size</span> <span class="o">&gt;</span> <span class="n">file_size</span> <span class="o">&gt;=</span> <span class="n">preferred_min_size</span></div>
+
+<div class="viewcode-block" id="FilterC.check_blacklisted_words"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.check_blacklisted_words">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_blacklisted_words</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">blacklisted</span><span class="o">=</span><span class="n">C_BLACKLIST</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lowercases the line to evaluate, and returns false if any blacklisted word is found.</span>
+
+<span class="sd">        :param: the string from a file.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param: the blacklisted array.</span>
+<span class="sd">        :type: str arr</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">blacklisted</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterC.check_headers"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.check_headers">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_headers</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">whitelisted</span><span class="o">=</span><span class="n">C_WHITELIST_HEADERS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses a regex to evaluate the line, ignoring the case, and returns false if any unknown header is found.</span>
+
+<span class="sd">        :param: the string from a file.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param: the blacklisted array, defaults to</span>
+<span class="sd">        :type: str arr</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># checks for comments or empty lines</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s*(//(.*)*)*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># check to see if we have a #include line.</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s*#include</span><span class="se">\\</span><span class="s1">s+&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="c1"># matches proper header</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;(</span><span class="se">\\</span><span class="s1">s*#include</span><span class="se">\\</span><span class="s1">s+&lt;</span><span class="se">\\</span><span class="s1">w+.h&gt;</span><span class="se">\\</span><span class="s1">s*)+&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">whitelisted</span><span class="p">)</span>
+            <span class="c1"># otherwise return false</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># return true for everything else</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="FilterC.check_valid_data"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.check_valid_data">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_valid_data</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="o">=</span><span class="n">MAX_BYTES</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="o">=</span><span class="n">MIN_BYTES</span><span class="p">,</span> <span class="n">whitelisted</span><span class="o">=</span><span class="n">C_WHITELIST_HEADERS</span><span class="p">,</span> <span class="n">blacklisted</span><span class="o">=</span><span class="n">C_BLACKLIST</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs validation testing on a given file string. This includes the correct byte size,</span>
+<span class="sd">        predetermined whitelisted headers, and predetermined blacklisted headers.</span>
+
+<span class="sd">        :param file: the file the user wants to validate.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param preferred_max_size: the max byte size the user wants</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param preferred_min_size: the min byte size the user wants</span>
+<span class="sd">        :param whitelisted: the whitelisted headers to search for.</span>
+<span class="sd">        :type: tuple or array</span>
+<span class="sd">        :param blacklisted: the blacklisted words to exclude.</span>
+<span class="sd">        :type: tuple or array</span>
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># combine to get the correct file</span>
+        <span class="c1"># file = os.path.join(FilterC.script_dir, file)</span>
+
+        <span class="c1"># check if file ends with .c</span>
+        <span class="c1"># if not file.endswith(file_type):</span>
+        <span class="c1">#     return False</span>
+
+        <span class="c1"># check file size</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">check_byte_size</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># open file, read line by line so we don&#39;t waste memory</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># iterate line by line</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="c1"># must pass our testing from above.</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">check_headers</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">whitelisted</span><span class="p">)</span> <span class="ow">or</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">check_blacklisted_words</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">blacklisted</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;IOError&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="FilterC.check_valid_folder"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.check_valid_folder">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_valid_folder</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">filt_path_name</span><span class="o">=</span><span class="s2">&quot;Unfiltered&quot;</span><span class="p">,</span> <span class="n">append_file</span><span class="o">=</span><span class="s2">&quot;filtered_list.META&quot;</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="o">=</span><span class="n">MAX_BYTES</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="o">=</span><span class="n">MIN_BYTES</span><span class="p">,</span>
+                           <span class="n">whitelisted</span><span class="o">=</span><span class="n">C_WHITELIST_HEADERS</span><span class="p">,</span> <span class="n">blacklisted</span><span class="o">=</span><span class="n">C_BLACKLIST</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs check_valid_data for each file in the folder path..</span>
+
+<span class="sd">        :param folder: the folder the user wants to validate for each C file.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param filt_path_name: the filtered path word the user is using to store data once filtered.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param append_file: the file to add lines to.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param preferred_max_size: the max byte size the user wants.</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param preferred_min_size: the max byte size the user wants.</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param whitelisted: the whitelisted headers the user wants.</span>
+<span class="sd">        :type: tuple or array</span>
+<span class="sd">        :param blacklisted: the blacklisted words the user wants to exclude.</span>
+<span class="sd">        :type: tuple or array</span>
+<span class="sd">        :return: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if no folder exists, then return file does not exist.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Folder or File Does Not Exist.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># walk recursively in given folder</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># open file</span>
+            <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+                <span class="c1"># look for unfiltered files and only want &quot;Unfiltered&quot; (or filt_path_name)</span>
+                <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">filt_path_name</span><span class="p">):</span>
+                    <span class="c1"># only look for c files</span>
+                    <span class="k">for</span> <span class="n">basename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                        <span class="c1"># unfiltered name</span>
+                        <span class="n">unfiltered_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">basename</span>
+
+                        <span class="c1"># base root of new file 1 directory above unfiltered/*.c</span>
+                        <span class="n">base_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+                        <span class="c1"># store into new directory, check if it exists already in file</span>
+                        <span class="n">new_file</span> <span class="o">=</span> <span class="n">base_root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">append_file</span>
+
+                        <span class="c1"># check if path already exists in the file, so we don&#39;t waste time computing or adding more</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">file_text_exists</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="n">unfiltered_path</span><span class="p">):</span>
+
+                            <span class="c1"># checks for valid data, compile, then adds to meta.</span>
+                            <span class="k">if</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_data</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="p">,</span>
+                                                        <span class="n">whitelisted</span><span class="p">,</span> <span class="n">blacklisted</span><span class="p">)</span> <span class="ow">and</span> <span class="n">FilterCompile</span><span class="o">.</span><span class="n">compile_file</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">):</span>
+
+                                <span class="c1"># create file if it does not exist</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_file</span><span class="p">):</span>
+                                    <span class="c1"># open to write to it</span>
+                                    <span class="nb">open</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span>
+
+                                <span class="c1"># append path to list</span>
+                                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">myfile</span><span class="p">:</span>
+                                    <span class="c1"># add file path to list.META</span>
+                                    <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">)</span>
+
+                                    <span class="c1"># check if OS is windows for \r\n</span>
+                                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
+                                        <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                                    <span class="c1"># otherwise it&#39;s \n</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterC.file_text_exists"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.file_text_exists">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">file_text_exists</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">phrase</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks for duplicate lines in a file.</span>
+
+<span class="sd">        :param file: the file path</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param phrase: the phrase we are looking for</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :return: true if duplicate exists in file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check if file exists. If it does not then return False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span></div></div>
+
+<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
+<span class="c1">#     f = FilterC()</span>
+<span class="c1">#     f.check_valid_folder(&quot;decompy/tests/test_filtercfiles/&quot;)</span>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
