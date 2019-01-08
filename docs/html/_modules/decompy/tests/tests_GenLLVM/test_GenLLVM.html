@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.tests.tests_GenLLVM.test_GenLLVM &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>decompy.tests.tests_GenLLVM.test_GenLLVM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for decompy.tests.tests_GenLLVM.test_GenLLVM</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">CalledProcessError</span>
+<span class="kn">from</span> <span class="nn">decompy.DataGathering.GenLLVM</span> <span class="k">import</span> <span class="n">GenLLVM</span>
+
+
+<div class="viewcode-block" id="TestGenLLVM"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM">[docs]</a><span class="k">class</span> <span class="nc">TestGenLLVM</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestGenLLVM.setUpClass"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.setUpClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the test method by creating an empty directory that will be used to store the output</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TestGenLLVM.tearDownClass"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.tearDownClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete directory that stored the output</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TestGenLLVM.setUp"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the test method by creating a blank txt file that will be used as input</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;test-input.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestGenLLVM.tearDown"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the test method by deleting the input file and all generated files</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">input_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;test-input.txt&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">input_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">input_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+        <span class="n">llvm_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">llvm_dir</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+        <span class="n">llvm_dir2</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">llvm_dir2</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">llvm_dir2_iter</span> <span class="o">=</span> <span class="n">llvm_dir2</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">llvm_dir2_iter</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="n">llvm_dir2</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TestGenLLVM.test_empty_input"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.test_empty_input">[docs]</a>    <span class="k">def</span> <span class="nf">test_empty_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tests what happens if the input file that should contain the names of c files to compile</span>
+<span class="sd">        is empty. A successful test will produce nothing with no errora.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GenLLVM</span><span class="o">.</span><span class="n">genLLVM</span><span class="p">(</span><span class="s2">&quot;./test-input.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;./llvmDir/&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestGenLLVM.test_one_c_file"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.test_one_c_file">[docs]</a>    <span class="k">def</span> <span class="nf">test_one_c_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tests what happens if the input file has only one c file. Just getting the edge cases</span>
+<span class="sd">        out of the way. Should compile the optimized and unoptimized code.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;./cDir/example.c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">GenLLVM</span><span class="o">.</span><span class="n">genLLVM</span><span class="p">(</span><span class="s2">&quot;test-input.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;./llvmDir/&quot;</span><span class="p">)</span>
+
+        <span class="n">filesmade</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span>
+        <span class="n">opt_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">filesmade</span><span class="p">)</span>
+        <span class="n">unopt_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">filesmade</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">opt_file</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;llvmDir/example-opt.ll&quot;</span><span class="p">),</span> <span class="s2">&quot;Correct op file not made. &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt_file</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">unopt_file</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;llvmDir/example-unopt.ll&quot;</span><span class="p">),</span> <span class="s2">&quot;Correct unopy file not made. &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">unopt_file</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestGenLLVM.test_output_folder_dne"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.test_output_folder_dne">[docs]</a>    <span class="k">def</span> <span class="nf">test_output_folder_dne</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tests_GenLLVM what happens if the location for the llvm output doesn&#39;t exist. Should create</span>
+<span class="sd">        the folder and save all generated llvm to that folder.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;./cDir/example.c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;./cDir/example2.c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">GenLLVM</span><span class="o">.</span><span class="n">genLLVM</span><span class="p">(</span><span class="s2">&quot;test-input.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;./llvmDir2/&quot;</span><span class="p">)</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir2/example-opt.ll&quot;</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir2/example-unopt.ll&quot;</span><span class="p">),</span>
+                 <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir2/example2-opt.ll&quot;</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./llvmDir2/example2-unopt.ll&quot;</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">exists</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TestGenLLVM.test_c_file_dne"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.test_c_file_dne">[docs]</a>    <span class="k">def</span> <span class="nf">test_c_file_dne</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tests_GenLLVM if the input file contains a file that doesn&#39;t exist. Should throw an exception</span>
+<span class="sd">        (Which exception?)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;./cDir/example.c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;./cDir/example2.c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;/cDir/example3.c</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">CalledProcessError</span><span class="p">):</span>
+            <span class="n">GenLLVM</span><span class="o">.</span><span class="n">genLLVM</span><span class="p">(</span><span class="s2">&quot;test-input.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;./llvmDir2/&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestGenLLVM.test_input_file_dne"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.tests_GenLLVM.html#decompy.tests.tests_GenLLVM.test_GenLLVM.TestGenLLVM.test_input_file_dne">[docs]</a>    <span class="k">def</span> <span class="nf">test_input_file_dne</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tests_GenLLVM if the input file doesn&#39;t exist. Should throw an exception (Which exception?)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">):</span>
+            <span class="n">GenLLVM</span><span class="o">.</span><span class="n">genLLVM</span><span class="p">(</span><span class="s2">&quot;not_here.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;./llvmDir2/&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
