@@ -1,2 +1,1 @@
-/mnt/c/Users/User/CLionProjects/decompy/decompy/tests/test_ClangSubprocess/cDir/example.c
-/mnt/c/Users/User/CLionProjects/decompy/decompy/tests/test_ClangSubprocess/cDir/example2.c
+

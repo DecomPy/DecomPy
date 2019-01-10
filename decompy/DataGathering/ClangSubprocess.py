@@ -36,14 +36,15 @@ class Clang:
         location_path = Path(newlocation)
 
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
-        command = "clang -Wno-everything " + file_in + " " + args + " -o " +\
-                  file_out
-        result = subprocess.run(command, shell=True).returncode #, check=True)
+        command = "clang -Wno-everything " + file_in + " " + args + " -o " + file_out
+        result = subprocess.run(command, shell=True, capture_output=True).returncode #, check=True)
 
         if result == 0:
             outfile.write(file_out + "\n")
             if filter_file:
                 filter_file.write(file_in + "\n")
+        else:
+            print(result)
 
     @staticmethod
     def compile_all(input_file, output_file, newlocation, out_type, filter_file="", args=""):
@@ -64,7 +65,6 @@ class Clang:
         :return:
         """
 
-        print(args)
         file_of_cfiles = open(input_file, 'r')
 
         location_path = Path(newlocation)
