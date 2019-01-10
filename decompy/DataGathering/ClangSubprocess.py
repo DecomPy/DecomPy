@@ -37,14 +37,17 @@ class Clang:
 
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
         command = "clang -Wno-everything " + file_in + " " + args + " -o " + file_out
-        result = subprocess.run(command, shell=True, capture_output=True).returncode #, check=True)
+        proc = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="UTF8", shell=True)
+        code = proc.returncode
+        out = proc.stdout
+        err = proc.stderr
 
-        if result == 0:
+        if code == 0:
             outfile.write(file_out + "\n")
             if filter_file:
                 filter_file.write(file_in + "\n")
-        else:
-            print(result)
+        elif "no input files" in err:
+            raise NoInputFileException
 
     @staticmethod
     def compile_all(input_file, output_file, newlocation, out_type, filter_file="", args=""):
@@ -154,5 +157,11 @@ class Clang:
         out_type = "-unopt.ll"
         Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
 
+
+class NoInputFileException(Exception):
+    pass
+
 if(__name__ == "__main__"):
-    Clang.to_llvm_unopt("/mnt/c/Users/User/CLionProjects/decompy/decompy/tests/test_ClangSubprocess/text.txt", "out.txt", "out")
+    pass
+    #Clang.to_llvm_unopt("/mnt/c/Users/User/CLionProjects/decompy/decompy/tests/test_ClangSubprocess/text.txt",
+        # "out.txt", "out")

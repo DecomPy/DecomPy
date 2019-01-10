@@ -1,5 +1,6 @@
 import unittest
-import decompy.DataGathering.ClangSubprocess as Clang
+import decompy.DataGathering.ClangSubprocess as Clan
+import decompy.DataGathering.NoInputFileException
 from pathlib import Path
 
 
@@ -39,11 +40,10 @@ class test_ClangSubprocessTest(unittest.TestCase):
         exception.
         :return:
         """
-        with self.assertRaises(Exception) as contextMan:
+        with self.assertRaises(NoInputFileException) as contextMan:
             Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
                               test_ClangSubprocessTest.outputFolder)
-        print(contextMan.exception)
-        print("jjjj")
+
 
         with self.assertRaises(Exception) as contextMan:
             Clang.to_elf(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputElfName,
