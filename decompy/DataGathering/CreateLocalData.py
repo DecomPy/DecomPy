@@ -39,13 +39,18 @@ class CreateLocalData:
 
         :return:
         """
-        if self.filtered_repos:  # if we have repos, then sort through each rep in our json
+        if not self.filtered_repos:  # if we have repos, then sort through each rep in our json
+            self.filtered_repos = self.rf.offline_read_json("filteredOfflineResults.json")  # read into our filtered repos
+
+        if self.filtered_repos:
             for repo in self.filtered_repos:
                 print(repo)
                 url = repo["url"]  # grab the url from the json to scrape
                 FileGetter.download_all_files(
                     url, os.path.join("Repositories", repo["username"] + "-" + repo["name"]))  # scrape all the urls
                 # into our destined folder
+        else:
+            print("Cannot find \"filteredOfflineResults.json\"")
 
     def stage3(self):
         """
@@ -91,10 +96,29 @@ class CreateLocalData:
 
                         # if file does not exist (filtered_list.META) then break out of this directory loop.
                         break
-
         except Exception as e:
             print("Exception", e)
             pass
+    #
+    # def stage5(self):
+    #     """
+    #     stage 5 of the gathering process: load into the database reading the meta and other info.
+    #
+    #     :return:
+    #     """
+    #
+    #     try:
+    #         # open file
+    #         for root, dirs, files in os.walk(self.folder):
+    #             # look for *.c in files
+    #             for basename in files:
+    #                 if basename.endswith(".c"):
+    #
+    #
+    #     except Exception as e:
+    #         print("Exception", e)
+    #         pass
+
 
     @staticmethod
     def all_four_stages():
