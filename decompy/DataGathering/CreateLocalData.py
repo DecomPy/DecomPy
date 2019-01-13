@@ -1,7 +1,11 @@
 from decompy.DataGathering import *
+from decompy.database import db
 from pathlib import Path
 import datetime
 import os
+
+import codecs
+decode_hex = codecs.getdecoder("hex_codec")
 
 
 class CreateLocalData:
@@ -19,6 +23,7 @@ class CreateLocalData:
         self.rs = RepoStructure()
         self.filtered_repos = None
         self.folder = "Repositories"
+        self.db = db.Database("c_code")
 
     def stage1(self):
         """
@@ -99,25 +104,62 @@ class CreateLocalData:
         except Exception as e:
             print("Exception", e)
             pass
-    #
-    # def stage5(self):
-    #     """
-    #     stage 5 of the gathering process: load into the database reading the meta and other info.
-    #
-    #     :return:
-    #     """
-    #
-    #     try:
-    #         # open file
-    #         for root, dirs, files in os.walk(self.folder):
-    #             # look for *.c in files
-    #             for basename in files:
-    #                 if basename.endswith(".c"):
-    #
-    #
-    #     except Exception as e:
-    #         print("Exception", e)
-    #         pass
+
+    def stage5(self):
+        """
+        stage 5 of the gathering process: load into the database reading the meta and other info.
+
+        :return:
+        """
+        # open file
+        for root, dirs, files in os.walk(self.folder):
+            try:
+                # look for filtered file and LLVM
+                for basename in files:
+
+                    # filtered_list.META data
+                    if basename == "filtered_list.META":
+                        # get this cwd
+                        cwd = root
+                        with open(cwd+"/"+basename, "r") as f:
+                            try:
+                                # find the file path then read that c file
+                                for line in f:
+                                    # take advantage of the fact that file names cannot have .c unless at the end
+                                    filename = line.rsplit('/', 1)[-1]
+                                    filename = filename.replace(".c\n", "")
+
+                                    # check if these files exist, then we can continue
+                                    llvm_op_file_path = cwd + "/LLVM/" + filename + "-opt.ll"
+                                    llvm_op_path = Path(llvm_op_file_path)
+
+                                    llvm_unop_file_path = cwd + "/LLVM/" + filename + "-opt.ll"
+                                    llvm_unop_path = Path(llvm_unop_file_path)
+
+                                    c_file = line.replace("\n", "")
+                                    repo_name = cwd.rsplit('/', 1)[-1]
+
+                                    if llvm_op_path.exists() and llvm_unop_path.exists():
+                                        # change to llvm directory and search for file that ends with .c
+                                        # with open(llvm_op_path, "r") as llvm_op_f:
+                                        #     llvm_op_data = llvm_op_f.read()
+                                        #     # llvm_op_data = llvm_op_data.replace("0x", "hex_value")
+                                        #
+                                        # with open(cwd + "/LLVM/" + filename + "-unopt.ll", "r") as llvm_unop_f:
+                                        #     llvm_unop_data = llvm_unop_f.read()
+
+                                        with open(c_file, "r") as cf:
+                                            c_data = cf.read()
+                                            print(c_data)
+                                            self.db.insert_ml(c_file, repo_name, c_data, None, None, None, True)
+
+                            except Exception as e:
+                                print("opening myfile", e)
+                                pass
+
+            except Exception as e:
+                print("Database exception", e)
+                pass
 
 
     @staticmethod

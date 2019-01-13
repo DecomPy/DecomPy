@@ -163,48 +163,57 @@ class FilterC:
             print("Folder or File Does Not Exist.")
             return False
 
-        # walk recursively in given folder
-        try:
-            # open file
-            for root, dirs, files in os.walk(folder):
-                # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
+        #  walk recursively in given folder
+        # open file
+        for root, dirs, files in os.walk(folder):
+            # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
+            try:
                 if root.endswith(filt_path_name):
                     # only look for c files
-                    for basename in files:
-                        # unfiltered name
-                        unfiltered_path = root + "/" + basename
+                        for basename in files:
+                            # unfiltered name
+                            unfiltered_path = root + "/" + basename
 
-                        # base root of new file 1 directory above unfiltered/*.c
-                        base_root = os.path.dirname(root)
-                        # store into new directory, check if it exists already in file
-                        new_file = base_root + "/" + append_file
+                            # base root of new file 1 directory above unfiltered/*.c
+                            base_root = os.path.dirname(root)
+                            # store into new directory, check if it exists already in file
+                            new_file = base_root + "/" + append_file
 
-                        # check if path already exists in the file, so we don't waste time computing or adding more
-                        if not FilterC.file_text_exists(new_file, unfiltered_path):
+                            # check if path already exists in the file, so we don't waste time computing or adding more
+                            if not FilterC.file_text_exists(new_file, unfiltered_path):
 
-                            # checks for valid data, compile, then adds to meta.
-                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
-                                                        whitelisted, blacklisted) and FilterCompile.compile_file(unfiltered_path):
+                                # checks for valid data, compile, then adds to meta.
+                                if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
+                                                            whitelisted, blacklisted) and FilterCompile.compile_file(unfiltered_path):
 
-                                # create file if it does not exist
-                                if not os.path.exists(new_file):
-                                    # open to write to it
-                                    open(new_file, "w+")
+                                    # create file if it does not exist
+                                    if not os.path.exists(new_file):
+                                        try:
+                                            # open to write to it
+                                            open(new_file, "w+")
+                                        except Exception as e:
+                                            print("opening new_file", e)
+                                            pass
 
-                                # append path to list
-                                with open(new_file, "a") as myfile:
-                                    # add file path to list.META
-                                    myfile.write(unfiltered_path)
+                                    # append path to list
+                                    with open(new_file, "a") as myfile:
+                                        try:
+                                            # add file path to list.META
+                                            myfile.write(unfiltered_path)
 
-                                    # check if OS is windows for \r\n
-                                    if os.name == 'nt':
-                                        myfile.write("\r\n")
-                                    # otherwise it's \n
-                                    else:
-                                        myfile.write("\n")
+                                            # check if OS is windows for \r\n
+                                            if os.name == 'nt':
+                                                myfile.write("\r\n")
+                                            # otherwise it's \n
+                                            else:
+                                                myfile.write("\n")
 
-        except Exception as e:
-            print("Exception", e)
+                                        except Exception as e:
+                                            print("opening myfile", e)
+                                            pass
+            except Exception as e:
+                print("Overall Exception FilterC", e)
+                pass
 
     @staticmethod
     def file_text_exists(file, phrase):
