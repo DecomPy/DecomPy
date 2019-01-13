@@ -1,6 +1,5 @@
 import unittest
-import decompy.DataGathering.ClangSubprocess as Clan
-import decompy.DataGathering.NoInputFileException
+import decompy.DataGathering.ClangSubprocess as Clang
 from pathlib import Path
 
 
@@ -10,13 +9,13 @@ class test_ClangSubprocessTest(unittest.TestCase):
     """
 
     inputC = None
-    inputCName = "./testIn"
-    outputCName = "./testOut"
-    outputElfName = "./testElfOut"
-    outputAssemName = "./testAssemOut"
-    outputLLVMUnoptName = "./testLLVMUnoptOut"
-    outputLLVMOptName = "./testLLVMOptOut"
-    outputCompile = "./testCompOut"
+    inputCName = "./testIn.txt"
+    outputCName = "./testOut.txt"
+    outputElfName = "./testElfOut.txt"
+    outputAssemName = "./testAssemOut.txt"
+    outputLLVMUnoptName = "./testLLVMUnoptOut.txt"
+    outputLLVMOptName = "./testLLVMOptOut.txt"
+    outputCompile = "./testCompOut.txt"
     outputFolder = "./outFolder"
 
     @classmethod
@@ -24,7 +23,7 @@ class test_ClangSubprocessTest(unittest.TestCase):
         """
         Initializes
         """
-        inputC = open(test_ClangSubprocessTest.inputCName, 'w+')
+        self.inputC = open(test_ClangSubprocessTest.inputCName, 'w+')
 
     @classmethod
     def tearDown(self):
@@ -40,31 +39,28 @@ class test_ClangSubprocessTest(unittest.TestCase):
         exception.
         :return:
         """
-        with self.assertRaises(NoInputFileException) as contextMan:
-            Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
-                              test_ClangSubprocessTest.outputFolder)
-
-
-        with self.assertRaises(Exception) as contextMan:
-            Clang.to_elf(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputElfName,
-                         test_ClangSubprocessTest.outputFolder)
-        with self.assertRaises(Exception) as contextMan:
-            Clang.to_llvm_opt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMUnoptName,
-                              test_ClangSubprocessTest.outputFolder)
-        with self.assertRaises(Exception) as contextMan:
-            Clang.to_llvm_unopt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMOptName,
-                                test_ClangSubprocessTest.outputFolder)
+        self.inputC.write("\n")
+        with self.assertRaises(Clang.NoInputFileException):
+            Clang.Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
+                                    test_ClangSubprocessTest.outputFolder)
+        with self.assertRaises(Clang.NoInputFileException):
+            Clang.Clang.to_elf(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputElfName,
+                               test_ClangSubprocessTest.outputFolder)
+        with self.assertRaises(Clang.NoInputFileException):
+            Clang.Clang.to_llvm_opt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMUnoptName,
+                                    test_ClangSubprocessTest.outputFolder)
+        with self.assertRaises(Clang.NoInputFileException):
+            Clang.Clang.to_llvm_unopt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMOptName,
+                                      test_ClangSubprocessTest.outputFolder)
 
     def test_c_file_not_exist(self):
         """
 
         :return:
         """
+
     def test_c_file_exists(self):
         """
 
         :return:
         """
-
-if __name__ == '__main__':
-    unittest.main()

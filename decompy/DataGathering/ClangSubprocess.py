@@ -42,6 +42,7 @@ class Clang:
         out = proc.stdout
         err = proc.stderr
 
+        outfile.write("err")
         if code == 0:
             outfile.write(file_out + "\n")
             if filter_file:
@@ -88,8 +89,8 @@ class Clang:
                 filteredC = open(filter_file, 'w+')
             else:
                 filteredC = open(filter_file, 'a+')
-
         for cfile in file_of_cfiles:
+            outfile.write("hey")
             cfile = cfile.rstrip()
             Clang.compile_cfile(cfile, outfile, newlocation, out_type,
                                 filter_file=filteredC, args=args)
@@ -163,5 +164,5 @@ class NoInputFileException(Exception):
 
 if(__name__ == "__main__"):
     pass
-    #Clang.to_llvm_unopt("/mnt/c/Users/User/CLionProjects/decompy/decompy/tests/test_ClangSubprocess/text.txt",
-        # "out.txt", "out")
+    Clang.to_assembly("/mnt/c/Users/User/CLionProjects/decompy/testIn.txt",
+        "out.txt", "out")
