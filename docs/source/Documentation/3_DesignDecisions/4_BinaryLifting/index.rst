@@ -1,5 +1,5 @@
-Decompy API
-***********
+Binary Lifting
+**************
 
 .. toctree::
     :glob:

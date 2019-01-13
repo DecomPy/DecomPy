@@ -4,6 +4,22 @@ decompy.DataGathering package
 Submodules
 ----------
 
+decompy.DataGathering.ClangSubprocess module
+--------------------------------------------
+
+.. automodule:: decompy.DataGathering.ClangSubprocess
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+decompy.DataGathering.CreateLocalData module
+--------------------------------------------
+
+.. automodule:: decompy.DataGathering.CreateLocalData
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 decompy.DataGathering.FilterC module
 ------------------------------------
 
@@ -16,14 +32,6 @@ decompy.DataGathering.FilterCompile module
 ------------------------------------------
 
 .. automodule:: decompy.DataGathering.FilterCompile
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-decompy.DataGathering.GenLLVM module
-------------------------------------
-
-.. automodule:: decompy.DataGathering.GenLLVM
     :members:
     :undoc-members:
     :show-inheritance:
