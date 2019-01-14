@@ -141,24 +141,23 @@ class CreateLocalData:
 
                                     if llvm_op_path.exists() and llvm_unop_path.exists():
                                         # change to llvm directory and search for file that ends with .c
-                                        # with open(llvm_op_path, "r") as llvm_op_f:
-                                        #     llvm_op_data = llvm_op_f.read()
-                                        #     # llvm_op_data = llvm_op_data.replace("0x", "hex_value")
-                                        #
-                                        # with open(cwd + "/LLVM/" + filename + "-unopt.ll", "r") as llvm_unop_f:
-                                        #     llvm_unop_data = llvm_unop_f.read()
+                                        with open(llvm_op_path, "r") as llvm_op_f:
+                                            llvm_op_data = llvm_op_f.read()
+                                            # llvm_op_data = llvm_op_data.replace("0x", "hex_value")
+
+                                        with open(cwd + "/LLVM/" + filename + "-unopt.ll", "r") as llvm_unop_f:
+                                            llvm_unop_data = llvm_unop_f.read()
 
                                         with open(c_file, "r") as cf:
                                             c_data = cf.read()
-                                            print(c_data)
-                                            self.db.insert_ml(c_file, repo_name, c_data, None, None, None, True)
+                                            self.db.insert_ml(c_file, repo_name, c_data, None, llvm_unop_data, llvm_op_data, True)
 
                             except Exception as e:
                                 print("opening myfile", e)
                                 pass
 
             except Exception as e:
-                print("Database exception", e)
+                print("Database stage 5 exception", e)
                 pass
 
 

@@ -139,10 +139,11 @@ class Database:
         :return: nothing
         """
         try:
-            sql = """REPLACE INTO meta_table(repo_name, license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
-                   VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")""".format(repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date, filter_date,
-                                                                               compilation_date, master_download_date)
-            self.__transaction_builder(sql, override)
+            sql = """REPLACE INTO meta_table(repo_name, license, url, author, filter_approval_date, 
+                      llvm_gen_date, filter_date, compilation_date, master_download_date)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+            self.__transaction_builder(sql, (repo_name, repo_license, url, author, filter_approval_date, llvm_gen_date,
+                                             filter_date,compilation_date, master_download_date), override)
             return True
         except Error as e:
             print(e)
@@ -155,9 +156,13 @@ class Database:
         :return: nothing
         """
         try:
-            sql = """REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
-                  VALUES("{}", "{}", "{}", "{}", "{}", "{}")""".format(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
-            self.__transaction_builder(sql, override)
+            # sql = """REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+            #       VALUES({}, {}, "{}", {}, {}, {})""".format(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+            # self.__transaction_builder(sql, override) # do not use.
+
+            sql = "REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op) VALUES (?, ?, ?, ?, ?, ?)"
+
+            self.__transaction_builder(sql, (file_path, repo_name, source_code, object_file, llvm_unop, llvm_op), override)
             return True
         except Error as e:
             print(e)
@@ -168,12 +173,13 @@ class Database:
         """
         delete meta data with this repo name, and the ml data as a result of cascading.
         :param repo_name: the repository name
+        :param override: whether or not to override the transaction builder. Useful if we want it immediately
+        or not going to have greater than 1000 transactoins.
         :return: bool
         """
         try:
-            sql = """DELETE FROM meta_table WHERE repo_name = '{}'""".format(repo_name)
-            # self.cursor.execute(sql)
-            self.__transaction_builder(sql, override)
+            sql = "DELETE FROM meta_table WHERE repo_name = ?"
+            self.__transaction_builder(sql, repo_name, override)
 
             return True
         except Error as e:
@@ -185,11 +191,13 @@ class Database:
         """
         delete ml data with this file name.
         :param file_name: the file name to delete.
+        :param override: whether or not to override the transaction builder. Useful if we want it immediately
+        or not going to have greater than 1000 transactoins.
         :return: nothing
         """
         try:
-            sql = """DELETE FROM ml_table WHERE file_path = '{}'""".format(file_name)
-            self.__transaction_builder(sql, override)
+            sql = "DELETE FROM ml_table WHERE file_path = ?"
+            self.__transaction_builder(sql, file_name, override)
 
             return True
         except Error as e:
@@ -242,20 +250,25 @@ class Database:
         except Error as e:
             print(e)
 
-    def __transaction_builder(self, sql, override=False):
+    def __transaction_builder(self, sql_query, sql_values, override=False):
         """
         populates the database using transactions instead of 1 by 1
-        :param sql: the sql query
-        :param override: override the > 1000
+        :param sql_query: the sql query
+        :param sql_values: the info to add to the sql info.
+        :param override: override the > 1000 transaction builder.
         :return: nothing
         """
+        # create new object
+        sql = ObjectSql(sql_query, sql_values)
+
+        # then add and check the length
         self.sql_transaction.append(sql)
         if len(self.sql_transaction) > 1000 or override:
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
             for s in self.sql_transaction:
                 try:
-                    self.cursor.execute(s)  # execute the transaction
+                    self.cursor.execute(s.sql_query, s.sql_values)  # execute the transaction
                     # print('executing transactions')
                 except Error as e:
                     print("error: ", str(e))
@@ -263,3 +276,17 @@ class Database:
 
             self.conn.commit()  # commit once done
             self.sql_transaction = []  # empty it out
+
+
+class ObjectSql:
+    """
+    creats a new object for sql queries needed for the query string and value type.
+    """
+    def __init__(self, sql_query, sql_values):
+        """
+        :param sql_query: the sql query.
+        :param sql_values: the sql values or string
+        """
+        self.sql_query = sql_query
+        self.sql_values = sql_values
+
