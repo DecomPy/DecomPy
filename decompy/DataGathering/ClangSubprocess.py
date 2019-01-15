@@ -7,12 +7,6 @@ class Clang:
     Class to define functions for calling the Clang compiler
     """
 
-    def __init__(self):
-        """
-
-        """
-        pass
-
     @staticmethod
     def compile_cfile(file_in, outfile, newlocation, output_type, filter_file, args):
         """
@@ -42,11 +36,13 @@ class Clang:
         out = proc.stdout
         err = proc.stderr
 
-        outfile.write("err")
+        print(err, file_in)
         if code == 0:
             outfile.write(file_out + "\n")
             if filter_file:
                 filter_file.write(file_in + "\n")
+        elif "no such file or directory" in err:
+            raise FileDoesNotExistException
         elif "no input files" in err:
             raise NoInputFileException
 
@@ -162,7 +158,10 @@ class Clang:
 class NoInputFileException(Exception):
     pass
 
-if(__name__ == "__main__"):
+class FileDoesNotExistException(Exception):
     pass
+
+if(__name__ == "__main__"):
+
     Clang.to_assembly("/mnt/c/Users/User/CLionProjects/decompy/testIn.txt",
         "out.txt", "out")

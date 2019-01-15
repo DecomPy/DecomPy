@@ -23,7 +23,7 @@ class test_ClangSubprocessTest(unittest.TestCase):
         """
         Initializes
         """
-        self.inputC = open(test_ClangSubprocessTest.inputCName, 'w+')
+        self.inputC = Path(test_ClangSubprocessTest.inputCName, 'w+')
 
     @classmethod
     def tearDown(self):
@@ -31,7 +31,7 @@ class test_ClangSubprocessTest(unittest.TestCase):
 
         :return:
         """
-        # test_ClangSubprocessTest.inputC.unlink()
+        test_ClangSubprocessTest.inputC.unlink()
 
     def test_empty_input_file(self):
         """
@@ -39,7 +39,7 @@ class test_ClangSubprocessTest(unittest.TestCase):
         exception.
         :return:
         """
-        self.inputC.write("\n")
+        self.inputC.write_text("\n")
         with self.assertRaises(Clang.NoInputFileException):
             Clang.Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
                                     test_ClangSubprocessTest.outputFolder)
@@ -58,6 +58,19 @@ class test_ClangSubprocessTest(unittest.TestCase):
 
         :return:
         """
+        self.inputC.write_text("not_exist.c")
+        with self.assertRaises(Clang.FileDoesNotExistException):
+            Clang.Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
+                                    test_ClangSubprocessTest.outputFolder)
+        with self.assertRaises(Clang.FileDoesNotExistException):
+            Clang.Clang.to_elf(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputElfName,
+                               test_ClangSubprocessTest.outputFolder)
+        with self.assertRaises(Clang.FileDoesNotExistException):
+            Clang.Clang.to_llvm_opt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMUnoptName,
+                                    test_ClangSubprocessTest.outputFolder)
+        with self.assertRaises(Clang.FileDoesNotExistException):
+            Clang.Clang.to_llvm_unopt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMOptName,
+                                      test_ClangSubprocessTest.outputFolder)
 
     def test_c_file_exists(self):
         """
