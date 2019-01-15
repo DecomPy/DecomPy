@@ -1,4 +1,5 @@
 import subprocess
+import os
 from pathlib import Path
 
 
@@ -36,13 +37,16 @@ class Clang:
         file_name = Path(file_in).stem
         location_path = Path(newlocation)
 
+        # relative paths to make it easier in case we move machines.
+        relative_path = os.path.splitext(file_in)[0]
+
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
         command = "clang -Wno-everything " + file_in + " " + args + " -o " +\
                   file_out
         result = subprocess.run(command, shell=True).returncode  #, check=True)
 
         if result == 0:
-            outfile.write(file_out + "\n")
+            outfile.write(relative_path+output_type + "\n")
             if filter_file:
                 filter_file.write(file_in + "\n")
 
@@ -165,4 +169,19 @@ class Clang:
         """
         args = "-O1 -Xclang -disable-llvm-passes -S -emit-llvm"
         out_type = "-unopt.ll"
+        Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
+
+    @staticmethod
+    def to_object_file(input_file, output_file, newlocation):
+        """
+        Compiles all C files listed in the input file to clang.
+
+        :param input_file: File with list of C file names to compile
+        :param output_file: If the file is successfully compiled, the output
+        file is listed in this file
+        :param newlocation: location to save Object files to
+        :return:
+        """
+        args = "-c "
+        out_type = ".o"
         Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)

@@ -22,6 +22,7 @@ class CreateLocalData:
         self.rf = RepoFilter("C ", language="C", blacklist=["C++", "C#", "css"])  # gets 100 results
         self.rs = RepoStructure()
         self.filtered_repos = None
+        self.FilterC = FilterC()
         self.folder = "Repositories"
         self.db = db.Database("c_code")
 
@@ -49,7 +50,6 @@ class CreateLocalData:
 
         if self.filtered_repos:
             for repo in self.filtered_repos:
-                print(repo)
                 url = repo["url"]  # grab the url from the json to scrape
                 FileGetter.download_all_files(
                     url, os.path.join("Repositories", repo["username"] + "-" + repo["name"]))  # scrape all the urls
@@ -62,7 +62,7 @@ class CreateLocalData:
         stage 3 of the data gathering process: Filter the C files out. Get the good ones.
         :return:
         """
-        FilterC.check_valid_folder(self.folder)  # seeks the folder and recursively filters them out: uses default param
+        self.FilterC.check_valid_folder(self.folder)  # seeks the folder and recursively filters them out, default param
 
     def stage4(self):
         """
@@ -78,7 +78,7 @@ class CreateLocalData:
                 for basename in files:
                     if basename.endswith(".c"):
                         # get name without *.c
-                        name, extension = os.path.splitext(basename)  # won't use extension
+                        # name, extension = os.path.splitext(basename)  # won't use extension
                         cwd = os.getcwd()                          # get current working directory
                         base_root = os.path.dirname(root)
 
@@ -89,12 +89,13 @@ class CreateLocalData:
                         # folder for LLVM
                         folder = cwd + "/" + base_root + "/LLVM"
                         # new files
-                        llvm_file = cwd + "/" + root + "/" + name
+                        compiled_file_path = base_root + "/compiled.META"
 
                         # check if file exists or wasting time
                         if my_file.exists():
-                            Clang.to_llvm_opt(file, llvm_file, folder)  # compile optimized
-                            Clang.to_llvm_unopt(file, llvm_file, folder)  # compile unoptimized
+                            Clang.to_object_file(file, compiled_file_path, cwd+"/"+base_root+"/Object")  # compile object file optimized
+                            Clang.to_llvm_opt(file, compiled_file_path, folder)  # compile optimized
+                            Clang.to_llvm_unopt(file, compiled_file_path, folder)  # compile unoptimized
 
                         else:
                             print("Stage 4: filtered_list.META does not exist in this directory. Exiting folder...") # comment out if you want
@@ -118,7 +119,7 @@ class CreateLocalData:
                 for basename in files:
 
                     # filtered_list.META data
-                    if basename == "filtered_list.META":
+                    if basename == "compiled.META":
                         # get this cwd
                         cwd = root
                         with open(cwd+"/"+basename, "r") as f:
@@ -133,8 +134,11 @@ class CreateLocalData:
                                     llvm_op_file_path = cwd + "/LLVM/" + filename + "-opt.ll"
                                     llvm_op_path = Path(llvm_op_file_path)
 
-                                    llvm_unop_file_path = cwd + "/LLVM/" + filename + "-opt.ll"
+                                    llvm_unop_file_path = cwd + "/LLVM/" + filename + "-unopt.ll"
                                     llvm_unop_path = Path(llvm_unop_file_path)
+
+                                    o_file_path = cwd + "/Object/" + filename + ".o"
+                                    o_path = Path(o_file_path)
 
                                     c_file = line.replace("\n", "")
                                     repo_name = cwd.rsplit('/', 1)[-1]
@@ -150,7 +154,7 @@ class CreateLocalData:
 
                                         with open(c_file, "r") as cf:
                                             c_data = cf.read()
-                                            self.db.insert_ml(c_file, repo_name, c_data, None, llvm_unop_data, llvm_op_data, True)
+                                            self.db.insert_ml(c_file, repo_name, c_data, o_path, llvm_unop_data, llvm_op_data, True)
 
                             except Exception as e:
                                 print("opening myfile", e)
@@ -159,7 +163,6 @@ class CreateLocalData:
             except Exception as e:
                 print("Database stage 5 exception", e)
                 pass
-
 
     @staticmethod
     def all_four_stages():

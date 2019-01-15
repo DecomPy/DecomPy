@@ -1,6 +1,5 @@
 import os
 import re
-from decompy.DataGathering.FilterCompile import FilterCompile
 
 
 class FilterC:
@@ -8,6 +7,8 @@ class FilterC:
     Filters C files to our standards. This includes c header files that we find appropraite for machine learning.
     Filters out the maximum amount of bytes we would like in a file. As of now, this is 7000 bytes.
     Filters our words that may be too difficult: malloc, FILE, and threading
+    DOES NOT CHECK IF IT SUCCESSFULLY COMPILES. This is handled by ClangSubprocess which generates a new file with
+    file paths to use.
     """
 
     # sets current file directory
@@ -184,7 +185,7 @@ class FilterC:
 
                                 # checks for valid data, compile, then adds to meta.
                                 if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
-                                                            whitelisted, blacklisted) and FilterCompile.compile_file(unfiltered_path):
+                                                            whitelisted, blacklisted): # used to compile here.
 
                                     # create file if it does not exist
                                     if not os.path.exists(new_file):
