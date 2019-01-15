@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fcd &mdash; DecomPy 0.0.1 documentation</title>
+  <title>McSema &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="fcd+remill" href="3_fcd+remill.html" />
-    <link rel="prev" title="llvm-mctoll" href="1_llvm-mctoll.html" /> 
+    <link rel="next" title="libbeauty" href="5_libbeauty.html" />
+    <link rel="prev" title="fcd+remill" href="3_fcd+remill.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -86,9 +86,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Binary Lifting</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="1_llvm-mctoll.html">llvm-mctoll</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">fcd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_fcd.html">fcd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="3_fcd+remill.html">fcd+remill</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_McSema.html">McSema</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">McSema</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_libbeauty.html">libbeauty</a></li>
 </ul>
 </li>
@@ -143,13 +143,13 @@
         
           <li><a href="index.html">Binary Lifting</a> &raquo;</li>
         
-      <li>fcd</li>
+      <li>McSema</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/4_BinaryLifting/2_fcd.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/4_BinaryLifting/4_McSema.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -162,33 +162,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="fcd">
-<h1>fcd<a class="headerlink" href="#fcd" title="Permalink to this headline">¶</a></h1>
-<dl class="docutils">
-<dt>First Impression</dt>
-<dd>fcd was a “bachelor’s project” (capstone…?) for a single person a few years
-ago. Because of this, I question the quality of it. However, it is still being
-maintained and appears to be in decent working order. I also love that the main
-issue that he seems to be facing is the exact issue that we are trying to solve
-with out project. FCD is also an entire compiler that uses llvm, which means we
-may be able to use it for both the bin =&gt; llvm and the llvm =&gt; c portions of our
-project.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Building fcd</dt>
-<dd>fcd was much easier to build than many other projects. It was a little hard to find
-the instructions, but once I did, it built in way less time than llvm-mctoll and
-other projects I have looked at. This is mostly because it does not depend on llvm
-and clang source like other projects often due. I would much prefer to use a project
-of this style than part of an llvm toolset.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>What is produced</dt>
-<dd>Unsure of the quality at this time as it is difficult to inspect the intermediate
-statges.</dd>
-</dl>
+  <div class="section" id="mcsema">
+<h1>McSema<a class="headerlink" href="#mcsema" title="Permalink to this headline">¶</a></h1>
+<p>McSema is one of the most robust tools I found. Because it is funded by DARPA and has
+been around for awhile, I also believe it is likely to continue to be supported. Building
+it is not possible on WSL Ubuntu. It might be possible to build it in a VM / seperate
+install and still use the compiled binary. We could also use the docker image, but this
+would require a change in the way we have configured our project (Travis and venv would
+be different).</p>
 </div>
 
 
@@ -199,10 +180,10 @@ statges.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="3_fcd+remill.html" class="btn btn-neutral float-right" title="fcd+remill" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="5_libbeauty.html" class="btn btn-neutral float-right" title="libbeauty" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="1_llvm-mctoll.html" class="btn btn-neutral" title="llvm-mctoll" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="3_fcd+remill.html" class="btn btn-neutral" title="fcd+remill" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

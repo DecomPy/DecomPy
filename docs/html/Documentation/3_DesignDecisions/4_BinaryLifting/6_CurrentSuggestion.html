@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fcd &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Current Suggestion &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="fcd+remill" href="3_fcd+remill.html" />
-    <link rel="prev" title="llvm-mctoll" href="1_llvm-mctoll.html" /> 
+    <link rel="prev" title="libbeauty" href="5_libbeauty.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -86,10 +85,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Binary Lifting</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="1_llvm-mctoll.html">llvm-mctoll</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">fcd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_fcd.html">fcd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="3_fcd+remill.html">fcd+remill</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_McSema.html">McSema</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_libbeauty.html">libbeauty</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Current Suggestion</a></li>
 </ul>
 </li>
 </ul>
@@ -143,13 +143,13 @@
         
           <li><a href="index.html">Binary Lifting</a> &raquo;</li>
         
-      <li>fcd</li>
+      <li>Current Suggestion</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/4_BinaryLifting/2_fcd.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/4_BinaryLifting/6_CurrentSuggestion.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -162,33 +162,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="fcd">
-<h1>fcd<a class="headerlink" href="#fcd" title="Permalink to this headline">¶</a></h1>
-<dl class="docutils">
-<dt>First Impression</dt>
-<dd>fcd was a “bachelor’s project” (capstone…?) for a single person a few years
-ago. Because of this, I question the quality of it. However, it is still being
-maintained and appears to be in decent working order. I also love that the main
-issue that he seems to be facing is the exact issue that we are trying to solve
-with out project. FCD is also an entire compiler that uses llvm, which means we
-may be able to use it for both the bin =&gt; llvm and the llvm =&gt; c portions of our
-project.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Building fcd</dt>
-<dd>fcd was much easier to build than many other projects. It was a little hard to find
-the instructions, but once I did, it built in way less time than llvm-mctoll and
-other projects I have looked at. This is mostly because it does not depend on llvm
-and clang source like other projects often due. I would much prefer to use a project
-of this style than part of an llvm toolset.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>What is produced</dt>
-<dd>Unsure of the quality at this time as it is difficult to inspect the intermediate
-statges.</dd>
-</dl>
+  <div class="section" id="current-suggestion">
+<h1>Current Suggestion<a class="headerlink" href="#current-suggestion" title="Permalink to this headline">¶</a></h1>
+<p>Out of the options that I have built so far, I believe llvm-mctoll
+is the best fit to our current vision of the project and would be
+the easiest to integrate. That being said, if the sponsor agrees,
+I believe that integrating with fcd (or fcd+remill) would accelerate
+our progress quite a bit and that it would much better prove our
+original aim. The larget issue that fcd is facing, for example,
+is exactly the issue that we are trying to fix.</p>
+<p>The below is an excerpt from fcd’s github.io page which describes
+the main issue with fcd.</p>
+<p>Another problem is that some conditions can become quite obtuse: for instance, jg (“jump if greater than”) tests that the zero flag isn’t set and that the sign flag is equal to the overflow flag. The instruction is usually used after cmp or sub, but because of the code they use to set flags, without post-processing, conditions would usually end up looking like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&amp;</span> <span class="mi">9223372036854775808</span><span class="p">)</span> <span class="o">==</span> <span class="p">(((</span><span class="n">b</span> <span class="o">^</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">b</span> <span class="o">^</span> <span class="n">a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">9223372036854775808</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>which is arguably less readable than:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There is post-processing code to make it look prettier, and it often works, but the current output is still often not ideal.
+Other problems have relatively simple solutions that have simply not been implemented yet.</p>
 </div>
 
 
@@ -199,10 +194,8 @@ statges.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="3_fcd+remill.html" class="btn btn-neutral float-right" title="fcd+remill" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="1_llvm-mctoll.html" class="btn btn-neutral" title="llvm-mctoll" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="5_libbeauty.html" class="btn btn-neutral" title="libbeauty" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
