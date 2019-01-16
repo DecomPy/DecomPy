@@ -1,6 +1,8 @@
 # DecomPy
 SER 401 Team 8- Adaptive Machine Learning Decompiler
 
+<img src="Logo.png" width="500">
+
 ### Prerequisites
 * This project is intended to run on Ubuntu 16.04
 * It should run in Windows Ubuntu WSL for those using Windows.

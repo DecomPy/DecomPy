@@ -82,7 +82,6 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
 </ul>
 
@@ -253,9 +252,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filters a list of repositories</span>
 
-<span class="sd">        :param unfiltered_repos: The list of Unfiltered repositories</span>
+<span class="sd">        :param unfiltered_repos: The list of unfiltered repositories</span>
 <span class="sd">        :tpye: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_repo</span><span class="p">,</span> <span class="n">unfiltered_repos</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="RepoFilter.offline_filtered_list"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.offline_filtered_list">[docs]</a>    <span class="k">def</span> <span class="nf">offline_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">unfiltered_repos</span><span class="p">):</span>

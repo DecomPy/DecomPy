@@ -77,7 +77,6 @@ class WebNavigator:
 
         :param link: An absolute URL
         :return: list of visible text
-        :return list of str
         """
         def visible(element):
             if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
@@ -117,10 +116,9 @@ class WebNavigator:
 
         :param links A set of absolute links
         :type links: set of strings
-        :param str domain: The domain used to filter the links. Should be of form example.com
-        (not of www.google.com or https://www.example.com)
+        :param str domain: The domain used to filter the links. Should be of form example.com (not of www.google.com or https://www.example.com)
+        
         :return: A filtered set of links
-        :return: set of strings
         """
         domainRegex = re.compile("%s/" % domain)
         return set(filter(domainRegex.search, absoluteLinks))

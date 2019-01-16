@@ -23,17 +23,15 @@ class Clang:
         Stores this file in the specified location and lists the new file in
         the output file. If this is being used to filter the input file and
         if the C file successfully compiles it will be entered in the filter file
-
         :param file_in: File with list of C file names to compile
         :param outfile: If the file is successfully compiled, the output
-        file is listed in this file
+            file is listed in this file
         :param newlocation: location to save LLVM files to
         :param output_type: the type that the file must be compiled to, such as
-         "elf'
+            "elf'
         :param filter_file: If the file is successfully compiled, the name of
-         the C file is listed in this file
+            the C file is listed in this file
         :param args: Arguments for the compiler to use while compiling
-        :return:
         """
 
         file_name = Path(file_in).stem
@@ -43,14 +41,14 @@ class Clang:
         relative_path = os.path.splitext(file_in)[0]
 
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
-        command = "clang -Wno-everything " + file_in + " " + args + " -o " +\
+        command = "clang -Wno-everything " + file_in + " " + args + " -o " + \
                   file_out
-        result = subprocess.run(command, shell=True).returncode  #, check=True)
+        result = subprocess.run(command, shell=True).returncode  # , check=True)
 
         json_file_path = os.path.dirname(location_path) + "/repo.json"
 
         if result == 0:
-            outfile.write(relative_path+output_type + "\n")
+            outfile.write(relative_path + output_type + "\n")
 
             # save date into json
             if os.path.isfile(json_file_path):
@@ -82,17 +80,13 @@ class Clang:
         specified args. Stores these files in the specified location and lists
         the new files in the output file. If this is being used to filter the
         input files, the C files that successfully compile will be entered in.
-
         :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output
-        file is listed in this file
+        :param output_file: If the file is successfully compiled, the output file
+            is listed in this file
         :param newlocation: location to save LLVM files to
-        :param out_type: the type that the file must be compiled to, such as
-         "elf'
-        :param filter_file: If the file is successfully compiled, the name of
-         the C file is listed in this file
+        :param out_type: the type that the file must be compiled to, such as "elf"
+        :param filter_file: If the file is successfully compiled, the name of the C file is listed in this file
         :param args: Arguments for the compiler to use while compiling
-        :return:
         """
 
         # check if file exists
@@ -135,12 +129,10 @@ class Clang:
         """
         compiles all C files listed in the input file to x86 assembly.
         Writes the name of successful files to output file.
-
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
-        file is listed in this file
+            file is listed in this file
         :param newlocation: location to save assembly files to
-        :return:
         """
         args = "-S -masm=intel"
         out_type = "-assembly.asm"
@@ -152,29 +144,25 @@ class Clang:
         compiles all C files listed in the input file to elf executables.
         Writes the name of successful files to output file. Writes the name of
         successful C files to filter file.
-
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
-        file is listed in this file
+            file is listed in this file
         :param newlocation: location to save LLVM files to
         :param filter_file: If the file is successfully compiled, the name of
-         the C file is listed in this file
-        :return:
+            the C file is listed in this file
         """
         out_type = "-elf.elf"
         Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file)
 
     @staticmethod
-    def to_llvm_opt(input_file, output_file, newlocation, optlevel = ""):
+    def to_llvm_opt(input_file, output_file, newlocation, optlevel=""):
         """
         compiles all C files listed in the input file to optimized LLVM IR, at
         the specified opt level. Writes the name of successful files to output file
-
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
-        file is listed in this file
+            file is listed in this file
         :param newlocation: location to save LLVM files to
-        :return:
         """
         args = "-S -emit-llvm " + optlevel
         out_type = "-opt.ll"
@@ -185,12 +173,10 @@ class Clang:
         """
         compiles all C files listed in the input file to unoptimized LLVM IR.
         Writes the name of successful files to output file.
-
         :param input_file: File with list of C file names to compile
         :param output_file: If the file is successfully compiled, the output
-        file is listed in this file
+            file is listed in this file
         :param newlocation: location to save LLVM files to
-        :return:
         """
         args = "-O1 -Xclang -disable-llvm-passes -S -emit-llvm"
         out_type = "-unopt.ll"

@@ -82,7 +82,6 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
 </ul>
 
@@ -151,7 +150,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 
 
-<div class="viewcode-block" id="Clang"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang">[docs]</a><span class="k">class</span> <span class="nc">Clang</span><span class="p">:</span>
+<div class="viewcode-block" id="Clang"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang">[docs]</a><span class="k">class</span> <span class="nc">Clang</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to define functions for calling the Clang compiler</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -162,24 +161,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="Clang.compile_cfile"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang.compile_cfile">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Clang.compile_cfile"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.compile_cfile">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">compile_cfile</span><span class="p">(</span><span class="n">file_in</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">output_type</span><span class="p">,</span> <span class="n">filter_file</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compiles the specified C file with Clang, using the specified args.</span>
 <span class="sd">        Stores this file in the specified location and lists the new file in</span>
 <span class="sd">        the output file. If this is being used to filter the input file and</span>
 <span class="sd">        if the C file successfully compiles it will be entered in the filter file</span>
-
+<span class="sd">        </span>
 <span class="sd">        :param file_in: File with list of C file names to compile</span>
 <span class="sd">        :param outfile: If the file is successfully compiled, the output</span>
-<span class="sd">        file is listed in this file</span>
+<span class="sd">            file is listed in this file</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        :param output_type: the type that the file must be compiled to, such as</span>
-<span class="sd">         &quot;elf&#39;</span>
+<span class="sd">            &quot;elf&#39;</span>
 <span class="sd">        :param filter_file: If the file is successfully compiled, the name of</span>
-<span class="sd">         the C file is listed in this file</span>
+<span class="sd">            the C file is listed in this file</span>
 <span class="sd">        :param args: Arguments for the compiler to use while compiling</span>
-<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">file_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_in</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span>
@@ -188,133 +186,118 @@
         <span class="n">file_out</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">location_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_name</span> <span class="o">+</span> <span class="n">output_type</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
         <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;clang -Wno-everything &quot;</span> <span class="o">+</span> <span class="n">file_in</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">args</span> <span class="o">+</span> <span class="s2">&quot; -o &quot;</span> <span class="o">+</span>\
                   <span class="n">file_out</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">returncode</span>  <span class="c1">#, check=True)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">returncode</span> <span class="c1">#, check=True)</span>
 
         <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_out</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">filter_file</span><span class="p">:</span>
                 <span class="n">filter_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_in</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Clang.compile_all"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang.compile_all">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Clang.compile_all"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.compile_all">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">filter_file</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compiles all C files listed in the input file with Clang, using the</span>
 <span class="sd">        specified args. Stores these files in the specified location and lists</span>
 <span class="sd">        the new files in the output file. If this is being used to filter the</span>
-<span class="sd">        input files, the C files that successfully compile will be entered in.</span>
-
+<span class="sd">        input files, the C files that successfully compile will be entered in</span>
+<span class="sd">        </span>
 <span class="sd">        :param input_file: File with list of C file names to compile</span>
-<span class="sd">        :param output_file: If the file is successfully compiled, the output</span>
-<span class="sd">        file is listed in this file</span>
+<span class="sd">        :param output_file: If the file is successfully compiled, the output file</span>
+<span class="sd">            is listed in this file</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
-<span class="sd">        :param out_type: the type that the file must be compiled to, such as</span>
-<span class="sd">         &quot;elf&#39;</span>
-<span class="sd">        :param filter_file: If the file is successfully compiled, the name of</span>
-<span class="sd">         the C file is listed in this file</span>
+<span class="sd">        :param out_type: the type that the file must be compiled to, such as &quot;elf&quot;</span>
+<span class="sd">        :param filter_file: If the file is successfully compiled, the name of the C file is listed in this file</span>
 <span class="sd">        :param args: Arguments for the compiler to use while compiling</span>
-<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># check if file exists</span>
-        <span class="n">input_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="n">file_of_cfiles</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
-        <span class="c1"># check if my file exists</span>
-        <span class="k">if</span> <span class="n">input_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">file_of_cfiles</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">location_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">newlocation</span><span class="p">)</span>
 
-            <span class="n">location_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">newlocation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">location_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">location_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
 
-            <span class="c1"># creates new directory if one does not exist.</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">location_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-                <span class="n">location_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
-
-            <span class="n">outpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">outpath</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">)</span>
-
-            <span class="n">filteredC</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">filter_file</span><span class="p">:</span>
-                <span class="n">filteredC</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filter_file</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">filteredC</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                    <span class="n">filteredC</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filter_file</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">filteredC</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filter_file</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">cfile</span> <span class="ow">in</span> <span class="n">file_of_cfiles</span><span class="p">:</span>
-                <span class="n">cfile</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-                <span class="n">Clang</span><span class="o">.</span><span class="n">compile_cfile</span><span class="p">(</span><span class="n">cfile</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span>
-                                    <span class="n">filter_file</span><span class="o">=</span><span class="n">filteredC</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
-            <span class="n">file_of_cfiles</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">outpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">outpath</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File not Found&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span></div>
+            <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Clang.to_assembly"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang.to_assembly">[docs]</a>    <span class="nd">@staticmethod</span>
+        <span class="n">filteredC</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">filter_file</span><span class="p">:</span>
+            <span class="n">filteredC</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filter_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">filteredC</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">filteredC</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filter_file</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">filteredC</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filter_file</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cfile</span> <span class="ow">in</span> <span class="n">file_of_cfiles</span><span class="p">:</span>
+            <span class="n">cfile</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+            <span class="n">Clang</span><span class="o">.</span><span class="n">compile_cfile</span><span class="p">(</span><span class="n">cfile</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span>
+                                <span class="n">filter_file</span><span class="o">=</span><span class="n">filteredC</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">file_of_cfiles</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Clang.to_assembly"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_assembly">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_assembly</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compiles all C files listed in the input file to x86 assembly.</span>
-<span class="sd">        Writes the name of successful files to output file.</span>
-
+<span class="sd">        Writes the name of successful files to output file</span>
+<span class="sd">        </span>
 <span class="sd">        :param input_file: File with list of C file names to compile</span>
 <span class="sd">        :param output_file: If the file is successfully compiled, the output</span>
-<span class="sd">        file is listed in this file</span>
+<span class="sd">            file is listed in this file</span>
 <span class="sd">        :param newlocation: location to save assembly files to</span>
-<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;-S -masm=intel&quot;</span>
         <span class="n">out_type</span> <span class="o">=</span> <span class="s2">&quot;-assembly.asm&quot;</span>
         <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Clang.to_elf"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang.to_elf">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Clang.to_elf"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_elf">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_elf</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">filter_file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compiles all C files listed in the input file to elf executables.</span>
 <span class="sd">        Writes the name of successful files to output file. Writes the name of</span>
-<span class="sd">        successful C files to filter file.</span>
-
+<span class="sd">        successful C files to filter file</span>
+<span class="sd">        </span>
 <span class="sd">        :param input_file: File with list of C file names to compile</span>
 <span class="sd">        :param output_file: If the file is successfully compiled, the output</span>
-<span class="sd">        file is listed in this file</span>
+<span class="sd">            file is listed in this file</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        :param filter_file: If the file is successfully compiled, the name of</span>
-<span class="sd">         the C file is listed in this file</span>
-<span class="sd">        :return:</span>
+<span class="sd">            the C file is listed in this file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out_type</span> <span class="o">=</span> <span class="s2">&quot;-elf.elf&quot;</span>
         <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">filter_file</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Clang.to_llvm_opt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang.to_llvm_opt">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Clang.to_llvm_opt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_opt">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_llvm_opt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">optlevel</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compiles all C files listed in the input file to optimized LLVM IR, at</span>
 <span class="sd">        the specified opt level. Writes the name of successful files to output file</span>
-
+<span class="sd">        </span>
 <span class="sd">        :param input_file: File with list of C file names to compile</span>
 <span class="sd">        :param output_file: If the file is successfully compiled, the output</span>
-<span class="sd">        file is listed in this file</span>
+<span class="sd">            file is listed in this file</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
-<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;-S -emit-llvm &quot;</span> <span class="o">+</span> <span class="n">optlevel</span>
         <span class="n">out_type</span> <span class="o">=</span> <span class="s2">&quot;-opt.ll&quot;</span>
-        <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span></div>
+        <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Clang.to_llvm_unopt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.Clang.to_llvm_unopt">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Clang.to_llvm_unopt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_unopt">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_llvm_unopt</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compiles all C files listed in the input file to unoptimized LLVM IR.</span>
-<span class="sd">        Writes the name of successful files to output file.</span>
-
+<span class="sd">        Writes the name of successful files to output file</span>
+<span class="sd">        </span>
 <span class="sd">        :param input_file: File with list of C file names to compile</span>
 <span class="sd">        :param output_file: If the file is successfully compiled, the output</span>
-<span class="sd">        file is listed in this file</span>
+<span class="sd">            file is listed in this file</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
-<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;-O1 -Xclang -disable-llvm-passes -S -emit-llvm&quot;</span>
         <span class="n">out_type</span> <span class="o">=</span> <span class="s2">&quot;-unopt.ll&quot;</span>
-        <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span></div></div>
+        <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
