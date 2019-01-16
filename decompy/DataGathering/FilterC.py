@@ -163,7 +163,6 @@ class FilterC:
 
         # if no folder exists, then return file does not exist.
         if not os.path.exists(folder):
-            print("Folder or File Does Not Exist.")
             return False
 
         #  walk recursively in given folder
@@ -187,7 +186,7 @@ class FilterC:
 
                                 # checks for valid data, compile, then adds to meta.
                                 if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
-                                                            whitelisted, blacklisted): # used to compile here.
+                                                            whitelisted, blacklisted):  # used to compile here.
 
                                     # create file if it does not exist
                                     if not os.path.exists(new_file):
@@ -220,10 +219,11 @@ class FilterC:
                                         with open(json_path, "r") as json_file:
                                             json_data = json.load(json_file)
 
-                                        # TODO: compare dates?
-                                        # if "filter_approval_date" not in json_data["filter_approval_date"]:
-                                            # set new time
-                                        json_data["filter_approval_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                                        # update time if it's different
+                                        now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                                        if "filter_approval_date" not in json_data["filter_approval_date"] or \
+                                                json_data["filter_approval_date"] is not now_minute:
+                                            json_data["filter_approval_date"] = now_minute
 
                                         with open(json_path, "w") as json_file:
                                             json.dump(json_data, json_file)

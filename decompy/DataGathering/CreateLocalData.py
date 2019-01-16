@@ -43,14 +43,14 @@ class CreateLocalData:
         :param end_page: where to end the page (end page) default is 2.
         :return:
         """
-        self.rf.offline_results(self.repo_json_name, start_page, end_page)  # gather the data and store into the json for later use
+        self.rf.offline_results(self.repo_json_name, start_page, end_page)  # gather the data and store into json
         repos = self.rf.offline_read_json(self.repo_json_name)  # read the json data
         self.rf.offline_filtered_list(self.repo_json_filtered_name, repos)  # filter the offline results
         self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)  # read into our filtered repos
 
         self.rs.batch_format(self.filtered_repos, datetime.datetime.now())  # batch current date and filtered_repos
 
-    def stage2_get_repos(self):
+    def stage2_get_repos(self, test):
         """
         stage 2 of the data gathering process: Scrape all the files from GitHub from the given offline json file.
         :return:
@@ -58,12 +58,19 @@ class CreateLocalData:
         if not self.filtered_repos:  # if we have repos, then sort through each rep in our json
             self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)
 
-        if self.filtered_repos:
-            for repo in self.filtered_repos:
+        # test cases
+        if test is not None:
+            # get the smallest amount
+            if test > self.filtered_repos:
+                test = self.filtered_repos
+
+            for repo in test:
                 url = repo["url"]  # grab the url from the json to download zip into our destinated folder
                 FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
         else:
-            print("Cannot find file: " + self.repo_json_filtered_name)
+            for repo in self.filtered_repos:
+                url = repo["url"]  # grab the url from the json to download zip into our destinated folder
+                FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
 
     def stage3_filter_file(self):
         """

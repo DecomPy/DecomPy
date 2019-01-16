@@ -57,7 +57,7 @@ class Clang:
                 with open(json_file_path, "r") as json_file:
                     json_data = json.load(json_file)
 
-                now = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                now = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
 
                 # get new time if it's not already there
                 # if "llvm_gen_date" not in json_data["llvm_gen_date"] or "compilation_date" not in json_data["compilation_date"]\

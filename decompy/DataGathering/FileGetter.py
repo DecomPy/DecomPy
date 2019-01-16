@@ -61,7 +61,7 @@ class FileGetter:
                 json_data = json.load(json_file)
 
             # new date
-            json_data["master_download_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            json_data["master_download_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
 
             with open(file_path, "w") as jsonFile:
                 json.dump(json_data, jsonFile)
