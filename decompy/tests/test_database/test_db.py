@@ -11,14 +11,20 @@ class DatabaseTest(unittest.TestCase):
         self.db_test = db("c_source", True)
 
         # new element
-        self.assertTrue(self.db_test.insert_ml("test4.c", "c_tutorials4", "source codes 4", "blobby4", "llvm_unop4", "llvm_op4"))
+        ml_tuple1 = ("test4.c", "c_tutorials4", "source codes 4", "blobby4", "llvm_unop4", "llvm_op4")
+        self.assertTrue(self.db_test.insert_ml(ml_tuple1))
+
         # new element
-        self.assertTrue(self.db_test.insert_ml("test2.c", "c_tutorials2", "source codes 2", "blobby2", "llvm_unop2", "llvm_op2"))
+        ml_tuple2 = ("test2.c", "c_tutorials2", "source codes 2", "blobby2", "llvm_unop2", "llvm_op2")
+        self.assertTrue(self.db_test.insert_ml(ml_tuple2))
+
         # new element
-        self.assertTrue(self.db_test.insert_ml("test5.c", "c_tutorials100", "source codes 5", "blobby100", "llvm_unop100", "llvm_op100"))
+        ml_tuple3 = ("test5.c", "c_tutorials100", "source codes 5", "blobby100", "llvm_unop100", "llvm_op100")
+        self.assertTrue(self.db_test.insert_ml(ml_tuple3))
+
         # new element
-        self.assertTrue(self.db_test.insert_ml("test6.c", "c_tutorials100", "source codes 6", "blobby101", "llvm_unop101",
-                                               "llvm_op101"))
+        ml_tuple4 = ("test6.c", "c_tutorials100", "source codes 6", "blobby101", "llvm_unop101", "llvm_op101")
+        self.assertTrue(self.db_test.insert_ml(ml_tuple4))
 
     def test_create_table(self):
         """
@@ -26,16 +32,17 @@ class DatabaseTest(unittest.TestCase):
         :return: assert
         """
         table = """CREATE TABLE IF NOT EXISTS meta_table (
-           repo_name text PRIMARY KEY,
-           license text,
-           url text UNIQUE,
-           author text,
-           filter_approval_date date,
-           llvm_gen_date date,
-           filter_date date,
-           compilation_date date,
-           master_download_date date
-        );"""
+                    author_repo_key text PRIMARY KEY NOT NULL,
+                    repo_name text NOT NULL,
+                    license text,
+                    url text UNIQUE,
+                    author text NOT NULL,
+                    filter_approval_date date NOT NULL,
+                    llvm_gen_date date NOT NULL,
+                    filter_date date NOT NULL,
+                    compilation_date date NOT NULL,
+                    master_download_date date NOT NULL
+            );"""
 
         self.assertTrue(self.db_test.create_table(table))  # doesn't create table, but knows about it, no errors
 
@@ -57,17 +64,24 @@ class DatabaseTest(unittest.TestCase):
         master_download_date = "2018-11-15"
 
         # insert meta
-        self.assertTrue(self.db_test.insert_meta(repo_name, repo_license, url, author, filter_approval_date,
-                                                 llvm_gen_date, filter_date, compilation_date, master_download_date))
+        meta_tuple1 = (repo_name, repo_license, url, author, filter_approval_date,
+                       llvm_gen_date, filter_date, compilation_date, master_download_date)
+        self.assertTrue(self.db_test.insert_meta, meta_tuple1)
+
         # insert meta, already exists, replace
-        self.assertTrue(self.db_test.insert_meta(repo_name, repo_license, url, author, filter_approval_date,
-                                                   llvm_gen_date, filter_date, compilation_date, master_download_date))
+        meta_tuple2 = (repo_name, repo_license, url, author, filter_approval_date,
+                       llvm_gen_date, filter_date, compilation_date, master_download_date)
+        self.assertTrue(self.db_test.insert_meta(meta_tuple2))
+
         # insert meta, new url
-        self.assertTrue(self.db_test.insert_meta("decompy1", repo_license, "github.com/stuff1", author,
-                                                 filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date))
+        meta_tuple3 = ("decompy1", repo_license, "github.com/stuff1", author,
+                       filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
+        self.assertTrue(self.db_test.insert_meta(meta_tuple3))
+
         # insert meta same url, diff repo_name
-        self.assertTrue(self.db_test.insert_meta("decompy2", repo_license, "github.com/stuff2", author,
-                                                 filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date, True))
+        meta_tuple4 = ("decompy2", repo_license, "github.com/stuff2", author,filter_approval_date,
+                       llvm_gen_date, filter_date, compilation_date, master_download_date, True)
+        self.assertTrue(self.db_test.insert_meta(meta_tuple4))
 
     def test_insert_ml(self):
         """
@@ -83,17 +97,21 @@ class DatabaseTest(unittest.TestCase):
         llvm_op = "stuff_op"
 
         # new element
-        self.assertTrue(self.db_test.insert_ml(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op))
+        ml_tuple1 = (file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+        self.assertTrue(self.db_test.insert_ml(ml_tuple1))
 
         # new element, but it's same
         # replaces element
-        self.assertTrue(self.db_test.insert_ml(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op))
+        ml_tuple2 = (file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+        self.assertTrue(self.db_test.insert_ml(ml_tuple2))
 
         # new element
-        self.assertTrue(self.db_test.insert_ml("test1.c", "c_tutorials1", "source codes 1", "blobby1", "llvm_unop1", "llvm_op1"))
+        ml_tuple3 = ("test1.c", "c_tutorials1", "source codes 1", "blobby1", "llvm_unop1", "llvm_op1")
+        self.assertTrue(self.db_test.insert_ml(ml_tuple3))
 
         # new element
-        self.assertTrue(self.db_test.insert_ml("test3.c", "c_tutorials2", "source codes 3", "blobby3", "llvm_unop3", "llvm_op3", True))
+        ml_tuple4 = ("test3.c", "c_tutorials2", "source codes 3", "blobby3", "llvm_unop3", "llvm_op3")
+        self.assertTrue(self.db_test.insert_ml(ml_tuple4, True))
 
     def test_find_repo(self):
         """
