@@ -23,7 +23,8 @@ class test_ClangSubprocessTest(unittest.TestCase):
         """
         Initializes
         """
-        self.inputC = Path(test_ClangSubprocessTest.inputCName, 'w+')
+        self.inputC = Path(test_ClangSubprocessTest.inputCName)
+        self.inputC.touch()
 
     @classmethod
     def tearDown(self):
@@ -31,7 +32,7 @@ class test_ClangSubprocessTest(unittest.TestCase):
 
         :return:
         """
-        test_ClangSubprocessTest.inputC.unlink()
+        self.inputC.unlink()
 
     def test_empty_input_file(self):
         """
@@ -41,17 +42,13 @@ class test_ClangSubprocessTest(unittest.TestCase):
         """
         self.inputC.write_text("\n")
         with self.assertRaises(Clang.NoInputFileException):
-            Clang.Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
-                                    test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_assembly(self.inputCName, self.outputAssemName, self.outputFolder)
         with self.assertRaises(Clang.NoInputFileException):
-            Clang.Clang.to_elf(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputElfName,
-                               test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_elf(self.inputCName, self.outputElfName, self .outputFolder, self.outputCompile)
         with self.assertRaises(Clang.NoInputFileException):
-            Clang.Clang.to_llvm_opt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMUnoptName,
-                                    test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_llvm_opt(self.inputCName, self.outputLLVMUnoptName, self.outputFolder)
         with self.assertRaises(Clang.NoInputFileException):
-            Clang.Clang.to_llvm_unopt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMOptName,
-                                      test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_llvm_unopt(self.inputCName, self.outputLLVMOptName, self.outputFolder)
 
     def test_c_file_not_exist(self):
         """
@@ -60,20 +57,25 @@ class test_ClangSubprocessTest(unittest.TestCase):
         """
         self.inputC.write_text("not_exist.c")
         with self.assertRaises(Clang.FileDoesNotExistException):
-            Clang.Clang.to_assembly(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputAssemName,
-                                    test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_assembly(self.inputCName, self.outputAssemName, self.outputFolder)
         with self.assertRaises(Clang.FileDoesNotExistException):
-            Clang.Clang.to_elf(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputElfName,
-                               test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_elf(self.inputCName, self.outputElfName, self.outputFolder, self.outputCompile)
         with self.assertRaises(Clang.FileDoesNotExistException):
-            Clang.Clang.to_llvm_opt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMUnoptName,
-                                    test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_llvm_opt(self.inputCName, self.outputLLVMUnoptName, self.outputFolder)
         with self.assertRaises(Clang.FileDoesNotExistException):
-            Clang.Clang.to_llvm_unopt(test_ClangSubprocessTest.inputCName, test_ClangSubprocessTest.outputLLVMOptName,
-                                      test_ClangSubprocessTest.outputFolder)
+            Clang.Clang.to_llvm_unopt(self.inputCName, self.outputLLVMOptName, self.outputFolder)
 
     def test_c_file_exists(self):
         """
 
         :return:
         """
+        self.inputC.write_text("does_exist.c")
+        Clang.Clang.to_assembly(self.inputCName, self.outputAssemName, self.outputFolder)
+        self.assertTrue(Path("./outFolder/does_exist-assembly.asm").exists())
+        Clang.Clang.to_elf(self.inputCName, self.outputElfName, self.outputFolder, self.outputCompile)
+        self.assertTrue(Path("./outFolder/does_exist-elf.elf").exists())
+        Clang.Clang.to_llvm_opt(self.inputCName, self.outputLLVMUnoptName, self.outputFolder)
+        self.assertTrue(Path("./outFolder/does_exist-opt.ll").exists())
+        Clang.Clang.to_llvm_unopt(self.inputCName, self.outputLLVMOptName, self.outputFolder)
+        self.assertTrue(Path("./outFolder/does_exist-unopt.ll").exists())
