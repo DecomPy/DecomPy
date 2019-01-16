@@ -93,9 +93,9 @@ class CreateLocalData:
 
                         # check if file exists or wasting time
                         if my_file.exists():
-                            Clang.to_object_file(file, compiled_file_path, cwd+"/"+base_root+"/Object")  # compile object file optimized
-                            Clang.to_llvm_opt(file, compiled_file_path, folder)  # compile optimized
-                            Clang.to_llvm_unopt(file, compiled_file_path, folder)  # compile unoptimized
+                            Clang.to_object_file(file, compiled_file_path, cwd+"/"+base_root+"/Object")  # compile .o
+                            Clang.to_llvm_opt(file, compiled_file_path, folder)  # compile optimized llvm
+                            Clang.to_llvm_unopt(file, compiled_file_path, folder)  # compile unoptimized llvm
 
                         else:
                             print("Stage 4: filtered_list.META does not exist in this directory. Exiting folder...") # comment out if you want
@@ -118,8 +118,8 @@ class CreateLocalData:
                 # look for filtered file and LLVM
                 for basename in files:
 
-                    # filtered_list.META data
-                    if basename == "compiled.META":
+                    # make sure we have compiled data, compiled.META file
+                    if basename == "filtered_list.META":
                         # get this cwd
                         cwd = root
                         with open(cwd+"/"+basename, "r") as f:
@@ -140,21 +140,43 @@ class CreateLocalData:
                                     o_file_path = cwd + "/Object/" + filename + ".o"
                                     o_path = Path(o_file_path)
 
-                                    c_file = line.replace("\n", "")
-                                    repo_name = cwd.rsplit('/', 1)[-1]
+                                    c_file_path = line.replace("\n", "")
 
-                                    if llvm_op_path.exists() and llvm_unop_path.exists():
+                                    # full repo path from the file path
+                                    full_repo_path = cwd.rsplit('/', 1)[-1]
+
+                                    repo_name = full_repo_path.rsplit('-', 1)[1]
+
+                                    # open files to read from
+                                    if llvm_op_path.exists() and llvm_unop_path.exists() and o_path.exists():
+
+                                        # read object file
+                                        with open(o_file_path, "rb") as object_f:
+                                            object_data = object_f.read()
+
                                         # change to llvm directory and search for file that ends with .c
-                                        with open(llvm_op_path, "r") as llvm_op_f:
+                                        with open(llvm_op_file_path, "r") as llvm_op_f:
                                             llvm_op_data = llvm_op_f.read()
-                                            # llvm_op_data = llvm_op_data.replace("0x", "hex_value")
 
-                                        with open(cwd + "/LLVM/" + filename + "-unopt.ll", "r") as llvm_unop_f:
+                                        # read unop file
+                                        with open(llvm_unop_file_path, "r") as llvm_unop_f:
                                             llvm_unop_data = llvm_unop_f.read()
 
-                                        with open(c_file, "r") as cf:
+                                        # read c file path
+                                        with open(c_file_path, "r") as cf:
                                             c_data = cf.read()
-                                            self.db.insert_ml(c_file, repo_name, c_data, o_path, llvm_unop_data, llvm_op_data, True)
+
+                                        # insert ml tuple
+                                        ml_tuple = (c_file_path, full_repo_path, c_data, object_data, llvm_unop_data,
+                                                    llvm_op_data)
+                                        self.db.insert_ml(ml_tuple, True)
+
+                                        # insert meta tuple
+                                        meta_tuple = (full_repo_path, repo_name, None,
+                                                      "https://github.com/"+full_repo_path.replace("-", "/"),
+                                                      full_repo_path.rsplit('-', 1)[0],
+                                                      False, False, False, False, False)
+                                        self.db.insert_meta(meta_tuple, True)
 
                             except Exception as e:
                                 print("opening myfile", e)
