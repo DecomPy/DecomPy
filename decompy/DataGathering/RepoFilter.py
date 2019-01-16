@@ -105,7 +105,7 @@ class RepoFilter:
         Filters a list of repositories
 
         :param unfiltered_repos: The list of unfiltered repositories
-        :tpye list
+        :tpye: list
         """
 
         return list(filter(self.filter_repo, unfiltered_repos))
