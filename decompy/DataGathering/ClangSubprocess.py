@@ -1,6 +1,8 @@
 import subprocess
 import os
 from pathlib import Path
+import json
+import datetime
 
 
 class Clang:
@@ -45,8 +47,32 @@ class Clang:
                   file_out
         result = subprocess.run(command, shell=True).returncode  #, check=True)
 
+        file_path = newlocation.rsplit('/', 1)[-1] + "/repo.json"
+        print(file_path)
+
         if result == 0:
             outfile.write(relative_path+output_type + "\n")
+
+            # save date into json
+            if os.path.isfile(file_path):
+                with open(file_path, "r") as json_file:
+                    json_data = json.load(json_file)
+
+                now = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+
+                # get new time if it's not already there
+                if "llvm_gen_date" not in json_data["llvm_gen_date"] or "compilation_date" not in json_data["compilation_date"]\
+                        or datetime.strptime(json_data["llvm_gen_date"]) < now:
+
+                    json_data["llvm_gen_date"] = now
+                    json_data["compilation_date"] = now
+
+                    with open(file_path, "w") as jsonFile:
+                        json.dump(json_data, jsonFile)
+
+            else:
+                print("File not found: " + file_path)
+
             if filter_file:
                 filter_file.write(file_in + "\n")
 

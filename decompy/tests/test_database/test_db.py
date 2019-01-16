@@ -74,12 +74,12 @@ class DatabaseTest(unittest.TestCase):
         self.assertTrue(self.db_test.insert_meta(meta_tuple2))
 
         # insert meta, new url
-        meta_tuple3 = ("decompy1", repo_license, "github.com/stuff1", author,
-                       filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)
+        meta_tuple3 = ("decompy1", repo_license, "github.com/stuff1", author,filter_approval_date,
+                       llvm_gen_date, filter_date, compilation_date, master_download_date)
         self.assertTrue(self.db_test.insert_meta(meta_tuple3))
 
         # insert meta same url, diff repo_name
-        meta_tuple4 = ("decompy2", repo_license, "github.com/stuff2", author,filter_approval_date,
+        meta_tuple4 = ("decompy2", repo_license, "github.com/stuff2", author, filter_approval_date,
                        llvm_gen_date, filter_date, compilation_date, master_download_date, True)
         self.assertTrue(self.db_test.insert_meta(meta_tuple4))
 
@@ -121,7 +121,6 @@ class DatabaseTest(unittest.TestCase):
 
         # search for repos and get all files with that repo
         # this is being deleted later on and may have conflicts due to pytest threading
-        # self.assertTrue(len(self.db_test.find_repo("decompy")) == 1)
         self.assertTrue(len(self.db_test.find_repo("c_tutorials4")) == 1)
         self.assertTrue(len(self.db_test.find_repo("c_tutorials100")) == 2)
 

@@ -35,6 +35,7 @@ import fileinput
 import requests
 import zipfile
 import io
+import json
 
 
 class FileGetter:
@@ -43,8 +44,9 @@ class FileGetter:
     @staticmethod
     def __update_meta(target_directory):
         """
-        Updates the download time in the META file to the current time in target directory
-        :param target_directory: Directory to update the META file
+        Updates the download time and popualtes it with any necessary info in the json file to the current
+        time in target directory.
+        :param target_directory: Directory to update the json file
         :return: Nothing
         """
 
@@ -52,31 +54,27 @@ class FileGetter:
         if not os.path.exists(target_directory):
             return
 
-        # Create config.META if it doesn't exist, place download timestamp there
-        if not (os.path.isfile(target_directory + "config.META")):
-            with open(os.path.join(target_directory, "config.META"), "w") as f:
-                f.write("File download timestamp: ")
-                f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
-        # Otherwise config.META does exist. Update the correct line
-        else:
-            update_time_stamp = False
-            for line in fileinput.input((os.path.join(target_directory, "config.META")), inplace=True):
-                if "File download timestamp: " in line:
-                    print("%s" % ("File download timestamp:" +
-                                  datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))),
-                    update_time_stamp = True
-                else:
-                    print("%s" % line),
-            if not update_time_stamp:
-                with open(os.path.join(target_directory, "config.META"), "a") as f:
-                    f.write("File download timestamp:")
-                    f.write(datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+        file_path = target_directory + "/repo.json"
+        try:
+            # parse json if it's there
+            with open(file_path, "r") as json_file:
+                json_data = json.load(json_file)
+
+            # new date
+            json_data["master_download_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+
+            with open(file_path, "w") as jsonFile:
+                json.dump(json_data, jsonFile)
+
+        except Exception as e:
+            print("File Not Found", e)
+
 
     @staticmethod
     def download_all_files(repo_urls, target_directories=None):
         """
         Handles the downloading of ZIP archives and extracting the appropriate files into the target directory.
-        :param repo_urls: list of URLs to repositories. URLs must be to the top level of the repositories
+        :param repo_urls: get the list of URLs to repositories. URLs must be to the top level of the repositories
         :param target_directories: File directory to store the files
         :return: Nothing
         """
@@ -106,7 +104,7 @@ class FileGetter:
                 os.mkdir(target_directory)
             if not os.path.exists(target_subdirectory):
                 os.mkdir(target_subdirectory)
-            print(target_subdirectory)
+            # print(target_subdirectory) shows the folder
 
             # Download the zip of the repository
             response = requests.get(repo_url + "/archive/master.zip")

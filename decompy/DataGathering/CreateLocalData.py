@@ -3,6 +3,7 @@ from decompy.database import db
 from pathlib import Path
 import datetime
 import os
+import json
 
 import codecs
 decode_hex = codecs.getdecoder("hex_codec")
@@ -143,9 +144,17 @@ class CreateLocalData:
                                     c_file_path = line.replace("\n", "")
 
                                     # full repo path from the file path
-                                    full_repo_path = cwd.rsplit('/', 1)[-1]
-
-                                    repo_name = full_repo_path.rsplit('-', 1)[1]
+                                    # read json info for dates
+                                    with open(c_file_path, "r") as jf:
+                                        json_data = json.load(jf)
+                                        repo_name = json_data["name"]
+                                        author = json_data["author"]
+                                        filter_date = json_data["filter_date"]
+                                        master_download_date = json_data["master_download_date"]
+                                        filter_approval_date = json_data["filter_approval_date"]
+                                        llvm_gen_date = json_data["llvm_gen_date"]
+                                        compilation_date = json_data["compilation_date"]
+                                        author_repo_key = author + "-" + repo_name
 
                                     # open files to read from
                                     if llvm_op_path.exists() and llvm_unop_path.exists() and o_path.exists():
@@ -167,15 +176,15 @@ class CreateLocalData:
                                             c_data = cf.read()
 
                                         # insert ml tuple
-                                        ml_tuple = (c_file_path, full_repo_path, c_data, object_data, llvm_unop_data,
+                                        ml_tuple = (c_file_path, author_repo_key, c_data, object_data, llvm_unop_data,
                                                     llvm_op_data)
                                         self.db.insert_ml(ml_tuple, True)
 
-                                        # insert meta tuple
-                                        meta_tuple = (full_repo_path, repo_name, None,
-                                                      "https://github.com/"+full_repo_path.replace("-", "/"),
-                                                      full_repo_path.rsplit('-', 1)[0],
-                                                      False, False, False, False, False)
+                                        # insert meta tuple TODO: get license..
+                                        meta_tuple = (author_repo_key, repo_name, None,
+                                                      "https://github.com/"+author+"/"+repo_name, author,
+                                                      filter_approval_date, llvm_gen_date, filter_date,
+                                                      compilation_date, master_download_date)
                                         self.db.insert_meta(meta_tuple, True)
 
                             except Exception as e:

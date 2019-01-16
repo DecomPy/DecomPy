@@ -33,7 +33,7 @@ class RepoStructure:
         name_string = repo_json["username"] + "-" + repo_json["name"]
         repo_dir = os.path.join(self.root, name_string)
         RepoStructure.__mkdir(repo_dir)
-        meta_dir = os.path.join(repo_dir, "Config.META")
+        meta_dir = os.path.join(repo_dir, "repo.json")
         RepoStructure.__echo(meta_dir, RepoStructure.__get_meta_inf(repo_json, filter_date))
 
     @staticmethod
@@ -47,8 +47,9 @@ class RepoStructure:
         # TODO: Get license info
         meta_file = {
             "url": "%s" % (repo["url"]),
+            "name": "%s" % (repo["name"]),
             "author": "%s" % (repo["username"]),
-            "filter-date": "%s" % filter_date
+            "filter_date": "%s" % filter_date
         }
         return json.dumps(meta_file)
 
