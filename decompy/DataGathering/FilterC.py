@@ -216,19 +216,17 @@ class FilterC:
 
                                     # save date to json
                                     json_path = base_root + "/repo.json"
-                                    print(json_path)
                                     if os.path.isfile(json_path):
-                                        print(True)
                                         with open(json_path, "r") as json_file:
                                             json_data = json.load(json_file)
 
-                                        # TODO: compare dates
-                                        if "filter_approval_date" not in json_data["filter_approval_date"]:
+                                        # TODO: compare dates?
+                                        # if "filter_approval_date" not in json_data["filter_approval_date"]:
                                             # set new time
-                                            json_data["filter_approval_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                                        json_data["filter_approval_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 
-                                            with open(json_path, "w") as jsonFile:
-                                                json.dump(json_data, jsonFile)
+                                        with open(json_path, "w") as json_file:
+                                            json.dump(json_data, json_file)
 
                                     else:
                                         print("File not found: " + json_path)

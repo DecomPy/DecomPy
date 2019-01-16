@@ -35,6 +35,6 @@ How to use
 Depending on which stage you want, you can run the various methods that match their stage in the CreateLocalData.py class.
 There is a .stage1() method which grabs the repos and generates metadata. There is a .stage2() method that grabs the C files from the repo.
 There is a .stage3() method which filters out the data. There is a .stage4() method that compiles into unoptimized and optimized LLVM.
-Finally, there is an all_four_stages() method which will run all four stages. To see more information regarding each stage,
+Finally, there is an all_stages() method which will run all stages. To see more information regarding each stage,
 continue reading this documentation.
 

@@ -14,14 +14,14 @@ class CreateLocalDataTest(unittest.TestCase):
         self.cld = CreateLocalData()
 
     def test_all_stages(self):
-        # self.cld.stage1()
-        # print("stage 1 done")
-        # self.cld.stage2()
-        # print("stage 2 done")
-        # self.cld.stage3()
-        # print("stage 3 done")
-        # self.cld.stage4()
-        # print("stage 4 done")
+        self.cld.stage1()
+        print("stage 1 done")
+        self.cld.stage2()
+        print("stage 2 done")
+        self.cld.stage3()
+        print("stage 3 done")
+        self.cld.stage4()
+        print("stage 4 done")
         self.cld.stage5()
         print("stage 5 done")
         # self.assertTrue(False)  # intentionally don't pass
