@@ -515,7 +515,7 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 
 <dl class="attribute">
 <dt id="decompy.DataGathering.FilterC.FilterC.script_dir">
-<code class="descname">script_dir</code><em class="property"> = '/mnt/c/Users/zlmonroe/Documents/Spring2019/SER402/Project/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">script_dir</code><em class="property"> = '/mnt/c/users/zlmonroe/Documents/Spring2019/SER402/Project/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -542,44 +542,8 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-decompy.DataGathering.GitHubScraper">
-<span id="decompy-datagathering-githubscraper-module"></span><h2>decompy.DataGathering.GitHubScraper module<a class="headerlink" href="#module-decompy.DataGathering.GitHubScraper" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.GitHubScraper.</code><code class="descname">GitHubScraper</code><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#decompy.DataGathering.WebNavigator.WebNavigator" title="decompy.DataGathering.WebNavigator.WebNavigator"><code class="xref py py-class docutils literal notranslate"><span class="pre">decompy.DataGathering.WebNavigator.WebNavigator</span></code></a></p>
-<p>Handles finding GitHub file URLs and downloading their contents</p>
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.download_all_files">
-<em class="property">static </em><code class="descname">download_all_files</code><span class="sig-paren">(</span><em>repo_urls</em>, <em>target_directories=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper.download_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.download_all_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads all the C files from a given GitHub repository URL into target directory. By default, the target
-directory will be named “username_reponame”.
-:param repo_urls: str or list of str that are GitHub repo URLs. Can be URL to a subfolder within the repo, but
-will only download C files from that folder and its subfolders. If using a list, target_directories must be
-supplied with a list of target directory names, and that list must be the same length as the length of this
-parameter.
-:param target_directories: str or list of str. Name of folders the repository C files will be downloaded into.
-Must match the length of repo_urls if repo_urls is a list
-:return: nothing</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.file_links">
-<code class="descname">file_links</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.file_links" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.file_name_url_content_tuples">
-<code class="descname">file_name_url_content_tuples</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.file_name_url_content_tuples" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.GitHubScraper.GitHubScraper.subfolder_links">
-<code class="descname">subfolder_links</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.GitHubScraper.subfolder_links" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="decompy-datagathering-githubscraper-module">
+<h2>decompy.DataGathering.GitHubScraper module<a class="headerlink" href="#decompy-datagathering-githubscraper-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-decompy.DataGathering.RepoFilter">
 <span id="decompy-datagathering-repofilter-module"></span><h2>decompy.DataGathering.RepoFilter module<a class="headerlink" href="#module-decompy.DataGathering.RepoFilter" title="Permalink to this headline">¶</a></h2>
@@ -886,38 +850,18 @@ the search criteria</p>
 <div class="section" id="module-decompy.DataGathering">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-decompy.DataGathering" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="decompy.DataGathering.GitHubScraper">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.</code><code class="descname">GitHubScraper</code><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#decompy.DataGathering.WebNavigator.WebNavigator" title="decompy.DataGathering.WebNavigator.WebNavigator"><code class="xref py py-class docutils literal notranslate"><span class="pre">decompy.DataGathering.WebNavigator.WebNavigator</span></code></a></p>
-<p>Handles finding GitHub file URLs and downloading their contents</p>
+<dt id="decompy.DataGathering.FileGetter">
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.</code><code class="descname">FileGetter</code><a class="reference internal" href="../../_modules/decompy/DataGathering/FileGetter.html#FileGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FileGetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles the download of GitHub repositories and extracting the useful files</p>
 <dl class="staticmethod">
-<dt id="decompy.DataGathering.GitHubScraper.download_all_files">
-<em class="property">static </em><code class="descname">download_all_files</code><span class="sig-paren">(</span><em>repo_urls</em>, <em>target_directories=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/GitHubScraper.html#GitHubScraper.download_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.download_all_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads all the C files from a given GitHub repository URL into target directory. By default, the target
-directory will be named “username_reponame”.
-:param repo_urls: str or list of str that are GitHub repo URLs. Can be URL to a subfolder within the repo, but
-will only download C files from that folder and its subfolders. If using a list, target_directories must be
-supplied with a list of target directory names, and that list must be the same length as the length of this
-parameter.
-:param target_directories: str or list of str. Name of folders the repository C files will be downloaded into.
-Must match the length of repo_urls if repo_urls is a list
-:return: nothing</p>
+<dt id="decompy.DataGathering.FileGetter.download_all_files">
+<em class="property">static </em><code class="descname">download_all_files</code><span class="sig-paren">(</span><em>repo_urls</em>, <em>target_directories=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FileGetter.html#FileGetter.download_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FileGetter.download_all_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the downloading of ZIP archives and extracting the appropriate files into the target directory.
+:param repo_urls: list of URLs to repositories. URLs must be to the top level of the repositories
+:param target_directories: File directory to store the files
+:return: Nothing</p>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.GitHubScraper.file_links">
-<code class="descname">file_links</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.file_links" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.GitHubScraper.file_name_url_content_tuples">
-<code class="descname">file_name_url_content_tuples</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.file_name_url_content_tuples" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.GitHubScraper.subfolder_links">
-<code class="descname">subfolder_links</code><em class="property"> = []</em><a class="headerlink" href="#decompy.DataGathering.GitHubScraper.subfolder_links" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -1400,7 +1344,7 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 
 <dl class="attribute">
 <dt id="decompy.DataGathering.FilterC.script_dir">
-<code class="descname">script_dir</code><em class="property"> = '/mnt/c/Users/zlmonroe/Documents/Spring2019/SER402/Project/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">script_dir</code><em class="property"> = '/mnt/c/users/zlmonroe/Documents/Spring2019/SER402/Project/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -187,7 +187,7 @@
             <span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
                 <span class="n">url</span> <span class="o">=</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>  <span class="c1"># grab the url from the json to scrape</span>
-                <span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span>
+                <span class="n">FileGetter</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span>
                     <span class="n">url</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;Repositories&quot;</span><span class="p">,</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>  <span class="c1"># scrape all the urls</span></div>
                 <span class="c1"># into our destined folder</span>
 

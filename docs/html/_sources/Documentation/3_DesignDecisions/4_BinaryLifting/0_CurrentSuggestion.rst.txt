@@ -6,7 +6,7 @@ is the best fit to our current vision of the project and would be
 the easiest to integrate. That being said, if the sponsor agrees,
 I believe that integrating with fcd (or fcd+remill) would accelerate
 our progress quite a bit and that it would much better prove our
-original aim. The larget issue that fcd is facing, for example,
+original aim. The largest issue that fcd is facing, for example,
 is exactly the issue that we are trying to fix.
 
 The below is an excerpt from fcd's github.io page which describes
