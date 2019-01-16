@@ -24,11 +24,11 @@
 
   
 
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Design Decisions" href="../3_DesignDecisions/index.html" />
+    <link rel="next" title="decompy package" href="decompy.html" />
     <link rel="prev" title="Installation From GitHub" href="../1_Installation/1_InstallationFromGitHub.html" /> 
 
   
@@ -80,7 +80,16 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Decompy API</a><ul class="simple">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Decompy API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.html">decompy package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.database.html">decompy.database package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">decompy</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../3_DesignDecisions/index.html">Design Decisions</a></li>
@@ -151,6 +160,200 @@
   <div class="section" id="decompy-api">
 <h1>Decompy API<a class="headerlink" href="#decompy-api" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="decompy.html">decompy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterC">decompy.DataGathering.FilterC module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterCompile">decompy.DataGathering.FilterCompile module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#decompy-datagathering-genllvm-module">decompy.DataGathering.GenLLVM module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.GitHubScraper">decompy.DataGathering.GitHubScraper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoFilter">decompy.DataGathering.RepoFilter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoStructure">decompy.DataGathering.RepoStructure module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.WebNavigator">decompy.DataGathering.WebNavigator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.database.html">decompy.database package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html#module-decompy.database.db">decompy.database.db module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html#module-decompy.database">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator.test_US58">decompy.tests.test_GitHubNavigator.test_US58 module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering.test_RepoStructure">decompy.tests.test_RepoFiltering.test_RepoStructure module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_compile_file">decompy.tests.test_filtercfiles.test_compile_file module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_filter_c_file">decompy.tests.test_filtercfiles.test_filter_c_file module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#decompy-tests-tests-genllvm-test-genllvm-module">decompy.tests.tests_GenLLVM.test_GenLLVM module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#module-decompy.tests.tests_GenLLVM">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.html#module-decompy.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.html#module-decompy">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterC">decompy.DataGathering.FilterC module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterCompile">decompy.DataGathering.FilterCompile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#decompy-datagathering-genllvm-module">decompy.DataGathering.GenLLVM module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.GitHubScraper">decompy.DataGathering.GitHubScraper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoFilter">decompy.DataGathering.RepoFilter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoStructure">decompy.DataGathering.RepoStructure module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.WebNavigator">decompy.DataGathering.WebNavigator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.database.html">decompy.database package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.database.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.database.html#module-decompy.database.db">decompy.database.db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.database.html#module-decompy.database">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator.test_US58">decompy.tests.test_GitHubNavigator.test_US58 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering.test_RepoStructure">decompy.tests.test_RepoFiltering.test_RepoStructure module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_compile_file">decompy.tests.test_filtercfiles.test_compile_file module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_filter_c_file">decompy.tests.test_filtercfiles.test_filter_c_file module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#decompy-tests-tests-genllvm-test-genllvm-module">decompy.tests.tests_GenLLVM.test_GenLLVM module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#module-decompy.tests.tests_GenLLVM">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.html#module-decompy.tests">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator.test_US58">decompy.tests.test_GitHubNavigator.test_US58 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering.test_RepoStructure">decompy.tests.test_RepoFiltering.test_RepoStructure module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_compile_file">decompy.tests.test_filtercfiles.test_compile_file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_filter_c_file">decompy.tests.test_filtercfiles.test_filter_c_file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#decompy-tests-tests-genllvm-test-genllvm-module">decompy.tests.tests_GenLLVM.test_GenLLVM module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#module-decompy.tests.tests_GenLLVM">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">decompy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decompy.html">decompy package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="decompy.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterC">decompy.DataGathering.FilterC module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterCompile">decompy.DataGathering.FilterCompile module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#decompy-datagathering-genllvm-module">decompy.DataGathering.GenLLVM module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.GitHubScraper">decompy.DataGathering.GitHubScraper module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoFilter">decompy.DataGathering.RepoFilter module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoStructure">decompy.DataGathering.RepoStructure module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.WebNavigator">decompy.DataGathering.WebNavigator module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html">decompy.database package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="decompy.database.html#submodules">Submodules</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.database.html#module-decompy.database.db">decompy.database.db module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.database.html#module-decompy.database">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="decompy.tests.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator.test_US58">decompy.tests.test_GitHubNavigator.test_US58 module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering.test_RepoStructure">decompy.tests.test_RepoFiltering.test_RepoStructure module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_compile_file">decompy.tests.test_filtercfiles.test_compile_file module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_filter_c_file">decompy.tests.test_filtercfiles.test_filter_c_file module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html">decompy.tests.tests_GenLLVM package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#submodules">Submodules</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#decompy-tests-tests-genllvm-test-genllvm-module">decompy.tests.tests_GenLLVM.test_GenLLVM module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="decompy.tests.tests_GenLLVM.html#module-decompy.tests.tests_GenLLVM">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="decompy.tests.html#module-decompy.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="decompy.html#module-decompy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 
@@ -162,7 +365,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../3_DesignDecisions/index.html" class="btn btn-neutral float-right" title="Design Decisions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="decompy.html" class="btn btn-neutral float-right" title="decompy package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../1_Installation/1_InstallationFromGitHub.html" class="btn btn-neutral" title="Installation From GitHub" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

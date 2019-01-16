@@ -56,12 +56,14 @@ class WebNavigator:
 
         pageSource = ""
         try:
-            response = urllib.request.urlopen(link)
+            response = urllib.request.urlopen(link, timeout=10)
             try:
                 pageSource = response.read().decode(response.headers.get_content_charset())
-            except (TypeError, UnicodeDecodeError):
+            except (TypeError, UnicodeDecodeError) as e:
+                print(e)
                 pass
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+            print(e)
             pass
 
         if WebNavigator.TIMING:
@@ -93,7 +95,8 @@ class WebNavigator:
             visibleSource = list(filter(visible, data))
             return visibleSource
 
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+            print(e)
             return ""
 
     @staticmethod
@@ -116,8 +119,8 @@ class WebNavigator:
 
         :param links A set of absolute links
         :type links: set of strings
-        :param str domain: The domain used to filter the links. Should be of form example.txt.com
-        (not of www.google.com or https://www.example.txt.com)
+        :param str domain: The domain used to filter the links. Should be of form example.com
+        (not of www.google.com or https://www.example.com)
         :return: A filtered set of links
         :return: set of strings
         """
