@@ -109,9 +109,14 @@ class CreateLocalData:
 
                         # check if file exists or wasting time
                         if my_file.exists():
-                            Clang.to_object_file(file, compiled_file_path, object_file_path)  # compile .o
-                            Clang.to_llvm_opt(file, compiled_file_path, folder)  # compile optimized llvm
-                            Clang.to_llvm_unopt(file, compiled_file_path, folder)  # compile unoptimized llvm
+                            object_path = Clang.to_object_file(file, compiled_file_path, object_file_path)  # compile .o
+                            opt_llvm_path = Clang.to_llvm_opt(file, compiled_file_path, folder)  # compile optimized llvm
+                            unopt_llvm_path = Clang.to_llvm_unopt(file, compiled_file_path, folder)  # compile unoptimized llvm
+
+                            # {"object_path": object_path, "opt_llvm_path": opt_llvm_path, "unopt_llvm": unopt_llvm_path}
+                            #
+                            # with open(c_file_path, "r") as jf:
+                            #     json_data = json.load(jf)
 
                         else:
                             print("Stage 4: filtered_list.META does not exist in this directory. Exiting folder...") # comment out if you want

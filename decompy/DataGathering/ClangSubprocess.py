@@ -57,13 +57,14 @@ class Clang:
 
                 now = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
 
-                # get new time if it's not already there
-                # if "llvm_gen_date" not in json_data["llvm_gen_date"] or "compilation_date" not in json_data["compilation_date"]\
-                #         or datetime.strptime(json_data["llvm_gen_date"]) < now:
+                # update time if it's different
+                now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                if "filter_approval_date" not in json_data["filter_approval_date"] or \
+                        json_data["filter_approval_date"] is not now_minute:
+                    json_data["llvm_gen_date"] = now
+                    json_data["compilation_date"] = now
 
-                json_data["llvm_gen_date"] = now
-                json_data["compilation_date"] = now
-
+                # write back to file
                 with open(json_file_path, "w") as json_file:
                     json.dump(json_data, json_file)
 
@@ -108,18 +109,18 @@ class Clang:
             else:
                 outfile = open(output_file, 'a+')
 
-            filteredC = None
+            filtered_c = None
             if filter_file:
-                filteredC = Path(filter_file)
-                if not filteredC.is_file():
-                    filteredC = open(filter_file, 'w+')
+                filtered_c = Path(filter_file)
+                if not filtered_c.is_file():
+                    filtered_c = open(filter_file, 'w+')
                 else:
-                    filteredC = open(filter_file, 'a+')
+                    filtered_c = open(filter_file, 'a+')
 
             for cfile in file_of_cfiles:
                 cfile = cfile.rstrip()
                 Clang.compile_cfile(cfile, outfile, newlocation, out_type,
-                                    filter_file=filteredC, args=args)
+                                    filter_file=filtered_c, args=args)
             file_of_cfiles.close()
         else:
             print("File not Found", input_file)

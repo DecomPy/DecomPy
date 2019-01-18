@@ -139,10 +139,10 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, filt_path_name="Unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+    def check_valid_folder(folder, filt_path_name="Unfiltered", append_file="repo.json", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
                            whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
-        Runs check_valid_data for each file in the folder path..
+        Runs check_valid_data for each file in the folder path.
 
         :param folder: the folder the user wants to validate for each C file.
         :type: str
@@ -171,65 +171,64 @@ class FilterC:
             # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
             try:
                 if root.endswith(filt_path_name):
-                    # only look for c files
+                    # base root of new file 1 directory above unfiltered/*.c
+                    base_root = os.path.dirname(root)
+                    json_path = base_root + "/" + append_file
+
+                    # read json if it exists
+                    if os.path.isfile(json_path):
+
+                        # get empty filtered_files
+                        filtered_files = []
+
+                        # load json
+                        with open(json_path, "r") as json_file:
+                            json_data = json.load(json_file)
+
+                        # only look for c files
                         for basename in files:
                             # unfiltered name
                             unfiltered_path = root + "/" + basename
 
-                            # base root of new file 1 directory above unfiltered/*.c
-                            base_root = os.path.dirname(root)
-                            # store into new directory, check if it exists already in file
-                            new_file = base_root + "/" + append_file
+                            # checks for valid data
+                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
+                                                        whitelisted, blacklisted):  # used to compile here.
 
-                            # check if path already exists in the file, so we don't waste time computing or adding more
-                            if not FilterC.file_text_exists(new_file, unfiltered_path):
+                                # update time
+                                now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                                json_data["filter_approval_date"] = now_minute
 
-                                # checks for valid data, compile, then adds to meta.
-                                if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
-                                                            whitelisted, blacklisted):  # used to compile here.
+                                print(filtered_files)
 
-                                    # create file if it does not exist
-                                    if not os.path.exists(new_file):
-                                        try:
-                                            # open to write to it
-                                            open(new_file, "w+")
-                                        except Exception as e:
-                                            print("opening new_file", e)
-                                            pass
+                                # initialize key
+                                if len(filtered_files) == 0:
 
-                                    # append path to list
-                                    with open(new_file, "a") as myfile:
-                                        try:
-                                            # add file path to list.META
-                                            myfile.write(unfiltered_path)
+                                    # find key
+                                    filtered_files = json_data["filtered_files"]
 
-                                            # check if OS is windows for \r\n
-                                            if os.name == 'nt':
-                                                myfile.write("\r\n")
-                                            # otherwise it's \n
-                                            else:
-                                                myfile.write("\n")
-                                        except Exception as e:
-                                            print("opening myfile", e)
-                                            pass
+                                    if filtered_files is None:
+                                        filtered_files = [{"filtered_path": unfiltered_path}]
 
-                                    # save date to json
-                                    json_path = base_root + "/repo.json"
-                                    if os.path.isfile(json_path):
-                                        with open(json_path, "r") as json_file:
-                                            json_data = json.load(json_file)
+                                # otherwise append
+                                else:
+                                    found = False
+                                    # if it's already in there, then don't add it
+                                    for value in filtered_files:
+                                        if unfiltered_path in value["filtered_path"]:
+                                            found = True
+                                            break
 
-                                        # update time if it's different
-                                        now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
-                                        if "filter_approval_date" not in json_data["filter_approval_date"] or \
-                                                json_data["filter_approval_date"] is not now_minute:
-                                            json_data["filter_approval_date"] = now_minute
+                                    # not found, then create it and add to array
+                                    if not found:
+                                        filtered_files.append({"filtered_path": unfiltered_path})
 
-                                        with open(json_path, "w") as json_file:
-                                            json.dump(json_data, json_file)
-
-                                    else:
-                                        print("File not found: " + json_path)
+                        # finally write back to it if it has changed
+                        with open(json_path, "w") as json_file:
+                            json_data["filtered_files"] = filtered_files
+                            json.dump(json_data, json_file, indent=4, separators=(',', ': '),
+                                      sort_keys=True)
+                    else:
+                        print("Cannot find file:", json_path)
 
             except Exception as e:
                 print("Overall Exception FilterC:", e)
