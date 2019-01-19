@@ -191,22 +191,19 @@ class FilterC:
                             unfiltered_path = root + "/" + basename
 
                             # checks for valid data
-                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
-                                                        whitelisted, blacklisted):  # used to compile here.
+                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):  # used to compile here.
 
                                 # update time
                                 now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
                                 json_data["filter_approval_date"] = now_minute
 
-                                print(filtered_files)
-
                                 # initialize key
                                 if len(filtered_files) == 0:
 
-                                    # find key
+                                    # attempt to initialize
                                     filtered_files = json_data["filtered_files"]
 
-                                    if filtered_files is None:
+                                    if filtered_files is None or len(filtered_files) == 0:
                                         filtered_files = [{"filtered_path": unfiltered_path}]
 
                                 # otherwise append
@@ -225,8 +222,7 @@ class FilterC:
                         # finally write back to it if it has changed
                         with open(json_path, "w") as json_file:
                             json_data["filtered_files"] = filtered_files
-                            json.dump(json_data, json_file, indent=4, separators=(',', ': '),
-                                      sort_keys=True)
+                            json.dump(json_data, json_file, indent=4, separators=(',', ': '), sort_keys=True)
                     else:
                         print("Cannot find file:", json_path)
 

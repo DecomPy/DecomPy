@@ -29,6 +29,7 @@ class CreateLocalData:
         """
         self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"])
         self.rs = RepoStructure()
+        self.save_json = "repo.json"
         self.repo_json_name = repo_json_name
         self.repo_json_filtered_name = repo_json_filtered_name
         self.filtered_repos = filtered_repos
@@ -72,59 +73,99 @@ class CreateLocalData:
                 url = repo["url"]  # grab the url from the json to download zip into our destinated folder
                 FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
 
-    def stage3_filter_file(self):
+    def stage3_filter_files(self):
         """
         stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.
         :return:
         """
         self.FilterC.check_valid_folder(self.folder)  # seeks the folder and recursively filters them out, default param
 
-    def stage4_generate_llvm(self):
+    def stage4_generate_llvm(self, llvm_file_path="LLVM", object_file_path="Object"):
         """
-        stage 4 of the data gathering process: Generate LLVM and other data
-
+        Stage 4 of the data gathering process: Generate LLVM and other data.
+        gets file paths for llvm and object file path. Defaults to /LLVM and /Object.
+        :param llvm_file_path: the file path to save LLVM files to
+        :param object_file_path: the file path to save Object files to
         :return:
         """
-        # recursively loop through all
         try:
             # open file
             for root, dirs, files in os.walk(self.folder):
-                # look for *.c in files
-                for basename in files:
-                    if basename.endswith(".c"):
-                        # get name without *.c
-                        # name, extension = os.path.splitext(basename)  # won't use extension
-                        cwd = os.getcwd()                          # get current working directory
-                        base_root = os.path.dirname(root)
+                try:
+                    # find our filtered json file (default repo.json)
+                    json_path = root + "/" + self.save_json
+                    if os.path.isfile(json_path):
 
-                        # check if file exists, get the path from string concat
-                        file = cwd + "/" + base_root + "/filtered_list.META"
-                        my_file = Path(file)
+                        # json path
+                        with open(json_path, "r") as json_file:
+                            json_data = json.load(json_file)
 
-                        # folder for LLVM
-                        folder = cwd + "/" + base_root + "/LLVM"
-                        # new files
-                        compiled_file_path = base_root + "/compiled.META"
-                        object_file_path = cwd + "/" + base_root + "/Object"
+                        # new array with values
+                        filtered_files = []
 
-                        # check if file exists or wasting time
-                        if my_file.exists():
-                            object_path = Clang.to_object_file(file, compiled_file_path, object_file_path)  # compile .o
-                            opt_llvm_path = Clang.to_llvm_opt(file, compiled_file_path, folder)  # compile optimized llvm
-                            unopt_llvm_path = Clang.to_llvm_unopt(file, compiled_file_path, folder)  # compile unoptimized llvm
+                        # update time with now to precise minute
+                        now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                        json_data["llvm_gen_date"] = now_minute
+                        json_data["compilation_date"] = now_minute
 
-                            # {"object_path": object_path, "opt_llvm_path": opt_llvm_path, "unopt_llvm": unopt_llvm_path}
-                            #
-                            # with open(c_file_path, "r") as jf:
-                            #     json_data = json.load(jf)
+                        # get updated filtered_files
+                        json_filtered_files = json_data["filtered_files"]
 
-                        else:
-                            print("Stage 4: filtered_list.META does not exist in this directory. Exiting folder...") # comment out if you want
+                        # loop through json objects if they exist
+                        if json_filtered_files is not None and len(json_filtered_files) > 0:
 
-                        # if file does not exist (filtered_list.META) then break out of this directory loop.
-                        break
+                            # name, extension = os.path.splitext(basename)  # won't use extension
+
+                            # paths for llvm and object file
+                            llvm_folder = root + "/" + llvm_file_path
+                            object_folder = root + "/" + object_file_path
+
+                            # loop over file paths in json
+                            for filtered_obj in json_data["filtered_files"]:
+
+                                # init the file
+                                filtered_file = filtered_obj["filtered_path"]
+                                filtered_file_path = Path(filtered_file)
+
+                                # check if file exists or wasting time
+                                if filtered_file_path.exists():
+                                    object_path = Clang.to_object_file(filtered_file, object_folder)  # compile .o
+                                    opt_llvm_path = Clang.to_llvm_opt(filtered_file, llvm_folder)  # compile optimized llvm
+                                    unopt_llvm_path = Clang.to_llvm_unopt(filtered_file, llvm_folder)  # compile unoptimized llvm
+
+                                    print(object_path, opt_llvm_path, unopt_llvm_path)
+
+                                    if object_path is not None and opt_llvm_path is not None and unopt_llvm_path is not None:
+                                        # add it to object
+                                        filtered_files.append({
+                                                "filtered_path": filtered_obj["filtered_path"],
+                                                "object_path": object_path,
+                                                "opt_llvm_path": opt_llvm_path,
+                                                "unopt_llvm": unopt_llvm_path
+                                            })
+                                    else:
+                                        filtered_files.append({
+                                            "filtered_path": filtered_obj["filtered_path"]
+                                        })
+                                else:
+                                    filtered_files.append({
+                                        "filtered_path": filtered_obj["filtered_path"]
+                                    })
+
+                            # finally write back the changes.
+                            if len(filtered_files) > 0 and filtered_files is not None:
+                                with open(json_path, "w") as json_file:
+                                    json_data["filtered_files"] = filtered_files
+                                    json.dump(json_data, json_file, indent=4, separators=(',', ': '), sort_keys=True)
+                    # else:
+                    #     print("Stage 4 - Cannot find file: " + json_path)
+
+                except Exception as e:
+                    print("Exception Stage 4 json file: ", e)
+                    pass
+
         except Exception as e:
-            print("Exception", e)
+            print("Overall Exception Stage 4: ", e)
             pass
 
     def stage5_insert_database(self):
