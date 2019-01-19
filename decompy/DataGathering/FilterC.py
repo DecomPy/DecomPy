@@ -155,80 +155,39 @@ class FilterC:
         :param preferred_min_size: the max byte size the user wants.
         :type: int
         :param whitelisted: the whitelisted headers the user wants.
-        :type: tuple or array
+        :type: tuple or list
         :param blacklisted: the blacklisted words the user wants to exclude.
-        :type: tuple or array
-        :return: str
+        :type: tuple or list
+        :return: a list of filtered file paths
+        :rtype: list
         """
 
         # if no folder exists, then return file does not exist.
         if not os.path.exists(folder):
-            return False
+            return []
 
-        #  walk recursively in given folder
-        # open file
+        # get empty filtered_files
+        filtered_files = []
+
+        # walk recursively in given folder
         for root, dirs, files in os.walk(folder):
             # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
             try:
                 if root.endswith(filt_path_name):
-                    # base root of new file 1 directory above unfiltered/*.c
-                    base_root = os.path.dirname(root)
-                    json_path = base_root + "/" + append_file
 
-                    # read json if it exists
-                    if os.path.isfile(json_path):
+                    # only look for c files
+                    for basename in files:
+                        # unfiltered name
+                        unfiltered_path = root + "/" + basename
 
-                        # get empty filtered_files
-                        filtered_files = []
-
-                        # load json
-                        with open(json_path, "r") as json_file:
-                            json_data = json.load(json_file)
-
-                        # only look for c files
-                        for basename in files:
-                            # unfiltered name
-                            unfiltered_path = root + "/" + basename
-
-                            # checks for valid data
-                            if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted):  # used to compile here.
-
-                                # update time
-                                now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
-                                json_data["filter_approval_date"] = now_minute
-
-                                # initialize key
-                                if len(filtered_files) == 0:
-
-                                    # attempt to initialize
-                                    filtered_files = json_data["filtered_files"]
-
-                                    if filtered_files is None or len(filtered_files) == 0:
-                                        filtered_files = [{"filtered_path": unfiltered_path}]
-
-                                # otherwise append
-                                else:
-                                    found = False
-                                    # if it's already in there, then don't add it
-                                    for value in filtered_files:
-                                        if unfiltered_path in value["filtered_path"]:
-                                            found = True
-                                            break
-
-                                    # not found, then create it and add to array
-                                    if not found:
-                                        filtered_files.append({"filtered_path": unfiltered_path})
-
-                        # finally write back to it if it has changed
-                        with open(json_path, "w") as json_file:
-                            json_data["filtered_files"] = filtered_files
-                            json.dump(json_data, json_file, indent=4, separators=(',', ': '), sort_keys=True)
-                    else:
-                        print("Cannot find file:", json_path)
-
+                        # checks for valid data
+                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
+                                                    whitelisted, blacklisted):
+                            filtered_files.append(unfiltered_path)
             except Exception as e:
                 print("Overall Exception FilterC:", e)
                 pass
+        return filtered_files
 
     @staticmethod
     def file_text_exists(file, phrase):

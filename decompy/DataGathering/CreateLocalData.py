@@ -17,7 +17,7 @@ class CreateLocalData:
     """
     def __init__(self, repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
                  repo_json_name="offineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
-                 filtered_repos=None, folder="Repositories", database_name="c_code"):
+                 filtered_repos=None, folder="Repositories", database_name="c_code", save_json="repo.json"):
         """
         initializes a new object, containing the other classes, one to rule them all.
         :param repo_dict: dictionary of data to insert
@@ -29,7 +29,7 @@ class CreateLocalData:
         """
         self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"])
         self.rs = RepoStructure()
-        self.save_json = "repo.json"
+        self.save_json = save_json
         self.repo_json_name = repo_json_name
         self.repo_json_filtered_name = repo_json_filtered_name
         self.filtered_repos = filtered_repos
@@ -73,12 +73,51 @@ class CreateLocalData:
                 url = repo["url"]  # grab the url from the json to download zip into our destinated folder
                 FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
 
-    def stage3_filter_files(self):
+    def stage3_filter_files(self, unfiltered_key="Unfiltered"):
         """
         stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.
+            Use the list provided and then insert them into json format. Currently uses default params.
         :return:
         """
-        self.FilterC.check_valid_folder(self.folder)  # seeks the folder and recursively filters them out, default param
+        # walk recursively in given folder only looking for 'Unfiltered'
+        for root, dirs, files in os.walk(self.folder):
+
+            if unfiltered_key in dirs:
+                ufolder = root + "/" + unfiltered_key
+                filtered_list = self.FilterC.check_valid_folder(ufolder)
+
+                # init empty and loop through the files
+                filtered_files = []
+
+                # read json if it exists
+                json_path = root + "/" + self.save_json
+                if os.path.isfile(json_path):
+                    # load json
+                    with open(json_path, "r") as json_file:
+                        json_data = json.load(json_file)
+
+                    # update time
+                    now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                    json_data["filter_approval_date"] = now_minute
+
+                    for file_path in filtered_list:
+                        # filtered_files.append({"filtered_path": file_path}) # uncomment if you want to add all
+
+                        found = False
+                        # if it's already in there, then don't add it, don't want to mess up any more data
+                        for value in filtered_files:
+                            if file_path in value["filtered_path"]:
+                                found = True
+                                break
+
+                        # not found, then create it and add to array
+                        if not found:
+                            filtered_files.append({"filtered_path": file_path})
+
+                    # finally write back to it if it has changed
+                    with open(json_path, "w") as json_file:
+                        json_data["filtered_files"] = filtered_files
+                        json.dump(json_data, json_file, indent=4, separators=(',', ': '), sort_keys=True)
 
     def stage4_generate_llvm(self, llvm_file_path="LLVM", object_file_path="Object"):
         """
@@ -132,8 +171,6 @@ class CreateLocalData:
                                     object_path = Clang.to_object_file(filtered_file, object_folder)  # compile .o
                                     opt_llvm_path = Clang.to_llvm_opt(filtered_file, llvm_folder)  # compile optimized llvm
                                     unopt_llvm_path = Clang.to_llvm_unopt(filtered_file, llvm_folder)  # compile unoptimized llvm
-
-                                    print(object_path, opt_llvm_path, unopt_llvm_path)
 
                                     if object_path is not None and opt_llvm_path is not None and unopt_llvm_path is not None:
                                         # add it to object
