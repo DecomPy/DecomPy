@@ -9,8 +9,7 @@
 */
 
 // Node, the basic data structure in the tree
-typedef struct node{ dfjadlksfjslkflksdf
-asfklasjfklsajflk
+typedef struct node{ thread // intentionally fail
     // left child
 	struct node* left;
 

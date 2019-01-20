@@ -64,22 +64,22 @@ class DatabaseTest(unittest.TestCase):
         master_download_date = "2018-11-15"
 
         # insert meta
-        meta_tuple1 = (repo_name, repo_license, url, author, filter_approval_date,
+        meta_tuple1 = (author+"-"+repo_name, repo_name, repo_license, url, author, filter_approval_date,
                        llvm_gen_date, filter_date, compilation_date, master_download_date)
         self.assertTrue(self.db_test.insert_meta, meta_tuple1)
 
         # insert meta, already exists, replace
-        meta_tuple2 = (repo_name, repo_license, url, author, filter_approval_date,
+        meta_tuple2 = (author+"-"+repo_name, repo_name, repo_license, url, author, filter_approval_date,
                        llvm_gen_date, filter_date, compilation_date, master_download_date)
         self.assertTrue(self.db_test.insert_meta(meta_tuple2))
 
         # insert meta, new url
-        meta_tuple3 = ("decompy1", repo_license, "github.com/stuff1", author,filter_approval_date,
+        meta_tuple3 = (author+"-decompy1", "decompy1", repo_license, "github.com/stuff1", author, filter_approval_date,
                        llvm_gen_date, filter_date, compilation_date, master_download_date)
         self.assertTrue(self.db_test.insert_meta(meta_tuple3))
 
         # insert meta same url, diff repo_name
-        meta_tuple4 = ("decompy2", repo_license, "github.com/stuff2", author, filter_approval_date,
+        meta_tuple4 = (author+"-decompy2", "decompy2", repo_license, "github.com/stuff2", author, filter_approval_date,
                        llvm_gen_date, filter_date, compilation_date, master_download_date, True)
         self.assertTrue(self.db_test.insert_meta(meta_tuple4))
 
@@ -90,19 +90,19 @@ class DatabaseTest(unittest.TestCase):
         """
         # base info
         file_path = "test123.c"
-        repo_name = "decompy"
+        author_repo_key = "John Smith-decompy"
         source_code = "int main(){return 0;}"
         object_file = "blob"
         llvm_unop = "stuff_unop"
         llvm_op = "stuff_op"
 
         # new element
-        ml_tuple1 = (file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+        ml_tuple1 = (file_path, author_repo_key, source_code, object_file, llvm_unop, llvm_op)
         self.assertTrue(self.db_test.insert_ml(ml_tuple1))
 
         # new element, but it's same
         # replaces element
-        ml_tuple2 = (file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)
+        ml_tuple2 = (file_path, author_repo_key, source_code, object_file, llvm_unop, llvm_op)
         self.assertTrue(self.db_test.insert_ml(ml_tuple2))
 
         # new element
@@ -161,7 +161,7 @@ class DatabaseTest(unittest.TestCase):
         """
 
         # test delete, then test if it exists
-        self.assertTrue(self.db_test.delete_ml("test123.c", True))
+        self.assertTrue(self.db_test.delete_ml("test123.c"))
         self.assertFalse(self.db_test.find_file("test123.c"))
 
     def test_delete_meta(self):
@@ -171,8 +171,8 @@ class DatabaseTest(unittest.TestCase):
         """
 
         # test delete, then test if it exists
-        self.assertTrue(self.db_test.delete_meta("decompy2", True))
-        self.assertFalse(self.db_test.find_repo("decompy2"))
+        self.assertTrue(self.db_test.delete_meta("John Smith-decompy2", True))
+        self.assertFalse(self.db_test.find_repo("John Smith-decompy2"))
 
 
 

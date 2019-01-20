@@ -137,7 +137,7 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, filt_path_name="Unfiltered", append_file="repo.json", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+    def check_valid_folder(folder, filt_path_name="Unfiltered", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
                            whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
         Runs check_valid_data for each file in the folder path.
@@ -145,8 +145,6 @@ class FilterC:
         :param folder: the folder the user wants to validate for each C file.
         :type: str
         :param filt_path_name: the filtered path word the user is using to store data once filtered.
-        :type: str
-        :param append_file: the file to add lines to.
         :type: str
         :param preferred_max_size: the max byte size the user wants.
         :type: int
@@ -185,28 +183,7 @@ class FilterC:
             except Exception as e:
                 print("Overall Exception FilterC:", e)
                 pass
+
         return filtered_files
-
-    @staticmethod
-    def file_text_exists(file, phrase):
-        """
-        Checks for duplicate lines in a file.
-
-        :param file: the file path
-        :type: str
-        :param phrase: the phrase we are looking for
-        :type: str
-        :return: true if duplicate exists in file.
-        """
-
-        # check if file exists. If it does not then return False
-        if not os.path.exists(file):
-            return False
-
-        return phrase in open(file, 'r').read()
-
-# if __name__ == '__main__':
-#     f = FilterC()
-#     f.check_valid_folder("decompy/tests/test_filtercfiles/")
 
 

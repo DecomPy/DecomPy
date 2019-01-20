@@ -186,8 +186,8 @@ class Database:
         :return: bool
         """
         try:
-            sql = "DELETE FROM meta_table WHERE author_repo_key = ?"
-            self.__transaction_builder(sql, author_repo_key, override)
+            sql = """DELETE FROM meta_table WHERE author_repo_key = '{}'""".format(author_repo_key)
+            self.cursor.execute(sql)
 
             return True
         except Error as e:
@@ -195,7 +195,7 @@ class Database:
 
         return False
 
-    def delete_ml(self, file_name, override=False):
+    def delete_ml(self, file_name):
         """
         delete ml data with this file name.
         :param file_name: the file name to delete.
@@ -204,8 +204,8 @@ class Database:
         :return: nothing
         """
         try:
-            sql = "DELETE FROM ml_table WHERE file_path = ?"
-            self.__transaction_builder(sql, file_name, override)
+            sql = """DELETE FROM ml_table WHERE file_path = '{}'""".format(file_name)
+            self.cursor.execute(sql)
 
             return True
         except Error as e:

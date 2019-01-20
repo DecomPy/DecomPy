@@ -15,19 +15,27 @@ class CreateLocalData:
     RepoFilter, GitHubScraper, FilterC, and ClangSubprocess.
     These combined will get all the relevant data.
     """
-    def __init__(self, repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
+    def __init__(self, database_name="c_code",repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
                  repo_json_name="offineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
-                 filtered_repos=None, folder="Repositories", database_name="c_code", save_json="repo.json", verbose=False):
+                 filtered_repos=None, folder="Repositories", save_json="repo.json", verbose=False):
         """
         initializes a new object, containing the other classes, one to rule them all.
-        :param repo_dict: dictionary of data to insert
-        :param repo_json_name: the json file to store all the meta data
-        :param repo_json_filtered_name: the json file to store all the meta data
-        :param filtered_repos: the filtered_repos from "offlineResults.json"
-        :param folder: folder to save the repositories to
         :param database_name: name of the database to store info to.
+        :type: str
+        :param repo_dict: dictionary of data to insert
+        :type: dictionary
+        :param repo_json_name: the json file to store all the meta data
+        :type: str
+        :param repo_json_filtered_name: the json file to store all the meta data
+        :type: str
+        :param filtered_repos: the filtered_repos from "offlineResults.json"
+        :type: str
+        :param folder: folder to save the repositories to
+        :type: str
         :param save_json: where to save the json file to
+        :type: str
         :param verbose: whether or not to include teh print statements.
+        :type: bool
         """
         self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"])
         self.rs = RepoStructure()
@@ -299,13 +307,18 @@ class CreateLocalData:
         cld = CreateLocalData()
 
         while start_page < end_page:
-            # only do 100 repos at a time for safety
-            cld.stage1_gather_repo_meta(start_page, start_page+1)
-            cld.stage2_get_repos()
-            cld.stage3_filter_files()
-            cld.stage4_generate_llvm()
-            cld.stage5_insert_database()
-            start_page += 1
+            try:
+                # only do 100 repos at a time (1 page) for safety on the json file
+                cld.stage1_gather_repo_meta(start_page, start_page+1)
+                cld.stage2_get_repos()
+                cld.stage3_filter_files()
+                cld.stage4_generate_llvm()
+                cld.stage5_insert_database()
+                start_page += 1
+
+            except Exception as e:
+                print("Running all stages error:", e)
+                pass
 
 #
 # if __name__ == "__main__":
