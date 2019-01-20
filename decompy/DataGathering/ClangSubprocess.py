@@ -21,7 +21,7 @@ class Clang:
         Stores this file in the specified location and lists the new file in
         the output file. If this is being used to filter the input file and
         if the C file successfully compiles it will be entered in the filter file
-        :param file_in: File with list of C file names to compile
+        :param file_in: File to compile
         :param newlocation: location to save LLVM files to
         :param output_type: the type that the file must be compiled to, such as
             "elf'
@@ -31,15 +31,13 @@ class Clang:
         file_name = Path(file_in).stem
         location_path = Path(newlocation)
 
-        # relative paths to make it easier in case we move machines.
-        relative_path = os.path.splitext(file_in)[0]
-
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
         command = "clang -Wno-everything " + file_in + " " + args + " -o " + file_out
+
         result = subprocess.run(command, shell=True).returncode  # , check=True)
 
         if result == 0:
-            return relative_path + output_type
+            return newlocation + "/" + file_name + output_type
 
     @staticmethod
     def compile_all(file_path, newlocation, out_type, args=""):

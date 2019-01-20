@@ -17,7 +17,7 @@ class CreateLocalData:
     """
     def __init__(self, repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
                  repo_json_name="offineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
-                 filtered_repos=None, folder="Repositories", database_name="c_code", save_json="repo.json"):
+                 filtered_repos=None, folder="Repositories", database_name="c_code", save_json="repo.json", verbose=False):
         """
         initializes a new object, containing the other classes, one to rule them all.
         :param repo_dict: dictionary of data to insert
@@ -26,6 +26,8 @@ class CreateLocalData:
         :param filtered_repos: the filtered_repos from "offlineResults.json"
         :param folder: folder to save the repositories to
         :param database_name: name of the database to store info to.
+        :param save_json: where to save the json file to
+        :param verbose: whether or not to include teh print statements.
         """
         self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"])
         self.rs = RepoStructure()
@@ -36,6 +38,7 @@ class CreateLocalData:
         self.FilterC = FilterC()
         self.folder = folder
         self.db = db.Database(database_name)
+        self.verbose = verbose
 
     def stage1_gather_repo_meta(self, start_page=1, end_page=2):
         """
@@ -51,7 +54,7 @@ class CreateLocalData:
 
         self.rs.batch_format(self.filtered_repos, datetime.datetime.now())  # batch current date and filtered_repos
 
-    def stage2_get_repos(self, test):
+    def stage2_get_repos(self, test=None):
         """
         stage 2 of the data gathering process: Scrape all the files from GitHub from the given offline json file.
         :return:
@@ -178,7 +181,7 @@ class CreateLocalData:
                                                 "filtered_path": filtered_obj["filtered_path"],
                                                 "object_path": object_path,
                                                 "opt_llvm_path": opt_llvm_path,
-                                                "unopt_llvm": unopt_llvm_path
+                                                "unopt_llvm_path": unopt_llvm_path
                                             })
                                     else:
                                         filtered_files.append({
@@ -198,11 +201,13 @@ class CreateLocalData:
                     #     print("Stage 4 - Cannot find file: " + json_path)
 
                 except Exception as e:
-                    print("Exception Stage 4 json file: ", e)
+                    if self.verbose:
+                        print("Exception Stage 4 json file: ", e)
                     pass
 
         except Exception as e:
-            print("Overall Exception Stage 4: ", e)
+            if self.verbose:
+                print("Overall Exception Stage 4: ", e)
             pass
 
     def stage5_insert_database(self):
@@ -213,50 +218,46 @@ class CreateLocalData:
         """
         # open file
         for root, dirs, files in os.walk(self.folder):
-            try:
-                # look for filtered file and LLVM
-                for basename in files:
+            # find our filtered json file (default repo.json)
+            json_path = root + "/" + self.save_json
+            if os.path.isfile(json_path):
+                # json path
+                with open(json_path, "r") as json_file:
+                    json_data = json.load(json_file)
+                    try:
+                        # files to read from
+                        filtered_list = json_data["filtered_files"]
 
-                    # make sure we have compiled data, compiled.META file
-                    if basename == "filtered_list.META":
-                        # get this cwd
-                        cwd = root
-                        with open(cwd+"/"+basename, "r") as f:
-                            try:
-                                # find the file path then read that c file
-                                for line in f:
-                                    # take advantage of the fact that file names cannot have .c unless at the end
-                                    filename = line.rsplit('/', 1)[-1]
-                                    filename = filename.replace(".c\n", "")
+                        if "llvm_gen_date" in json_data:
+                            # meta data info
+                            repo_name = json_data["name"]
+                            author = json_data["author"]
+                            filter_date = json_data["filter_date"]
+                            master_download_date = json_data["master_download_date"]
+                            filter_approval_date = json_data["filter_approval_date"]
+                            llvm_gen_date = json_data["llvm_gen_date"]
+                            repo_url = json_data["url"]
+                            compilation_date = json_data["compilation_date"]
+                            author_repo_key = author + "-" + repo_name
 
-                                    # check if these files exist, then we can continue
-                                    llvm_op_file_path = cwd + "/LLVM/" + filename + "-opt.ll"
-                                    llvm_op_path = Path(llvm_op_file_path)
+                            # insert meta tuple TODO: get license... But GitHub api doesn't give it?
+                            meta_tuple = (author_repo_key, repo_name, None, repo_url, author,
+                                          filter_approval_date, llvm_gen_date, filter_date,
+                                          compilation_date, master_download_date)
+                            self.db.insert_meta(meta_tuple, True)
 
-                                    llvm_unop_file_path = cwd + "/LLVM/" + filename + "-unopt.ll"
-                                    llvm_unop_path = Path(llvm_unop_file_path)
+                            # find the file path then read that c file
+                            for file_path in filtered_list:
+                                try:
+                                    if "opt_llvm_path" in file_path and "unopt_llvm_path" in file_path \
+                                            and "object_path" in file_path and "filtered_path" in file_path:
 
-                                    o_file_path = cwd + "/Object/" + filename + ".o"
-                                    o_path = Path(o_file_path)
-
-                                    c_file_path = line.replace("\n", "")
-
-                                    # full repo path from the file path
-                                    # read json info for dates
-                                    with open(c_file_path, "r") as jf:
-                                        json_data = json.load(jf)
-                                        repo_name = json_data["name"]
-                                        author = json_data["author"]
-                                        filter_date = json_data["filter_date"]
-                                        master_download_date = json_data["master_download_date"]
-                                        filter_approval_date = json_data["filter_approval_date"]
-                                        llvm_gen_date = json_data["llvm_gen_date"]
-                                        repo_url = json_data["url"]
-                                        compilation_date = json_data["compilation_date"]
-                                        author_repo_key = author + "-" + repo_name
-
-                                    # open files to read from
-                                    if llvm_op_path.exists() and llvm_unop_path.exists() and o_path.exists():
+                                        # get new file path by appending our cwd
+                                        cwd = os.getcwd()
+                                        llvm_op_file_path = cwd + "/" + file_path["opt_llvm_path"]
+                                        llvm_unop_file_path = cwd + "/" + file_path["unopt_llvm_path"]
+                                        o_file_path = cwd + "/" + file_path["object_path"]
+                                        c_file_path = cwd + "/" + file_path["filtered_path"]
 
                                         # read object file
                                         with open(o_file_path, "rb") as object_f:
@@ -279,42 +280,39 @@ class CreateLocalData:
                                                     llvm_op_data)
                                         self.db.insert_ml(ml_tuple, True)
 
-                                        # insert meta tuple TODO: get license... But GitHub api doesn't give it?
-                                        meta_tuple = (author_repo_key, repo_name, None, repo_url, author,
-                                                      filter_approval_date, llvm_gen_date, filter_date,
-                                                      compilation_date, master_download_date)
-                                        self.db.insert_meta(meta_tuple, True)
+                                except Exception as e:
+                                    if self.verbose:
+                                        print("Stage 5: inserting into database ml table", e)
+                                    pass
 
-                            except Exception as e:
-                                print("opening myfile", e)
-                                pass
-
-            except Exception as e:
-                print("Database stage 5 exception", e)
-                pass
+                    except Exception as e:
+                        if self.verbose:
+                            print("Stage 5: inserting into database meta table", e)
+                        pass
 
     @staticmethod
-    def all_stages():
+    def all_stages_increment(start_page=1, end_page=100000):
         """
-        runs all four stages.
+        runs all five stages in increments.
         :return: void
         """
         cld = CreateLocalData()
-        cld.stage1_gather_repo_meta()
-        cld.stage2_get_repos()
-        cld.stage3_filter_file()
-        cld.stage4_generate_llvm()
-        cld.stage5_insert_database()
 
+        while start_page < end_page:
+            # only do 100 repos at a time for safety
+            cld.stage1_gather_repo_meta(start_page, start_page+1)
+            cld.stage2_get_repos()
+            cld.stage3_filter_files()
+            cld.stage4_generate_llvm()
+            cld.stage5_insert_database()
+            start_page += 1
 
+#
 # if __name__ == "__main__":
 #     cld = CreateLocalData()
-#     cld.stage1()
-#     print("stage 1 done")
-#     cld.stage2()
-#     print("stage 2 done")
-#     cld.stage3()
-#     print("stage 3 done")
-#     cld.stage4()
-#     print("stage 4 done")
+#     cld.stage1_gather_repo_meta()
+#     cld.stage2_get_repos()
+#     cld.stage3_filter_files()
+#     cld.stage4_generate_llvm()
+#     cld.stage5_insert_database()
 
