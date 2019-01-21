@@ -26,8 +26,3 @@ Whitelist
     "stddef", "stdint", "stdio", "stdlib", "stdnoreturn", "string", "tgmath", "time", "wchar", "wctype" are the default headers.
 
 
------------------------------------------------------------------------------------------------------------------
-
-Compile Files
-    The filter finally runs a subprocess with clang. We only need it to compile, so we use the "-fsyntax-only" flag when compiling.
-

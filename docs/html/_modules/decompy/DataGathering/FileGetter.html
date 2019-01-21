@@ -183,6 +183,7 @@
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 
 <div class="viewcode-block" id="FileGetter"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FileGetter">[docs]</a><span class="k">class</span> <span class="nc">FileGetter</span><span class="p">:</span>
@@ -191,8 +192,9 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__update_meta</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Updates the download time in the META file to the current time in target directory</span>
-<span class="sd">        :param target_directory: Directory to update the META file</span>
+<span class="sd">        Updates the download time and popualtes it with any necessary info in the json file to the current</span>
+<span class="sd">        time in target directory.</span>
+<span class="sd">        :param target_directory: Directory to update the json file</span>
 <span class="sd">        :return: Nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -200,31 +202,27 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
             <span class="k">return</span>
 
-        <span class="c1"># Create config.META if it doesn&#39;t exist, place download timestamp there</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">target_directory</span> <span class="o">+</span> <span class="s2">&quot;config.META&quot;</span><span class="p">)):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="s2">&quot;config.META&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;File download timestamp: &quot;</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
-        <span class="c1"># Otherwise config.META does exist. Update the correct line</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">update_time_stamp</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileinput</span><span class="o">.</span><span class="n">input</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="s2">&quot;config.META&quot;</span><span class="p">)),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s2">&quot;File download timestamp: &quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;File download timestamp:&quot;</span> <span class="o">+</span>
-                                  <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))),</span>
-                    <span class="n">update_time_stamp</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">),</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">update_time_stamp</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="s2">&quot;config.META&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;File download timestamp:&quot;</span><span class="p">)</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">target_directory</span> <span class="o">+</span> <span class="s2">&quot;/repo.json&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># parse json if it&#39;s there</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+            <span class="c1"># new date</span>
+            <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;master_download_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jsonFile</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">jsonFile</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File Not Found&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="FileGetter.download_all_files"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FileGetter.download_all_files">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">download_all_files</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles the downloading of ZIP archives and extracting the appropriate files into the target directory.</span>
-<span class="sd">        :param repo_urls: list of URLs to repositories. URLs must be to the top level of the repositories</span>
+<span class="sd">        :param repo_urls: get the list of URLs to repositories. URLs must be to the top level of the repositories</span>
 <span class="sd">        :param target_directories: File directory to store the files</span>
 <span class="sd">        :return: Nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -254,7 +252,7 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">)</span>
+            <span class="c1"># print(target_subdirectory) shows the folder</span>
 
             <span class="c1"># Download the zip of the repository</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">repo_url</span> <span class="o">+</span> <span class="s2">&quot;/archive/master.zip&quot;</span><span class="p">)</span>

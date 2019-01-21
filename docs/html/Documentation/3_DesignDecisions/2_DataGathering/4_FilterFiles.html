@@ -80,7 +80,6 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">Decompy API</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
@@ -93,6 +92,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
 </ul>
 </li>
 </ul>
@@ -187,11 +187,6 @@ this project. Currently we have blacklisted words such as: malloc, realloc, free
 it does not pass the test. The only exception is when a file does not use any header, it passes.
 “assert”, “complex”, “ctype”, “errno”, “fenv”, “float”, “inttypes”, “limits”, “locale”, “math”, “signal”,
 “stddef”, “stdint”, “stdio”, “stdlib”, “stdnoreturn”, “string”, “tgmath”, “time”, “wchar”, “wctype” are the default headers.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Compile Files</dt>
-<dd>The filter finally runs a subprocess with clang. We only need it to compile, so we use the “-fsyntax-only” flag when compiling.</dd>
 </dl>
 </div>
 

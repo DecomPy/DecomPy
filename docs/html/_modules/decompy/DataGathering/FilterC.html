@@ -148,7 +148,6 @@
   <h1>Source code for decompy.DataGathering.FilterC</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">decompy.DataGathering.FilterCompile</span> <span class="k">import</span> <span class="n">FilterCompile</span>
 
 
 <div class="viewcode-block" id="FilterC"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC">[docs]</a><span class="k">class</span> <span class="nc">FilterC</span><span class="p">:</span>
@@ -156,6 +155,8 @@
 <span class="sd">    Filters C files to our standards. This includes c header files that we find appropraite for machine learning.</span>
 <span class="sd">    Filters out the maximum amount of bytes we would like in a file. As of now, this is 7000 bytes.</span>
 <span class="sd">    Filters our words that may be too difficult: malloc, FILE, and threading</span>
+<span class="sd">    DOES NOT CHECK IF IT SUCCESSFULLY COMPILES. This is handled by ClangSubprocess which generates a new file with</span>
+<span class="sd">    file paths to use.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># sets current file directory</span>
@@ -284,97 +285,54 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="FilterC.check_valid_folder"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.check_valid_folder">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">check_valid_folder</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">filt_path_name</span><span class="o">=</span><span class="s2">&quot;Unfiltered&quot;</span><span class="p">,</span> <span class="n">append_file</span><span class="o">=</span><span class="s2">&quot;filtered_list.META&quot;</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="o">=</span><span class="n">MAX_BYTES</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="o">=</span><span class="n">MIN_BYTES</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">check_valid_folder</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">filt_path_name</span><span class="o">=</span><span class="s2">&quot;Unfiltered&quot;</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="o">=</span><span class="n">MAX_BYTES</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="o">=</span><span class="n">MIN_BYTES</span><span class="p">,</span>
                            <span class="n">whitelisted</span><span class="o">=</span><span class="n">C_WHITELIST_HEADERS</span><span class="p">,</span> <span class="n">blacklisted</span><span class="o">=</span><span class="n">C_BLACKLIST</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Runs check_valid_data for each file in the folder path..</span>
+<span class="sd">        Runs check_valid_data for each file in the folder path.</span>
 
 <span class="sd">        :param folder: the folder the user wants to validate for each C file.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        :param filt_path_name: the filtered path word the user is using to store data once filtered.</span>
-<span class="sd">        :type: str</span>
-<span class="sd">        :param append_file: the file to add lines to.</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        :param preferred_max_size: the max byte size the user wants.</span>
 <span class="sd">        :type: int</span>
 <span class="sd">        :param preferred_min_size: the max byte size the user wants.</span>
 <span class="sd">        :type: int</span>
 <span class="sd">        :param whitelisted: the whitelisted headers the user wants.</span>
-<span class="sd">        :type: tuple or array</span>
+<span class="sd">        :type: tuple or list</span>
 <span class="sd">        :param blacklisted: the blacklisted words the user wants to exclude.</span>
-<span class="sd">        :type: tuple or array</span>
-<span class="sd">        :return: str</span>
+<span class="sd">        :type: tuple or list</span>
+<span class="sd">        :return: a list of filtered file paths</span>
+<span class="sd">        :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># if no folder exists, then return file does not exist.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Folder or File Does Not Exist.&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># get empty filtered_files</span>
+        <span class="n">filtered_files</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># walk recursively in given folder</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># open file</span>
-            <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
-                <span class="c1"># look for unfiltered files and only want &quot;Unfiltered&quot; (or filt_path_name)</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+            <span class="c1"># look for unfiltered files and only want &quot;Unfiltered&quot; (or filt_path_name)</span>
+            <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">filt_path_name</span><span class="p">):</span>
+
                     <span class="c1"># only look for c files</span>
                     <span class="k">for</span> <span class="n">basename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                         <span class="c1"># unfiltered name</span>
                         <span class="n">unfiltered_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">basename</span>
 
-                        <span class="c1"># base root of new file 1 directory above unfiltered/*.c</span>
-                        <span class="n">base_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-                        <span class="c1"># store into new directory, check if it exists already in file</span>
-                        <span class="n">new_file</span> <span class="o">=</span> <span class="n">base_root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">append_file</span>
+                        <span class="c1"># checks for valid data</span>
+                        <span class="k">if</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_data</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="p">,</span>
+                                                    <span class="n">whitelisted</span><span class="p">,</span> <span class="n">blacklisted</span><span class="p">):</span>
+                            <span class="n">filtered_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overall Exception FilterC:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="k">pass</span>
 
-                        <span class="c1"># check if path already exists in the file, so we don&#39;t waste time computing or adding more</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">file_text_exists</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="n">unfiltered_path</span><span class="p">):</span>
-
-                            <span class="c1"># checks for valid data, compile, then adds to meta.</span>
-                            <span class="k">if</span> <span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_data</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">,</span> <span class="n">preferred_max_size</span><span class="p">,</span> <span class="n">preferred_min_size</span><span class="p">,</span>
-                                                        <span class="n">whitelisted</span><span class="p">,</span> <span class="n">blacklisted</span><span class="p">)</span> <span class="ow">and</span> <span class="n">FilterCompile</span><span class="o">.</span><span class="n">compile_file</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">):</span>
-
-                                <span class="c1"># create file if it does not exist</span>
-                                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_file</span><span class="p">):</span>
-                                    <span class="c1"># open to write to it</span>
-                                    <span class="nb">open</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span>
-
-                                <span class="c1"># append path to list</span>
-                                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">myfile</span><span class="p">:</span>
-                                    <span class="c1"># add file path to list.META</span>
-                                    <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">unfiltered_path</span><span class="p">)</span>
-
-                                    <span class="c1"># check if OS is windows for \r\n</span>
-                                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
-                                        <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                                    <span class="c1"># otherwise it&#39;s \n</span>
-                                    <span class="k">else</span><span class="p">:</span>
-                                        <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FilterC.file_text_exists"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FilterC.FilterC.file_text_exists">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">file_text_exists</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">phrase</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks for duplicate lines in a file.</span>
-
-<span class="sd">        :param file: the file path</span>
-<span class="sd">        :type: str</span>
-<span class="sd">        :param phrase: the phrase we are looking for</span>
-<span class="sd">        :type: str</span>
-<span class="sd">        :return: true if duplicate exists in file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># check if file exists. If it does not then return False</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="k">return</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span></div></div>
-
-<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
-<span class="c1">#     f = FilterC()</span>
-<span class="c1">#     f.check_valid_folder(&quot;decompy/tests/test_filtercfiles/&quot;)</span>
+        <span class="k">return</span> <span class="n">filtered_files</span></div></div>
 
 
 </pre></div>

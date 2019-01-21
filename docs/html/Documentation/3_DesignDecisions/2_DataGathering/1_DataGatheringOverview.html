@@ -80,7 +80,6 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">Decompy API</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
@@ -98,6 +97,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
 </ul>
 </li>
 </ul>
@@ -196,7 +196,7 @@ Finally, in stage 4, we compile the filtered (valid) C files into unoptimized an
 <p>Depending on which stage you want, you can run the various methods that match their stage in the CreateLocalData.py class.
 There is a .stage1() method which grabs the repos and generates metadata. There is a .stage2() method that grabs the C files from the repo.
 There is a .stage3() method which filters out the data. There is a .stage4() method that compiles into unoptimized and optimized LLVM.
-Finally, there is an all_four_stages() method which will run all four stages. To see more information regarding each stage,
+Finally, there is an all_stages() method which will run all stages. To see more information regarding each stage,
 continue reading this documentation.</p>
 </div>
 </div>

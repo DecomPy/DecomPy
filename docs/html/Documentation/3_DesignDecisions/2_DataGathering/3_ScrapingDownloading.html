@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Compiling C Source to Various Formats" href="4_clangSubproc.html" />
-    <link rel="prev" title="Filtering the Files" href="2_FilterFiles.html" /> 
+    <link rel="next" title="Filtering the Files" href="4_FilterFiles.html" />
+    <link rel="prev" title="Filtering the Repositories" href="2_RepoFiltering.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -83,8 +83,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="1_RepoFiltering.html">Filtering the Repositories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_FilterFiles.html">Filtering the Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_DataGatheringOverview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_RepoFiltering.html">Filtering the Repositories</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Scraping and Downloading Files from GitHub using GitHubScraper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#relevant-classes">Relevant Classes</a></li>
@@ -92,13 +92,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#how-to-use">How To Use</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-scrape">How does GitHubScraper Scrape?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-deal-with-files">How Does GitHubScraper Deal With Files?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-multithread">How Does GitHubScraper Multithread?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-multithread-work">How Does GitHubScraper Multithread work?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#what-is-the-performance-of-githubscraper">What is the Performance of GitHubScraper?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-is-githubscraper-tested">How Is GitHubScraper Tested?</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="4_clangSubproc.html">Compiling C Source to Various Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_clangSubproc.html">Compiling C Source to Various Formats</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
@@ -207,10 +208,10 @@
 <li><a class="reference internal" href="#how-does-githubscraper-deal-with-files" id="id12">How Does GitHubScraper Deal With Files?</a><ul>
 <li><a class="reference internal" href="#downloading-files" id="id13">Downloading Files</a></li>
 <li><a class="reference internal" href="#storing-files" id="id14">Storing Files</a></li>
-<li><a class="reference internal" href="#updating-meta-file" id="id15">Updating META file</a></li>
+<li><a class="reference internal" href="#updating-json-file" id="id15">Updating json file</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#how-does-githubscraper-multithread" id="id16">How Does GitHubScraper Multithread?</a></li>
+<li><a class="reference internal" href="#how-does-githubscraper-multithread-work" id="id16">How Does GitHubScraper Multithread work?</a></li>
 <li><a class="reference internal" href="#what-is-the-performance-of-githubscraper" id="id17">What is the Performance of GitHubScraper?</a></li>
 <li><a class="reference internal" href="#how-is-githubscraper-tested" id="id18">How Is GitHubScraper Tested?</a></li>
 </ul>
@@ -344,17 +345,17 @@ is a UnicodeEncodeError, but I just print the error and ignore it because I don�
 The method is called GitHubScraper.__file_content_into_storage(content_url_tuple, target_directory), where
 content_url_tuple is the tuple, and target_directory is the directory to store the file.</p>
 </div>
-<div class="section" id="updating-meta-file">
-<h3><a class="toc-backref" href="#id15">Updating META file</a><a class="headerlink" href="#updating-meta-file" title="Permalink to this headline">¶</a></h3>
-<p>Only the target directory is needed to update the META file within that directory. The relevant method is
+<div class="section" id="updating-json-file">
+<h3><a class="toc-backref" href="#id15">Updating json file</a><a class="headerlink" href="#updating-json-file" title="Permalink to this headline">¶</a></h3>
+<p>Only the target directory is needed to update the json file within that directory. The relevant method is
 GitHubScraper.__update_meta(target_directory). If the directory doesn’t exist, that means that there were no C files
-to download, so it just returns. If the directory does exist, it is checked to see if the META file exists. If it
+to download, so it just returns. If the directory does exist, it is checked to see if the json file exists. If it
 exists, then update it using the datetime package, and if it doesn’t exist, create the file. The date is written
 in YYYY-MM-DD HH:MM:SS format so that the database can query it or something. I don’t actually know how databases work.</p>
 </div>
 </div>
-<div class="section" id="how-does-githubscraper-multithread">
-<h2><a class="toc-backref" href="#id16">How Does GitHubScraper Multithread?</a><a class="headerlink" href="#how-does-githubscraper-multithread" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-does-githubscraper-multithread-work">
+<h2><a class="toc-backref" href="#id16">How Does GitHubScraper Multithread work?</a><a class="headerlink" href="#how-does-githubscraper-multithread-work" title="Permalink to this headline">¶</a></h2>
 <p>Because scraping is a highly IO dependent process, it is better to utilize threads rather than processes.</p>
 <p>GitHubScraper uses ThreadPoolExecutor to manage all the threads and futures. There are three sources of futures:
 subfolder_links, file_links, and file_name_url_content_tuples. subfolder_links is a list of links that need to be
@@ -394,10 +395,10 @@ it’s pretty slow.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="4_clangSubproc.html" class="btn btn-neutral float-right" title="Compiling C Source to Various Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="4_FilterFiles.html" class="btn btn-neutral float-right" title="Filtering the Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="2_FilterFiles.html" class="btn btn-neutral" title="Filtering the Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="2_RepoFiltering.html" class="btn btn-neutral" title="Filtering the Repositories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

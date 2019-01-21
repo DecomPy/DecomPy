@@ -147,8 +147,14 @@
             
   <h1>Source code for decompy.DataGathering.CreateLocalData</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">decompy.DataGathering</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">decompy.database</span> <span class="k">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="n">decode_hex</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">getdecoder</span><span class="p">(</span><span class="s2">&quot;hex_codec&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CreateLocalData"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData">[docs]</a><span class="k">class</span> <span class="nc">CreateLocalData</span><span class="p">:</span>
@@ -157,81 +163,325 @@
 <span class="sd">    RepoFilter, GitHubScraper, FilterC, and ClangSubprocess.</span>
 <span class="sd">    These combined will get all the relevant data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database_name</span><span class="o">=</span><span class="s2">&quot;c_code&quot;</span><span class="p">,</span><span class="n">repo_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;C &quot;</span><span class="p">,</span> <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;blacklist&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;C++&quot;</span><span class="p">,</span> <span class="s2">&quot;C#&quot;</span><span class="p">,</span> <span class="s2">&quot;css&quot;</span><span class="p">],</span> <span class="s2">&quot;per_page&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+                 <span class="n">repo_json_name</span><span class="o">=</span><span class="s2">&quot;offlineResults.json&quot;</span><span class="p">,</span> <span class="n">repo_json_filtered_name</span><span class="o">=</span><span class="s2">&quot;filteredOfflineResults.json&quot;</span><span class="p">,</span>
+                 <span class="n">filtered_repos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;Repositories&quot;</span><span class="p">,</span> <span class="n">save_json</span><span class="o">=</span><span class="s2">&quot;repo.json&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        initializes a new object, containing the other classes, one to rule them all.</span>
+<span class="sd">        :param database_name: name of the database to store info to.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param repo_dict: dictionary of data to insert</span>
+<span class="sd">        :type: dictionary</span>
+<span class="sd">        :param repo_json_name: the json file to store all the meta data</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param repo_json_filtered_name: the json file to store all the meta data</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param filtered_repos: the filtered_repos from &quot;offlineResults.json&quot;</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param folder: folder to save the repositories to</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param save_json: where to save the json file to</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param verbose: whether or not to include teh print statements.</span>
+<span class="sd">        :type: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rf</span> <span class="o">=</span> <span class="n">RepoFilter</span><span class="p">(</span><span class="s2">&quot;C &quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">blacklist</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;C++&quot;</span><span class="p">,</span> <span class="s2">&quot;C#&quot;</span><span class="p">,</span> <span class="s2">&quot;css&quot;</span><span class="p">])</span>  <span class="c1"># gets 100 results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf</span> <span class="o">=</span> <span class="n">RepoFilter</span><span class="p">(</span><span class="n">repo_dict</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">],</span> <span class="n">repo_dict</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">],</span> <span class="n">repo_dict</span><span class="p">[</span><span class="s2">&quot;blacklist&quot;</span><span class="p">],</span> <span class="n">repo_dict</span><span class="p">[</span><span class="s2">&quot;per_page&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rs</span> <span class="o">=</span> <span class="n">RepoStructure</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;Repositories&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span> <span class="o">=</span> <span class="n">save_json</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo_json_name</span> <span class="o">=</span> <span class="n">repo_json_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo_json_filtered_name</span> <span class="o">=</span> <span class="n">repo_json_filtered_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span> <span class="o">=</span> <span class="n">filtered_repos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span> <span class="o">=</span> <span class="n">FilterC</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">database_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
-<div class="viewcode-block" id="CreateLocalData.stage1"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage1">[docs]</a>    <span class="k">def</span> <span class="nf">stage1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CreateLocalData.stage1_gather_repo_meta"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage1_gather_repo_meta">[docs]</a>    <span class="k">def</span> <span class="nf">stage1_gather_repo_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_page</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        stage 1 of the data gathering process: Gather the data from the repos and store it into a json file.</span>
+<span class="sd">        :param start_page: where to start getting the data (start page) default is 1.</span>
+<span class="sd">        :param end_page: where to end the page (end page) default is 2.</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_results</span><span class="p">(</span><span class="s2">&quot;offlineResults.json&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># gather the data and store into the json for later use</span>
-        <span class="n">repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="s2">&quot;offlineResults.json&quot;</span><span class="p">)</span>  <span class="c1"># read the json data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_filtered_list</span><span class="p">(</span><span class="s2">&quot;filteredOfflineResults.json&quot;</span><span class="p">,</span> <span class="n">repos</span><span class="p">)</span>  <span class="c1"># filter the offline results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="s2">&quot;filteredOfflineResults.json&quot;</span><span class="p">)</span>  <span class="c1"># read into our filtered repos</span>
+        <span class="k">if</span> <span class="n">end_page</span> <span class="o">&lt;</span> <span class="n">start_page</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start page must be greater than end page.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">batch_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>  <span class="c1"># batch current date and filtered_repos</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_results</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo_json_name</span><span class="p">,</span> <span class="n">start_page</span><span class="p">,</span> <span class="n">end_page</span><span class="p">)</span>  <span class="c1"># gather the data and store into json</span>
+        <span class="n">repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo_json_name</span><span class="p">)</span>  <span class="c1"># read the json data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo_json_filtered_name</span><span class="p">,</span> <span class="n">repos</span><span class="p">)</span>  <span class="c1"># filter the offline results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo_json_filtered_name</span><span class="p">)</span>  <span class="c1"># read into our filtered repos</span>
 
-<div class="viewcode-block" id="CreateLocalData.stage2"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage2">[docs]</a>    <span class="k">def</span> <span class="nf">stage2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># batch current date and filtered_repos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">batch_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CreateLocalData.stage2_get_repos"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage2_get_repos">[docs]</a>    <span class="k">def</span> <span class="nf">stage2_get_repos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        stage 2 of the data gathering process: Scrape all the files from GitHub.</span>
+<span class="sd">        stage 2 of the data gathering process: Scrape all the files from GitHub from the given offline json file.</span>
+<span class="sd">        :param test: whether or not to test</span>
+<span class="sd">        :type: test</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">:</span>  <span class="c1"># if we have repos, then sort through each rep in our json</span>
-            <span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>  <span class="c1"># grab the url from the json to scrape</span>
-                <span class="n">FileGetter</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span>
-                    <span class="n">url</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;Repositories&quot;</span><span class="p">,</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>  <span class="c1"># scrape all the urls</span></div>
-                <span class="c1"># into our destined folder</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">:</span>  <span class="c1"># if we have repos, then sort through each rep in our json</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo_json_filtered_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CreateLocalData.stage3"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage3">[docs]</a>    <span class="k">def</span> <span class="nf">stage3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        stage 3 of the data gathering process: Filter the C files out. Get the good ones.</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">)</span>  <span class="c1"># seeks the folder and recursively filters them out: uses default param</span></div>
+        <span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>  <span class="c1"># grab the url from the json to download zip into our destinated folder</span>
+            <span class="n">FileGetter</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">test</span><span class="p">:</span>
+                <span class="k">break</span></div>
 
-<div class="viewcode-block" id="CreateLocalData.stage4"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage4">[docs]</a>    <span class="k">def</span> <span class="nf">stage4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CreateLocalData.stage3_filter_files"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage3_filter_files">[docs]</a>    <span class="k">def</span> <span class="nf">stage3_filter_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unfiltered_key</span><span class="o">=</span><span class="s2">&quot;Unfiltered&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        stage 4 of the data gathering process: Generate LLVM and other data</span>
+<span class="sd">        stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.</span>
+<span class="sd">            Use the list provided and then insert them into json format. Currently uses default params.</span>
+<span class="sd">        :param unfiltered_key: the directory to search through</span>
+<span class="sd">        :type: str</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># recursively loop through all</span>
+        <span class="c1"># walk recursively in given folder only looking for &#39;Unfiltered&#39;</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">unfiltered_key</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+                <span class="n">ufolder</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">unfiltered_key</span>
+                <span class="n">filtered_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_folder</span><span class="p">(</span><span class="n">ufolder</span><span class="p">)</span>
+
+                <span class="c1"># init empty and loop through the files</span>
+                <span class="n">filtered_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="c1"># read json if it exists</span>
+                <span class="n">json_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">json_path</span><span class="p">):</span>
+                    <span class="c1"># load json</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                        <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+                    <span class="c1"># update time</span>
+                    <span class="n">now_minute</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span>
+                    <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filter_approval_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now_minute</span>
+
+                    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">filtered_list</span><span class="p">:</span>
+                        <span class="c1"># filtered_files.append({&quot;filtered_path&quot;: file_path}) # uncomment if you want to add all</span>
+
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="c1"># if it&#39;s already in there, then don&#39;t add it, don&#39;t want to mess up any more data</span>
+                        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filtered_files</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]:</span>
+                                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">break</span>
+
+                        <span class="c1"># not found, then create it and add to array</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                            <span class="n">filtered_files</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">:</span> <span class="n">file_path</span><span class="p">})</span>
+
+                    <span class="c1"># finally write back to it if it has changed</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                        <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_files</span>
+                        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateLocalData.stage4_generate_llvm"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage4_generate_llvm">[docs]</a>    <span class="k">def</span> <span class="nf">stage4_generate_llvm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llvm_file_path</span><span class="o">=</span><span class="s2">&quot;LLVM&quot;</span><span class="p">,</span> <span class="n">object_file_path</span><span class="o">=</span><span class="s2">&quot;Object&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stage 4 of the data gathering process: Generate LLVM and other data.</span>
+<span class="sd">        gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</span>
+<span class="sd">        :param llvm_file_path: the file path to save LLVM files to</span>
+<span class="sd">        :param object_file_path: the file path to save Object files to</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># open file</span>
             <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">):</span>
-                <span class="c1"># look for *.c in files</span>
-                <span class="k">for</span> <span class="n">basename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">basename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c&quot;</span><span class="p">):</span>
-                        <span class="c1"># get name without *.c</span>
-                        <span class="n">name</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">basename</span><span class="p">)</span>  <span class="c1"># won&#39;t use extension</span>
-                        <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>                          <span class="c1"># get current working directory</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># find our filtered json file (default repo.json)</span>
+                    <span class="n">json_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">json_path</span><span class="p">):</span>
 
-                        <span class="n">Clang</span><span class="o">.</span><span class="n">to_llvm_opt</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;_op.ll&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>  <span class="c1"># compile optimized</span>
-                        <span class="n">Clang</span><span class="o">.</span><span class="n">to_llvm_unopt</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;_unop.ll&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>  <span class="c1"># compile unoptimized</span>
+                        <span class="c1"># json path</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                            <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+                        <span class="c1"># new array with values</span>
+                        <span class="n">filtered_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+                        <span class="c1"># update time with now to precise minute</span>
+                        <span class="n">now_minute</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span>
+                        <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;llvm_gen_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now_minute</span>
+                        <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;compilation_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now_minute</span>
+
+                        <span class="c1"># get updated filtered_files</span>
+                        <span class="n">json_filtered_files</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]</span>
+
+                        <span class="c1"># loop through json objects if they exist</span>
+                        <span class="k">if</span> <span class="n">json_filtered_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filtered_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                            <span class="c1"># name, extension = os.path.splitext(basename)  # won&#39;t use extension</span>
+
+                            <span class="c1"># paths for llvm and object file</span>
+                            <span class="n">llvm_folder</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">llvm_file_path</span>
+                            <span class="n">object_folder</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">object_file_path</span>
+
+                            <span class="c1"># loop over file paths in json</span>
+                            <span class="k">for</span> <span class="n">filtered_obj</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]:</span>
+
+                                <span class="c1"># init the file</span>
+                                <span class="n">filtered_file</span> <span class="o">=</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span>
+                                <span class="n">filtered_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filtered_file</span><span class="p">)</span>
+
+                                <span class="c1"># check if file exists or wasting time</span>
+                                <span class="k">if</span> <span class="n">filtered_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                                    <span class="n">object_path</span> <span class="o">=</span> <span class="n">Clang</span><span class="o">.</span><span class="n">to_object_file</span><span class="p">(</span><span class="n">filtered_file</span><span class="p">,</span> <span class="n">object_folder</span><span class="p">)</span>  <span class="c1"># compile .o</span>
+                                    <span class="n">opt_llvm_path</span> <span class="o">=</span> <span class="n">Clang</span><span class="o">.</span><span class="n">to_llvm_opt</span><span class="p">(</span><span class="n">filtered_file</span><span class="p">,</span> <span class="n">llvm_folder</span><span class="p">)</span>  <span class="c1"># compile optimized llvm</span>
+                                    <span class="n">unopt_llvm_path</span> <span class="o">=</span> <span class="n">Clang</span><span class="o">.</span><span class="n">to_llvm_unopt</span><span class="p">(</span><span class="n">filtered_file</span><span class="p">,</span> <span class="n">llvm_folder</span><span class="p">)</span>  <span class="c1"># compile unoptimized llvm</span>
+
+                                    <span class="k">if</span> <span class="n">object_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">opt_llvm_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">unopt_llvm_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                        <span class="c1"># add it to object</span>
+                                        <span class="n">filtered_files</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                                                <span class="s2">&quot;filtered_path&quot;</span><span class="p">:</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">],</span>
+                                                <span class="s2">&quot;object_path&quot;</span><span class="p">:</span> <span class="n">object_path</span><span class="p">,</span>
+                                                <span class="s2">&quot;opt_llvm_path&quot;</span><span class="p">:</span> <span class="n">opt_llvm_path</span><span class="p">,</span>
+                                                <span class="s2">&quot;unopt_llvm_path&quot;</span><span class="p">:</span> <span class="n">unopt_llvm_path</span>
+                                            <span class="p">})</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">filtered_files</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                                            <span class="s2">&quot;filtered_path&quot;</span><span class="p">:</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span>
+                                        <span class="p">})</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">filtered_files</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                                        <span class="s2">&quot;filtered_path&quot;</span><span class="p">:</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span>
+                                    <span class="p">})</span>
+
+                            <span class="c1"># finally write back the changes.</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">filtered_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                                    <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_files</span>
+                                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="c1"># else:</span>
+                    <span class="c1">#     print(&quot;Stage 4 - Cannot find file: &quot; + json_path)</span>
+
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception Stage 4 json file: &quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="k">pass</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">pass</span></div></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overall Exception Stage 4: &quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">pass</span></div>
 
+<div class="viewcode-block" id="CreateLocalData.stage5_insert_database"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage5_insert_database">[docs]</a>    <span class="k">def</span> <span class="nf">stage5_insert_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        stage 5 of the gathering process: load into the database reading the meta and other info.</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">cld</span> <span class="o">=</span> <span class="n">CreateLocalData</span><span class="p">()</span>
-    <span class="n">cld</span><span class="o">.</span><span class="n">stage1</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;stage 1 done&quot;</span><span class="p">)</span>
-    <span class="n">cld</span><span class="o">.</span><span class="n">stage2</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;stage 2 done&quot;</span><span class="p">)</span>
-    <span class="n">cld</span><span class="o">.</span><span class="n">stage3</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;stage 3 done&quot;</span><span class="p">)</span>
-    <span class="n">cld</span><span class="o">.</span><span class="n">stage4</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;stage 4 done&quot;</span><span class="p">)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># open file</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">):</span>
+            <span class="c1"># find our filtered json file (default repo.json)</span>
+            <span class="n">json_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">json_path</span><span class="p">):</span>
+                <span class="c1"># json path</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># files to read from</span>
+                        <span class="n">filtered_list</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="s2">&quot;llvm_gen_date&quot;</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+                            <span class="c1"># meta data info</span>
+                            <span class="n">repo_name</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+                            <span class="n">author</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;author&quot;</span><span class="p">]</span>
+                            <span class="n">filter_date</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filter_date&quot;</span><span class="p">]</span>
+                            <span class="n">master_download_date</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;master_download_date&quot;</span><span class="p">]</span>
+                            <span class="n">filter_approval_date</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filter_approval_date&quot;</span><span class="p">]</span>
+                            <span class="n">llvm_gen_date</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;llvm_gen_date&quot;</span><span class="p">]</span>
+                            <span class="n">repo_url</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
+                            <span class="n">compilation_date</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;compilation_date&quot;</span><span class="p">]</span>
+                            <span class="n">author_repo_key</span> <span class="o">=</span> <span class="n">author</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">repo_name</span>
+
+                            <span class="c1"># insert meta tuple TODO: get license... But GitHub api doesn&#39;t give it?</span>
+                            <span class="n">meta_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">author_repo_key</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span>
+                                          <span class="n">filter_approval_date</span><span class="p">,</span> <span class="n">llvm_gen_date</span><span class="p">,</span> <span class="n">filter_date</span><span class="p">,</span>
+                                          <span class="n">compilation_date</span><span class="p">,</span> <span class="n">master_download_date</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert_meta</span><span class="p">(</span><span class="n">meta_tuple</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+                            <span class="c1"># find the file path then read that c file</span>
+                            <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">filtered_list</span><span class="p">:</span>
+                                <span class="k">try</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="s2">&quot;opt_llvm_path&quot;</span> <span class="ow">in</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="s2">&quot;unopt_llvm_path&quot;</span> <span class="ow">in</span> <span class="n">file_path</span> \
+                                            <span class="ow">and</span> <span class="s2">&quot;object_path&quot;</span> <span class="ow">in</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="s2">&quot;filtered_path&quot;</span> <span class="ow">in</span> <span class="n">file_path</span><span class="p">:</span>
+
+                                        <span class="c1"># get new file path by appending our cwd</span>
+                                        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+                                        <span class="n">llvm_op_file_path</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file_path</span><span class="p">[</span><span class="s2">&quot;opt_llvm_path&quot;</span><span class="p">]</span>
+                                        <span class="n">llvm_unop_file_path</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file_path</span><span class="p">[</span><span class="s2">&quot;unopt_llvm_path&quot;</span><span class="p">]</span>
+                                        <span class="n">o_file_path</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file_path</span><span class="p">[</span><span class="s2">&quot;object_path&quot;</span><span class="p">]</span>
+                                        <span class="n">c_file_path</span> <span class="o">=</span> <span class="n">file_path</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span>
+                                        <span class="n">c_file_path_read</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file_path</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span>
+
+                                        <span class="c1"># read object file</span>
+                                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">o_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">object_f</span><span class="p">:</span>
+                                            <span class="n">object_data</span> <span class="o">=</span> <span class="n">object_f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                                        <span class="c1"># change to llvm directory and search for file that ends with .c</span>
+                                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">llvm_op_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">llvm_op_f</span><span class="p">:</span>
+                                            <span class="n">llvm_op_data</span> <span class="o">=</span> <span class="n">llvm_op_f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                                        <span class="c1"># read unop file</span>
+                                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">llvm_unop_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">llvm_unop_f</span><span class="p">:</span>
+                                            <span class="n">llvm_unop_data</span> <span class="o">=</span> <span class="n">llvm_unop_f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                                        <span class="c1"># read c file path</span>
+                                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">c_file_path_read</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cf</span><span class="p">:</span>
+                                            <span class="n">c_data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                                        <span class="c1"># insert ml tuple</span>
+                                        <span class="n">ml_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_file_path</span><span class="p">,</span> <span class="n">author_repo_key</span><span class="p">,</span> <span class="n">c_data</span><span class="p">,</span> <span class="n">object_data</span><span class="p">,</span> <span class="n">llvm_unop_data</span><span class="p">,</span>
+                                                    <span class="n">llvm_op_data</span><span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert_ml</span><span class="p">(</span><span class="n">ml_tuple</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+                                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stage 5: inserting into database ml table&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                                    <span class="k">pass</span>
+
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stage 5: inserting into database meta table&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CreateLocalData.all_stages_increment"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.all_stages_increment">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">all_stages_increment</span><span class="p">(</span><span class="n">start_page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_page</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        runs all five stages in increments.</span>
+<span class="sd">        :param start_page: page to start or pick back up.</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param end_page: page to end on.</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :return: void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cld</span> <span class="o">=</span> <span class="n">CreateLocalData</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="n">start_page</span> <span class="o">&lt;</span> <span class="n">end_page</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># only do 100 repos at a time (1 page) for safety on the json file</span>
+                <span class="n">cld</span><span class="o">.</span><span class="n">stage1_gather_repo_meta</span><span class="p">(</span><span class="n">start_page</span><span class="p">,</span> <span class="n">start_page</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">cld</span><span class="o">.</span><span class="n">stage2_get_repos</span><span class="p">()</span>
+                <span class="n">cld</span><span class="o">.</span><span class="n">stage3_filter_files</span><span class="p">()</span>
+                <span class="n">cld</span><span class="o">.</span><span class="n">stage4_generate_llvm</span><span class="p">()</span>
+                <span class="n">cld</span><span class="o">.</span><span class="n">stage5_insert_database</span><span class="p">()</span>
+                <span class="n">start_page</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running all stages error:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="k">pass</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># if __name__ == &quot;__main__&quot;:</span>
+<span class="c1">#     cld = CreateLocalData()</span>
+<span class="c1">#     cld.stage1_gather_repo_meta()</span>
+<span class="c1">#     cld.stage2_get_repos()</span>
+<span class="c1">#     cld.stage3_filter_files()</span>
+<span class="c1">#     cld.stage4_generate_llvm()</span>
+<span class="c1">#     cld.stage5_insert_database()</span>
 
 </pre></div>
 

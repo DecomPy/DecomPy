@@ -175,25 +175,26 @@
         <span class="k">if</span> <span class="n">default_tables</span><span class="p">:</span>
             <span class="c1"># IMPORTANT: dates must be in format YYYY-MM-DD</span>
             <span class="n">sql_create_meta_table</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE IF NOT EXISTS meta_table (</span>
-<span class="s2">                                            repo_name text PRIMARY KEY NOT NULL,</span>
+<span class="s2">                                            author_repo_key text PRIMARY KEY NOT NULL,</span>
+<span class="s2">                                            repo_name text NOT NULL,</span>
 <span class="s2">                                            license text,</span>
 <span class="s2">                                            url text UNIQUE,</span>
-<span class="s2">                                            author text,</span>
-<span class="s2">                                            filter_approval_date date,</span>
-<span class="s2">                                            llvm_gen_date date,</span>
-<span class="s2">                                            filter_date date,</span>
-<span class="s2">                                            compilation_date date,</span>
-<span class="s2">                                            master_download_date date</span>
+<span class="s2">                                            author text NOT NULL,</span>
+<span class="s2">                                            filter_approval_date date NOT NULL,</span>
+<span class="s2">                                            llvm_gen_date date NOT NULL,</span>
+<span class="s2">                                            filter_date date NOT NULL,</span>
+<span class="s2">                                            compilation_date date NOT NULL,</span>
+<span class="s2">                                            master_download_date date NOT NULL</span>
 <span class="s2">                                    );&quot;&quot;&quot;</span>
 
             <span class="n">sql_create_ml_table</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE IF NOT EXISTS ml_table (</span>
-<span class="s2">                                          file_path text PRIMARY KEY,</span>
-<span class="s2">                                          repo_name text,</span>
-<span class="s2">                                          source_code text UNIQUE,</span>
-<span class="s2">                                          object_file blob UNIQUE,</span>
-<span class="s2">                                          llvm_unop text UNIQUE,</span>
-<span class="s2">                                          llvm_op text UNIQUE,</span>
-<span class="s2">                                          FOREIGN KEY (repo_name) REFERENCES meta_table (repo_name) ON DELETE CASCADE ON UPDATE CASCADE</span>
+<span class="s2">                                          file_path text PRIMARY KEY NOT NULL,</span>
+<span class="s2">                                          author_repo_key text NOT NULL,</span>
+<span class="s2">                                          source_code text UNIQUE NOT NULL,</span>
+<span class="s2">                                          object_file blob UNIQUE NOT NULL,</span>
+<span class="s2">                                          llvm_unop text UNIQUE NOT NULL,</span>
+<span class="s2">                                          llvm_op text UNIQUE NOT NULL,</span>
+<span class="s2">                                          FOREIGN KEY (author_repo_key) REFERENCES meta_table (author_repo_key) ON DELETE CASCADE ON UPDATE CASCADE</span>
 <span class="s2">                                  );&quot;&quot;&quot;</span>
 
             <span class="c1"># test if connection was successful</span>
@@ -223,7 +224,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        create a table from the create_table_sql statement</span>
 <span class="sd">        :param create_table_sql: a CREATE TABLE statement</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: bool or nothing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_table_sql</span><span class="p">)</span>
@@ -239,7 +240,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># get the repo and its files</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM ml_table WHERE repo_name = &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM ml_table WHERE author_repo_key = &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
 
             <span class="c1"># after selecting, get all matching files</span>
@@ -281,47 +282,60 @@
 
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Database.insert_meta"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.insert_meta">[docs]</a>    <span class="k">def</span> <span class="nf">insert_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">,</span> <span class="n">repo_license</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">filter_approval_date</span><span class="p">,</span> <span class="n">llvm_gen_date</span><span class="p">,</span> <span class="n">filter_date</span><span class="p">,</span> <span class="n">compilation_date</span><span class="p">,</span> <span class="n">master_download_date</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Database.insert_meta"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.insert_meta">[docs]</a>    <span class="k">def</span> <span class="nf">insert_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta_tuple</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        inserts or replaces if it exists new meta row by adding it to the transaction builder into the meta table or replaces existing one.</span>
-<span class="sd">        :return: nothing</span>
+<span class="sd">        inserts or replaces if it exists new meta row by adding it to the transaction builder into the meta table</span>
+<span class="sd">        or replaces existing one.</span>
+<span class="sd">        :param meta_tuple: the meta tuple to add the info. Contains author_repo_key, repo_name, license, url, author,</span>
+<span class="sd">        filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date, and whether or</span>
+<span class="sd">        not to override.</span>
+<span class="sd">        :type: tuple - str (not null), str (not null), str, str (not null), str (not null),</span>
+<span class="sd">        str (not null), str (not null), str (not null), str (not null), str (not null)</span>
+<span class="sd">        :param override: to override the transaction to immediately process the query or not.</span>
+<span class="sd">        :type: bool</span>
+<span class="sd">        :return: bool or nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;REPLACE INTO meta_table(repo_name, license, url, author, filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date)</span>
-<span class="s2">                   VALUES (&quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="n">repo_license</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">filter_approval_date</span><span class="p">,</span> <span class="n">llvm_gen_date</span><span class="p">,</span> <span class="n">filter_date</span><span class="p">,</span>
-                                                                               <span class="n">compilation_date</span><span class="p">,</span> <span class="n">master_download_date</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;REPLACE INTO meta_table(author_repo_key, repo_name, license, url, author, filter_approval_date, </span>
+<span class="s2">                      llvm_gen_date, filter_date, compilation_date, master_download_date)</span>
+<span class="s2">                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">meta_tuple</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Database.insert_ml"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.insert_ml">[docs]</a>    <span class="k">def</span> <span class="nf">insert_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">object_file</span><span class="p">,</span> <span class="n">llvm_unop</span><span class="p">,</span> <span class="n">llvm_op</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Database.insert_ml"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.insert_ml">[docs]</a>    <span class="k">def</span> <span class="nf">insert_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ml_tuple</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        inserts or replaces if it exists a new ml row by adding it to the transaction builder</span>
-<span class="sd">        :return: nothing</span>
+<span class="sd">        inserts or replaces, if it exists, a new ml row by adding it to the transaction builder. Can override.</span>
+<span class="sd">        :param ml_tuple: file_path, author_repo_key, source_code, object_file, llvm_unop, and llvm_op</span>
+<span class="sd">        :type: tuple - str (not null), str (not null), str (not null), str (not null), str (not null), str (not null)</span>
+<span class="sd">        :param override: to override the transaction to immediately process the query or not.</span>
+<span class="sd">        :type: bool</span>
+<span class="sd">        :return: bool or nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;REPLACE INTO ml_table(file_path, repo_name, source_code, object_file, llvm_unop, llvm_op)</span>
-<span class="s2">                  VALUES(&quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;, &quot;</span><span class="si">{}</span><span class="s2">&quot;)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">object_file</span><span class="p">,</span> <span class="n">llvm_unop</span><span class="p">,</span> <span class="n">llvm_op</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;REPLACE INTO ml_table(file_path, author_repo_key, source_code, object_file, llvm_unop, llvm_op) VALUES (?, ?, ?, ?, ?, ?)&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">ml_tuple</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Database.delete_meta"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.delete_meta">[docs]</a>    <span class="k">def</span> <span class="nf">delete_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Database.delete_meta"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.delete_meta">[docs]</a>    <span class="k">def</span> <span class="nf">delete_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author_repo_key</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        delete meta data with this repo name, and the ml data as a result of cascading.</span>
-<span class="sd">        :param repo_name: the repository name</span>
+<span class="sd">        :param author_repo_key: the author repo key from Github used to uniquely identify each situation.</span>
+<span class="sd">        :param override: whether or not to override the transaction builder. Useful if we want it immediately</span>
+<span class="sd">        or not going to have greater than 1000 transactoins.</span>
 <span class="sd">        :return: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;DELETE FROM meta_table WHERE repo_name = &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">repo_name</span><span class="p">)</span>
-            <span class="c1"># self.cursor.execute(sql)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;DELETE FROM meta_table WHERE author_repo_key = &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">author_repo_key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -329,15 +343,17 @@
 
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Database.delete_ml"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.delete_ml">[docs]</a>    <span class="k">def</span> <span class="nf">delete_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Database.delete_ml"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.database.html#decompy.database.db.Database.delete_ml">[docs]</a>    <span class="k">def</span> <span class="nf">delete_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        delete ml data with this file name.</span>
 <span class="sd">        :param file_name: the file name to delete.</span>
+<span class="sd">        :param override: whether or not to override the transaction builder. Useful if we want it immediately</span>
+<span class="sd">        or not going to have greater than 1000 transactoins.</span>
 <span class="sd">        :return: nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;DELETE FROM ml_table WHERE file_path = &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -390,20 +406,25 @@
         <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__transaction_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__transaction_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql_query</span><span class="p">,</span> <span class="n">sql_values</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        populates the database using transactions instead of 1 by 1</span>
-<span class="sd">        :param sql: the sql query</span>
-<span class="sd">        :param override: override the &gt; 1000</span>
+<span class="sd">        :param sql_query: the sql query</span>
+<span class="sd">        :param sql_values: the info to add to the sql info.</span>
+<span class="sd">        :param override: override the &gt; 1000 transaction builder.</span>
 <span class="sd">        :return: nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create new object</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sql_query&quot;</span><span class="p">:</span> <span class="n">sql_query</span><span class="p">,</span> <span class="s2">&quot;sql_values&quot;</span><span class="p">:</span> <span class="n">sql_values</span><span class="p">}</span>
+
+        <span class="c1"># then add and check the length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="ow">or</span> <span class="n">override</span><span class="p">:</span>
             <span class="c1"># begin transaction, insert 1000</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;BEGIN TRANSACTION&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>  <span class="c1"># execute the transaction</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;sql_query&quot;</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;sql_values&quot;</span><span class="p">])</span>  <span class="c1"># execute the transaction</span>
                     <span class="c1"># print(&#39;executing transactions&#39;)</span>
                 <span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -411,6 +432,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># commit once done</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># empty it out</span></div>
+
 </pre></div>
 
            </div>
