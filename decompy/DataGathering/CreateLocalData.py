@@ -16,7 +16,7 @@ class CreateLocalData:
     These combined will get all the relevant data.
     """
     def __init__(self, database_name="c_code",repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
-                 repo_json_name="offineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
+                 repo_json_name="offlineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
                  filtered_repos=None, folder="Repositories", save_json="repo.json", verbose=False):
         """
         initializes a new object, containing the other classes, one to rule them all.
@@ -55,39 +55,40 @@ class CreateLocalData:
         :param end_page: where to end the page (end page) default is 2.
         :return:
         """
+        if end_page < start_page:
+            print("Start page must be greater than end page.")
+            return False
+
         self.rf.offline_results(self.repo_json_name, start_page, end_page)  # gather the data and store into json
         repos = self.rf.offline_read_json(self.repo_json_name)  # read the json data
         self.rf.offline_filtered_list(self.repo_json_filtered_name, repos)  # filter the offline results
         self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)  # read into our filtered repos
 
-        self.rs.batch_format(self.filtered_repos, datetime.datetime.now())  # batch current date and filtered_repos
+        # batch current date and filtered_repos
+        self.rs.batch_format(self.filtered_repos, datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
-    def stage2_get_repos(self, test=None):
+    def stage2_get_repos(self, test=False):
         """
         stage 2 of the data gathering process: Scrape all the files from GitHub from the given offline json file.
+        :param test: whether or not to test
+        :type: test
         :return:
         """
         if not self.filtered_repos:  # if we have repos, then sort through each rep in our json
             self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)
 
-        # test cases
-        if test is not None:
-            # get the smallest amount
-            if test > self.filtered_repos:
-                test = self.filtered_repos
-
-            for repo in test:
-                url = repo["url"]  # grab the url from the json to download zip into our destinated folder
-                FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
-        else:
-            for repo in self.filtered_repos:
-                url = repo["url"]  # grab the url from the json to download zip into our destinated folder
-                FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
+        for repo in self.filtered_repos:
+            url = repo["url"]  # grab the url from the json to download zip into our destinated folder
+            FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
+            if test:
+                break
 
     def stage3_filter_files(self, unfiltered_key="Unfiltered"):
         """
         stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.
             Use the list provided and then insert them into json format. Currently uses default params.
+        :param unfiltered_key: the directory to search through
+        :type: str
         :return:
         """
         # walk recursively in given folder only looking for 'Unfiltered'
@@ -265,7 +266,8 @@ class CreateLocalData:
                                         llvm_op_file_path = cwd + "/" + file_path["opt_llvm_path"]
                                         llvm_unop_file_path = cwd + "/" + file_path["unopt_llvm_path"]
                                         o_file_path = cwd + "/" + file_path["object_path"]
-                                        c_file_path = cwd + "/" + file_path["filtered_path"]
+                                        c_file_path = file_path["filtered_path"]
+                                        c_file_path_read = cwd + "/" + file_path["filtered_path"]
 
                                         # read object file
                                         with open(o_file_path, "rb") as object_f:
@@ -280,7 +282,7 @@ class CreateLocalData:
                                             llvm_unop_data = llvm_unop_f.read()
 
                                         # read c file path
-                                        with open(c_file_path, "r") as cf:
+                                        with open(c_file_path_read, "r") as cf:
                                             c_data = cf.read()
 
                                         # insert ml tuple
@@ -299,9 +301,13 @@ class CreateLocalData:
                         pass
 
     @staticmethod
-    def all_stages_increment(start_page=1, end_page=100000):
+    def all_stages_increment(start_page=1, end_page=1000):
         """
         runs all five stages in increments.
+        :param start_page: page to start or pick back up.
+        :type: int
+        :param end_page: page to end on.
+        :type: int
         :return: void
         """
         cld = CreateLocalData()

@@ -8,7 +8,7 @@ class DatabaseTest(unittest.TestCase):
         sets up the database access, creates a new database if cannot find one.
         :return: nothing
         """
-        self.db_test = db("c_source", True)
+        self.db_test = db("decompy/tests/test_database/c_source_test.db", True)
 
         # new element
         ml_tuple1 = ("test4.c", "c_tutorials4", "source codes 4", "blobby4", "llvm_unop4", "llvm_op4")

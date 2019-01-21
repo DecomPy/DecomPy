@@ -48,7 +48,7 @@ class GitHubScraperTest(unittest.TestCase):
                             or file_minute == ((minute - 1) % 60))
 
         # write values back then confirm
-        with open(repo_json, "w") as json_file:
+        with open(repo_json, "w+") as json_file:
             json.dump(json_data, json_file)
 
         # final confirmation
