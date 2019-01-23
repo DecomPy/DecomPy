@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Making a Module in FCD &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Using FCD &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -85,7 +85,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Using an Existing Decompiler</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Making a Module in FCD</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Using FCD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#making-a-module-in-fcd">Making a Module in FCD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pros-and-cons">Pros and Cons</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -139,7 +143,7 @@
         
           <li><a href="index.html">Using an Existing Decompiler</a> &raquo;</li>
         
-      <li>Making a Module in FCD</li>
+      <li>Using FCD</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,18 +162,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="making-a-module-in-fcd">
-<h1>Making a Module in FCD<a class="headerlink" href="#making-a-module-in-fcd" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="using-fcd">
+<h1>Using FCD<a class="headerlink" href="#using-fcd" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="making-a-module-in-fcd">
+<h2>Making a Module in FCD<a class="headerlink" href="#making-a-module-in-fcd" title="Permalink to this headline">¶</a></h2>
 <p>FCD is designed to be very easy to add “optimization” passes to. Doing so requires a
 very simple python script to be passed to FCD at runtime. The python script needs to
 follow a simple structure. It defines a “passName” global variable which does exactly
 what it sounds – just gives a name to your “optimization” pass. It must also define
 certain functions which will be called at specific times during llvm’s processing.</p>
-<p>More detailed information can be found from <cite>this
-&lt;http://zneak.github.io/fcd/2016/02/21/csaw-wyvern.html&gt;</cite>
+<p>More detailed information can be found from <a class="reference external" href="http://zneak.github.io/fcd/2016/02/21/csaw-wyvern.html">this</a>
 page on FCD’s GitHub.
-There is also a <cite>manual
-&lt;http://zneak.github.io/fcd/help/&gt;</cite>
+There is also a <a class="reference external" href="http://zneak.github.io/fcd/help/">manual</a>
 which provides a good deal of information</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fcd</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">n</span> <span class="o">-</span><span class="n">e</span> <span class="mh">0x4014b0</span> <span class="o">-</span><span class="n">e</span> <span class="mh">0x401cc0</span> <span class="n">output</span><span class="o">.</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">output</span><span class="o">.</span><span class="n">ll</span>
 <span class="n">fcd</span> <span class="o">-</span><span class="n">m</span> <span class="o">--</span><span class="n">cc</span><span class="o">=</span><span class="n">x86_64</span><span class="o">/</span><span class="n">sysv</span> <span class="o">-</span><span class="n">O</span> <span class="n">outCustomPass</span><span class="o">.</span><span class="n">py</span> <span class="n">output</span><span class="o">.</span><span class="n">ll</span>
@@ -178,6 +182,43 @@ which provides a good deal of information</p>
 <p>The above two commands were used by the author of fcd to add a custom pass. The first
 command essentially just raises a specific function from a piece of code (by passing in
 the virtual address) to llvm. The second performs a custom pass on the resulting llvm.</p>
+</div>
+<div class="section" id="pros-and-cons">
+<h2>Pros and Cons<a class="headerlink" href="#pros-and-cons" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Pros</td>
+<td>Cons</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>Easy to use (from a programming
+perspective)</li>
+<li>Output can easily be stopped at llvm</li>
+<li>Low compile time if updates are made</li>
+<li>It would take very little time to write
+a module. We could get started with almost
+no overhead</li>
+</ul>
+</td>
+<td><ul class="first last simple">
+<li>Infrequent updates (if any as there hasn’t
+been any for awhile)</li>
+<li>Hard to read output – It’s described as
+C-like, but it doesn’t compile and it isn’t
+something anyone would ever write.</li>
+<li>It might not ever be able to meet our
+goals completely. At the very least, we
+might have to improve it ourselves to do so.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
