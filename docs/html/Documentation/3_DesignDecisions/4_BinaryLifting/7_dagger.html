@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Database &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Dagger &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Designing the Database" href="1_DatabaseDesign.html" />
-    <link rel="prev" title="Generating LLVM IR from C Source" href="../2_DataGathering/5_llvmGen.html" /> 
+    <link rel="next" title="Using an Existing Decompiler" href="../5_UsingAnExistingDecompiler/index.html" />
+    <link rel="prev" title="bin2llvm" href="6_bin2llvm.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -83,12 +83,18 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Database</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="1_DatabaseDesign.html">Designing the Database</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_DatabaseCreation.html">Creating and Using the Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Binary Lifting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="0_CurrentSuggestion.html">Current Suggestion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_llvm-mctoll.html">llvm-mctoll</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_fcd.html">fcd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_fcd+remill.html">fcd+remill</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_McSema.html">McSema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_libbeauty.html">libbeauty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_bin2llvm.html">bin2llvm</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dagger</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
 </ul>
 </li>
@@ -139,13 +145,15 @@
         
           <li><a href="../index.html">Design Decisions</a> &raquo;</li>
         
-      <li>Database</li>
+          <li><a href="index.html">Binary Lifting</a> &raquo;</li>
+        
+      <li>Dagger</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/3_Database/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/4_BinaryLifting/7_dagger.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -158,14 +166,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="database">
-<h1>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="1_DatabaseDesign.html">Designing the Database</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_DatabaseCreation.html">Creating and Using the Database</a></li>
-</ul>
-</div>
+  <div class="section" id="dagger">
+<h1>Dagger<a class="headerlink" href="#dagger" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>First Impressions</dt>
+<dd>The README describes Dagger as a “binary translator to LLVM IR, with the
+goal of being as native as possible to the LLVM infrastructure”. It
+says that X86 is the main currently supported target, and that
+Mach-O object file format is best supported. It can support
+basic ELF files.</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Building bin2llvm</dt>
+<dd>Follow the instructions at <a class="reference external" href="https://github.com/repzret/dagger">https://github.com/repzret/dagger</a>.
+The build was successful on Ubuntu on wsl.</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Conclusion</dt>
+<dd>Dagger is usable. It’s build instructions are straightforward and don’t require tinkering,
+and it runs</dd>
+</dl>
 </div>
 
 
@@ -176,10 +198,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="1_DatabaseDesign.html" class="btn btn-neutral float-right" title="Designing the Database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../5_UsingAnExistingDecompiler/index.html" class="btn btn-neutral float-right" title="Using an Existing Decompiler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../2_DataGathering/5_llvmGen.html" class="btn btn-neutral" title="Generating LLVM IR from C Source" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="6_bin2llvm.html" class="btn btn-neutral" title="bin2llvm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
