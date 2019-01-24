@@ -3,6 +3,7 @@ from decompy.database import db
 from pathlib import Path
 import datetime
 import os
+import shutil
 import json
 
 import codecs
@@ -17,7 +18,7 @@ class CreateLocalData:
     """
     def __init__(self, database_name="c_code",repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
                  repo_json_name="offlineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
-                 filtered_repos=None, folder="Repositories", save_json="repo.json", verbose=False):
+                 filtered_repos=None, folder="Repositories", dest_folder="RepositoriesFiltered", save_json="repo.json", verbose=False):
         """
         initializes a new object, containing the other classes, one to rule them all.
         :param database_name: name of the database to store info to.
@@ -32,6 +33,8 @@ class CreateLocalData:
         :type: str
         :param folder: folder to save the repositories to
         :type: str
+        :param dest_folder: destination for folder
+        :type: str
         :param save_json: where to save the json file to
         :type: str
         :param verbose: whether or not to include teh print statements.
@@ -41,6 +44,7 @@ class CreateLocalData:
         self.rs = RepoStructure()
         self.save_json = save_json
         self.repo_json_name = repo_json_name
+        self.dest_folder = dest_folder
         self.repo_json_filtered_name = repo_json_filtered_name
         self.filtered_repos = filtered_repos
         self.FilterC = FilterC()
@@ -299,9 +303,9 @@ class CreateLocalData:
                         if self.verbose:
                             print("Stage 5: inserting into database meta table", e)
                         pass
+                #TODO: move folder into doneRepositories
 
-    @staticmethod
-    def all_stages_increment(start_page=1, end_page=1000):
+    def all_stages_increment(self, start_page=1, end_page=1000):
         """
         runs all five stages in increments.
         :param start_page: page to start or pick back up.
@@ -310,22 +314,29 @@ class CreateLocalData:
         :type: int
         :return: void
         """
-        cld = CreateLocalData()
 
         while start_page < end_page:
             try:
                 # only do 100 repos at a time (1 page) for safety on the json file
-                cld.stage1_gather_repo_meta(start_page, start_page+1)
-                cld.stage2_get_repos()
-                cld.stage3_filter_files()
-                cld.stage4_generate_llvm()
-                cld.stage5_insert_database()
+                self.stage1_gather_repo_meta(start_page, start_page+1)
+                self.stage2_get_repos()
+                self.stage3_filter_files()
+                self.stage4_generate_llvm()
+                self.stage5_insert_database()
+                print("done", start_page)
                 start_page += 1
+
+                try:
+                    files = os.listdir(self.folder)
+                    for f in files:
+                        shutil.move(os.path.join(self.folder, f), self.dest_folder)
+                except Exception as e:
+                    print("moving files error:", e)
+                    pass
 
             except Exception as e:
                 print("Running all stages error:", e)
                 pass
-
 #
 # if __name__ == "__main__":
 #     cld = CreateLocalData()

@@ -31,7 +31,6 @@
 import datetime
 import os
 import time
-import fileinput
 import requests
 import zipfile
 import io
@@ -79,45 +78,54 @@ class FileGetter:
         :return: Nothing
         """
 
-        # Convert any input into a list. This is so that I only have to create a loop for lists later on
-        if type(repo_urls) is str:
-            repo_urls = [repo_urls]
-        if type(target_directories) is str:
-            target_directories = [target_directories]
+        try:
+            # Convert any input into a list. This is so that I only have to create a loop for lists later on
+            if type(repo_urls) is str:
+                repo_urls = [repo_urls]
+            if type(target_directories) is str:
+                target_directories = [target_directories]
 
-        # Attempt to generate a name for the target directory if there is not one already
-        if target_directories is None and len(repo_urls) == 1:
-            target_directories = [repo_urls[0].split("/")[3] + "_" + repo_urls[0].split("/")[4]]
-            print(target_directories[0])
+            # Attempt to generate a name for the target directory if there is not one already
+            if target_directories is None and len(repo_urls) == 1:
+                target_directories = [repo_urls[0].split("/")[3] + "_" + repo_urls[0].split("/")[4]]
+                print(target_directories[0])
 
-        # Don't want to download files from multiple repos into one folder, do we?
-        if len(repo_urls) != len(target_directories):
-            print("Length of list of URLs must be either 1 or the same as the length of the list of target directories")
-            return
+            # Don't want to download files from multiple repos into one folder, do we?
+            if len(repo_urls) != len(target_directories):
+                print("Length of list of URLs must be either 1 or the same as the length of the list of target directories")
+                return
 
-        # Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder
-        for repo_url, target_directory in list(zip(repo_urls, target_directories)):
-            target_subdirectory = target_directory + "/Unfiltered"
+            # Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder
+            for repo_url, target_directory in list(zip(repo_urls, target_directories)):
+                try:
+                    target_subdirectory = target_directory + "/Unfiltered"
 
-            # Create the directories needed to make sure files have a place to be stored
-            if not os.path.exists(target_directory):
-                os.mkdir(target_directory)
-            if not os.path.exists(target_subdirectory):
-                os.mkdir(target_subdirectory)
-            # print(target_subdirectory) shows the folder
+                    # Create the directories needed to make sure files have a place to be stored
+                    if not os.path.exists(target_directory):
+                        os.mkdir(target_directory)
+                    if not os.path.exists(target_subdirectory):
+                        os.mkdir(target_subdirectory)
+                    # print(target_subdirectory) shows the folder
 
-            # Download the zip of the repository
-            response = requests.get(repo_url + "/archive/master.zip")
-            archive = zipfile.ZipFile(io.BytesIO(response.content))
+                    # Download the zip of the repository
+                    response = requests.get(repo_url + "/archive/master.zip")
+                    print(response, response.content)
+                    archive = zipfile.ZipFile(io.BytesIO(response.content))
 
-            # Save the appropriate files into target_subdirectory. Change file names so they are unique while being
-            # stored in the same directory
-            for i in archive.namelist():
-                if i.endswith(".c"):
-                    with open(target_subdirectory + "/" + i.replace("/", "_"), "wb") as f:
-                        f.write(archive.read(i))
+                    # Save the appropriate files into target_subdirectory. Change file names so they are unique while being
+                    # stored in the same directory
+                    for i in archive.namelist():
+                        if i.endswith(".c"):
+                            with open(target_subdirectory + "/" + i.replace("/", "_"), "wb") as f:
+                                f.write(archive.read(i))
 
-            FileGetter.__update_meta(target_directory)
+                    FileGetter.__update_meta(target_directory)
+                except Exception as e:
+                    print("Zip files error", e)
+                    pass
+        except Exception as e:
+            print("Download all files error", e)
+            pass
 
 
 if __name__ == "__main__":
