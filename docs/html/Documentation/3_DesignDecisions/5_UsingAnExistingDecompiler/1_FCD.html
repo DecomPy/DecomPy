@@ -182,42 +182,45 @@ which provides a good deal of information</p>
 <p>The above two commands were used by the author of fcd to add a custom pass. The first
 command essentially just raises a specific function from a piece of code (by passing in
 the virtual address) to llvm. The second performs a custom pass on the resulting llvm.</p>
+<p>objdump can be used to detect what addresses to pass into FCD. For example, if you wish
+to decompile a program starting at the main function and decompiling everything from there,
+simply call fcd on the address of main from objdump. For example, the following commands
+should generically be able to compile a C file named test.c and then decompile it assuming
+the test.c file contains a main as it’s only entry point and is not overly complicated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>clang test.c -o test.out
+./fcd -p -n -e 0x`objdump -M intel -d test.out | grep &quot;&lt;main&gt;:&quot; | sed &#39;s/[^0-9]//g&#39;` test.out &gt; test.ll
+./fcd -m -cc=x86_64/sysv -O SimpleModule.py test.ll
+</pre></div>
+</div>
+<p>Modules in FCD directly plug into the clang/LLVM optimization pass modules. The structure is
+fairly simple. You can define either a runOnFunction or a runOnModule method in the python
+code. These functions will automatically be called for either every function or module in the
+llvm code that fcd generates. From there, you can get instructions and modify these instructions.
+The runOnFunction takes in an LLVM::Value class which represents a “Basic Block” (an LLVM term
+for a section with single exit/entry). This Basic Block is a python binding for the C++ lib
+for llvm and can be manipulated through llvm’s api.</p>
 </div>
 <div class="section" id="pros-and-cons">
 <h2>Pros and Cons<a class="headerlink" href="#pros-and-cons" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="49%" />
-<col width="51%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>Pros</td>
-<td>Cons</td>
-</tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>Easy to use (from a programming
-perspective)</li>
-<li>Output can easily be stopped at llvm</li>
-<li>Low compile time if updates are made</li>
-<li>It would take very little time to write
-a module. We could get started with almost
-no overhead</li>
+<dl class="docutils">
+<dt>Pros</dt>
+<dd><ul class="first last simple">
+<li>FCD seems to be the easiest choice - it is convenient to add python modules to it
+to implement the behaviour we need.</li>
+<li>It is possible to target functions individually. We might be able to use this to
+perform machine learning on small sections of larger programs (increasing our data
+set)</li>
+<li>It produces reasonably readable C code</li>
 </ul>
-</td>
-<td><ul class="first last simple">
-<li>Infrequent updates (if any as there hasn’t
-been any for awhile)</li>
-<li>Hard to read output – It’s described as
-C-like, but it doesn’t compile and it isn’t
-something anyone would ever write.</li>
-<li>It might not ever be able to meet our
-goals completely. At the very least, we
-might have to improve it ourselves to do so.</li>
+</dd>
+<dt>Cons</dt>
+<dd><ul class="first last simple">
+<li>FCD is based around Python2 modules, not Python3.</li>
+<li>While the C code is fairly simple to understand - The llvm code is not. This will
+make it difficult to modify with machine learning</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </div>
 </div>
 
