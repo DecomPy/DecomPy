@@ -60,6 +60,8 @@ class CreateLocalData:
         self.db = db.Database(database_name)
         self.verbose = verbose
         self.config_file = config_file
+        self.username = None
+        self.password = None
 
         # format date time
         if repo_start_date is None:
@@ -74,20 +76,23 @@ class CreateLocalData:
         self.authenticated = False
         self.skip = False
         try:
-            with open(self.config_file, 'r') as json_file:
-                json_data = json.load(json_file)
+            # check for file
+            if os.path.exists(self.config_file):
+                # have data
+                with open(self.config_file, 'r') as json_file:
+                    json_data = json.load(json_file)
 
-                if "github" in json_data and json_data["github"] is not None \
-                        and "username" in json_data["github"] and json_data["github"]["username"] is not None \
-                        and "password" in json_data["github"] and json_data["github"]["password"] is not None:
-                    self.authenticated = True
-                    self.username = json_data['github']['username']
-                    self.password = json_data['github']['password']
-                else:
-                    print("Please setup a config file to use github authentication, allow you more requests.")
+                    if "github" in json_data and json_data["github"] is not None \
+                            and "username" in json_data["github"] and json_data["github"]["username"] is not None \
+                            and "password" in json_data["github"] and json_data["github"]["password"] is not None:
+                        self.authenticated = True
+                        self.username = json_data['github']['username']
+                        self.password = json_data['github']['password']
+            else:
+                print("Please setup a config file to use github authentication, allowing you more requests.")
         except Exception as e:
             print(e)
-            print("Most likely, the config file has not been found. " +
+            print("Most likely the config file has not been found. " +
                   "Please have a config file so you can use github authentication for more requests.")
         self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"], self.username, self.password)
 

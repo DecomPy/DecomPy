@@ -66,6 +66,11 @@ class FileGetter:
 
         file_path = target_directory + "/repo.json"
         try:
+            # Makes sure we have the file, otherwise create it
+            if not os.path.exists(file_path):
+                with open(file_path, "w") as json_file:
+                    json.dump("{}", json_file)
+
             # parse json if it's there
             with open(file_path, "r") as json_file:
                 json_data = json.load(json_file)
@@ -73,8 +78,8 @@ class FileGetter:
             # new date
             json_data["master_download_date"] = datetime.today().strftime('%Y-%m-%d %H:%M')
 
-            with open(file_path, "w") as jsonFile:
-                json.dump(json_data, jsonFile)
+            with open(file_path, "w") as json_file:
+                json.dump(json_data, json_file)
 
         except Exception as e:
             print("File Not Found", e)
