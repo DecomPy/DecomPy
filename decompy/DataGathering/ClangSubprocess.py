@@ -1,5 +1,4 @@
 import subprocess
-import os
 from pathlib import Path
 
 
@@ -83,18 +82,16 @@ class Clang:
         return Clang.compile_all(file_path, newlocation, out_type, args=args)
 
     @staticmethod
-    def to_elf(file_path, newlocation, filter_file):
+    def to_elf(file_path, newlocation):
         """
         compiles all C files listed in the input file to elf executables.
         Writes the name of successful files to output file. Writes the name of
         successful C files to filter file.
         :param file_path: file path to compile
         :param newlocation: location to save LLVM files to
-        :param filter_file: If the file is successfully compiled, the name of
-            the C file is listed in this file
         """
         out_type = "-elf.elf"
-        return Clang.compile_all(file_path, newlocation, out_type, filter_file)
+        return Clang.compile_all(file_path, newlocation, out_type)
 
     @staticmethod
     def to_llvm_opt(file_path, newlocation, optlevel=""):

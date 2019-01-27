@@ -1,10 +1,12 @@
 from decompy.DataGathering import *
 from decompy.database import db
 from pathlib import Path
-import datetime
 import os
 import shutil
 import json
+import time
+import codecs # used for chinese characters in python
+from datetime import datetime, timedelta
 
 import codecs
 decode_hex = codecs.getdecoder("hex_codec")
@@ -18,7 +20,8 @@ class CreateLocalData:
     """
     def __init__(self, database_name="c_code",repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
                  repo_json_name="offlineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
-                 filtered_repos=None, folder="Repositories", dest_folder="RepositoriesFiltered", save_json="repo.json", verbose=False):
+                 filtered_repos=None, folder="Repositories", dest_folder="RepositoriesFiltered", save_json="repo.json",
+                 config_file="config.json", repo_start_date=None, repo_end_date=None, verbose=False):
         """
         initializes a new object, containing the other classes, one to rule them all.
         :param database_name: name of the database to store info to.
@@ -37,10 +40,15 @@ class CreateLocalData:
         :type: str
         :param save_json: where to save the json file to
         :type: str
-        :param verbose: whether or not to include teh print statements.
+        :param config_file: the config file to read github info from
+        :type: str
+        :param repo_start_date: the start date to split the github stuff up because it's annoying
+        :type: str
+        :param repo_end_date: the end date to split the github stuff up because it's annoying
+        :type: str
+        :param verbose: whether or not to include the print statements.
         :type: bool
         """
-        self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"])
         self.rs = RepoStructure()
         self.save_json = save_json
         self.repo_json_name = repo_json_name
@@ -51,41 +59,93 @@ class CreateLocalData:
         self.folder = folder
         self.db = db.Database(database_name)
         self.verbose = verbose
+        self.config_file = config_file
 
-    def stage1_gather_repo_meta(self, start_page=1, end_page=2):
+        # format date time
+        if repo_start_date is None:
+            repo_start_date = "2013-04-11"
+
+        self.repo_start_date = datetime.strptime(repo_start_date, "%Y-%m-%d").date()
+
+        # get today date
+        if repo_end_date is None:
+            self.repo_end_date = datetime.today()
+
+        self.authenticated = False
+        self.skip = False
+        try:
+            with open(self.config_file, 'r') as json_file:
+                json_data = json.load(json_file)
+
+                if "github" in json_data and json_data['github'] is not None \
+                        and json_data['github']['username'] is not None \
+                        and json_data['github']['password'] is not None:
+                    self.authenticated = True
+                    self.username = json_data['github']['username']
+                    self.password = json_data['github']['password']
+        except Exception as e:
+            print(e)
+            print("Most likely, the config file has not been found. " +
+                  "Please have a config file so you can use github authentication for more downloads per hour.")
+        self.rf = RepoFilter("", repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"], self.username, self.password)
+
+    def stage1_gather_repo_meta(self, date, start_page, end_page):
         """
         stage 1 of the data gathering process: Gather the data from the repos and store it into a json file.
+        :param date: the date to read from
+        :type: str
         :param start_page: where to start getting the data (start page) default is 1.
+        :type: int
         :param end_page: where to end the page (end page) default is 2.
+        :type: int
         :return:
         """
         if end_page < start_page:
             print("Start page must be greater than end page.")
             return False
 
-        self.rf.offline_results(self.repo_json_name, start_page, end_page)  # gather the data and store into json
-        repos = self.rf.offline_read_json(self.repo_json_name)  # read the json data
-        self.rf.offline_filtered_list(self.repo_json_filtered_name, repos)  # filter the offline results
-        self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)  # read into our filtered repos
+        # gather the data by date and page number and store into json
+        self.rf.offline_results(self.repo_json_name, date, start_page, end_page)
+
+        # read the json data
+        repos = self.rf.offline_read_json(self.repo_json_name)
+
+        # skip if no repos found
+        if len(repos) == 0:
+            self.skip = True
+            return
+
+        # filter the offline results
+        self.rf.offline_filtered_list(self.repo_json_filtered_name, repos)
+
+        # read into our filtered repos
+        self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)
 
         # batch current date and filtered_repos
-        self.rs.batch_format(self.filtered_repos, datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
+        self.rs.batch_format(self.filtered_repos, datetime.today().strftime('%Y-%m-%d %H:%M'))
 
-    def stage2_get_repos(self, test=False):
+    def stage2_get_repos(self, test=False, username=None, password=None):
         """
         stage 2 of the data gathering process: Scrape all the files from GitHub from the given offline json file.
         :param test: whether or not to test
-        :type: test
+        :type: bool
+        :param username: the github username to download more data.
+        :type: str
+        :param password: the github user's password.
+        :type: str
         :return:
         """
         if not self.filtered_repos:  # if we have repos, then sort through each rep in our json
             self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)
 
         for repo in self.filtered_repos:
-            url = repo["url"]  # grab the url from the json to download zip into our destinated folder
-            FileGetter.download_all_files(url, os.path.join(self.folder, repo["username"] + "-" + repo["name"]))
-            if test:
-                break
+            try:
+                url = repo["html_url"]  # grab the url from the json to download zip into our destinated folder
+                FileGetter.download_all_files(url, os.path.join(self.folder, repo["owner"]["login"] + "-" + repo["name"]), username, password)
+                if test:
+                    break
+            except Exception as e:
+                print("stage 2 getting repos error", e)
 
     def stage3_filter_files(self, unfiltered_key="Unfiltered"):
         """
@@ -135,14 +195,29 @@ class CreateLocalData:
                         json_data["filtered_files"] = filtered_files
                         json.dump(json_data, json_file, indent=4, separators=(',', ': '), sort_keys=True)
 
-    def stage4_generate_llvm(self, llvm_file_path="LLVM", object_file_path="Object"):
+    def stage4_generate_llvm(self, folder=None, llvm_file_path="LLVM", object_file_path="Object", elf_file_path="elf", assembly_file_path="assembly"):
         """
         Stage 4 of the data gathering process: Generate LLVM and other data.
         gets file paths for llvm and object file path. Defaults to /LLVM and /Object.
+
+        :param folder: the file path of the folder to compile
+        :type: str
+
         :param llvm_file_path: the file path to save LLVM files to
+        :type: str
         :param object_file_path: the file path to save Object files to
+        :type: str
+
+        :param elf_file_path: the file path for the elf file, defaults to "elf".
+        :type: str
+
+        :param assembly_file_path: the file path for the assembly file, defaults to "assembly".
+        type: str
         :return:
         """
+        if folder is not None:
+            self.folder = folder
+
         try:
             # open file
             for root, dirs, files in os.walk(self.folder):
@@ -174,6 +249,8 @@ class CreateLocalData:
                             # paths for llvm and object file
                             llvm_folder = root + "/" + llvm_file_path
                             object_folder = root + "/" + object_file_path
+                            elf_folder = root + "/" + elf_file_path
+                            assembly_folder = root + "/" + assembly_file_path
 
                             # loop over file paths in json
                             for filtered_obj in json_data["filtered_files"]:
@@ -187,14 +264,21 @@ class CreateLocalData:
                                     object_path = Clang.to_object_file(filtered_file, object_folder)  # compile .o
                                     opt_llvm_path = Clang.to_llvm_opt(filtered_file, llvm_folder)  # compile optimized llvm
                                     unopt_llvm_path = Clang.to_llvm_unopt(filtered_file, llvm_folder)  # compile unoptimized llvm
+                                    elf_path = Clang.to_elf(filtered_file, elf_folder)                # elf
+                                    assembly_path = Clang.to_assembly(filtered_file, assembly_folder) # assembly
 
-                                    if object_path is not None and opt_llvm_path is not None and unopt_llvm_path is not None:
+                                    print(object_path, opt_llvm_path, unopt_llvm_path, elf_path, assembly_path)
+
+                                    if object_path is not None and opt_llvm_path is not None and \
+                                            unopt_llvm_path is not None and elf_path is not None and assembly_path is not None:
                                         # add it to object
                                         filtered_files.append({
                                                 "filtered_path": filtered_obj["filtered_path"],
                                                 "object_path": object_path,
                                                 "opt_llvm_path": opt_llvm_path,
-                                                "unopt_llvm_path": unopt_llvm_path
+                                                "unopt_llvm_path": unopt_llvm_path,
+                                                "elf_path": elf_path,
+                                                "assembly_path": assembly_path
                                             })
                                     else:
                                         filtered_files.append({
@@ -223,14 +307,18 @@ class CreateLocalData:
                 print("Overall Exception Stage 4: ", e)
             pass
 
-    def stage5_insert_database(self):
+    def stage5_insert_database(self, folder=None):
         """
         stage 5 of the gathering process: load into the database reading the meta and other info.
-
+        :param folder: folder to iterate through to insert into database.
+        :type: str
         :return:
         """
+        if folder is None:
+            folder = self.folder
+
         # open file
-        for root, dirs, files in os.walk(self.folder):
+        for root, dirs, files in os.walk(folder):
             # find our filtered json file (default repo.json)
             json_path = root + "/" + self.save_json
             if os.path.isfile(json_path):
@@ -253,17 +341,12 @@ class CreateLocalData:
                             compilation_date = json_data["compilation_date"]
                             author_repo_key = author + "-" + repo_name
 
-                            # insert meta tuple TODO: get license... But GitHub api doesn't give it?
-                            meta_tuple = (author_repo_key, repo_name, None, repo_url, author,
-                                          filter_approval_date, llvm_gen_date, filter_date,
-                                          compilation_date, master_download_date)
-                            self.db.insert_meta(meta_tuple, True)
-
                             # find the file path then read that c file
                             for file_path in filtered_list:
                                 try:
                                     if "opt_llvm_path" in file_path and "unopt_llvm_path" in file_path \
-                                            and "object_path" in file_path and "filtered_path" in file_path:
+                                            and "object_path" in file_path and "filtered_path" in file_path\
+                                            and "assembly_path" in file_path and "elf_path" in file_path:
 
                                         # get new file path by appending our cwd
                                         cwd = os.getcwd()
@@ -272,6 +355,8 @@ class CreateLocalData:
                                         o_file_path = cwd + "/" + file_path["object_path"]
                                         c_file_path = file_path["filtered_path"]
                                         c_file_path_read = cwd + "/" + file_path["filtered_path"]
+                                        elf_file_path = cwd + "/" + file_path["elf_path"]
+                                        assembly_file_path = cwd + "/" + file_path["assembly_path"]
 
                                         # read object file
                                         with open(o_file_path, "rb") as object_f:
@@ -289,10 +374,22 @@ class CreateLocalData:
                                         with open(c_file_path_read, "r") as cf:
                                             c_data = cf.read()
 
+                                        with open(elf_file_path, "rb") as ef:
+                                            elf_data = ef.read()
+
+                                        with open(assembly_file_path, "r") as af:
+                                            assembly_data = af.read()
+
+                                        # insert meta tuple TODO: get license... But GitHub api doesn't give it?
+                                        meta_tuple = (author_repo_key, repo_name, None, repo_url, author,
+                                                      filter_approval_date, llvm_gen_date, filter_date,
+                                                      compilation_date, master_download_date)
+                                        self.db.insert_meta(meta_tuple)
+
                                         # insert ml tuple
                                         ml_tuple = (c_file_path, author_repo_key, c_data, object_data, llvm_unop_data,
-                                                    llvm_op_data)
-                                        self.db.insert_ml(ml_tuple, True)
+                                                    llvm_op_data, elf_data, assembly_data)
+                                        self.db.insert_ml(ml_tuple)
 
                                 except Exception as e:
                                     if self.verbose:
@@ -303,36 +400,70 @@ class CreateLocalData:
                         if self.verbose:
                             print("Stage 5: inserting into database meta table", e)
                         pass
-                #TODO: move folder into doneRepositories
 
-    def all_stages_increment(self, start_page=1, end_page=1000):
+    def all_stages_increment(self, start_date=None, end_date=None, start_page=1, end_page=10):
         """
         runs all five stages in increments.
-        :param start_page: page to start or pick back up.
+        :param start_date: date to start or pick back up formatted "%Y-%m-%d
+        :type: str
+        :param end_date: date to end on formatted "%Y-%m-%d
+        :type: str
+        :param start_page: page to start or pick up from.
         :type: int
-        :param end_page: page to end on.
+        :param end_page: page to end or pick up from.
         :type: int
         :return: void
         """
 
-        while start_page < end_page:
+        # format date time for start and end date.
+        if start_date is None:
+            start_date = "2013-04-11"
+
+        if end_date is None:
+            end_date = "2019-26-1"
+
+        # start date end date
+        self.repo_start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        self.repo_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+        # add 1 day
+        while self.repo_start_date < self.repo_end_date:
+            self.repo_start_date = self.repo_start_date + timedelta(days=1)
+
             try:
                 # only do 100 repos at a time (1 page) for safety on the json file
-                self.stage1_gather_repo_meta(start_page, start_page+1)
-                self.stage2_get_repos()
-                self.stage3_filter_files()
-                self.stage4_generate_llvm()
-                self.stage5_insert_database()
-                print("done", start_page)
-                start_page += 1
+                self.stage1_gather_repo_meta(start_date, start_page, end_page)
 
-                try:
+                # skip this, no info
+                if self.skip is False:
+                    self.stage2_get_repos(False, self.username, self.password)
+                    self.stage3_filter_files()
+                    self.stage4_generate_llvm()
+                    self.stage5_insert_database()
+
                     files = os.listdir(self.folder)
+
+                    # remove all paths so we can insert new ones
+                    # for f in os.listdir(self.dest_folder):
+                    #     try:
+                    #         if os.path.exists(f):
+                    #             shutil.rmtree(f)
+                    #     except Exception as e:
+                    #         print("Removing destination files error", e)
                     for f in files:
-                        shutil.move(os.path.join(self.folder, f), self.dest_folder)
-                except Exception as e:
-                    print("moving files error:", e)
-                    pass
+                        try:
+                            shutil.move(os.path.join(self.folder, f), os.path.join(self.dest_folder, f))
+                        except Exception as e:
+                            print("moving files error:", e)
+                            pass
+                    # remove filtered files in repositories
+                    for f in files:
+                        if os.path.exists(f):
+                            shutil.rmtree(f)
+
+                # reset skip
+                self.skip = False
+                break
 
             except Exception as e:
                 print("Running all stages error:", e)

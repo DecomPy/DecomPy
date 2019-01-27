@@ -30,7 +30,7 @@ class RepoStructure:
         :param repo_json: The json from a single GitHub repo
         :param filter_date: The filter date
         """
-        name_string = repo_json["username"] + "-" + repo_json["name"]
+        name_string = repo_json["owner"]["login"] + "-" + repo_json["name"]
         repo_dir = os.path.join(self.root, name_string)
         RepoStructure.__mkdir(repo_dir)
         meta_dir = os.path.join(repo_dir, "repo.json")
@@ -46,9 +46,9 @@ class RepoStructure:
         """
         # TODO: Get license info
         meta_file = {
-            "url": "%s" % (repo["url"]),
+            "url": "%s" % (repo["html_url"]),
             "name": "%s" % (repo["name"]),
-            "author": "%s" % (repo["username"]),
+            "author": "%s" % (repo["owner"]["login"]),
             "filter_date": "%s" % filter_date
         }
         return json.dumps(meta_file)
@@ -86,7 +86,7 @@ class RepoStructure:
 
 if __name__ == "__main__":
     from decompy.DataGathering.RepoFilter import RepoFilter
-    import datetime
+    from datetime import datetime
 
     rf = RepoFilter("C ", language="C", blacklist=["C++", "C#"])
     rf.offline_results("offlineResults.json", 1, 2)
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     filteredRepos = rf.offline_read_json("filteredOfflineResults.json")
 
     rs = RepoStructure()
-    rs.batch_format(filteredRepos, datetime.datetime.now())
+    rs.batch_format(filteredRepos, datetime.now())

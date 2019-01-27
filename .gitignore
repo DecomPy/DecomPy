@@ -115,6 +115,8 @@ docs/doctrees/
 # Our Info
 c_source.db
 Repositories/
+RepositoriesFiltered/
 filteredOfflineResults.json
 offlineResults.json
 c_code.db
+config.json

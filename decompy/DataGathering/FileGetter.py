@@ -28,7 +28,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import datetime
+from datetime import datetime
 import os
 import time
 import requests
@@ -39,6 +39,17 @@ import json
 
 class FileGetter:
     """Handles the download of GitHub repositories and extracting the useful files"""
+
+    def __init__(self):
+        self.authenticated = False
+        with open("../../config.json", 'r') as json_file:
+            json_data = json.load(json_file)
+
+            if json_data['github'] and json_data['github']['username'] and json_data['github']['password']:
+                self.authenticated = True
+                self.username = json_data['github']['username']
+                self.password = json_data['github']['password']
+
 
     @staticmethod
     def __update_meta(target_directory):
@@ -70,11 +81,17 @@ class FileGetter:
 
 
     @staticmethod
-    def download_all_files(repo_urls, target_directories=None):
+    def download_all_files(repo_urls, target_directories=None, username=None, password=None):
         """
         Handles the downloading of ZIP archives and extracting the appropriate files into the target directory.
         :param repo_urls: get the list of URLs to repositories. URLs must be to the top level of the repositories
+        :type: str
         :param target_directories: File directory to store the files
+        :type: str
+        :param username: the github username.
+        :type: str
+        :param password: the github password.
+        :type: str
         :return: Nothing
         """
 
@@ -108,8 +125,27 @@ class FileGetter:
                     # print(target_subdirectory) shows the folder
 
                     # Download the zip of the repository
-                    response = requests.get(repo_url + "/archive/master.zip")
-                    print(response, response.content)
+                    if username is not None and password is not None:
+                        response = requests.get(repo_url + "/archive/master.zip", auth=(username, password))
+                    else:
+                        response = requests.get(repo_url + "/archive/master.zip")
+
+                    # test for 403
+                    if response.status_code == 403:
+                        # get time that we need to wait and wait for that time.
+                        print("uh oh, rate limited!")
+
+                        # wait their time if found
+                        limit = response.headers
+                        if "X-RateLimit-Reset" in limit:
+                            wait = int(limit["X-RateLimit-Reset"]) - datetime.today().timestamp()
+
+                            time.sleep(wait + 1)
+                        else:
+                            time.sleep(120)  # wait 2 minutes then try again.
+
+
+                    # download zip
                     archive = zipfile.ZipFile(io.BytesIO(response.content))
 
                     # Save the appropriate files into target_subdirectory. Change file names so they are unique while being

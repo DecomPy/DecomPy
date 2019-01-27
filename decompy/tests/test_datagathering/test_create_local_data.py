@@ -26,7 +26,6 @@ class CreateLocalDataTest(unittest.TestCase):
             if "Unfiltered" in dirs:
                 # read json if it exists
                 json_path = root + "/" + self.cld.save_json
-                print(json_path)
                 if os.path.isfile(json_path):
                     # load json and validate data
                     with open(json_path, "r") as json_file:
