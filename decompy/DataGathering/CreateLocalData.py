@@ -87,7 +87,7 @@ class CreateLocalData:
             print(e)
             print("Most likely, the config file has not been found. " +
                   "Please have a config file so you can use github authentication for more downloads per hour.")
-        self.rf = RepoFilter("", repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"], self.username, self.password)
+        self.rf = RepoFilter(repo_dict["search"], repo_dict["language"], repo_dict["blacklist"], repo_dict["per_page"], self.username, self.password)
 
     def stage1_gather_repo_meta(self, date, start_page, end_page):
         """
@@ -106,6 +106,8 @@ class CreateLocalData:
 
         # gather the data by date and page number and store into json
         self.rf.offline_results(self.repo_json_name, date, start_page, end_page)
+
+        print(self.rf.offline_results)
 
         # read the json data
         repos = self.rf.offline_read_json(self.repo_json_name)
@@ -173,7 +175,7 @@ class CreateLocalData:
                         json_data = json.load(json_file)
 
                     # update time
-                    now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                    now_minute = datetime.today().strftime('%Y-%m-%d %H:%M')
                     json_data["filter_approval_date"] = now_minute
 
                     for file_path in filtered_list:
@@ -234,7 +236,7 @@ class CreateLocalData:
                         filtered_files = []
 
                         # update time with now to precise minute
-                        now_minute = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                        now_minute = datetime.today().strftime('%Y-%m-%d %H:%M')
                         json_data["llvm_gen_date"] = now_minute
                         json_data["compilation_date"] = now_minute
 
@@ -266,8 +268,6 @@ class CreateLocalData:
                                     unopt_llvm_path = Clang.to_llvm_unopt(filtered_file, llvm_folder)  # compile unoptimized llvm
                                     elf_path = Clang.to_elf(filtered_file, elf_folder)                # elf
                                     assembly_path = Clang.to_assembly(filtered_file, assembly_folder) # assembly
-
-                                    print(object_path, opt_llvm_path, unopt_llvm_path, elf_path, assembly_path)
 
                                     if object_path is not None and opt_llvm_path is not None and \
                                             unopt_llvm_path is not None and elf_path is not None and assembly_path is not None:
@@ -432,7 +432,7 @@ class CreateLocalData:
 
             try:
                 # only do 100 repos at a time (1 page) for safety on the json file
-                self.stage1_gather_repo_meta(start_date, start_page, end_page)
+                self.stage1_gather_repo_meta(self.repo_start_date, start_page, end_page)
 
                 # skip this, no info
                 if self.skip is False:
@@ -442,14 +442,6 @@ class CreateLocalData:
                     self.stage5_insert_database()
 
                     files = os.listdir(self.folder)
-
-                    # remove all paths so we can insert new ones
-                    # for f in os.listdir(self.dest_folder):
-                    #     try:
-                    #         if os.path.exists(f):
-                    #             shutil.rmtree(f)
-                    #     except Exception as e:
-                    #         print("Removing destination files error", e)
                     for f in files:
                         try:
                             shutil.move(os.path.join(self.folder, f), os.path.join(self.dest_folder, f))
@@ -458,12 +450,15 @@ class CreateLocalData:
                             pass
                     # remove filtered files in repositories
                     for f in files:
-                        if os.path.exists(f):
-                            shutil.rmtree(f)
+                        try:
+                            if os.path.exists(f):
+                                shutil.rmtree(f)
+                        except Exception as e:
+                            print("removing files error", e)
+                            pass
 
                 # reset skip
                 self.skip = False
-                break
 
             except Exception as e:
                 print("Running all stages error:", e)

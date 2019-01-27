@@ -71,7 +71,7 @@ class FileGetter:
                 json_data = json.load(json_file)
 
             # new date
-            json_data["master_download_date"] = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+            json_data["master_download_date"] = datetime.today().strftime('%Y-%m-%d %H:%M')
 
             with open(file_path, "w") as jsonFile:
                 json.dump(json_data, jsonFile)
@@ -143,7 +143,6 @@ class FileGetter:
                             time.sleep(wait + 1)
                         else:
                             time.sleep(120)  # wait 2 minutes then try again.
-
 
                     # download zip
                     archive = zipfile.ZipFile(io.BytesIO(response.content))

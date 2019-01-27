@@ -17,9 +17,6 @@ class RepoFilter:
     what is being filtered on.
     """
 
-    # TODO: Review this class for incorrect documentation. It was written in vim because I was on a flight and wanted to conserve battery.
-    # TODO: Review the "online" parts of this class as they have not been thoroughly tested post writing the other parts. (Flight has no Wi-Fi either)
-
     def __init__(self, search, language=None, blacklist=None, per_page=100, username=None, password=None):
         """
         Constructor for RepoFilter. Choose search term string, language string, a blacklist for the descriptions (i.e.
@@ -67,6 +64,8 @@ class RepoFilter:
 
         url = "https://api.github.com/search/repositories?q=%s%s+created:%s&page=%d" % (
             quote(self.search), language_string, date, page)
+
+        print("searching for...", url)
         # pageSource = ""
         response = None
         try:
