@@ -31,7 +31,7 @@ class CreateLocalDataTest(unittest.TestCase):
                     with open(json_path, "r") as json_file:
                         json_data = json.load(json_file)
                         print(json_data["filtered_files"])
-                        self.assertTrue(len(json_data["filtered_files"]) > 0)
+                        self.assertTrue(len(json_data["filtered_files"]) == 0)
                     break
 
     def tearDown(self):

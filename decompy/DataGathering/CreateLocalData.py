@@ -79,7 +79,7 @@ class CreateLocalData:
 
                 if "github" in json_data and json_data["github"] is not None \
                         and "username" in json_data["github"] and json_data["github"]["username"] is not None \
-                        and "password" in json_data["github"] json_data["github"]["password"] is not None:
+                        and "password" in json_data["github"] and json_data["github"]["password"] is not None:
                     self.authenticated = True
                     self.username = json_data['github']['username']
                     self.password = json_data['github']['password']
