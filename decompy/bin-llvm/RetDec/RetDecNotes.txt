@@ -1,0 +1,33 @@
+Research into making an optimization "module" RetDec: These are the notes I am making while I dig through the RetDec
+source code, looking for how to make a module.
+
+/src/llvmir2hlltool/llvmir2hll.cpp - Contains the decompiler class that transforms LLVM IR into a Higher Level Language
+(HLL)
+    The decompiler seems to convert the LLVM IR to a Backend IR (BIR). Since our work will be directly on LLVM, this may
+     be problematic. We might have to convert our work to use, BIR, which may not be possible at this stage. I will
+     continnue looking into it. We could do the customization pass before it goes to BIR.
+
+    The function that does the main decompiling is Decompiler::runOnModule. First, it callls the function
+    Decompiler::initialize.
+        Decompiler::initialize: Initializes private variables and returns false if something goes wrong
+    After calling initialize, runOnModule calls convertLLVMToBIR
+    Then it removes functions with certain prefixes
+    Then is removes library functions, if that was specified
+    Then it removes unreachable code that was caused by the conversion to BIR
+    It calls fixSignedUnsignedTypes, then convertLLVMIntrinsicFunctions
+    ****Then it gets to the optimizations: If optimizations are specified it runs initAliasAnalysis then
+    runOptimizations
+    Then it runs a variety of functions based on parameters. These functions are: renameVariables,
+    convertConstantsToSymbolicNames, validateResultingModule, findPatterns, emitCFGs, emitCG.
+    Then it calls emitTargetHLLCode, then finalize, then cleanup
+
+    The optimizations happen *after* LLVM is converted to BIR. If the optimizations are done on BIR, then this is not
+    the place that we want to run our own pass. We will have to write a pass that goes before that and call it in the
+    function runOnModule...
+
+Now I'm looking at the optimizers found here: /src/llvmir2hll/optimizer/optimizers
+    The optimizers all run on a Module object. This is the same object that is passed to the Decompiler::runOnModule
+    method.
+
+/scripts/retdec-decompiler.py - Python script for running the Decompiler
+
