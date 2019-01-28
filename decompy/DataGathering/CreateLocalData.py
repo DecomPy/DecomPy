@@ -39,7 +39,7 @@ class CreateLocalData:
             for repo in self.filtered_repos:
                 print(repo)
                 url = repo["url"]  # grab the url from the json to scrape
-                GitHubScraper.download_all_files(
+                FileGetter.download_all_files(
                     url, os.path.join("Repositories", repo["username"] + "-" + repo["name"]))  # scrape all the urls
                 # into our destined folder
 
