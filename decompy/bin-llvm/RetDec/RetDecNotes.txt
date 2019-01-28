@@ -1,6 +1,12 @@
 Research into making an optimization "module" RetDec: These are the notes I am making while I dig through the RetDec
 source code, looking for how to make a module.
 
+Current state: It seems that the Optimization passes done by RetDec are done on an internal IR (called Backend IR, or
+BIR). This means that we CANNOT write our LLVM cleaner as one of the opt passes in the decompiler, because these op
+passes don't use LLVM. Further more, it may be that the decompiler mostly uses the Module class (from LLVM's library and
+modified by RetDec) instead of using textual LLVM. IDK which we were planning the AI to use, but I'm pretty sure it was
+text.
+
 /src/llvmir2hlltool/llvmir2hll.cpp - Contains the decompiler class that transforms LLVM IR into a Higher Level Language
 (HLL)
     The decompiler seems to convert the LLVM IR to a Backend IR (BIR). Since our work will be directly on LLVM, this may
@@ -27,7 +33,19 @@ source code, looking for how to make a module.
 
 Now I'm looking at the optimizers found here: /src/llvmir2hll/optimizer/optimizers
     The optimizers all run on a Module object. This is the same object that is passed to the Decompiler::runOnModule
-    method.
+    method. Optimizers optimize a module.
+
+Now to look at the Module class. It can be found here: /src/llvmir2hll/ir/module.cpp
+    This uses the LLVM module class. It uses a confg class from here: src/llvmir2hll/config/config.cpp. Also semantics,
+    in this folder: src/llvmir2hll/semantics/.
 
 /scripts/retdec-decompiler.py - Python script for running the Decompiler
+    Line 1089: Decompiles Binary into LLVM IR
+        Line110 or 1116: Actually runs the command to convert Binary to LLVM
+            --What is this file and what does it do?
+    Line 1134: Beginning of stuff to decoompile LLVM to HLL
+    Line 1209: Calls the command to decompile "optimized IR code". Does optimized refer to optimizing it inside the
+    decompiler class, or that it has already bee decompiled?
 
+/src/bin2llvmirtool/bin2llvmir.cpp
+    This converts the binary to LLVMIR. I want to see what format it returns the LLVM in
