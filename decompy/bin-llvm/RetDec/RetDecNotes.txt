@@ -48,4 +48,8 @@ Now to look at the Module class. It can be found here: /src/llvmir2hll/ir/module
     decompiler class, or that it has already bee decompiled?
 
 /src/bin2llvmirtool/bin2llvmir.cpp
-    This converts the binary to LLVMIR. I want to see what format it returns the LLVM in
+    This converts the binary to LLVMIR. I want to see what format it returns the LLVM in.
+    Line 413: Begin the real work.
+    The binary is transformed into an LLVM module NOT LLVM text. All of the optimizations and passes done on the LLVM
+        are in this form. We will need to create a program to automatically transform our text LLVM into the Module
+        class. I'll add the task!
