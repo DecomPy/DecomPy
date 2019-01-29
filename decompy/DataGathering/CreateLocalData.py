@@ -49,14 +49,14 @@ class CreateLocalData:
         :param verbose: whether or not to include the print statements.
         :type: bool
         """
-        self.rs = RepoStructure()
+        self.folder = folder
+        self.rs = RepoStructure(self.folder)
         self.save_json = save_json
         self.repo_json_name = repo_json_name
         self.dest_folder = dest_folder
         self.repo_json_filtered_name = repo_json_filtered_name
         self.filtered_repos = filtered_repos
         self.FilterC = FilterC()
-        self.folder = folder
         self.db = db.Database(database_name)
         self.verbose = verbose
         self.config_file = config_file
@@ -114,8 +114,6 @@ class CreateLocalData:
         # gather the data by date and page number and store into json
         self.rf.offline_results(self.repo_json_name, date, start_page, end_page)
 
-        print(self.rf.offline_results)
-
         # read the json data
         repos = self.rf.offline_read_json(self.repo_json_name)
 
@@ -149,6 +147,8 @@ class CreateLocalData:
 
         for repo in self.filtered_repos:
             try:
+                if self.verbose:
+                    print("Downloading into...", self.folder)
                 url = repo["html_url"]  # grab the url from the json to download zip into our destinated folder
                 FileGetter.download_all_files(url, os.path.join(self.folder, repo["owner"]["login"] + "-" + repo["name"]), username, password)
                 if test:

@@ -3,7 +3,7 @@ import json
 
 
 class RepoStructure:
-    def __init__(self, parent_dir="."):
+    def __init__(self, repo_path="Repositories", parent_dir="."):
         """
         Init function for RepoStructure. Creates an object
         for managing GitHub repo folder creation for scraping
@@ -12,7 +12,7 @@ class RepoStructure:
         that will be created.
         """
         self.parentDir = os.path.abspath(parent_dir)
-        self.root = os.path.abspath(os.path.join(parent_dir, "Repositories"))
+        self.root = os.path.abspath(os.path.join(parent_dir, repo_path))
         RepoStructure.__mkdir(self.root)
 
     def batch_format(self, repos_json, filter_date):
