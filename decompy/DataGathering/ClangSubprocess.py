@@ -31,7 +31,7 @@ class Clang:
         location_path = Path(newlocation)
 
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
-        command = "clang -Wno-everything " + file_in + " " + args + " -o " + file_out
+        command = "clang -shared -undefined dynamic_lookup -Wno-everything " + file_in + " " + args + " -o " + file_out
 
         result = subprocess.run(command, shell=True).returncode  # , check=True)
 

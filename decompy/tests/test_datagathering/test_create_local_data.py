@@ -1,7 +1,6 @@
 from decompy.DataGathering.CreateLocalData import CreateLocalData
 import unittest
 import os
-import json
 
 
 class CreateLocalDataTest(unittest.TestCase):

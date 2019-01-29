@@ -18,10 +18,10 @@ class CreateLocalData:
     RepoFilter, GitHubScraper, FilterC, and ClangSubprocess.
     These combined will get all the relevant data.
     """
-    def __init__(self, database_name="c_code",repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
+    def __init__(self, folder="Repositories", dest_folder="RepositoriesFiltered", database_name="c_code",
+                 repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
                  repo_json_name="offlineResults.json", repo_json_filtered_name="filteredOfflineResults.json",
-                 filtered_repos=None, folder="Repositories", dest_folder="RepositoriesFiltered", save_json="repo.json",
-                 config_file="config.json", repo_start_date=None, repo_end_date=None, verbose=False):
+                 filtered_repos=None, save_json="repo.json",config_file="config.json", repo_start_date=None, repo_end_date=None, verbose=True):
         """
         initializes a new object, containing the other classes, one to rule them all.
         :param database_name: name of the database to store info to.
@@ -398,9 +398,12 @@ class CreateLocalData:
                                                     llvm_op_data, elf_data, assembly_data)
                                         self.db.insert_ml(ml_tuple)
 
+                                        if self.verbose:
+                                            print("Stage5: adding transaction to database...")
+
                                 except Exception as e:
                                     if self.verbose:
-                                        print("Stage 5: inserting into database ml table", e)
+                                        print("Stage 5: adding transaction to database ml table", e)
                                     pass
 
                     except Exception as e:
@@ -408,7 +411,7 @@ class CreateLocalData:
                             print("Stage 5: inserting into database meta table", e)
                         pass
 
-    def all_stages_increment(self, start_date=None, end_date=None, start_page=1, end_page=10):
+    def all_stages_increment(self, start_date=None, end_date=None, start_page=1, end_page=3):
         """
         runs all five stages in increments.
         :param start_date: date to start or pick back up formatted "%Y-%m-%d
@@ -434,7 +437,7 @@ class CreateLocalData:
         self.repo_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 
         # add 1 day
-        while self.repo_start_date < self.repo_end_date:
+        while self.repo_start_date <= self.repo_end_date:
             self.repo_start_date = self.repo_start_date + timedelta(days=1)
 
             try:
