@@ -192,8 +192,10 @@
 <span class="s2">                                          author_repo_key text NOT NULL,</span>
 <span class="s2">                                          source_code text UNIQUE NOT NULL,</span>
 <span class="s2">                                          object_file blob UNIQUE NOT NULL,</span>
+<span class="s2">                                          elf blob UNIQUE NOT NULL,</span>
 <span class="s2">                                          llvm_unop text UNIQUE NOT NULL,</span>
 <span class="s2">                                          llvm_op text UNIQUE NOT NULL,</span>
+<span class="s2">                                          assembly text UNIQUE NOT NULL,</span>
 <span class="s2">                                          FOREIGN KEY (author_repo_key) REFERENCES meta_table (author_repo_key) ON DELETE CASCADE ON UPDATE CASCADE</span>
 <span class="s2">                                  );&quot;&quot;&quot;</span>
 
@@ -310,13 +312,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        inserts or replaces, if it exists, a new ml row by adding it to the transaction builder. Can override.</span>
 <span class="sd">        :param ml_tuple: file_path, author_repo_key, source_code, object_file, llvm_unop, and llvm_op</span>
-<span class="sd">        :type: tuple - str (not null), str (not null), str (not null), str (not null), str (not null), str (not null)</span>
+<span class="sd">        :type: tuple - str (not null), str (not null), str (not null), binary (not null), str (not null), str (not null),</span>
+<span class="sd">            binary (not null), str (not null)</span>
 <span class="sd">        :param override: to override the transaction to immediately process the query or not.</span>
 <span class="sd">        :type: bool</span>
 <span class="sd">        :return: bool or nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;REPLACE INTO ml_table(file_path, author_repo_key, source_code, object_file, llvm_unop, llvm_op) VALUES (?, ?, ?, ?, ?, ?)&quot;</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;REPLACE INTO ml_table(file_path, author_repo_key, source_code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)&quot;</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">ml_tuple</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -419,7 +422,8 @@
 
         <span class="c1"># then add and check the length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="ow">or</span> <span class="n">override</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">20</span> <span class="ow">or</span> <span class="n">override</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Beginning transaction... inserting into database...&quot;</span><span class="p">)</span>
             <span class="c1"># begin transaction, insert 1000</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;BEGIN TRANSACTION&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sql_transaction</span><span class="p">:</span>

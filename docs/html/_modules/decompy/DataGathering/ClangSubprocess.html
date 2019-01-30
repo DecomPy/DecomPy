@@ -147,7 +147,6 @@
             
   <h1>Source code for decompy.DataGathering.ClangSubprocess</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 
 
@@ -180,7 +179,7 @@
         <span class="n">location_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">newlocation</span><span class="p">)</span>
 
         <span class="n">file_out</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">location_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_name</span> <span class="o">+</span> <span class="n">output_type</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;clang -Wno-everything &quot;</span> <span class="o">+</span> <span class="n">file_in</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">args</span> <span class="o">+</span> <span class="s2">&quot; -o &quot;</span> <span class="o">+</span> <span class="n">file_out</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;clang -shared -undefined dynamic_lookup -Wno-everything &quot;</span> <span class="o">+</span> <span class="n">file_in</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">args</span> <span class="o">+</span> <span class="s2">&quot; -o &quot;</span> <span class="o">+</span> <span class="n">file_out</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">returncode</span>  <span class="c1"># , check=True)</span>
 
@@ -231,18 +230,16 @@
         <span class="k">return</span> <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Clang.to_elf"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_elf">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">to_elf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">filter_file</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_elf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compiles all C files listed in the input file to elf executables.</span>
 <span class="sd">        Writes the name of successful files to output file. Writes the name of</span>
 <span class="sd">        successful C files to filter file.</span>
 <span class="sd">        :param file_path: file path to compile</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
-<span class="sd">        :param filter_file: If the file is successfully compiled, the name of</span>
-<span class="sd">            the C file is listed in this file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out_type</span> <span class="o">=</span> <span class="s2">&quot;-elf.elf&quot;</span>
-        <span class="k">return</span> <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">filter_file</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Clang</span><span class="o">.</span><span class="n">compile_all</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Clang.to_llvm_opt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_opt">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_llvm_opt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">optlevel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>

@@ -203,15 +203,12 @@ Writes the name of successful files to output file.
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.to_elf">
-<em class="property">static </em><code class="descname">to_elf</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em>, <em>filter_file</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_elf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_elf" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">to_elf</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_elf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_elf" title="Permalink to this definition">¶</a></dt>
 <dd><p>compiles all C files listed in the input file to elf executables.
 Writes the name of successful files to output file. Writes the name of
 successful C files to filter file.
 :param file_path: file path to compile
-:param newlocation: location to save LLVM files to
-:param filter_file: If the file is successfully compiled, the name of</p>
-<blockquote>
-<div>the C file is listed in this file</div></blockquote>
+:param newlocation: location to save LLVM files to</p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -267,37 +264,49 @@ Writes the name of successful files to output file.
 <span id="decompy-datagathering-createlocaldata-module"></span><h2>decompy.DataGathering.CreateLocalData module<a class="headerlink" href="#module-decompy.DataGathering.CreateLocalData" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.CreateLocalData.</code><code class="descname">CreateLocalData</code><span class="sig-paren">(</span><em>database_name='c_code', repo_dict={'blacklist': ['C++', 'C#', 'css'], 'language': 'C', 'per_page': 100, 'search': 'C '}, repo_json_name='offlineResults.json', repo_json_filtered_name='filteredOfflineResults.json', filtered_repos=None, folder='Repositories', save_json='repo.json', verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.CreateLocalData.</code><code class="descname">CreateLocalData</code><span class="sig-paren">(</span><em>folder='Repositories', dest_folder='RepositoriesFiltered', database_name='c_code', repo_dict={'blacklist': ['C++', 'C#', 'css'], 'language': 'C', 'per_page': 100, 'search': 'C '}, repo_json_name='offlineResults.json', repo_json_filtered_name='filteredOfflineResults.json', filtered_repos=None, save_json='repo.json', config_file='config.json', repo_start_date=None, repo_end_date=None, verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Gathers the data and prepares to use it in stages. This utilizes the following files:
 RepoFilter, GitHubScraper, FilterC, and ClangSubprocess.
 These combined will get all the relevant data.</p>
-<dl class="staticmethod">
+<dl class="method">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.all_stages_increment">
-<em class="property">static </em><code class="descname">all_stages_increment</code><span class="sig-paren">(</span><em>start_page=1</em>, <em>end_page=1000</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.all_stages_increment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.all_stages_increment" title="Permalink to this definition">¶</a></dt>
+<code class="descname">all_stages_increment</code><span class="sig-paren">(</span><em>start_date=None</em>, <em>end_date=None</em>, <em>start_page=1</em>, <em>end_page=3</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.all_stages_increment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.all_stages_increment" title="Permalink to this definition">¶</a></dt>
 <dd><p>runs all five stages in increments.
-:param start_page: page to start or pick back up.
+:param start_date: date to start or pick back up formatted “%Y-%m-%d
+:type: str
+:param end_date: date to end on formatted “%Y-%m-%d
+:type: str
+:param start_page: page to start or pick up from.
 :type: int
-:param end_page: page to end on.
+:param end_page: page to end or pick up from.
 :type: int
 :return: void</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.stage1_gather_repo_meta">
-<code class="descname">stage1_gather_repo_meta</code><span class="sig-paren">(</span><em>start_page=1</em>, <em>end_page=2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage1_gather_repo_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage1_gather_repo_meta" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stage1_gather_repo_meta</code><span class="sig-paren">(</span><em>date</em>, <em>start_page</em>, <em>end_page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage1_gather_repo_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage1_gather_repo_meta" title="Permalink to this definition">¶</a></dt>
 <dd><p>stage 1 of the data gathering process: Gather the data from the repos and store it into a json file.
+:param date: the date to read from
+:type: str
 :param start_page: where to start getting the data (start page) default is 1.
+:type: int
 :param end_page: where to end the page (end page) default is 2.
+:type: int
 :return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.stage2_get_repos">
-<code class="descname">stage2_get_repos</code><span class="sig-paren">(</span><em>test=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage2_get_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage2_get_repos" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stage2_get_repos</code><span class="sig-paren">(</span><em>test=False</em>, <em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage2_get_repos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage2_get_repos" title="Permalink to this definition">¶</a></dt>
 <dd><p>stage 2 of the data gathering process: Scrape all the files from GitHub from the given offline json file.
 :param test: whether or not to test
-:type: test
+:type: bool
+:param username: the github username to download more data.
+:type: str
+:param password: the github user’s password.
+:type: str
 :return:</p>
 </dd></dl>
 
@@ -324,26 +333,47 @@ These combined will get all the relevant data.</p>
 
 <dl class="method">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.stage4_generate_llvm">
-<code class="descname">stage4_generate_llvm</code><span class="sig-paren">(</span><em>llvm_file_path='LLVM'</em>, <em>object_file_path='Object'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage4_generate_llvm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage4_generate_llvm" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stage4_generate_llvm</code><span class="sig-paren">(</span><em>folder=None</em>, <em>llvm_file_path='LLVM'</em>, <em>object_file_path='Object'</em>, <em>elf_file_path='elf'</em>, <em>assembly_file_path='assembly'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage4_generate_llvm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage4_generate_llvm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stage 4 of the data gathering process: Generate LLVM and other data.
-gets file paths for llvm and object file path. Defaults to /LLVM and /Object.
-:param llvm_file_path: the file path to save LLVM files to
-:param object_file_path: the file path to save Object files to
+gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>folder</strong> – the file path of the folder to compile</li>
+<li><strong>llvm_file_path</strong> – the file path to save LLVM files to</li>
+<li><strong>object_file_path</strong> – the file path to save Object files to</li>
+<li><strong>elf_file_path</strong> – the file path for the elf file, defaults to “elf”.</li>
+<li><strong>assembly_file_path</strong> – the file path for the assembly file, defaults to “assembly”.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>type: str
 :return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.stage5_insert_database">
-<code class="descname">stage5_insert_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage5_insert_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage5_insert_database" title="Permalink to this definition">¶</a></dt>
-<dd><p>stage 5 of the gathering process: load into the database reading the meta and other info.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
+<code class="descname">stage5_insert_database</code><span class="sig-paren">(</span><em>folder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage5_insert_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage5_insert_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>stage 5 of the gathering process: load into the database reading the meta and other info.
+:param folder: folder to iterate through to insert into database.
+:type: str
+:return:</p>
 </dd></dl>
 
 </dd></dl>
@@ -564,7 +594,7 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 <span id="decompy-datagathering-repofilter-module"></span><h2>decompy.DataGathering.RepoFilter module<a class="headerlink" href="#module-decompy.DataGathering.RepoFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="decompy.DataGathering.RepoFilter.RepoFilter">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.RepoFilter.</code><code class="descname">RepoFilter</code><span class="sig-paren">(</span><em>search</em>, <em>language=None</em>, <em>blacklist=None</em>, <em>per_page=100</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.RepoFilter.</code><code class="descname">RepoFilter</code><span class="sig-paren">(</span><em>search</em>, <em>language=None</em>, <em>blacklist=None</em>, <em>per_page=100</em>, <em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>First draft of the RepoFilter using the GitHub api. This class searches for repositories on GitHub matching
 a search. It was written with offline queries in mind as I did not have access to the internet most of the
@@ -607,9 +637,18 @@ a simple search has the options of doing.</p>
 
 <dl class="method">
 <dt id="decompy.DataGathering.RepoFilter.RepoFilter.get_results">
-<code class="descname">get_results</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_results</code><span class="sig-paren">(</span><em>date</em>, <em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a single request to the GitGub api for a page with results matching
 the search criteria</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> – because github only allows us 1000 results because they are bad at making an api.</td>
+</tr>
+</tbody>
+</table>
+<p>:type; str</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -669,7 +708,7 @@ the search criteria</p>
 
 <dl class="method">
 <dt id="decompy.DataGathering.RepoFilter.RepoFilter.offline_results">
-<code class="descname">offline_results</code><span class="sig-paren">(</span><em>filename</em>, <em>start_page</em>, <em>end_page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.offline_results" title="Permalink to this definition">¶</a></dt>
+<code class="descname">offline_results</code><span class="sig-paren">(</span><em>filename</em>, <em>date</em>, <em>start_page</em>, <em>end_page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.offline_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the list of all repos for offline usage.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -677,6 +716,7 @@ the search criteria</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> – The name that will be given to the generated file</li>
+<li><strong>date</strong> – the date to search for</li>
 <li><strong>start_page</strong> – The index of the first page that should be saved</li>
 <li><strong>end_page</strong> – The index of the last page that should be saved</li>
 </ul>
@@ -685,10 +725,13 @@ the search criteria</p>
 <tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
 </td>
 </tr>
 </tbody>
@@ -702,7 +745,7 @@ the search criteria</p>
 <span id="decompy-datagathering-repostructure-module"></span><h2>decompy.DataGathering.RepoStructure module<a class="headerlink" href="#module-decompy.DataGathering.RepoStructure" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="decompy.DataGathering.RepoStructure.RepoStructure">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.RepoStructure.</code><code class="descname">RepoStructure</code><span class="sig-paren">(</span><em>parent_dir='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure.RepoStructure" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.RepoStructure.</code><code class="descname">RepoStructure</code><span class="sig-paren">(</span><em>repo_path='Repositories'</em>, <em>parent_dir='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure.RepoStructure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="decompy.DataGathering.RepoStructure.RepoStructure.batch_format">
@@ -792,17 +835,29 @@ the search criteria</p>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.WebNavigator.WebNavigator.getContent">
-<em class="property">static </em><code class="descname">getContent</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getContent" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getContent</code><span class="sig-paren">(</span><em>link</em>, <em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getContent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves the content from a link</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>link</strong> – An absolute URL</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>link</strong> – An absolute URL</li>
+<li><strong>username</strong> – the github username</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">page content</td>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">str</td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">page content</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">str</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -871,10 +926,16 @@ the search criteria</p>
 <p>Handles the download of GitHub repositories and extracting the useful files</p>
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.FileGetter.download_all_files">
-<em class="property">static </em><code class="descname">download_all_files</code><span class="sig-paren">(</span><em>repo_urls</em>, <em>target_directories=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FileGetter.html#FileGetter.download_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FileGetter.download_all_files" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">download_all_files</code><span class="sig-paren">(</span><em>repo_urls</em>, <em>target_directories=None</em>, <em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/FileGetter.html#FileGetter.download_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.FileGetter.download_all_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles the downloading of ZIP archives and extracting the appropriate files into the target directory.
 :param repo_urls: get the list of URLs to repositories. URLs must be to the top level of the repositories
+:type: str
 :param target_directories: File directory to store the files
+:type: str
+:param username: the github username.
+:type: str
+:param password: the github password.
+:type: str
 :return: Nothing</p>
 </dd></dl>
 
@@ -882,7 +943,7 @@ the search criteria</p>
 
 <dl class="class">
 <dt id="decompy.DataGathering.RepoFilter">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.</code><code class="descname">RepoFilter</code><span class="sig-paren">(</span><em>search</em>, <em>language=None</em>, <em>blacklist=None</em>, <em>per_page=100</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.</code><code class="descname">RepoFilter</code><span class="sig-paren">(</span><em>search</em>, <em>language=None</em>, <em>blacklist=None</em>, <em>per_page=100</em>, <em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>First draft of the RepoFilter using the GitHub api. This class searches for repositories on GitHub matching
 a search. It was written with offline queries in mind as I did not have access to the internet most of the
@@ -925,9 +986,18 @@ a simple search has the options of doing.</p>
 
 <dl class="method">
 <dt id="decompy.DataGathering.RepoFilter.get_results">
-<code class="descname">get_results</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_results</code><span class="sig-paren">(</span><em>date</em>, <em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a single request to the GitGub api for a page with results matching
 the search criteria</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> – because github only allows us 1000 results because they are bad at making an api.</td>
+</tr>
+</tbody>
+</table>
+<p>:type; str</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -987,7 +1057,7 @@ the search criteria</p>
 
 <dl class="method">
 <dt id="decompy.DataGathering.RepoFilter.offline_results">
-<code class="descname">offline_results</code><span class="sig-paren">(</span><em>filename</em>, <em>start_page</em>, <em>end_page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.offline_results" title="Permalink to this definition">¶</a></dt>
+<code class="descname">offline_results</code><span class="sig-paren">(</span><em>filename</em>, <em>date</em>, <em>start_page</em>, <em>end_page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.offline_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.offline_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the list of all repos for offline usage.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -995,6 +1065,7 @@ the search criteria</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> – The name that will be given to the generated file</li>
+<li><strong>date</strong> – the date to search for</li>
 <li><strong>start_page</strong> – The index of the first page that should be saved</li>
 <li><strong>end_page</strong> – The index of the last page that should be saved</li>
 </ul>
@@ -1003,10 +1074,13 @@ the search criteria</p>
 <tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
 </td>
 </tr>
 </tbody>
@@ -1017,7 +1091,7 @@ the search criteria</p>
 
 <dl class="class">
 <dt id="decompy.DataGathering.RepoStructure">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.</code><code class="descname">RepoStructure</code><span class="sig-paren">(</span><em>parent_dir='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">decompy.DataGathering.</code><code class="descname">RepoStructure</code><span class="sig-paren">(</span><em>repo_path='Repositories'</em>, <em>parent_dir='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoStructure.html#RepoStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoStructure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="decompy.DataGathering.RepoStructure.batch_format">
@@ -1090,15 +1164,12 @@ Writes the name of successful files to output file.
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.to_elf">
-<em class="property">static </em><code class="descname">to_elf</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em>, <em>filter_file</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_elf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_elf" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">to_elf</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_elf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_elf" title="Permalink to this definition">¶</a></dt>
 <dd><p>compiles all C files listed in the input file to elf executables.
 Writes the name of successful files to output file. Writes the name of
 successful C files to filter file.
 :param file_path: file path to compile
-:param newlocation: location to save LLVM files to
-:param filter_file: If the file is successfully compiled, the name of</p>
-<blockquote>
-<div>the C file is listed in this file</div></blockquote>
+:param newlocation: location to save LLVM files to</p>
 </dd></dl>
 
 <dl class="staticmethod">

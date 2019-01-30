@@ -430,11 +430,12 @@ class CreateLocalData:
             start_date = "2013-04-11"
 
         if end_date is None:
-            end_date = "2019-26-1"
+            self.repo_end_date = datetime.today()
+        else:
+            self.repo_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 
         # start date end date
         self.repo_start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
-        self.repo_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 
         # add 1 day
         while self.repo_start_date <= self.repo_end_date:
@@ -473,12 +474,17 @@ class CreateLocalData:
             except Exception as e:
                 print("Running all stages error:", e)
                 pass
-#
-# if __name__ == "__main__":
-#     cld = CreateLocalData()
-#     cld.stage1_gather_repo_meta()
-#     cld.stage2_get_repos()
-#     cld.stage3_filter_files()
-#     cld.stage4_generate_llvm()
-#     cld.stage5_insert_database()
+
+
+if __name__ == "__main__":
+    # cld = CreateLocalData()
+    # cld.stage1_gather_repo_meta()
+    # cld.stage2_get_repos()
+    # cld.stage3_filter_files()
+    # cld.stage4_generate_llvm()
+    # cld.stage5_insert_database()
+    cld = CreateLocalData()
+    print("Beginning to download all C data in 10 seconds...")
+    time.sleep(10)
+    cld.all_stages_increment("2014-04-11", "2019-04-11", 1, 10)
 

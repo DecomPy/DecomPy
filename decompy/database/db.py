@@ -274,7 +274,7 @@ class Database:
 
         # then add and check the length
         self.sql_transaction.append(sql)
-        if len(self.sql_transaction) >= 50 or override:
+        if len(self.sql_transaction) >= 20 or override:
             print("Beginning transaction... inserting into database...")
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")

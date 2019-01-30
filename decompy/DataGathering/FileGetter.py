@@ -167,7 +167,6 @@ class FileGetter:
             print("Download all files error", e)
             pass
 
-
 if __name__ == "__main__":
     timer = time.time()
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
@@ -175,10 +174,10 @@ if __name__ == "__main__":
     # FileGetter.download_all_files(["https://github.com/DecomPy/valid_and_compilable_1",
     #                                "https://github.com/DecomPy/invalid_and_uncompilable_1"]
     #                               , ["A", "B"])
-    FileGetter.download_all_files("https://github.com/hexagon5un/AVR-Programming")
+    # FileGetter.download_all_files("https://github.com/hexagon5un/AVR-Programming")
     # GitHubScraper.download_all_files(["https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM"],
     #                                  "FolderA")
     # GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher")
     # GitHubScraper.download_all_files("https://github.com/torvalds/linux", "Huge repo")
-    # FileGetter.download_all_files("https://github.com/torvalds/linux")
+    FileGetter.download_all_files("https://github.com/torvalds/linux")
     print((time.time() - timer) / 60, "minutes")
