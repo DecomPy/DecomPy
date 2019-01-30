@@ -1,5 +1,5 @@
 Creating and Using the Database
-**************************
+*******************************
 
 This is a log of major design decisions and reasoning made during creation of the database section of decompy.
 At the time of writing this, this is made up of one class based off of the design diagram.

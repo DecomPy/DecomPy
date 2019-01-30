@@ -82,7 +82,6 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/2_Decompy/index.html">Decompy API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
 </ul>
 
@@ -227,7 +226,6 @@
 
 <span class="sd">        :param link: An absolute URL</span>
 <span class="sd">        :return: list of visible text</span>
-<span class="sd">        :return list of str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">visible</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
@@ -268,10 +266,9 @@
 
 <span class="sd">        :param links A set of absolute links</span>
 <span class="sd">        :type links: set of strings</span>
-<span class="sd">        :param str domain: The domain used to filter the links. Should be of form example.com</span>
-<span class="sd">        (not of www.google.com or https://www.example.com)</span>
+<span class="sd">        :param str domain: The domain used to filter the links. Should be of form example.com (not of www.google.com or https://www.example.com)</span>
+<span class="sd">        </span>
 <span class="sd">        :return: A filtered set of links</span>
-<span class="sd">        :return: set of strings</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">domainRegex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/&quot;</span> <span class="o">%</span> <span class="n">domain</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">domainRegex</span><span class="o">.</span><span class="n">search</span><span class="p">,</span> <span class="n">absoluteLinks</span><span class="p">))</span></div>
