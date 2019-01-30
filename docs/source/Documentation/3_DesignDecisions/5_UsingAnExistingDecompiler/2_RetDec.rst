@@ -21,7 +21,21 @@ write a seperate tool, similar to the BinToLLVMTool and LLVMIRToHLLTool that alr
 passing this as a parameter at runtime, we could pipe the output of each tool to the other. This process could
 especially be used for early development.
 
-
+The folllowing approach has been explored before making recomendation about which decompiler to use: Write our own
+pass in RetDec, using the pass structure provided. RetDec's decompilation happens in two main phases, binary to LLVM
+and LLVM to HLL. A variety of other phases also take place, but these are the two that concern DecomPy the most. During
+the LLVM to HLL phase, the LLVM is converted to BIR, making it an unsuitable phase for DecomPy to manipulate the LLVM.
+Thus, an example pass was made during the Bin to LLVM phase. That phase consists of the following steps:
+    * Make a .h file under the directory "include\retdec\bin2llvmir\optimizations" and make the corresponding .cpp
+    file under "src\bin2llvmir\optimizations". These are the files the pass will be written in.
+    * Use this tutorial to make the pass correctly. The files "decompy\decompy\bin-llvm\RetDed\decompy_opt.cpp" and
+    "decompy\decompy\bin-llvm\RetDec\decompy_opt.h", along with all of the optimization .h and .cpp file in the
+    bin2llvm folder, are good examples of this
+    * Do not follow the tutorial's instructions on MakeFiles. Instead, in the src\bin2llvmir\cMakeLists.txt, add the
+    .cppp file to the set BIN2LLVMIR_SOURCES
+    * In spripts\retdec-config.py, add the command for running the pass you just made (this command was specified in
+    the RegisterPass object made in the .cpp file). To run only your pass during the Bin to LLVM stage, make sure
+    only your pass is listed.
 
 +++++++++++++++++++++++++++++++++++++++++
 Making a Module in RetDec Compared to FCD
