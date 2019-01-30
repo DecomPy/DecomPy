@@ -72,7 +72,6 @@ class Clang:
             else:
                 filteredC = open(filter_file, 'a+')
         for cfile in file_of_cfiles:
-            outfile.write("hey")
             cfile = cfile.rstrip()
             Clang.compile_cfile(cfile, outfile, newlocation, out_type,
                                 filter_file=filteredC, args=args)
@@ -86,7 +85,7 @@ class Clang:
         :param output_file: If the file is successfully compiled, the output file is listed in this file
         :param newlocation: location to save assembly files to
         """
-        args = "-S -masm=intel"
+        args = "-S -masm=intel --target=i386"
         out_type = "-assembly.asm"
         Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
 
@@ -99,6 +98,7 @@ class Clang:
         :param newlocation: location to save LLVM files to
         :param filter_file: If the file is successfully compiled, the name of the C file is listed in this file
         """
+        args = " --target=i386-elf"
         out_type = "-elf.elf"
         Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file)
 
