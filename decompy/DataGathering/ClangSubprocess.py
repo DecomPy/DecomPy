@@ -98,7 +98,7 @@ class Clang:
         :param newlocation: location to save LLVM files to
         :param filter_file: If the file is successfully compiled, the name of the C file is listed in this file
         """
-        args = " --target=i386-elf"
+        args = " --target=i386-elf -shared -undefined"
         out_type = "-elf.elf"
         Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file)
 
