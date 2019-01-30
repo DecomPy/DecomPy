@@ -128,7 +128,7 @@ class Clang:
         the specified opt level. Writes the name of successful files to output file
         
         :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output
+        :param output_file: If the file is  successfully compiled, the output
             file is listed in this file
         :param newlocation: location to save LLVM files to
         """
