@@ -13,14 +13,17 @@ class LifterSubprocess:
         command = binary+" "+" ".join([" ".join(arg) for arg in args])
         print(command)
         with open(file_out, "w+") as outfile:
-            result = subprocess.run(command, shell=True, stdout=outfile).returncode
+            result = subprocess.run(command, shell=True, executable='/bin/bash', stdout=outfile).returncode
         
         if result != 0:
-            with open(new_path+"/errors.log", "w+") as errors:
+            with open(new_path+"/errors.log", "a+") as errors:
                 print(c_file, binary, out_base_name, file=errors)
 
 
 if __name__ == "__main__":
-    LifterSubprocess.lift_to_llvm("test.out", "./llvm-mctoll/llvm-mctoll", ".", args=[("-d", "test.out")])
-    LifterSubprocess.lift_to_llvm("test.out", "./fcd/fcd", ".", args=[("-p",), ("-n",), ("-e", "0x400480"),("test.out",)])
-    LifterSubprocess.lift_to_llvm("test.out", "./dagger/dagger", ".", args=[("test.out",)])
+    # The last arg to llvm-mctoll, "-o >(cat)", is used to redirect the output file llvm-mctoll generates back to stdout
+    # so that it can be used the same way as the rest of the lifters. This should be able to be used for any similar
+    # lifter that accepts an output filename.
+    LifterSubprocess.lift_to_llvm("test.out", "./llvm-mctoll/llvm-mctoll", "./decompiled-llvm", args=[("-o", ">(cat)"), ("-d", "test.out")])
+    LifterSubprocess.lift_to_llvm("test.out", "./fcd/fcd", "./decompiled-llvm", args=[("-p",), ("-n",), ("-e", "0x400480"),("test.out",)])
+    LifterSubprocess.lift_to_llvm("test.out", "./dagger/dagger", "./decompiled-llvm", args=[("test.out",)])
