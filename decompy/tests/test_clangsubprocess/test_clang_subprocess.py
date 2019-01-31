@@ -76,7 +76,7 @@ class test_ClangSubprocessTest(unittest.TestCase):
         Path("./outFolder/does_exist-assembly.asm").unlink()
         Clang.Clang.to_elf(self.inputCName, self.outputElfName, self.outputFolder, self.outputCompile)
         self.assertTrue(Path("./outFolder/does_exist-elf.elf").exists())
-        # Path("./outFolder/does_exist-elf.elf").unlink()
+        Path("./outFolder/does_exist-elf.elf").unlink()
         Clang.Clang.to_llvm_opt(self.inputCName, self.outputLLVMUnoptName, self.outputFolder)
         self.assertTrue(Path("./outFolder/does_exist-opt.ll").exists())
         Path("./outFolder/does_exist-opt.ll").unlink()
