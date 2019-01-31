@@ -58,17 +58,20 @@ Pros and Cons
 +++++++++++++
 
 Pros
-    * RetDec is a much more sophisticated decompiler. It supports many more
-      formats, has a better structure internally, uses more widely accepted
-      methods of decompilation, etc.
+    * RetDec is a much more sophisticated decompiler. It supports many more formats, has a better structure
+    internally, uses more widely accepted methods of decompilation, etc.
     
-    * RetDec has a great deal of support. It receives frequent updates and
-      is still under development (last updated 9 hours ago as of writing this)
+    * RetDec has a great deal of support. It receives frequent updates and is still under development (last updated 9
+     hours ago as of writing this).
+
+    * We could modify RetDec to accept Python binding for LLVM, so we could write our module in Python and it could
+    be used by FCD
 
 Cons
-    * RetDec may be far more coupled and less modular than fcd. Our source
-      would be integrated with RetDec and we would likely have to build RetDec.
-      If we can't find a solution for this, it could be infeasible in terms
-      of build times.
+    * RetDec may be far more coupled and less modular than fcd. Our source would be integrated with RetDec and we
+    would likely have to build RetDec.
+
+    * RetDec does not have a system in place for individuals to easily add their own passes, making adding passes
+    very difficult.
 
     * RetDec is based around C++, not python
