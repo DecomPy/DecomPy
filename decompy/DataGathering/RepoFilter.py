@@ -152,7 +152,7 @@ class RepoFilter:
         Filters a list of repositories
 
         :param unfiltered_repos: The list of Unfiltered repositories
-        :tpye: list
+        :type: list
         """
         return list(filter(self.filter_repo, unfiltered_repos))
 
