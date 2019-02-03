@@ -8,6 +8,11 @@ import tensorflow as tf
 
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
+num_input = 784  # MNIST data input
+n_hidden_1 = 256  # 1st layer number of neurons
+n_hidden_2 = 256  # 2nd layer number of neurons
+num_classes = 10  # MNIST number of classes
+
 
 def TRAIN_SIZE(num):
     print('Total Training Images in Dataset = ' + str(mnist.train.images.shape))
@@ -54,7 +59,7 @@ x_train, y_train = TRAIN_SIZE(55000)
 display_digit(ran.randint(0, x_train.shape[0]))
 
 # shows the image flattened
-display_mult_flat(0,400)
+display_mult_flat(0, 400)
 
 # now use tensorflow for data
 sess = tf.Session()
@@ -62,24 +67,29 @@ sess = tf.Session()
 # create place holder to feed data into
 # we use x to feed into our x_train data
 # using None means we can feed any number of amount. In this case 784.
-x = tf.placeholder(tf.float32, shape=[None, 784])
+x = tf.placeholder(tf.float32, shape=[None, num_input])
 
 # another placeholder to compare the "ground truths" to our predictions
-y_ = tf.placeholder(tf.float32, shape=[None, 10])
+y_ = tf.placeholder(tf.float32, shape=[None, num_classes])
 
 # tensorflow optimizes these values when we 0 it out.
 # "grunt workers" of the classifier.
-W = tf.Variable(tf.zeros([784, 10]))  # "10 cheats sheets for each number"
-b = tf.Variable(tf.zeros([10]))  # "special relationship with the weight" that influences our final answer.
+weights = {
+    'h1': tf.Variable(tf.zeros([num_input, 256]))  # "10 cheats sheets for each number"
+}
+
+W1 =
+b1 = tf.Variable(tf.zeros([10]))  # "special relationship with the weight" that influences our final answer.
+
 
 ######## MY STUFF #########
+# add a 2nd weight and bias for another layer, neural net
 W2 = tf.Variable(tf.zeros([784, 10]))
 b2 = tf.Variable(tf.zeros([10]))
 
-# classifier function
-# known as "multinomial logistic regression".
-# prediction = multiply flat digit by our weight then add bias.
-y = tf.nn.softmax(tf.matmul(x, W) + b)
+
+out1 = tf.nn.relu(tf.matmul(x, W1) + b1)
+y = tf.nn.relu(tf.matmul(out1, W2) + b2)
 
 # graphing
 # Tensor("Softmax:0", shape=(?, 10), dtype=float32)
@@ -110,7 +120,7 @@ cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=
 # training
 x_train, y_train = TRAIN_SIZE(5500)
 x_test, y_test = TEST_SIZE(10000)
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.01  #### MY STUFF: lowered learning rate
 TRAIN_STEPS = 2500
 
 # intialize all variables to be used by our graph.
@@ -146,7 +156,7 @@ for i in range(TRAIN_STEPS+1):
 # graph our findings
 for i in range(10):
     plt.subplot(2, 5, i+1)
-    weight = sess.run(W)[:, i]
+    weight = sess.run(W1)[:, i]
     plt.title(i)
     plt.imshow(weight.reshape([28, 28]), cmap=plt.get_cmap('seismic'))
     frame1 = plt.gca()
