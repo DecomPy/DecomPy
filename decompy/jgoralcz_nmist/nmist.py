@@ -58,14 +58,15 @@ plt.show()
 
 # setup the layers
 # build the models by configuring the layers, then compile
-# WARNING: DO NOT USE KERAS
+# WARNING: DO NOT USE KERAS ( because it's easy :^) )
 model = keras.Sequential([
 
     # flatten the 2-d array to 1d array for input
     keras.layers.Flatten(input_shape=(28, 28)),
 
     # neural layers
-    keras.layers.Dense(128, activation=tf.nn.relu),  # 128 nodes (neurons)
+    keras.layers.Dense(784, activation=tf.nn.relu),  # 128 nodes (neurons)
+    keras.layers.Dense(128, activation=tf.nn.relu),
     keras.layers.Dense(10, activation=tf.nn.softmax)  # 10 node softmax layer, probability array summing to 1, score belonging to each one.
 ])
 
@@ -83,7 +84,10 @@ model.compile(optimizer='adam',
 # feed data into model (train_images, train_labels)
 # model learns to associate images and labels.
 # we want to make predictions on the train_images array, then verify with the train_labels array.
-model.fit(train_images, train_labels, epochs=25) # seeing about 89% accuracy at 5 epochs, 94% accuracy at 25 epochs.
+# seeing about 89% accuracy at 5 epochs, 94% accuracy at 25 epochs, 94-95 with 2 layers, 96+ with more epochs and 2 layers
+# I think I could get close to 98.39% at 100 epochs, could probably get 99+% at 150 epochs
+model.fit(train_images, train_labels, epochs=100)
+
 
 
 # making predictions (once model is tested)
