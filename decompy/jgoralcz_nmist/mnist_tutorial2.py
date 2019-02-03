@@ -9,8 +9,9 @@ import tensorflow as tf
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
 num_input = 784  # MNIST data input
-n_hidden_1 = 2048  # 1st layer number of neurons
-n_hidden_2 = 1024  # 2nd layer number of neurons
+n_hidden_1 = 748  # 1st layer number of neurons
+n_hidden_2 = 374  # 2nd layer number of neurons
+n_hidden_3 = 187   # 3rd layer number of neurons
 num_classes = 10  # MNIST number of classes
 
 
@@ -36,7 +37,7 @@ def test_size(num):
 
 
 # training info
-x_test, y_test = test_size(10000)
+# x_test, y_test = test_size(10000)
 LEARNING_RATE = 0.1  #### MY STUFF: lowered learning rate
 TRAIN_STEPS = 2500
 
@@ -83,12 +84,14 @@ y_ = tf.placeholder(tf.float32, shape=[None, num_classes])
 weights = {
     'h1': tf.Variable(tf.random_normal([num_input, n_hidden_1])),  # 784 x 256 for first layer
     'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),  # 256 x 256 matrix for 2nd layer, need to multiply
-    'out': tf.Variable(tf.random_normal([n_hidden_2, num_classes]))   # the output value after it's done
+    'h3': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_3])),
+    'out': tf.Variable(tf.random_normal([n_hidden_3, num_classes]))   # the output value after it's done
 }
 
 biases = {
     'b1': tf.Variable(tf.random_normal([n_hidden_1])),  # first bias layer to match with weight layer
     'b2': tf.Variable(tf.random_normal([n_hidden_2])),  # 2nd bias layer to match with weight layer
+    'b3': tf.Variable(tf.random_normal([n_hidden_3])),
     'out': tf.Variable(tf.random_normal([num_classes]))  # the output value after it's done
 }
 
@@ -97,9 +100,10 @@ biases = {
 # get the values from each layer, add them into 1 layer
 layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
 layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
+layer_3 = tf.add(tf.matmul(layer_2, weights['h3']), biases['b3'])
 
 # then cross multiply them with our output weights and biases
-out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+out_layer = tf.matmul(layer_3, weights['out']) + biases['out']
 
 
 # model
@@ -165,8 +169,8 @@ with tf.Session() as sess:
     # start initializer session
     sess.run(init)
 
-    for step in range(1, TRAIN_STEPS+1):
-        batch_x, batch_y, = mnist.train.next_batch(5000)  # other guide shows train_size(num)
+    for step in range(1, 4000+1):
+        batch_x, batch_y, = mnist.train.next_batch(2000)  # other guide shows train_size(num)
 
         # optimization (backprop)
         sess.run(train_op, feed_dict={x: batch_x, y_: batch_y})
