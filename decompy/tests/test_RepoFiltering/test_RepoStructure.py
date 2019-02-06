@@ -11,7 +11,7 @@ class TestRepoStructure(unittest.TestCase):
     def setUpClass(cls):
         cls.rs = RepoStructure()
 
-        with open("filteredOfflineResults.json", "r") as json_file:
+        with open(Path(__file__).parent.joinpath("filteredOfflineResults.json"), "r") as json_file:
             cls.rs.json_file = json.load(json_file)
 
         # read into our filtered repos
