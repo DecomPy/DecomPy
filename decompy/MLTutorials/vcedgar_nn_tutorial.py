@@ -49,14 +49,19 @@ def display_mult_flat(start, stop):
 
 # The folllowing loads the data
 x_train, y_train = TRAIN_SIZE(55000)
+# Modify the training data to have an extra feature
+
+print(x_train.shape[0]);
+print("***********************\n")
 # the following displays a random piece of data
-display_digit(ran.randint(0, x_train.shape[0]))
+# display_digit(ran.randint(0, x_train.shape[0]))
 # create training session
 session = tf.Session()
 
+feature_num = 785
 # create a placeholder (no data, just a type and shape) which the session will feed training data to
 # '784' is the size of values we can feed x. 'None' means we can feed x however many of these we want
-x = tf.placeholder(tf.float32, shape=[None, 784])
+x = tf.placeholder(tf.float32, shape=[None, feature_num])
 y_ = tf.placeholder(tf.float32, shape=[None, 10])
 
 # the following defines weights and biases for the model
@@ -64,7 +69,7 @@ y_ = tf.placeholder(tf.float32, shape=[None, 10])
 # These are, I think, the value of the likelyhood that the digit in question has a pixel at that place
 # (recal that each picture has 784 pixels)
 # biases influence the answer. Both of these topiccs are cconsidered outside the scope of the tutorial
-W = tf.Variable(tf.zeros([784, 10]))
+W = tf.Variable(tf.zeros([feature_num, 10]))
 b = tf.Variable(tf.zeros([10]))
 
 # This defines the classifier function. This one is " multinomial logistic regression." The flattened digit is
@@ -72,10 +77,24 @@ b = tf.Variable(tf.zeros([10]))
 # Matmul is matrix multiplication
 y = tf.nn.softmax(tf.matmul(x, W) + b)
 
+
+
 # this runs the session and feeds it data. The model has so little data that it thinks there is equal probability of
 # being any digit. Tensflow calculates the probabilities with the softmax func from above. Softmax makes all the
 # values we give it sum up to one, which gives us the probability
 x_train, y_train = TRAIN_SIZE(3)
+
+print(x_train)
+
+x_train = x_train.tolist()
+for i in range(0,3):
+    zeros = x_train[i].count(0)
+    x_train[i].append(zeros)
+
+x_train = np.asarray(x_train)
+for i in range(0,3):
+    x_train[i] = np.asarray(x_train[i])
+
 session.run(tf.global_variables_initializer())
 print(session.run(y, feed_dict={x: x_train}))
 
@@ -104,6 +123,30 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # This loop runs TRAIN_STEPS number of times. Runs training every time by feeding it values from v_train and y_train
 # using feed dict. accuracy is used with test data to see how good we are.Must Have Dif Data for testing.
+print(x_train.shape)
+x_train = x_train.tolist()
+for i in range(0,5500):
+    zeros = x_train[i].count(0)
+    x_train[i].append(zeros)
+
+x_train = np.asarray(x_train)
+for i in range(0,5500):
+    x_train[i] = np.asarray(x_train[i])
+
+print(x_train.shape)
+print(x_test.shape)
+
+x_test = x_test.tolist()
+for i in range(0, 10000):
+    zeros = x_test[i].count(0)
+    x_test[i].append(zeros)
+
+x_test = np.asarray(x_test)
+for i in range(0, 10000):
+    x_test[i] = np.asarray(x_test[i])
+
+print(x_test.shape)
+
 for i in range(TRAIN_STEPS+1):
     session.run(training, feed_dict={x: x_train, y_: y_train})
     if i % 100 == 0:
