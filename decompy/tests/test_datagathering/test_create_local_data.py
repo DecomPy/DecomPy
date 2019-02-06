@@ -1,6 +1,9 @@
 from decompy.DataGathering.CreateLocalData import CreateLocalData
 import unittest
+import shutil
 import os
+
+database_name = "c_source_test_delete_me"
 
 
 class CreateLocalDataTest(unittest.TestCase):
@@ -12,7 +15,7 @@ class CreateLocalDataTest(unittest.TestCase):
         initializes the test cases for CreateLocalDataTest
         :return:
         """
-        self.cld = CreateLocalData("c_test_db")
+        self.cld = CreateLocalData(folder="RemoveRepositories", dest_folder="RemoveRepositoresFiltered", database_name=database_name)
 
     def test_stages(self):
         self.cld.stage1_gather_repo_meta("2013-04-11", 1, 2)
@@ -30,8 +33,11 @@ class CreateLocalDataTest(unittest.TestCase):
                     self.assertTrue(os.path.exists(json_path))
                     break
 
+    # test cases rely on the existing database
     def tearDown(self):
-        os.remove("c_test_db.db")
+        os.remove(database_name+".db")
+        shutil.rmtree(self.cld.folder)
+        # shutil.rmtree(self.cld.dest_folder)
 
 
 if __name__ == '__main__':

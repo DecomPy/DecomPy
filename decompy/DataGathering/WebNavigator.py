@@ -43,47 +43,33 @@ class WebNavigator:
     TIMER = 0  # Used if TIMING is enabled
 
     @staticmethod
-    def getContent(link, username=None, password=None):
+    def getContent(link):
         """
         Retrieves the content from a link
-
         :param link: An absolute URL
-        :type: str
-        :param username: the github username
-        :type: str
         :return: page content
         :return: str
         """
+
         if WebNavigator.TIMING:
             WebNavigator.TIMER = time.time()
 
-        # # pageSource = ""
-        # response = None
-        # try:
-        #     # Download the zip of the repository
-        #     if username is not None and password is not None:
-        #         response = requests.get(link, auth=(username, password))
-        #     else:
-        #         response = requests.get(link)
-        # except Exception as e:
-        #     print(e)
-        #     pass
+        pageSource = ""
+        try:
+            response = urllib.request.urlopen(link, timeout=10)
+            try:
+                pageSource = response.read().decode(response.headers.get_content_charset())
+            except (TypeError, UnicodeDecodeError) as e:
+                print(e)
+                pass
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+            print(e)
+            pass
 
-        #     response = urllib.request.urlopen(link, timeout=10)
-        #     try:
-        #
-        #         pageSource = response.read().decode(response.headers.get_content_charset())
-        #     except (TypeError, UnicodeDecodeError) as e:
-        #         print(e)
-        #         pass
-        # except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
-        #     print(e)
-        #     pass
-        #
-        # if WebNavigator.TIMING:
-        #     print("WEBNAVIGATOR: Time to get content from", link, ":", time.time() - WebNavigator.TIMER)
+        if WebNavigator.TIMING:
+            print("WEBNAVIGATOR: Time to get content from", link, ":", time.time() - WebNavigator.TIMER)
 
-        # return response
+        return pageSource
 
     @staticmethod
     def getVisibleTextContent(link):

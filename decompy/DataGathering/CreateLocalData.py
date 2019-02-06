@@ -5,11 +5,7 @@ import os
 import shutil
 import json
 import time
-import codecs # used for chinese characters in python
 from datetime import datetime, timedelta
-
-import codecs
-decode_hex = codecs.getdecoder("hex_codec")
 
 
 class CreateLocalData:
