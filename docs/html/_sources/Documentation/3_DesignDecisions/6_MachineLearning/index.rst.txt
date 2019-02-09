@@ -1,0 +1,7 @@
+Machine Learning
+****************
+
+.. toctree::
+    :glob:
+
+    *

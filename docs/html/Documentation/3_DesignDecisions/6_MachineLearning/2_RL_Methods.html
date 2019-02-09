@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>libbeauty &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Reinforcement Learning Ideas &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="bin2llvm" href="6_bin2llvm.html" />
-    <link rel="prev" title="McSema" href="4_McSema.html" /> 
+    <link rel="prev" title="Reinforcement Learning" href="1_ReinforcementLearning-Zach.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -84,19 +83,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">Binary Lifting</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="0_CurrentSuggestion.html">Current Suggestion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="1_llvm-mctoll.html">llvm-mctoll</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_fcd.html">fcd</a></li>
-<li class="toctree-l3"><a class="reference internal" href="3_fcd+remill.html">fcd+remill</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_McSema.html">McSema</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">libbeauty</a></li>
-<li class="toctree-l3"><a class="reference internal" href="6_bin2llvm.html">bin2llvm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="7_dagger.html">Dagger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Machine Learning</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_ReinforcementLearning-Zach.html">Reinforcement Learning</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reinforcement Learning Ideas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#applying-what-i-have-learned">Applying What I have Learned</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../6_MachineLearning/index.html">Machine Learning</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -146,15 +142,15 @@
         
           <li><a href="../index.html">Design Decisions</a> &raquo;</li>
         
-          <li><a href="index.html">Binary Lifting</a> &raquo;</li>
+          <li><a href="index.html">Machine Learning</a> &raquo;</li>
         
-      <li>libbeauty</li>
+      <li>Reinforcement Learning Ideas</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/4_BinaryLifting/5_libbeauty.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/6_MachineLearning/2_RL_Methods.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -167,11 +163,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="libbeauty">
-<h1>libbeauty<a class="headerlink" href="#libbeauty" title="Permalink to this headline">¶</a></h1>
-<p>This project has not been completed and would likely not be a good fit.
-It is still highly experimental and subject to breaking. (And it has been
-under development for a really long time).</p>
+  <div class="section" id="reinforcement-learning-ideas">
+<h1>Reinforcement Learning Ideas<a class="headerlink" href="#reinforcement-learning-ideas" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="applying-what-i-have-learned">
+<h2>Applying What I have Learned<a class="headerlink" href="#applying-what-i-have-learned" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="modelling-the-world">
+<h3>Modelling the world<a class="headerlink" href="#modelling-the-world" title="Permalink to this headline">¶</a></h3>
+<p>If we choose to go with RL learning, we have to choose how to model our problem.
+There are 4 components that we would have to decide when modelling our problem.
+These are:
+S  - The state
+A  - The set of actions which can be chosen at a given point
+R  - The reward from performing action ‘a’ from set A
+S’ - The new state after action ‘a’</p>
+<p>I propose the following environment:
+S  - The current “state” of the program which starts from freshly raised LLVM
+A  - The set of optimization passes which we have written to be used
+R  - The delta between the current similarity of the program to the original</p>
+<blockquote>
+<div>and the similarity after applying the optimization pass, action ‘a’, from
+our set of optimizations, “A”</div></blockquote>
+<p>S’ - The new state of the program after the optimization</p>
+</div>
+<div class="section" id="what-type-of-rl">
+<h3>What type of RL<a class="headerlink" href="#what-type-of-rl" title="Permalink to this headline">¶</a></h3>
+<p>In order to use the model I mention in the previous section, the algorithm we choose
+would need to be able to handle problems that are “episodic” in nature. That is to say,
+each time that we start learning, we pick a single program (llvm module, function, whatever)
+and perform the learning on that. Then we use the new information learned from that
+to improve results on the next section of code when we begin again. (Or do some level
+of hybrid batch based learning where we are slightly off policy as we learn a large batch
+and perform computations based on the average result. This could cause faster learning
+by smoothing the results. This is why most neural nets used batch based learning)</p>
+<p>I concluded that the best choice of RL learning would be a model free on-policy
+based algorithm which is episodic in nature and has a finite space horizon. I also noted
+that it would be nice to find a learning model which is able to learn well from
+similarities amongst states. Data efficiency is less of an issue as I believe we
+have a good amount of data.</p>
+<div class="section" id="temporal-difference-learning">
+<h4>Temporal Difference Learning<a class="headerlink" href="#temporal-difference-learning" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="temporal-difference-learning-with-back-prop">
+<h4>Temporal Difference Learning with Back Prop<a class="headerlink" href="#temporal-difference-learning-with-back-prop" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="monte-carlo-learning">
+<h4>Monte Carlo learning<a class="headerlink" href="#monte-carlo-learning" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -182,10 +221,8 @@ under development for a really long time).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="6_bin2llvm.html" class="btn btn-neutral float-right" title="bin2llvm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="4_McSema.html" class="btn btn-neutral" title="McSema" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="1_ReinforcementLearning-Zach.html" class="btn btn-neutral" title="Reinforcement Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

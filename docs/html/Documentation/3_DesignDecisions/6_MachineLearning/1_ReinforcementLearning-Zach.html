@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reinforcement Learning &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Reinforcement Learning Ideas" href="2_RL_Methods.html" />
+    <link rel="prev" title="Machine Learning" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Machine Learning</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reinforcement Learning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#types-of-rl">Types of RL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl-vs-neural-nets">RL vs. Neural Nets</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="2_RL_Methods.html">Reinforcement Learning Ideas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">Machine Learning</a> &raquo;</li>
+        
+      <li>Reinforcement Learning</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/6_MachineLearning/1_ReinforcementLearning-Zach.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reinforcement-learning">
+<h1>Reinforcement Learning<a class="headerlink" href="#reinforcement-learning" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="types-of-rl">
+<h2>Types of RL<a class="headerlink" href="#types-of-rl" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="model-free-vs-model-based-learning">
+<h3>Model free vs. Model based learning<a class="headerlink" href="#model-free-vs-model-based-learning" title="Permalink to this headline">¶</a></h3>
+<p>Model free and model based learning are simple in concept.
+In model based learning, the RL agent generates a model of the
+world as it learns. In model free learning, the agent learns
+“notions” of general things to avoid and things to try for.</p>
+<p>I don’t believe that a model based learning would be as useful
+for what we are trying to do. Model based learning is really not
+intended for such complex statesets. Even for learning to play
+board games like backgammon, model based learning has trouble
+keeping up with the state space. Depending on how we choose to
+model state in our problem, model based learning might actually
+be impossible.</p>
+<p>Currently, I think it makes more sense to
+model each set of code as an environment and have the agent
+learn how to optimize in that environment with the notion that
+improvements done in one environment apply to others.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">After</span> <span class="n">further</span> <span class="n">reading</span><span class="p">,</span> <span class="n">I</span> <span class="n">don</span><span class="s1">&#39;t think that the state model I</span>
+<span class="n">mentioned</span> <span class="n">above</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">best</span> <span class="n">idea</span><span class="o">.</span> <span class="n">See</span> <span class="s2">&quot;Reinforcement Learning</span>
+<span class="n">Ideas</span><span class="s2">&quot; for more information.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="on-policy-vs-off-policy">
+<h3>On-policy vs. Off-policy<a class="headerlink" href="#on-policy-vs-off-policy" title="Permalink to this headline">¶</a></h3>
+<p>Off-policy learning is essentially the idea of having the RL
+agent perform actions completely independently of what it is
+learning.</p>
+<p>In contrast, on policy learning has the agent perform tasks,
+learn from the results, and then perform new actions based
+on what it learnt.</p>
+<p>The advantage of off-policy learning (since it is likely not
+self evident) is that by using off-policy learning, an RL agent
+does not become biased into avoiding the choices from which it
+could learn from. For example, if an agent was trying to solve
+a maze, and it learned early on that going right gave good
+results, it might never learn that going left at that turn
+may have bad results at first but later on have a massive
+reward that was “hidden” so to speak.</p>
+<p>I think that despite off-policy learning’s advantages, on-policy
+learning is still a better choice for what we are doing, mostly
+due to the fact that off-policy learning tends to be much slower.</p>
+</div>
+<div class="section" id="finite-vs-infinite-space-horizons">
+<h3>Finite vs Infinite Space Horizons<a class="headerlink" href="#finite-vs-infinite-space-horizons" title="Permalink to this headline">¶</a></h3>
+<p>A space horizon in RL can be thought of as simply the time that
+an agent has to live. The most common type in RL is likely an
+“infinite space horizon.” This means that an agent can live
+forever and should try to plan ahead as far as possible to be
+successful. Of course, pure infinite space horizon problems are
+rare. This is becuase of an issue that arises where an agent
+might put of reward far too much such that it never improves
+if it is aware of a growing reward. This situation is fixed
+through a concept called “discounted inifinte space horizons.”
+This simply means that a diminishing return is placed on
+future returns so that an agent will tend towards improvement.</p>
+<p>I think that both finite space horizons and discounted infinite
+space horizons have applications for our problem. Due to the
+execution times of llvm passes however, I think a finite space
+horizon could be better. This is since it could be used to
+arbitrarily limit the number of passes that the agent could make
+preventing it from trying to continually trying to run something
+or minor improvement at the cost of huge runtime.</p>
+</div>
+</div>
+<div class="section" id="rl-vs-neural-nets">
+<h2>RL vs. Neural Nets<a class="headerlink" href="#rl-vs-neural-nets" title="Permalink to this headline">¶</a></h2>
+<p>Neural Net based learning uses a simple idea. The neural network
+guesses what output should come from a given input. Using the
+correct output, and a technique called backpropogation, the error
+is “brough back” into what features caused it. These weights given
+to these features can then be adjusted until the AI is able to more
+correctly guess the outputs.</p>
+<p>Reinforcement learning revolves around an “agent” making decisions
+in an “environment”. Essentially, the agent makes choices and by
+doing so receives a reward. The magnitude of this reward (possibly
+negative) helps it to learn what actions to take.</p>
+<p>Both NN and RL try to get a machine learning agent to move closer
+to a desired result. NN do so through using a scalar output and
+a desired scalar output and determining the cause of the difference.
+RL uses a “reward function” which could be but does not have to be
+derived from the desired output.</p>
+<p>Less simply, in RL, there are 4 major factors. These are the state
+of the environment, the set of actions available for the agent to
+choose from. Each of these would have to be modelled for our problem.</p>
+<p>One big advantage of neural nets, to quote a <a class="reference external" href="https://web.stanford.edu/group/pdplab/pdphandbook/handbookch10.html#x26-1350009.3">source I found on RL</a>
+“is, of course, their ability to generalize learning across similar states.”
+This advantage will be greatly missed should be choose to go with
+RL (unless we strategically chose the right algorithm – this excerpt
+is from a section on Temporal Difference learning with Back Prop).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="2_RL_Methods.html" class="btn btn-neutral float-right" title="Reinforcement Learning Ideas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Machine Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
