@@ -24,6 +24,7 @@ R  - The delta between the current similarity of the program to the original
      our set of optimizations, "A"
 S' - The new state of the program after the optimization
 
+
 What type of RL
 ===============
 
@@ -42,12 +43,48 @@ that it would be nice to find a learning model which is able to learn well from
 similarities amongst states. Data efficiency is less of an issue as I believe we
 have a good amount of data.
 
-Temporal Difference Learning
-----------------------------
+The following are models which roughly fit this criteria
+* Temporal Difference Learning
+* Temporal Difference Learning with Back Prop
+* Monte Carlo learning
 
-Temporal Difference Learning with Back Prop
--------------------------------------------
 
-Monte Carlo learning
---------------------
+Modeling the World - Part 2
+===========================
 
+After further reading, and based on a discussion during a meeting with our project
+sponsor, I came up with another model which I believe would be much more effective
+and possible given our time frame. Essentially it is as follows:
+
+S  (unchanged) - The current state of the program
+R  (unchanged) - The delta representing improvement in similarity
+S' (unchanged) - The new state of the program after the action
+A  (changed)   - This part is more complicated.... see below
+
+The action part of the RL agent in our case is the real uncertainty in this project.
+Whatever actions we provide are the actions that the ML agent will be able to take to
+modify the code. Too much choice and we are left with incorrect code most of the time
+and an almost impossible to train model. Too much constiction and it will be unable to
+learn anything of value. The real issue is figuring out how to provide the freedom to
+manipulate the program without losing semantics from the program during the process.
+Anything we have come up with thus far is based around constricting its changes through
+hand written rules -- rules that in my opinion counteract what we set out to do. Our
+sponsor's goal is to avoid having to write rules for a specific compiler. Sure, writing
+general rules and letting an ML agent decide which apply is a way to do this, but the
+true aim in my opinion should be to avoid writing the rules in general. To this aim
+I have the following solution.
+
+Rather than provide rules that allow the ML agent to make passes through the code,
+we can go back to the idea of free text based manipulation (or an LLVM module equivalent
+there of). We would provide a database of short patterns broken down into basic equivalency
+classes. Ignoring how we would make this database for now, if we had such a database,
+providing the ML Agent freedom while mainting semantics is easy. Simply allow the
+agent to swap out any values interchangably between the equivalency classes.
+
+To generate this "database of equivalency classes", we could put clang (or more specifically,
+"opt" which is the part of clang that handles llvm optimization) to work. Since opt
+is capable of specifically targeting passes, we can take a simple piece of unoptimized
+llvm and generate as many equivalent versions of it as we desire (well, as many as there
+are different opt passes which will actually result in a distinct version of the code).
+By doing this, we ensure that the decompilation process will maintain semantic correctness,
+but still give it a wide range of freedom.
