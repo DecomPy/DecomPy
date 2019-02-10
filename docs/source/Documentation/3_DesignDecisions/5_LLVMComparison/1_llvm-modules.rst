@@ -1,49 +1,40 @@
-llvm-mctoll
-***********
+Comparing the LLVM Classes that Describe a Program
+**************************************************
+    LLVM provides a variety of classes that  are used to describe a program, function, or instruction. These can be used
+    to compare LLVM programs.
 
-First Impressions
-    llvm-mctoll is a project that started very recently (more recent than our capstone project).
-    It is a minor, open source project from Microsoft. It currently has two main contributors.
-    From what I can tell from community resources (Slack channels, forums, GitHub chats, etc.)
-    it appears that llvm-mctoll, while in a much less developped, more infintile period has
-    garnished a good deal of interest (likely due to its backing from Microsoft). Because it is
-    so new, it also is using the latest and greatest (the most recent llvm/clang releases, with
-    none of the bad design choices that the other projects had to make as they evolved with llvm
-    and clang).
+Useful Member Functions and Variables in the LLVMModule Class
+    The LLVM Module objects that our module will be manipulating have avariety of useful member functions and
+    variables that we can use to compare two modules:
+        getInstructionCount(): Returns the number of non debug instructions in the module.
+        LLVM modules have functionswhich return the list of functions, globals, and symbol tables.
 
---------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
-Building llvm-mctoll
-    Building llvm-mctoll was quite a process. Doing so requires checking out the entire llvm
-    project, then checking out llvm-mctoll and clang into the tools directory, and finally
-    running a config and cmake on the entire llvm project. Building along takes around 4 hours.
-    If this were required each time, I would say it is a prohibiting factor, however the binary
-    that is produced runs fine in other similar architecures (i.e. we can all run the binary I
-    produced in our ubuntu environments. From what I have read of other projects, checking out
-    into the llvm tools folder seems to be common as well (though not all do it such as fcd).
+Useful Member Functions and Variables in the LLVMFunction Class
+    LLVM Modules are made of Functions. Comparing these will be very important, especially since we may be training
+    the model on a functionby function basis
+        getInstructionCount: Returns the number of non debug instructions in the module.
+        getFunctionType: Can compare functions by function type
+        getReturnType: Commpare functions by return type
+        getAttributes: Compare functions by attributes
+        viewCFG: Compare functions with Control Flow Graph
+        getBasicBlockLst: Compare the functions basic blocks
+        getValueSymbolTable: Compare the function's symbol table
 
---------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
-What is produced
-    llvm-mctoll ran fine and produces a .ll file with minimal work. At first glance, it does
-    appear quite different from the .ll file compiled by clang, even for simple programs such
-    as
+Useful Member Functions and Variables in the BasiBlock Class
+    Functions and modules are made of basic blocks. Basic blocks are made of instructions that make up the program.
+        instructionsWithoutDebug: Compare basic blocks by instructions.
 
-.. tabs::
+------------------------------------------------------------------------------------------------------------------------
 
-    .. code-tab:: c
-
-        int main() {
-            return 0;
-        }
-
-    .. tab:: llvm-clang
-        
-        int main() {
-        }
-
-    .. tab:: llvm-mctoll
-        
-        int main() {
-        }
-
+Useful Member Functions and Variables in the BasiBlock Class
+    Instructions make up the most basic peieces of program.
+        isIdenticalTo: Returns true if two instructions are exactly identical. We may not need all instructions to be
+         *exactly* identical, so this function is useful but not the only metric we should use.
+        isSameOperationAs:Compare two instructions toseeif they are the same operation.
+        getMetadata: Returns metadata that may be useful forcomparison.Should contain information such as operands.
+        There area variety of functions that will return the details of the instruction,like isBitwiseLogicOp or
+         isUnaryOp
