@@ -205,6 +205,7 @@ class CreateLocalData:
         Stage 4 of the data gathering process: Generate LLVM and other data.
         gets file paths for llvm and object file path. Defaults to /LLVM and /Object.
 
+
         :param folder: the file path of the folder to compile
         :type: str
 
@@ -313,7 +314,7 @@ class CreateLocalData:
     def stage5_insert_database(self, folder=None):
         """
         stage 5 of the gathering process: load into the database reading the meta and other info.
-        :param folder: folder to iterate through to insert into database.
+        :param folder: folder to iterate through to insert into database. Additionally, this generates cleaned C_Code to train off of.
         :type: str
         :return:
         """
@@ -377,9 +378,14 @@ class CreateLocalData:
                                         with open(c_file_path_read, "r") as cf:
                                             c_data = cf.read()
 
+                                            # read c_data and get clean data from it
+                                            clean_c_data = FormatCode.format(c_data)
+
+                                        # read elf
                                         with open(elf_file_path, "rb") as ef:
                                             elf_data = ef.read()
 
+                                        # read assembly
                                         with open(assembly_file_path, "r") as af:
                                             assembly_data = af.read()
 
@@ -390,7 +396,7 @@ class CreateLocalData:
                                         self.db.insert_meta(meta_tuple)
 
                                         # insert ml tuple
-                                        ml_tuple = (c_file_path, author_repo_key, c_data, object_data, llvm_unop_data,
+                                        ml_tuple = (c_file_path, author_repo_key, c_data, clean_c_data, object_data, llvm_unop_data,
                                                     llvm_op_data, elf_data, assembly_data)
                                         self.db.insert_ml(ml_tuple)
 

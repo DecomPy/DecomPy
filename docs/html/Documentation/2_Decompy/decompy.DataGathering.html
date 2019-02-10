@@ -371,7 +371,7 @@ gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</p
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.stage5_insert_database">
 <code class="descname">stage5_insert_database</code><span class="sig-paren">(</span><em>folder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage5_insert_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage5_insert_database" title="Permalink to this definition">¶</a></dt>
 <dd><p>stage 5 of the gathering process: load into the database reading the meta and other info.
-:param folder: folder to iterate through to insert into database.
+:param folder: folder to iterate through to insert into database. Additionally, this generates cleaned C_Code to train off of.
 :type: str
 :return:</p>
 </dd></dl>
@@ -835,32 +835,11 @@ the search criteria</p>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.WebNavigator.WebNavigator.getContent">
-<em class="property">static </em><code class="descname">getContent</code><span class="sig-paren">(</span><em>link</em>, <em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getContent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the content from a link</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>link</strong> – An absolute URL</li>
-<li><strong>username</strong> – the github username</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">page content</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">str</p>
-</td>
-</tr>
-</tbody>
-</table>
+<em class="property">static </em><code class="descname">getContent</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the content from a link
+:param link: An absolute URL
+:return: page content
+:return: str</p>
 </dd></dl>
 
 <dl class="staticmethod">

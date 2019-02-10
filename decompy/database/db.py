@@ -43,6 +43,7 @@ class Database:
                                           file_path text PRIMARY KEY NOT NULL,
                                           author_repo_key text NOT NULL,
                                           source_code text UNIQUE NOT NULL,
+                                          cleaned_source_code text UNIQUE NOT NULL,
                                           object_file blob UNIQUE NOT NULL,
                                           elf blob UNIQUE NOT NULL,
                                           llvm_unop text UNIQUE NOT NULL,
@@ -163,15 +164,15 @@ class Database:
     def insert_ml(self, ml_tuple, override=False):
         """
         inserts or replaces, if it exists, a new ml row by adding it to the transaction builder. Can override.
-        :param ml_tuple: file_path, author_repo_key, source_code, object_file, llvm_unop, and llvm_op
-        :type: tuple - str (not null), str (not null), str (not null), binary (not null), str (not null), str (not null),
+        :param ml_tuple: file_path, author_repo_key, source_code, cleaned_source_code, object_file, llvm_unop, and llvm_op
+        :type: tuple - str (not null), str (not null), str (not null), str (not null), binary (not null), str (not null), str (not null),
             binary (not null), str (not null)
         :param override: to override the transaction to immediately process the query or not.
         :type: bool
         :return: bool or nothing
         """
         try:
-            sql = "REPLACE INTO ml_table(file_path, author_repo_key, source_code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            sql = "REPLACE INTO ml_table(file_path, author_repo_key, source_code, cleaned_source code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
             self.__transaction_builder(sql, ml_tuple, override)
             return True
@@ -274,7 +275,7 @@ class Database:
 
         # then add and check the length
         self.sql_transaction.append(sql)
-        if len(self.sql_transaction) >= 20 or override:
+        if len(self.sql_transaction) >= 50 or override:
             print("Beginning transaction... inserting into database...")
             # begin transaction, insert 1000
             self.cursor.execute("BEGIN TRANSACTION")
