@@ -1,6 +1,3 @@
-def transpose_ll(list_of_lists):
-    return list(map(list, zip(*list_of_lists)))
-
 def ll_as_string(list_of_lists, no_characters=3):
     return '\n'.join(''.join(str(value).center(no_characters) for value in row) for row in list_of_lists)
 
@@ -9,30 +6,30 @@ def ll_add_coordinates(list_of_lists, start_at_value=0):
     header = ['r/c']
     for y in range(len(list_of_lists[0])):
         header.append(y)
-    
+
     # Add first column with row indicators
     for x in range(len(list_of_lists)):
         list_of_lists[x].insert(0, x)
-    
+
     # Add first row with column header
     list_of_lists.insert(0, header)
-    
-    return list_of_lists           
+
+    return list_of_lists
 
 
 import random
 
-class player: 
+class player:
     def __init__(self, name='human_player'):
         self.human = True
         self.name = name
         self.sign = ''
         self.reset_score()
-    
+
     def send_player_move(self, board, consecutive_equals):
         while True:
             user_input = input('Player %s(%s) please give input '
-                               '(row, column), for example: "1, 2" ...\n' 
+                               '(row, column), for example: "1, 2" ...\n'
                                % (self.name,
                                   self.sign))
             try:
@@ -46,16 +43,16 @@ class player:
             else:
                 break
         return move
-    
+
     def receive_environment_update(self, board, game_status):
         pass
-    
+
     def legal_move(self, move, board):
         bool_legal = False
         if move in self.get_available_moves(board):
             bool_legal = True
         return bool_legal
-    
+
     def get_available_moves(self,board):
         available_moves = []
         for move in self.get_legal_moves(board):
@@ -70,46 +67,46 @@ class player:
                 move = (x, y)
                 possible_moves.append(move)
         return possible_moves
-    
+
     def free_space(self, move, board):
-        x, y = move        
+        x, y = move
         bool_free = False
         if board[x][y] == '.':
             bool_free = True
         return bool_free
-    
+
     def other_player_sign(self):
         return 'O' if self.sign == 'X' else 'X'
-    
+
     def update_score(self, game_status):
         if game_status == 'Draw':
-            self.score['Draw'] += 1           
+            self.score['Draw'] += 1
         if game_status == self.sign:
-            self.score['Win'] += 1            
+            self.score['Win'] += 1
         if game_status == self.other_player_sign():
-            self.score['Loss'] += 1 
-    
+            self.score['Loss'] += 1
+
     def reset_score(self):
         self.score = {'Win':0, 'Loss':0, 'Draw':0}
-        
+
 
 class random_player(player):
     def __init__(self, name='random_player'):
         super(random_player, self).__init__(name)
         self.human = False
-    
+
     def send_player_move(self, board, consecutive_equals):
         available_moves = self.get_available_moves(board)
         random_move = available_moves[random.randint(0, len(available_moves)-1)]
         return random_move
-    
+
     def receive_environment_update(self, board, game_status):
         pass
 
 class win_block_player(player):
     def __init__(self, name='win_block_player'):
         super(win_block_player, self).__init__(name)
-        self.human = False         
+        self.human = False
 
     def send_player_move(self, board, consecutive_equals):
         available_moves = self.get_available_moves(board)
@@ -120,8 +117,8 @@ class win_block_player(player):
             if self.winning_move(move, board, self.other_player_sign(), consecutive_equals):
                 return move
         move = available_moves[random.randint(0, len(available_moves)-1)]
-        return move  
-    
+        return move
+
     def receive_environment_update(self, board, game_status):
         pass
 
@@ -131,7 +128,7 @@ class win_block_player(player):
         legal_moves = self.get_legal_moves(board)
         for direction in directions:
             rx, ry = direction
-            count_consecutive_equals = 1            
+            count_consecutive_equals = 1
             for delta in (1, -1):
                 x, y = move
                 rx *= delta
@@ -148,31 +145,31 @@ class win_block_player(player):
                     x += rx
                     y += ry
         return bool_winning
-        
-    
+
+
 class monte_carlo_player(player):
     def __init__(self, name='monte_carlo_player', reward_move=0, reward_draw=0,
-                 reward_win=1, reward_loss=-1, gamma=0.9, policy='egreedy', 
+                 reward_win=1, reward_loss=-1, gamma=0.9, policy='egreedy',
                  egreedy=0.2, alpha=999):
         super(monte_carlo_player, self).__init__(name)
         self.human = False
-        
+
         self.reward_move = reward_move
         self.reward_draw = reward_draw
         self.reward_win = reward_win
         self.reward_loss = reward_loss
-        
-        self.mcl = monte_carlo_learning(gamma=gamma, policy=policy, 
+
+        self.mcl = monte_carlo_learning(gamma=gamma, policy=policy,
                                         egreedy=egreedy,alpha=alpha)
-    
+
     def send_player_move(self, board, consecutive_equals):
         state_descriptor = self.get_state_descriptor(board)
         move = self.mcl.get_action(state_descriptor)
         return move
-    
+
     def receive_environment_update(self, board, game_status):
         self.send_input_from_environment_to_mcl(board, game_status)
-    
+
     def send_input_from_environment_to_mcl(self, board, game_status):
         #TODO: eventually change descriptor to vector of state features
         state_descriptor = self.get_state_descriptor(board)
@@ -181,19 +178,19 @@ class monte_carlo_player(player):
         available_actions = self.get_available_moves(board)
         self.mcl.receive_input_from_environment(state_descriptor,
                                                 available_actions,
-                                                reward, 
+                                                reward,
                                                 terminal)
-    
+
     def get_state_descriptor(self, board):
         state_descriptor = ''.join(''.join(str(sign) for sign in row) for row in board)
         return state_descriptor
-    
+
     def get_terminal(self, game_status):
         bool_terminal = False
         if game_status == 'X' or game_status == 'O':
             bool_terminal = True
         return bool_terminal
-    
+
     def get_reward(self, game_status):
         reward = 0
         if game_status == 'Inactive':
@@ -201,13 +198,13 @@ class monte_carlo_player(player):
         if game_status == 'Active':
             reward = 0
         if game_status == 'Draw':
-            reward = 0.5     
+            reward = 0.5
         if game_status == self.sign:
-            reward = 1            
+            reward = 1
         if game_status == self.other_player_sign():
             reward = -1
         return reward
-    
+
     def change_policy(self, policy, egreedy='None'):
         self.mcl.policy = policy
         if not egreedy == 'None':
@@ -222,7 +219,7 @@ class state_obj:
         self.available_actions = available_actions
         self.action_values = action_values
         self.visit_count = visit_count
-        
+
     def __eq__(self, other):
         """Override the default Equals behavior"""
         if isinstance(other, self.__class__):
@@ -236,23 +233,7 @@ class state_obj:
         if isinstance(other, self.__class__):
             return not self.__eq__(other)
         return NotImplemented
-    
 
-#class mdp:
-#    state_list = []
-#    
-#    def __init__(self, gamma=1, policy='greedy', alpha=999):
-#        self.gamma = gamma
-#        self.alpha = alpha
-#        if alpha == 999:
-#            self.divide_by_n = True
-#        self.policy = policy    
-
-#TODO: LATEST HERE )$@!()$!@$()!@()$
-#class episode:    
-#class monte_carlo_learning:
-        
-    
 
 class monte_carlo_learning:
     def __init__(self, gamma=0.9, policy='egreedy', egreedy=0.2, alpha=999):
@@ -260,24 +241,24 @@ class monte_carlo_learning:
         self.policy = policy
         self.egreedy = egreedy
         self.alpha = alpha
-        
+
         # MCL updates state values by multiplying the difference
         # between the estimated state value and the observed total discounted
         # reward with:
         # - alpha if divide_by_n = False
         # - 1/n if divide_by_n = True
         self.divide_by_n = True if alpha == 999 else False
-        
+
         # State list contains instances of state_obj class
         self.state_list = []
-        # Episode list contains lists: 
+        # Episode list contains lists:
         # [state_features, action, total disc. reward]
         self.episode_list = []
-        
+
         self.random = 0
         self.greedy = 0
-        
-    
+
+
     def receive_input_from_environment(self, state_features, available_actions, reward, terminal):
         '''state is a set of features that describe the state, can be a single
         value, but it can also be a vector of features'''
@@ -285,42 +266,42 @@ class monte_carlo_learning:
         # start of the game and no action has yet been made.
         if not reward == 'None':
             self.update_episode_tdr(reward)
-        
+
         if terminal: # end of episode
-            self.update_state_action_values() 
+            self.update_state_action_values()
             self.episode_list = []
         else:
             self.update_state_information(state_features, available_actions)
-        
+
     def update_state_information(self, state_features, available_actions):
         if not state_features in self.state_list:
             action_values = [0 for action in available_actions]
             visit_count = [0 for action in available_actions]
             state = state_obj(state_features, available_actions, action_values, visit_count)
             self.state_list.append(state)
-    
+
     def update_episode_tdr(self, reward):
         episode_length = len(self.episode_list)
         for time in range(episode_length):
             exponent = episode_length - 1 - time
             self.episode_list[time][2] += self.gamma ** exponent * reward
-    
+
     def update_state_action_values(self):
         for ep_state, ep_action, ep_value in self.episode_list:
             state_index = self.state_list.index(ep_state)
             state = self.state_list[state_index]
-            
+
             action_index = state.available_actions.index(ep_action)
             action_value = state.action_values[action_index]
             visit_count = state.visit_count[action_index]
-            
+
             if self.divide_by_n:
                 action_value += (1 / visit_count) * ep_value
             else:
                 action_value += self.alpha * ep_value
-            
+
             state.action_values[action_index] = action_value
-    
+
     def get_action(self, state_features):
         if self.policy == 'greedy':
             action = self.get_greedy_policy_action(state_features)
@@ -328,7 +309,7 @@ class monte_carlo_learning:
             action = self.get_random_policy_action(state_features)
         if self.policy == 'egreedy':
             action = self.get_egreedy_policy_action(state_features)
-      
+
         self.episode_list.append([state_features, action, 0])
 
         #TODO: replace these state_index lookups by functions
@@ -337,9 +318,9 @@ class monte_carlo_learning:
 
         action_index = state.available_actions.index(action)
         state.visit_count[action_index] += 1
-        
+
         return action
-    
+
     def get_greedy_policy_action(self, state_features):
         action_list = self.get_greedy_action_list(state_features)
         if len(action_list) > 1:
@@ -347,31 +328,31 @@ class monte_carlo_learning:
         else:
             action = action_list[0]
         return action
-    
+
     def get_greedy_action_list(self, state_features):
         highest_value = float('-inf')
         greedy_action = []
-        
+
         state_index = self.state_list.index(state_features)
         state = self.state_list[state_index]
-        
+
         for action, value in zip(state.available_actions, state.action_values):
             if value > highest_value:
                 greedy_action = []
                 greedy_action.append(action)
                 highest_value = value
             elif value == highest_value:
-                greedy_action.append(action)               
+                greedy_action.append(action)
         return greedy_action
-    
+
     def get_random_policy_action(self, state_features):
         state_index = self.state_list.index(state_features)
         state = self.state_list[state_index]
-        
+
         action_list = state.available_actions
         action = action_list[random.randint(0, len(action_list)-1)]
         return action
-    
+
     def get_egreedy_policy_action(self, state_features):
         probability = random.uniform(0, 1)
         if probability <= self.egreedy:
@@ -381,60 +362,54 @@ class monte_carlo_learning:
             action = self.get_greedy_policy_action(state_features)
             self.greedy += 1
         return action
-    
+
 #    def get_state(self, state_features):
 #        state_index = self.state_list.index(state_features)
 #        state = self.state_list[state_index]
-    
+
     def viewable_state_list(self):
         viewable_list = [state.features for state in self.state_list]
         return viewable_list
-    
+
     def viewable_action_list(self, state_features):
         state_index = self.state_list.index(state_features)
         state = self.state_list[state_index]
-        
-        viewable_list = zip(state.available_actions, state.action_values, 
+
+        viewable_list = zip(state.available_actions, state.action_values,
                             state.visit_count)
         return viewable_list
-        
-
-
-            
-        
-
 
 class tictactoe:
     def __init__(self, width=3, height=3, consecutive_equals=3):
         self.width = width
         self.height = height
         self.consecutive_equals = consecutive_equals
-        
+
     def play(self,player1=player('player1'),player2=player('player2')):
         self.playerX = player1
         self.playerX.sign = 'X'
         self.playerO = player2
         self.playerO.sign = 'O'
-        
+
         self.active_player = self.playerX
         self.inactive_player = self.playerO
-              
+
     def new_game(self):
         game_status = 'Inactive'
         self.reset_board()
         self.send_environment_update(game_status)
-        
+
         game_status = 'Active'
         while game_status == 'Active':
             self.print_board()
-            
+
             move = self.get_player_move(self.board, self.consecutive_equals)
             self.set_move(move)
-                        
+
             game_status = self.get_game_status(move)
-            
+
             self.send_environment_update(game_status)
-            
+
             if not game_status == 'Active':
                 #self.set_score()
                 self.inactive_player.update_score(game_status)
@@ -442,31 +417,31 @@ class tictactoe:
                 self.change_active_player()
                 self.print_end(game_status)
                 break
-            
+
             self.change_active_player()
-        
+
     def reset_board(self):
         self.board = [['.' for y in range(self.width)] for x in range(self.height)]
-    
+
     def print_board(self):
         if self.player_is_human():
             import copy
             board = copy.deepcopy(self.board)
-            
-            # Define number of characters to be printed per cell        
+
+            # Define number of characters to be printed per cell
             no_characters = 3
-            
+
             # Add pre-row and header with row/column cooardinates
             board_headers = ll_add_coordinates(board)
-            
+
             # Convert list of lists to printable string
             printable_string = ll_as_string(board_headers, no_characters)
             print(printable_string)
-    
+
     def set_move(self, move):
         x, y = move
         self.board[x][y] = self.active_player.sign
-    
+
     def change_active_player(self):
         if self.active_player.sign == 'X':
             self.active_player = self.playerO
@@ -474,13 +449,13 @@ class tictactoe:
         else:
             self.active_player = self.playerX
             self.inactive_player = self.playerO
-    
+
     def check_winner(self, coordinate):
         bool_winner = False
         directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
         for direction in directions:
             rx, ry = direction
-            consecutive_equals = 1            
+            consecutive_equals = 1
             for delta in (1, -1):
                 x, y = coordinate
                 rx *= delta
@@ -497,22 +472,22 @@ class tictactoe:
                     x += rx
                     y += ry
         return bool_winner
-    
+
     def valid_move(self, coordinate):
         x, y = coordinate
         bool_legal = True
         if x < 0 or x >= self.height:
             bool_legal = False
         elif y < 0 or y >= self.width:
-            bool_legal = False        
+            bool_legal = False
         return bool_legal
-    
+
     def check_draw(self):
         bool_draw = False
         if not any((char == '.') for char in ll_as_string(self.board)):
             bool_draw = True
-        return bool_draw      
-    
+        return bool_draw
+
     def get_game_status(self, move):
         game_status = 'Active'
         if self.check_winner(move):
@@ -520,21 +495,21 @@ class tictactoe:
         elif self.check_draw():
             game_status = 'Draw'
         return game_status
-    
+
     def get_player_move(self, board, consecutive_equals):
         move = self.active_player.send_player_move(board, consecutive_equals)
         return move
-    
+
     def send_environment_update(self, game_status):
-        '''you send an update tot the inactive player, because he needs to 
-        observe the move of the other player, unless the game starts or ends, 
+        '''you send an update tot the inactive player, because he needs to
+        observe the move of the other player, unless the game starts or ends,
         then to both players + status update'''
         if game_status == 'Active':
             self.inactive_player.receive_environment_update(self.board, game_status)
         else:
             self.inactive_player.receive_environment_update(self.board, game_status)
             self.active_player.receive_environment_update(self.board, game_status)
-    
+
     def print_end(self, game_status):
         if self.player_is_human():
             self.print_board()
@@ -543,129 +518,31 @@ class tictactoe:
                                                            self.active_player.sign))
             elif game_status == 'Draw':
                 print('Draw...!')
-    
+
     def player_is_human(self):
         bool_human = False
         if self.playerX.human or self.playerO.human:
             bool_human = True
         return bool_human
-            
 
 
-
-#TODO: optional -> change the behavior of board? pass it on instead of making it a class variable?
-#TODO: maybe change board to numpy array?
-
-
-def game_loop(game, player1, player2, n, debug=False):
+def game_loop(game, player1, player2, n):
     player1.reset_score()
     player2.reset_score()
-    
+
     game.play(player1, player2)
-    
-    if debug:
-        player1.human = True
-        player2.human = True
 
     for n in range(n):
         game.new_game()
         if n%1000 == 0:
-            print('%s' % n)
+            print('Round: %s' % n)
 
-    print(len(player1.mcl.state_list))    
+    print("State list:", len(player1.mcl.state_list))
     print('%s score:' % player1.name)
     print(player1.score)
-    
 
 
-## Example 1, human vs. human
 ttt = tictactoe(width=3, height=3, consecutive_equals=3)
-#humanplayer = player('Jochem')
-#humanplayer1 = player('Artur')
-#ttt.play(humanplayer, humanplayer1)
-#ttt.new_game()
-
-# Example 2, loop 100000x , random vs. random
-randomplayer = random_player()
-randomplayer1 = random_player('random_player1')
-#game_loop(ttt, randomplayer, randomplayer1, 100000)
-# Output:
-# random_player score:
-# {'Win': 43639, 'Loss': 43587, 'Draw': 12774}
-
-# Example 2a, loop 100000x , random vs. random
-randomplayer = random_player()
-wbp = win_block_player()
-#game_loop(ttt, randomplayer, wbp, 100000)
-# Output:
-# random_player score:
-# {'Win': 4879, 'Loss': 74543, 'Draw': 20578}
-
-# Example 3, loop 100000x , mcp vs. random
 mcp_greedy = monte_carlo_player(name='mcp_greedy', policy='greedy')
-#game_loop(ttt, mcp_greedy, randomplayer, 100000)
-# Output:
-# mcp_greedy score:
-# {'Win': 62853, 'Loss': 17075, 'Draw': 20072}
-
-# Example 4, train: random, loop 100000x,
-mcp_random_greedy = monte_carlo_player(name='mcp_random_greedy', 
-                                       policy='random')
-#game_loop(ttt, mcp_random_greedy, randomplayer, 10000)
-# Output:
-# mcp_random_greedy score:
-# {'Win': 4353, 'Loss': 4351, 'Draw': 1296}
-#
-# Run trained player (and improve) greedy:
-mcp_random_greedy.change_policy('greedy')
-#game_loop(ttt, mcp_random_greedy, randomplayer, 10000)
-# Output
-#mcp_random_greedy score:
-#{'Win': 7111, 'Loss': 1097, 'Draw': 1792}
-
-# Example 5, egreedy:0.2, loop 10.000, default
-mcp_egreedy = monte_carlo_player(name='mcp_egreedy', 
-                                       policy='egreedy', 
-                                       egreedy=0.2)
-#game_loop(ttt, mcp_egreedy, randomplayer, 10000)
-# Output:
-# mcp_egreedy score:
-# {'Win': 5884, 'Loss': 2531, 'Draw': 1585}
-
-# Example 5a, loop 100.000
-#game_loop(ttt, mcp_egreedy, randomplayer, 100000)
-# Output:
-# mcp_egreedy score:
-# {'Win': 65023, 'Loss': 15804, 'Draw': 19173}
-
-# Example 5b, loop 1.000.000
-game_loop(ttt, mcp_egreedy, randomplayer, 1000000)
-
-
-# Example 6, experiment with settings:
-#mcp_set = monte_carlo_player(name='mcp2', reward_move=0, reward_draw=0,
-#                          reward_win=1, reward_loss=-1, gamma=0.9, 
-#                          policy='random', egreedy=0.2, alpha=999)
-
-
-
-
-
-#state_list = mcp2.mcl.viewable_state_list()
-#
-#state_index = 854
-#state_features = state_list[state_index]
-#state_features = 'OX.XXOOOX'
-#action_list = mcp2.mcl.viewable_action_list(state_features)
-#
-#for idx, val in enumerate(action_list):
-#    print(idx, val)
-#
-#
-#for idx, val in enumerate(state_list):
-#    print(idx, val)
-#
-#probability = random.uniform(0, 1)
-#if probability <= 0.2:
-
-
+mcp_egreedy = monte_carlo_player(name='mcp_egreedy', policy='egreedy')
+game_loop(ttt, mcp_egreedy, mcp_greedy, 10000)
