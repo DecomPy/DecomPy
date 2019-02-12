@@ -448,9 +448,9 @@ class CreateLocalData:
                 if self.skip is False:
                     self.stage2_get_repos(False, self.username, self.password)
                     self.stage3_filter_files()
-                    self.stage4_generate_llvm()
-                    self.stage5_insert_database()
-
+                    # self.stage4_generate_llvm()
+                    # self.stage5_insert_database()
+                    #
                     files = os.listdir(self.folder)
                     for f in files:
                         try:
