@@ -6,32 +6,25 @@ from decompy.rl.Improvements.StateObj import StateObj
 
 class MonteCarloLearning:
     def __init__(self, gamma=0.9, policy='egreedy', egreedy=0.1, alpha=999):
+        """
+        This function simply initializes the values for the learning object.
+        The author has some rather awful code such as using alpha=999 as a
+        sentinel value for a different, non alpha based behaviour (avoiding
+        repeats by dividing the likelihood of visiting by the number of times
+        it has already been visited
+        """
         self.gamma = gamma
         self.policy = policy
         self.egreedy = egreedy
         self.alpha = alpha
-
-        # MCL updates state values by multiplying the difference
-        # between the estimated state value and the observed total discounted
-        # reward with:
-        # - alpha if divide_by_n = False
-        # - 1/n if divide_by_n = True
         self.divide_by_n = True if alpha == 999 else False
-
-        # State list contains instances of state_obj class
         self.state_list = []
-        # Episode list contains lists:
-        # [state_features, action, total disc. reward]
         self.episode_list = []
 
         self.random = 0
         self.greedy = 0
 
     def receive_input_from_environment(self, state_features, available_actions, reward, terminal):
-        '''state is a set of features that describe the state, can be a single
-        value, but it can also be a vector of features'''
-        # Reward == 'None' means that the update from the environment is the
-        # start of the game and no action has yet been made.
         if not reward == 'None':
             self.update_episode_tdr(reward)
 
@@ -79,8 +72,6 @@ class MonteCarloLearning:
             action = self.get_egreedy_policy_action(state_features)
 
         self.episode_list.append([state_features, action, 0])
-
-        # TODO: replace these state_index lookups by functions
         state_index = self.state_list.index(state_features)
         state = self.state_list[state_index]
 
@@ -90,6 +81,9 @@ class MonteCarloLearning:
         return action
 
     def get_greedy_policy_action(self, state_features):
+        """
+        Choose the best action based on precomputed results
+        """
         action_list = self.get_greedy_action_list(state_features)
         if len(action_list) > 1:
             action = action_list[random.randint(0, len(action_list) - 1)]
@@ -98,6 +92,9 @@ class MonteCarloLearning:
         return action
 
     def get_greedy_action_list(self, state_features):
+        """
+        Helper greedy function
+        """
         highest_value = float('-inf')
         greedy_action = []
 
@@ -114,6 +111,9 @@ class MonteCarloLearning:
         return greedy_action
 
     def get_random_policy_action(self, state_features):
+        """
+        This is rather boring. Choose a random action and update values.
+        """
         state_index = self.state_list.index(state_features)
         state = self.state_list[state_index]
 
@@ -122,6 +122,12 @@ class MonteCarloLearning:
         return action
 
     def get_egreedy_policy_action(self, state_features):
+        """
+        This is likely the most interesting section of the code. It uses an epsilon
+        value randomly choose when to randomly do something versus doing learned behaviour.
+        Essentially, the ML agent sometimes throws out common sense to try something new.
+        This is useful as it will see new things to learn that it wouldn't try otherwise.
+        """
         probability = random.uniform(0, 1)
         if probability <= self.egreedy:
             action = self.get_random_policy_action(state_features)
@@ -130,10 +136,6 @@ class MonteCarloLearning:
             action = self.get_greedy_policy_action(state_features)
             self.greedy += 1
         return action
-
-    #    def get_state(self, state_features):
-    #        state_index = self.state_list.index(state_features)
-    #        state = self.state_list[state_index]
 
     def viewable_state_list(self):
         viewable_list = [state.features for state in self.state_list]
@@ -172,7 +174,6 @@ class MonteCarloPlayer(Player):
         self.send_input_from_environment_to_mcl(board, game_status)
 
     def send_input_from_environment_to_mcl(self, board, game_status):
-        # TODO: eventually change descriptor to vector of state features
         state_descriptor = self.get_state_descriptor(board)
         reward = self.get_reward(game_status)
         terminal = self.get_terminal(game_status)
