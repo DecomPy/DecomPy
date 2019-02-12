@@ -12,7 +12,7 @@ class CreateLocalData:
     """
     Gathers the data and prepares to use it in stages. This utilizes the following files:
     RepoFilter, GitHubScraper, FilterC, and ClangSubprocess.
-    These combined will get all the relevant data.
+    These combined will get all the relevant data
     """
     def __init__(self, folder="Repositories", dest_folder="RepositoriesFiltered", database_name="c_code",
                  repo_dict={"search": "C ", "language": "C", "blacklist": ["C++", "C#", "css"], "per_page": 100},
