@@ -53,3 +53,16 @@ Useful Member Functions and Variables in the BasiBlock Class
         getMetadata: Returns metadata that may be useful forcomparison.Should contain information such as operands.
         There area variety of functions that will return the details of the instruction,like isBitwiseLogicOp or
         isUnaryOp
+
+------------------------------------------------------------------------------------------------------------------------
+
+LLVM Function Comparator
+    This class (documentation here: http://llvm.org/doxygen/classllvm_1_1FunctionComparator.html#details ) is used to
+    compare the behavior of two functions. It is conservative and errs to the side of saying the functions are
+    different. The constructor of the function comparator class takes in the two functionto be compared. It has two
+    public member functions: compare and functionHash. Compare returns an int which is negative if the fist function
+    is "greater" than the second, positive if the second is "greater," and zero if they are equal. This makes the
+    function only mildly useful for our purposes, but the class has a variety of protected member functions that are
+    used for comparison. The team could possibly extend this class and use it's functions to create a comparison
+    metric. For reference: The llvm-diff flag (https://llvm.org/docs/CommandGuide/llvm-diff.html) seems  to either
+    use this class or provide very similar functionality.
