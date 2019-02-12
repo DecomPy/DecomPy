@@ -1,5 +1,5 @@
-Heuristics
-**********
+Heuristics in HexRays
+*********************
 
 Many decompilers are based around using heuristics for repopulating
 missing information lost in the decompilation process. Hex-Rays for
