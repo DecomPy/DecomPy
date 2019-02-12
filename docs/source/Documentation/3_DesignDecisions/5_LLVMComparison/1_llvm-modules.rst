@@ -52,11 +52,10 @@ Useful Member Functions and Variables in the BasiBlock Class
     Instructions make up the most basic peieces of program.
 
     - isIdenticalTo: Returns true if two instructions are exactly identical. We may not need all instructions to be
-    *exactly* identical, so this function is useful but not the only metric we should use.
+*exactly* identical, so this function is useful but not the only metric we should use.
     - isSameOperationAs:Compare two instructions toseeif they are the same operation.
     - getMetadata: Returns metadata that may be useful forcomparison.Should contain information such as operands.
-    - There area variety of functions that will return the details of the instruction,like isBitwiseLogicOp or
-    isUnaryOp
+    - There area variety of functions that will return the details of the instruction,like isBitwiseLogicOp or isUnaryOp
 
 ------------------------------------------------------------------------------------------------------------------------
 
