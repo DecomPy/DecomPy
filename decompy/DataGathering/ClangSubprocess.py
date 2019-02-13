@@ -90,7 +90,7 @@ class Clang:
         Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
 
     @staticmethod
-    def to_elf(input_file, output_file, newlocation, filter_file):
+    def to_elf(input_file, output_file, newlocation, filter_file, optlevel = "-o2"):
         """
         Compiles all C files listed in the input file to elf executables.
         :param input_file: File with list of C file names to compile
@@ -98,9 +98,9 @@ class Clang:
         :param newlocation: location to save LLVM files to
         :param filter_file: If the file is successfully compiled, the name of the C file is listed in this file
         """
-        args = " --target=i386-elf -shared -undefined"
+        args = " --target=i386-elf -shared -undefined " +optlevel
         out_type = "-elf.elf"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file)
+        Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file=filter_file, args=args)
 
     @staticmethod
     def to_llvm_opt(input_file, output_file, newlocation, optlevel = "-o2"):
