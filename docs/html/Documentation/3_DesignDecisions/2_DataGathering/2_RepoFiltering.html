@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data Gathering &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Filtering the Repositories &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Overview" href="1_DataGatheringOverview.html" />
-    <link rel="prev" title="Choosing a Disassembler for DecomPy" href="../1_DesignAndArchitecture/1_Dissasemblers.html" /> 
+    <link rel="next" title="Scraping and Downloading Files from GitHub using GitHubScraper" href="3_ScrapingDownloading.html" />
+    <link rel="prev" title="Overview" href="1_DataGatheringOverview.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -82,9 +82,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Gathering</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="1_DataGatheringOverview.html">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_RepoFiltering.html">Filtering the Repositories</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Filtering the Repositories</a></li>
 <li class="toctree-l3"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
@@ -144,13 +144,15 @@
         
           <li><a href="../index.html">Design Decisions</a> &raquo;</li>
         
-      <li>Data Gathering</li>
+          <li><a href="index.html">Data Gathering</a> &raquo;</li>
+        
+      <li>Filtering the Repositories</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/2_DataGathering/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/2_DataGathering/2_RepoFiltering.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,18 +165,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="data-gathering">
-<h1>Data Gathering<a class="headerlink" href="#data-gathering" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="1_DataGatheringOverview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_RepoFiltering.html">Filtering the Repositories</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_clangSubproc.html">Compiling C Source to Various Formats</a></li>
-</ul>
-</div>
+  <div class="section" id="filtering-the-repositories">
+<h1>Filtering the Repositories<a class="headerlink" href="#filtering-the-repositories" title="Permalink to this headline">¶</a></h1>
+<p>This is a log of major design decisions and reasoning made during creation of the Repo Filtering section of decompy.
+At the time of writing this, this is made up of two classes, the RepoFiltering class, and the RepoStructure class.</p>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Repo filtering is based around storing stages to json files</dt>
+<dd>Partially, this decision was driven by the fact that I would not have
+internet most of the time I was writing it. I do think that the end result
+has some merit however, since it allows modularly redoing sections as we
+improve and doesn’t overly utilize requests to GitHub (rate limiting).</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Using GitHub’s api</dt>
+<dd>By using GitHub’s api, it was much easier to generate a list of acceptable
+repos without doing costly web scrapping. There are some downsides though,
+since the request has a limited amount of info. For example, the license is
+not included, which may mean scraping is needed anyways, but at least we
+can limit it.</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Using GitHub’s legacy api</dt>
+<dd>For me, this one feels odd. GitHub’s new api has a lot more features and
+seems really nice. However, it has two major problems. At the momement, it
+never seems to get nearly as good of results. It will find unrelated repos
+and I have to filter out way more. It also is much harder to use.</dd>
+</dl>
 </div>
 
 
@@ -185,10 +204,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="1_DataGatheringOverview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="3_ScrapingDownloading.html" class="btn btn-neutral float-right" title="Scraping and Downloading Files from GitHub using GitHubScraper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../1_DesignAndArchitecture/1_Dissasemblers.html" class="btn btn-neutral" title="Choosing a Disassembler for DecomPy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="1_DataGatheringOverview.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

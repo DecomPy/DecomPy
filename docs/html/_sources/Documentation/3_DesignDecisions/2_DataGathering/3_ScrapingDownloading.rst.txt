@@ -1,5 +1,5 @@
 Scraping and Downloading Files from GitHub using GitHubScraper
-##############################################################
+##################################################################
 
 :Authors and Last Update:
     | YiZhuang Garrard, November 20, 2018
@@ -160,16 +160,16 @@ is a UnicodeEncodeError, but I just print the error and ignore it because I don'
 The method is called GitHubScraper.__file_content_into_storage(content_url_tuple, target_directory), where
 content_url_tuple is the tuple, and target_directory is the directory to store the file.
 
-Updating META file
+Updating json file
 --------------------------------------------
-Only the target directory is needed to update the META file within that directory. The relevant method is
+Only the target directory is needed to update the json file within that directory. The relevant method is
 GitHubScraper.__update_meta(target_directory). If the directory doesn't exist, that means that there were no C files
-to download, so it just returns. If the directory does exist, it is checked to see if the META file exists. If it
+to download, so it just returns. If the directory does exist, it is checked to see if the json file exists. If it
 exists, then update it using the datetime package, and if it doesn't exist, create the file. The date is written
 in YYYY-MM-DD HH:MM:SS format so that the database can query it or something. I don't actually know how databases work.
 
-How Does GitHubScraper Multithread?
-===================================
+How Does GitHubScraper Multithread work?
+===========================================
 Because scraping is a highly IO dependent process, it is better to utilize threads rather than processes.
 
 GitHubScraper uses ThreadPoolExecutor to manage all the threads and futures. There are three sources of futures:

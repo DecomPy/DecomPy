@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.request, urllib.error, urllib.parse
+import requests
 from bs4 import BeautifulSoup
 import re
 import time
@@ -45,7 +46,6 @@ class WebNavigator:
     def getContent(link):
         """
         Retrieves the content from a link
-
         :param link: An absolute URL
         :return: page content
         :return: str
@@ -79,7 +79,6 @@ class WebNavigator:
         :param link: An absolute URL
         :return: list of visible text
         """
-
         def visible(element):
             if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
                 return False

@@ -1,6 +1,5 @@
 import os
 import re
-from decompy.DataGathering.FilterCompile import FilterCompile
 
 
 class FilterC:
@@ -8,6 +7,8 @@ class FilterC:
     Filters C files to our standards. This includes c header files that we find appropraite for machine learning.
     Filters out the maximum amount of bytes we would like in a file. As of now, this is 7000 bytes.
     Filters our words that may be too difficult: malloc, FILE, and threading
+    DOES NOT CHECK IF IT SUCCESSFULLY COMPILES. This is handled by ClangSubprocess which generates a new file with
+    file paths to use.
     """
 
     # sets current file directory
@@ -55,6 +56,7 @@ class FilterC:
     def check_blacklisted_words(line, blacklisted=C_BLACKLIST):
         """
         Lowercases the line to evaluate, and returns false if any blacklisted word is found.
+
         :param: the string from a file.
         :type: str
         :param: the blacklisted array.
@@ -69,6 +71,7 @@ class FilterC:
     def check_headers(line, whitelisted=C_WHITELIST_HEADERS):
         """
         Uses a regex to evaluate the line, ignoring the case, and returns false if any unknown header is found.
+
         :param: the string from a file.
         :type: str
         :param: the blacklisted array, defaults to
@@ -134,75 +137,53 @@ class FilterC:
             return False
 
     @staticmethod
-    def check_valid_folder(folder, filt_path_name="unfiltered", append_file="filtered_list.META", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
+    def check_valid_folder(folder, filt_path_name="Unfiltered", preferred_max_size=MAX_BYTES, preferred_min_size=MIN_BYTES,
                            whitelisted=C_WHITELIST_HEADERS, blacklisted=C_BLACKLIST):
         """
-        Runs check_valid_data for each file in the folder path..
+        Runs check_valid_data for each file in the folder path.
 
         :param folder: the folder the user wants to validate for each C file.
         :type: str
         :param filt_path_name: the filtered path word the user is using to store data once filtered.
-        :type: str
-        :param append_file: the file to add lines to.
         :type: str
         :param preferred_max_size: the max byte size the user wants.
         :type: int
         :param preferred_min_size: the max byte size the user wants.
         :type: int
         :param whitelisted: the whitelisted headers the user wants.
-        :type: tuple or array
+        :type: tuple or list
         :param blacklisted: the blacklisted words the user wants to exclude.
-        :type: tuple or array
-        :return: str
+        :type: tuple or list
+        :return: a list of filtered file paths
+        :rtype: list
         """
 
         # if no folder exists, then return file does not exist.
         if not os.path.exists(folder):
-            return "File Does not Exist"
+            return []
+
+        # get empty filtered_files
+        filtered_files = []
 
         # walk recursively in given folder
-        try:
-            # open file
-            for root, dirs, files in os.walk(folder):
-                # look for unfiltered files and only want unfilter (or filt_path_name)
+        for root, dirs, files in os.walk(folder):
+            # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
+            try:
                 if root.endswith(filt_path_name):
+
                     # only look for c files
                     for basename in files:
                         # unfiltered name
                         unfiltered_path = root + "/" + basename
 
-                        # checks for valid data, compile, then adds to meta.
-                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size, whitelisted, blacklisted)\
-                                and FilterCompile.compile_file(unfiltered_path):
-                            # base root of new file 1 directory above unfiltered/*.c
-                            base_root = os.path.dirname(root)
+                        # checks for valid data
+                        if FilterC.check_valid_data(unfiltered_path, preferred_max_size, preferred_min_size,
+                                                    whitelisted, blacklisted):
+                            filtered_files.append(unfiltered_path)
+            except Exception as e:
+                print("Overall Exception FilterC:", e)
+                pass
 
-                            # store into new directory
-                            new_file = base_root+"/"+append_file
-
-                            # create file if it does not exist
-                            if not os.path.exists(new_file):
-                                # open to write to it
-                                open(new_file, "w+")
-
-                            # append path to list
-                            with open(new_file, "a") as myfile:
-                                # add file path to list.META
-                                myfile.write(unfiltered_path)
-
-                                # check if OS is windows for \r\n
-                                if os.name == 'nt':
-                                    myfile.write("\r\n")
-                                # otherwise it's \n
-                                else:
-                                    myfile.write("\n")
-
-        except Exception as e:
-            print("Exception", e)
-
-
-# if __name__ == '__main__':
-#     f = FilterC()
-#     f.check_valid_folder("decompy/tests/test_filtercfiles/")
+        return filtered_files
 
 

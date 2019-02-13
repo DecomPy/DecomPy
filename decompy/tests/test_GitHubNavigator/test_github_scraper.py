@@ -3,68 +3,70 @@ import os
 import unittest
 from decompy.DataGathering.FileGetter import FileGetter
 import shutil
+import json
 
 
 class GitHubScraperTest(unittest.TestCase):
 
-    def test_repo_vc_1_download_config_META_update(self):
+    def test_repo_vc_1_download_config_META_create_and_update(self):
         """
-        Tests if the config.META download time timestamp is approximately correct when updating
+        Tests if the repo.json download time timestamp is approximately correct when appending
         :return: nothing
         """
 
-        FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
+        repo = "Decompy_valid_and_compilable_1"
+        repo_json = os.path.join(repo, "repo.json")
+        url = "https://github.com/DecomPy/valid_and_compilable_1"
 
-        with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
-            passed = False
-            line = f.readline()
-            while line:
-                if "File download timestamp:" in line:
-                    file_minute = line.split(":")[-2]
-                    minute = datetime.datetime.today().strftime('%M')
-                    minute = int(minute)
-                    file_minute = int(file_minute)
-                    self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
-                                    or file_minute == ((minute - 1) % 60))
-                    passed = True
-                line = f.readline()
-        self.assertTrue(passed)
+        FileGetter.download_all_files(url)
+
+        # make dir and file
+        if not os.path.exists(repo):
+            os.mkdir(repo)
+
+        # write new values
+        with open(repo_json, "w+") as json_file:
+            dump_me = {
+                "name": repo,
+                "author": "some guy",
+                "url": url,
+                "master_download_date": int(datetime.datetime.today().strftime('%M'))
+            }
+            json.dump(dump_me, json_file)
+
+        # read values and confirm
+        with open(repo_json, "r") as json_file:
+            json_data = json.load(json_file)
+
+            file_minute = json_data["master_download_date"]
+            minute = datetime.datetime.today().strftime('%M')
+
+            minute = int(minute)
+            json_data["master_download_date"] = minute
+
+            self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                            or file_minute == ((minute - 1) % 60))
+
+        # write values back then confirm
+        with open(repo_json, "w+") as json_file:
+            json.dump(json_data, json_file)
+
+        # final confirmation
+        with open(repo_json, "r") as json_file:
+            json_data = json.load(json_file)
+
+            file_minute = json_data["master_download_date"]
+            minute = datetime.datetime.today().strftime('%M')
+
+            minute = int(minute)
+            json_data["master_download_date"] = minute
+
+            self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
+                            or file_minute == ((minute - 1) % 60))
 
         # Makes sure the directory is always clean
-        if os.path.exists("DecomPy_valid_and_compilable_1"):
-            shutil.rmtree("DecomPy_valid_and_compilable_1")
-
-    def test_repo_vc_1_download_config_META_append(self):
-        """
-        Tests if the config.META download time timestamp is approximately correct when appending
-        :return: nothing
-        """
-
-        if not os.path.exists("Decompy_valid_and_compilable_1"):
-            os.mkdir("DecomPy_valid_and_compilable_1")
-        with open(os.path.join("DecomPy_valid_and_compilable_1/config.META"), "w") as f:
-            f.write("Text to be appended upon")
-
-        FileGetter.download_all_files("https://github.com/DecomPy/valid_and_compilable_1")
-
-        with open(os.path.join("DecomPy_valid_and_compilable_1/config.META")) as f:
-            passed = False
-            line = f.readline()
-            while line:
-                if "File download timestamp:" in line:
-                    file_minute = line.split(":")[-2]
-                    minute = datetime.datetime.today().strftime('%M')
-                    minute = int(minute)
-                    file_minute = int(file_minute)
-                    self.assertTrue(file_minute == minute or file_minute == ((minute + 1) % 60)
-                                    or file_minute == ((minute - 1) % 60))
-                    passed = True
-                line = f.readline()
-        self.assertTrue(passed)
-
-        # Makes sure the directory is always clean
-        if os.path.exists("DecomPy_valid_and_compilable_1"):
-            shutil.rmtree("DecomPy_valid_and_compilable_1")
+        if os.path.exists(repo):
+            shutil.rmtree(repo)
 
     def test_repo_iu_1_doesnt_download(self):
         """
@@ -154,8 +156,8 @@ class GitHubScraperTest(unittest.TestCase):
             shutil.rmtree("DecomPy_valid_and_compilable_1")
         if os.path.exists("DecomPy_invalid_and_uncompilable_1"):
             shutil.rmtree("DecomPy_invalid_and_uncompilable_1")
-        if os.path.isfile("DecomPy_valid_and_compilable_1config.META"):  # For when running test from linux system
-            os.remove("DecomPy_valid_and_compilable_1config.META")
+        if os.path.isfile("DecomPy_valid_and_compilable_1repo.json"):  # For when running test from linux system
+            os.remove("DecomPy_valid_and_compilable_1repo.json")
 
 
 if __name__ == '__main__':

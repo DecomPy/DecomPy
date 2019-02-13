@@ -110,3 +110,12 @@ conda_decompy/
 docs/build
 docs/doctrees/
 .buildinfo
+
+# Database Gathering
+c_source.db
+Repositories/
+RepositoriesFiltered/
+filteredOfflineResults.json
+offlineResults.json
+c_code.db
+config.json

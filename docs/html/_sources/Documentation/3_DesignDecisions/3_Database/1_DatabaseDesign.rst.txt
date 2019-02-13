@@ -12,12 +12,12 @@ At the time of writing this, this is made up of one class based off of the desig
    :align: center
 
 Diagram
-    The diagram shows that the "alldata" table is the overall collection and shall not be used.
+    The diagram shows that the "alldata" table is the overall collection of data to be collected and shall not be used.
     It only serves as visual representation of the data we collect from each repo.
     The tables to use with the sqlite database include “meta” and “ml”.
     The meta data is all of the data that the ML agent will not use, but needs a reference to.
-    In this case, it is the repo name, license, url, author, and dates.
-    The ML agent table then uses this as a primary key and foreign key.
+    In this case, it is the author repo key pair, repo name, license, url, author, and dates.
+    The ML agent table then uses this as a foreign key and the file path as a primary key.
     The ML table then stores the file_path as a primary key, and because the repo name must be unique,
     we are storing unique pairs of repo name and file path for each file.
     The C source code as text, the object file, as a blob to store as is, the llvm unoptimized and
