@@ -262,7 +262,7 @@ class CreateLocalData:
                             for filtered_obj in json_data["filtered_files"]:
 
                                 # init the file
-                                filtered_file = filtered_obj["filtered_path"]
+                                filtered_file = filtered_obj["filtered_path"].replace(" ", "\ ")  # fix files with spaces in them.
                                 filtered_file_path = Path(filtered_file)
 
                                 # check if file exists or wasting time
