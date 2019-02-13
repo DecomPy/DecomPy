@@ -1,6 +1,5 @@
 import json
 import requests
-from urllib.parse import quote
 import time
 import datetime
 from datetime import datetime
@@ -63,13 +62,11 @@ class RepoFilter:
             language_string = "language:%s" % "C"
 
         url = "https://api.github.com/search/repositories?q=%s%s+created:%s&page=%d" % (
-            quote(self.search), language_string, date, page)
+            requests.utils.requote_uri(self.search), language_string, date, page)
 
-        print("searching for...", url)
-        # pageSource = ""
         response = None
         try:
-            # Download the zip of the repository
+            # get the api request to prepare downloading the zips with authentication
             if self.username is not None and self.password is not None:
                 response = requests.get(url, auth=(self.username, self.password))
             else:

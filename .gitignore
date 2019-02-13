@@ -111,8 +111,7 @@ docs/build
 docs/doctrees/
 .buildinfo
 
-
-# Our Info
+# Database Gathering
 c_source.db
 Repositories/
 RepositoriesFiltered/
