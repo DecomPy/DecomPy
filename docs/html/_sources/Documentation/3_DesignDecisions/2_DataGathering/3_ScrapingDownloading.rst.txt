@@ -1,5 +1,5 @@
 Scraping and Downloading Files from GitHub using GitHubScraper
-##############################################################
+##################################################################
 
 :Authors and Last Update:
     | YiZhuang Garrard, November 20, 2018
@@ -169,7 +169,7 @@ exists, then update it using the datetime package, and if it doesn't exist, crea
 in YYYY-MM-DD HH:MM:SS format so that the database can query it or something. I don't actually know how databases work.
 
 How Does GitHubScraper Multithread work?
-===================================
+===========================================
 Because scraping is a highly IO dependent process, it is better to utilize threads rather than processes.
 
 GitHubScraper uses ThreadPoolExecutor to manage all the threads and futures. There are three sources of futures:

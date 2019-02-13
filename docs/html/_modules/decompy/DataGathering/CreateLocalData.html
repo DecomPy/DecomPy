@@ -161,7 +161,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gathers the data and prepares to use it in stages. This utilizes the following files:</span>
 <span class="sd">    RepoFilter, GitHubScraper, FilterC, and ClangSubprocess.</span>
-<span class="sd">    These combined will get all the relevant data.</span>
+<span class="sd">    These combined will get all the relevant data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;Repositories&quot;</span><span class="p">,</span> <span class="n">dest_folder</span><span class="o">=</span><span class="s2">&quot;RepositoriesFiltered&quot;</span><span class="p">,</span> <span class="n">database_name</span><span class="o">=</span><span class="s2">&quot;c_code&quot;</span><span class="p">,</span>
                  <span class="n">repo_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;C &quot;</span><span class="p">,</span> <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;blacklist&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;C++&quot;</span><span class="p">,</span> <span class="s2">&quot;C#&quot;</span><span class="p">,</span> <span class="s2">&quot;css&quot;</span><span class="p">],</span> <span class="s2">&quot;per_page&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
@@ -411,7 +411,7 @@
                             <span class="k">for</span> <span class="n">filtered_obj</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]:</span>
 
                                 <span class="c1"># init the file</span>
-                                <span class="n">filtered_file</span> <span class="o">=</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span>
+                                <span class="n">filtered_file</span> <span class="o">=</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;\ &quot;</span><span class="p">)</span>  <span class="c1"># fix files with spaces in them.</span>
                                 <span class="n">filtered_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filtered_file</span><span class="p">)</span>
 
                                 <span class="c1"># check if file exists or wasting time</span>

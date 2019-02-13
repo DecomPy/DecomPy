@@ -149,7 +149,6 @@
   <h1>Source code for decompy.DataGathering.RepoFilter</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
@@ -212,13 +211,11 @@
             <span class="n">language_string</span> <span class="o">=</span> <span class="s2">&quot;language:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s2">&quot;C&quot;</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.github.com/search/repositories?q=</span><span class="si">%s%s</span><span class="s2">+created:</span><span class="si">%s</span><span class="s2">&amp;page=</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">),</span> <span class="n">language_string</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">requote_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">),</span> <span class="n">language_string</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;searching for...&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
-        <span class="c1"># pageSource = &quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Download the zip of the repository</span>
+            <span class="c1"># get the api request to prepare downloading the zips with authentication</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
