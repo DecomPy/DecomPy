@@ -80,9 +80,9 @@ class ClangSubprocessTest(unittest.TestCase):
 
         obj_path = Clang.Clang.to_object_file(self.inputCName, self.object_path)
         self.assertTrue(Path(obj_path).exists())
-
-        elf_path = Clang.Clang.to_elf(self.inputCName, self.elf_path)
-        self.assertTrue(Path(elf_path).exists())
+        #
+        # elf_path = Clang.Clang.to_elf(self.inputCName, self.elf_path)
+        # self.assertTrue(Path(elf_path).exists())
 
         opt_path = Clang.Clang.to_llvm_opt(self.inputCName, self.llvm_path)
         self.assertTrue(Path(opt_path).exists())
