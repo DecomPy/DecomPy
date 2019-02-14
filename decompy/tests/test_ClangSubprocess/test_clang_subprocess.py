@@ -2,6 +2,7 @@ import unittest
 import decompy.DataGathering.ClangSubprocess as Clang
 from pathlib import Path
 import os
+import shutil
 
 
 class ClangSubprocessTest(unittest.TestCase):
@@ -36,10 +37,10 @@ class ClangSubprocessTest(unittest.TestCase):
         Deletes files created in setup
         """
         try:
-            Path(self.llvm_path).rmdir()
-            Path(self.assembly_path).rmdir()
-            Path(self.elf_path).rmdir()
-            Path(self.object_path).rmdir()
+            shutil.rmtree(self.llvm_path)
+            shutil.rmtree(self.assembly_path)
+            shutil.rmtree(self.elf_path)
+            shutil.rmtree(self.object_path)
         except Exception as e:
             print(e)
     #

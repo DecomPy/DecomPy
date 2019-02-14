@@ -103,7 +103,7 @@ class Clang:
         :param newlocation: location to save LLVM files to
         :param optlevel: the opt level to optimize LLVM
         """
-        args = " --target=i386-elf -shared -undefined " + optlevel
+        args = " --target=i386-elf -shared " + optlevel
         out_type = "-elf.elf"
         return Clang.compile_all(file_path, newlocation, out_type, args=args)
 
@@ -145,7 +145,7 @@ class Clang:
         :return: the file location which llvm_unopt was saved to.
         :rtype: str or None
         """
-        args = "-c -m32 -shared -undefined"
+        args = "-c -m32 -shared"
         out_type = ".o"
         return Clang.compile_all(file_path, newlocation, out_type, args=args)
 
