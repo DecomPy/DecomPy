@@ -64,7 +64,7 @@ A  (changed)   - This part is more complicated.... see below
 The action part of the RL agent in our case is the real uncertainty in this project.
 Whatever actions we provide are the actions that the ML agent will be able to take to
 modify the code. Too much choice and we are left with incorrect code most of the time
-and an almost impossible to train model. Too much constiction and it will be unable to
+and an almost impossible to train model. Too much consrtiction and it will be unable to
 learn anything of value. The real issue is figuring out how to provide the freedom to
 manipulate the program without losing semantics from the program during the process.
 Anything we have come up with thus far is based around constricting its changes through
@@ -88,3 +88,27 @@ llvm and generate as many equivalent versions of it as we desire (well, as many 
 are different opt passes which will actually result in a distinct version of the code).
 By doing this, we ensure that the decompilation process will maintain semantic correctness,
 but still give it a wide range of freedom.
+
+Swapping out values interchangably between the equivalency classes is only possible if the decompiled code contains
+values that are inside of our database. It is possible that the decpompiled code will contain values which are
+behaviorally equivalent to an equivaleny class, but are not textually the  same as any value that we have in our
+database. Thus, behavioral analysis could be performed to find code that belongs in an equivalency class,which
+increases the number of swaps that could be performed. This gives the agent more choices and flexibility
+
+
+Modeling the World - Part 3
+===========================
+
+A third option for actions that the RL agent could perform involves replicating the processes and algorithms that
+would normally be written by a human programmer. Decompilers generally do three types of analysis on code to
+rewrite it as a higher level language. In our case, we would perform this analysis to transform the low level
+constructs in LLVM, such as gotos, into higher level constructs, like while-loops and if-elses.
+
+The three types of analysis are Data Flow Analysis, Control Flow Analysis, and Type Analysis. This idea would require
+research into how these are performed and what kind of transformations may be made on code that under goes them.
+Them, the transformations are encoded as our actions and the RL agent uses these actions to learn how to
+perform analyses to transform one piece of code into another that is behaviorally equivilant (ie, transform
+decompiled LLVM into Clang generated unoptimized LLVM.)
+
+This idea will not be feasable with the limited time the team has, and no further research was done on the types of
+actions performed during Data Flow Analysis, Control Flow Analysis, and Type Analysis
