@@ -411,7 +411,14 @@
                             <span class="k">for</span> <span class="n">filtered_obj</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;filtered_files&quot;</span><span class="p">]:</span>
 
                                 <span class="c1"># init the file</span>
-                                <span class="n">filtered_file</span> <span class="o">=</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;\ &quot;</span><span class="p">)</span>  <span class="c1"># fix files with spaces in them.</span>
+                                <span class="n">filtered_file</span> <span class="o">=</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2"> &quot;</span><span class="p">)</span>  <span class="c1"># fix files with spaces in them.</span>
+
+                                <span class="c1"># changes */ to &quot;Repositores/&quot; or whatever they requested for their repo folder.</span>
+                                <span class="n">file</span> <span class="o">=</span> <span class="n">filtered_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+                                <span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder</span>
+                                <span class="n">filtered_file</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+                                <span class="c1"># get file path to confirm</span>
                                 <span class="n">filtered_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filtered_file</span><span class="p">)</span>
 
                                 <span class="c1"># check if file exists or wasting time</span>
@@ -424,6 +431,7 @@
 
                                     <span class="k">if</span> <span class="n">object_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">opt_llvm_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
                                             <span class="n">unopt_llvm_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">elf_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">assembly_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
                                         <span class="c1"># add it to object</span>
                                         <span class="n">filtered_files</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                                                 <span class="s2">&quot;filtered_path&quot;</span><span class="p">:</span> <span class="n">filtered_obj</span><span class="p">[</span><span class="s2">&quot;filtered_path&quot;</span><span class="p">],</span>

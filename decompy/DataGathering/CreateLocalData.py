@@ -263,6 +263,13 @@ class CreateLocalData:
 
                                 # init the file
                                 filtered_file = filtered_obj["filtered_path"].replace(" ", "\\ ")  # fix files with spaces in them.
+
+                                # changes */ to "Repositores/" or whatever they requested for their repo folder.
+                                file = filtered_file.split('/')
+                                file[0] = self.folder
+                                filtered_file = "/".join(file)
+
+                                # get file path to confirm
                                 filtered_file_path = Path(filtered_file)
 
                                 # check if file exists or wasting time
@@ -275,6 +282,7 @@ class CreateLocalData:
 
                                     if object_path is not None and opt_llvm_path is not None and \
                                             unopt_llvm_path is not None and elf_path is not None and assembly_path is not None:
+
                                         # add it to object
                                         filtered_files.append({
                                                 "filtered_path": filtered_obj["filtered_path"],

@@ -159,33 +159,46 @@
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.compile_all">
 <em class="property">static </em><code class="descname">compile_all</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em>, <em>out_type</em>, <em>args=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.compile_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.compile_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compiles all C files listed in the input file with Clang, using the
-specified args. Stores these files in the specified location and lists
-the new files in the output file. If this is being used to filter the
-input files, the C files that successfully compile will be entered in.
-:param file_path: File with list of C file names to compile
-:param newlocation: location to save LLVM files to
-:param out_type: the type that the file must be compiled to, such as “elf”
-:param args: Arguments for the compiler to use while compiling</p>
+<dd><p>Compiles the C file given as a path with Clang, using the specified args.
+Writes to a file by calling compile_cfile then returns the
+specified location of the file path. If this is being used
+to filter the input files, the C files that successfully
+compile will be entered in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_path</strong> – File with list of C file names to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+<li><strong>out_type</strong> – the type that the file must be compiled to, such as “elf”</li>
+<li><strong>args</strong> – Arguments for the compiler to use while compiling</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.compile_cfile">
 <em class="property">static </em><code class="descname">compile_cfile</code><span class="sig-paren">(</span><em>file_in</em>, <em>newlocation</em>, <em>output_type</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.compile_cfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.compile_cfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compiles the specified C file with Clang, using the specified args.
-Stores this file in the specified location and lists the new file in
-the output file. If this is being used to filter the input file and
-if the C file successfully compiles it will be entered in the filter file
-:param file_in: File to compile
-:param newlocation: location to save LLVM files to
-:param output_type: the type that the file must be compiled to, such as</p>
-<blockquote>
-<div>“elf’</div></blockquote>
+Stores this file in the specified location and returns the location as a string.
+If this is being used to filter the input file and
+if the C file successfully compiles it will be entered in the filter file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – Arguments for the compiler to use while compiling</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_in</strong> – File to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+<li><strong>output_type</strong> – the type that the file must be compiled to, such as
+“elf”</li>
+<li><strong>args</strong> – Arguments for the compiler to use while compiling</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -194,50 +207,107 @@ if the C file successfully compiles it will be entered in the filter file
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.to_assembly">
 <em class="property">static </em><code class="descname">to_assembly</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_assembly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_assembly" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to x86 assembly.
-Writes the name of successful files to output file.
-:param file_path: file path to compile
-:param newlocation: location to save assembly files to
-:return: the file location which llvm_unopt was saved to.
-:rtype: str or None</p>
+<dd><p>Compiles the C file given as a path to x86 assembly.
+Writes to a file by calling compile_cfile through compile_all
+then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> – file path to compile</li>
+<li><strong>newlocation</strong> – location to save assembly files to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file location which llvm_unopt was saved to.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str or None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.to_elf">
 <em class="property">static </em><code class="descname">to_elf</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_elf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_elf" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to elf executables.
-Writes the name of successful files to output file. Writes the name of
-successful C files to filter file.
-:param file_path: file path to compile
-:param newlocation: location to save LLVM files to</p>
+<dd><p>Compiles the C file given as a path to elf executables.
+Writes to a file by calling compile_cfile through compile_all
+then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_path</strong> – file path to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.to_llvm_opt">
 <em class="property">static </em><code class="descname">to_llvm_opt</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em>, <em>optlevel=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_llvm_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_opt" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to optimized LLVM IR, at
-the specified opt level. Writes the name of successful files to output file
-:param file_path: File with list of C file names to compile
-:param newlocation: location to save LLVM files to
-:return: the file location which llvm_unopt was saved to.
-:rtype: str or None</p>
+<dd><p>Compiles the C file given as a path to optimized LLVM IR, at
+the specified opt level. Writes to a file by calling compile_cfile
+through compile_all then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> – File with list of C file names to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file location which llvm_unopt was saved to.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str or None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.to_llvm_unopt">
 <em class="property">static </em><code class="descname">to_llvm_unopt</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_llvm_unopt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_unopt" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to unoptimized LLVM IR.
-Writes the name of successful files to output file.
-:param file_path: File with list of C file names to compile
-:param newlocation: location to save LLVM files to
-:return: the file location which llvm_unopt was saved to.
-:rtype: str or None</p>
+<dd><p>Compiles the C file given as a path to unoptimized LLVM IR.
+Writes to a file by calling compile_cfile through compile_all
+then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> – File with list of C file names to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file location which llvm_unopt was saved to.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str or None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.ClangSubprocess.Clang.to_object_file">
 <em class="property">static </em><code class="descname">to_object_file</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_object_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.ClangSubprocess.Clang.to_object_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compiles all C files listed in the input file to clang.</p>
+<dd><p>Compiles the C file given as a path to an object file.
+Writes to a file by calling compile_cfile
+through compile_all then returns the specified location of the file path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1099,33 +1169,46 @@ the search criteria</p>
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.compile_all">
 <em class="property">static </em><code class="descname">compile_all</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em>, <em>out_type</em>, <em>args=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.compile_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.compile_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compiles all C files listed in the input file with Clang, using the
-specified args. Stores these files in the specified location and lists
-the new files in the output file. If this is being used to filter the
-input files, the C files that successfully compile will be entered in.
-:param file_path: File with list of C file names to compile
-:param newlocation: location to save LLVM files to
-:param out_type: the type that the file must be compiled to, such as “elf”
-:param args: Arguments for the compiler to use while compiling</p>
+<dd><p>Compiles the C file given as a path with Clang, using the specified args.
+Writes to a file by calling compile_cfile then returns the
+specified location of the file path. If this is being used
+to filter the input files, the C files that successfully
+compile will be entered in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_path</strong> – File with list of C file names to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+<li><strong>out_type</strong> – the type that the file must be compiled to, such as “elf”</li>
+<li><strong>args</strong> – Arguments for the compiler to use while compiling</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.compile_cfile">
 <em class="property">static </em><code class="descname">compile_cfile</code><span class="sig-paren">(</span><em>file_in</em>, <em>newlocation</em>, <em>output_type</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.compile_cfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.compile_cfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compiles the specified C file with Clang, using the specified args.
-Stores this file in the specified location and lists the new file in
-the output file. If this is being used to filter the input file and
-if the C file successfully compiles it will be entered in the filter file
-:param file_in: File to compile
-:param newlocation: location to save LLVM files to
-:param output_type: the type that the file must be compiled to, such as</p>
-<blockquote>
-<div>“elf’</div></blockquote>
+Stores this file in the specified location and returns the location as a string.
+If this is being used to filter the input file and
+if the C file successfully compiles it will be entered in the filter file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – Arguments for the compiler to use while compiling</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_in</strong> – File to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+<li><strong>output_type</strong> – the type that the file must be compiled to, such as
+“elf”</li>
+<li><strong>args</strong> – Arguments for the compiler to use while compiling</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1134,50 +1217,107 @@ if the C file successfully compiles it will be entered in the filter file
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.to_assembly">
 <em class="property">static </em><code class="descname">to_assembly</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_assembly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_assembly" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to x86 assembly.
-Writes the name of successful files to output file.
-:param file_path: file path to compile
-:param newlocation: location to save assembly files to
-:return: the file location which llvm_unopt was saved to.
-:rtype: str or None</p>
+<dd><p>Compiles the C file given as a path to x86 assembly.
+Writes to a file by calling compile_cfile through compile_all
+then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> – file path to compile</li>
+<li><strong>newlocation</strong> – location to save assembly files to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file location which llvm_unopt was saved to.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str or None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.to_elf">
 <em class="property">static </em><code class="descname">to_elf</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_elf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_elf" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to elf executables.
-Writes the name of successful files to output file. Writes the name of
-successful C files to filter file.
-:param file_path: file path to compile
-:param newlocation: location to save LLVM files to</p>
+<dd><p>Compiles the C file given as a path to elf executables.
+Writes to a file by calling compile_cfile through compile_all
+then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_path</strong> – file path to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.to_llvm_opt">
 <em class="property">static </em><code class="descname">to_llvm_opt</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em>, <em>optlevel=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_llvm_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_llvm_opt" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to optimized LLVM IR, at
-the specified opt level. Writes the name of successful files to output file
-:param file_path: File with list of C file names to compile
-:param newlocation: location to save LLVM files to
-:return: the file location which llvm_unopt was saved to.
-:rtype: str or None</p>
+<dd><p>Compiles the C file given as a path to optimized LLVM IR, at
+the specified opt level. Writes to a file by calling compile_cfile
+through compile_all then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> – File with list of C file names to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file location which llvm_unopt was saved to.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str or None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.to_llvm_unopt">
 <em class="property">static </em><code class="descname">to_llvm_unopt</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_llvm_unopt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_llvm_unopt" title="Permalink to this definition">¶</a></dt>
-<dd><p>compiles all C files listed in the input file to unoptimized LLVM IR.
-Writes the name of successful files to output file.
-:param file_path: File with list of C file names to compile
-:param newlocation: location to save LLVM files to
-:return: the file location which llvm_unopt was saved to.
-:rtype: str or None</p>
+<dd><p>Compiles the C file given as a path to unoptimized LLVM IR.
+Writes to a file by calling compile_cfile through compile_all
+then returns the specified location of the file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_path</strong> – File with list of C file names to compile</li>
+<li><strong>newlocation</strong> – location to save LLVM files to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file location which llvm_unopt was saved to.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str or None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="decompy.DataGathering.Clang.to_object_file">
 <em class="property">static </em><code class="descname">to_object_file</code><span class="sig-paren">(</span><em>file_path</em>, <em>newlocation</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/ClangSubprocess.html#Clang.to_object_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.Clang.to_object_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compiles all C files listed in the input file to clang.</p>
+<dd><p>Compiles the C file given as a path to an object file.
+Writes to a file by calling compile_cfile
+through compile_all then returns the specified location of the file path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
