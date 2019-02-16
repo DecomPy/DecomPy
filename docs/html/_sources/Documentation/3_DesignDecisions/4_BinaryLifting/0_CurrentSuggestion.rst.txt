@@ -1,6 +1,24 @@
 Current Suggestion
 ******************
 
++++++++++++++++++++++++
+Suggestion for the team
++++++++++++++++++++++++
+
+Overall, I believe that using an existing decompiler for the full
+process rather than using an llvm-lifter paired with another C
+lifter is a much better option. There are too many versions
+of llvm that act too differently from the previous version. Choosing
+an llvm lifter and a c lifter that happen to work together is unlikely
+if not impossible unless they were intended to work together.
+Getting them to work together is certainly not impossible, but
+likely out of reach for the scope of this project with the time
+that we have.
+
++++++++++++++++++++++
+Best Option Available
++++++++++++++++++++++
+
 Out of the options that I have built so far, I believe llvm-mctoll
 is the best fit to our current vision of the project and would be
 the easiest to integrate. That being said, if the sponsor agrees,
