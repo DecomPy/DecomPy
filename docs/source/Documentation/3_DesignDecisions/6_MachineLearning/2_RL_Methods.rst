@@ -112,3 +112,26 @@ decompiled LLVM into Clang generated unoptimized LLVM.)
 
 This idea will not be feasable with the limited time the team has, and no further research was done on the types of
 actions performed during Data Flow Analysis, Control Flow Analysis, and Type Analysis
+
+
+Reward Functions:
+=================
+
+After deciding on a set of actions that the RL agent can take, the next task is to create a reward function. Reward
+functions are used to give the agent a goal to attain. They measure how close the agent is to the goal. Up to
+this point, our goal has been to transform decompiled LLVM (LLVM that is the result of decompiling C) into
+unoptimized, Clang generated LLVM. This section will explore possible ways we might model this goal, and things to
+consider while creating a reward.
+
+Rewards can be either positive or negative. Positive rewards encourage an accumalation of more rewards, which may
+lead agents to avoid the actual goal, since the goal ends the simulation and the agent can't gain anymore points.
+Negative rewards encourage agents to move as quickly as they can to the goal state. Rewards should thus take into
+consideration the world that the agent is in and our actual goal. For example, we may want to "accumalate" similarity
+between a decompiled LLVM program and a compiled program, so a positive function seems appropriate. However, if we
+create ccode that is more similar in some ways but overly complex in others, we may end up with code that is
+technicllly closer to our goal but moving farther away in other areas.
+
+Another issue we may run into is overly complex rewards. If we simply rank the similarity of our decompiled and
+compiled LLVM, then the evaluation function may be relatively simple. However,if wewouldlike to take more things into
+consideration, our reward function becomes complex. More advanced techniques are used to handle this.
+source: https://medium.com/@BonsaiAI/deep-reinforcement-learning-models-tips-tricks-for-writing-reward-functions-a84fe525e8e0
