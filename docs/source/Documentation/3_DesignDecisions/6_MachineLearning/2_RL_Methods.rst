@@ -109,6 +109,7 @@ research into how these are performed and what kind of transformations may be ma
 Them, the transformations are encoded as our actions and the RL agent uses these actions to learn how to
 perform analyses to transform one piece of code into another that is behaviorally equivilant (ie, transform
 decompiled LLVM into Clang generated unoptimized LLVM.)
+(Source: https://www.cs.cmu.edu/~fp/courses/15411-f13/lectures/20-decompilation.pdf)
 
 This idea will not be feasable with the limited time the team has, and no further research was done on the types of
 actions performed during Data Flow Analysis, Control Flow Analysis, and Type Analysis
@@ -134,4 +135,4 @@ technicllly closer to our goal but moving farther away in other areas.
 Another issue we may run into is overly complex rewards. If we simply rank the similarity of our decompiled and
 compiled LLVM, then the evaluation function may be relatively simple. However,if wewouldlike to take more things into
 consideration, our reward function becomes complex. More advanced techniques are used to handle this.
-source: https://medium.com/@BonsaiAI/deep-reinforcement-learning-models-tips-tricks-for-writing-reward-functions-a84fe525e8e0
+(Source: https://medium.com/@BonsaiAI/deep-reinforcement-learning-models-tips-tricks-for-writing-reward-functions-a84fe525e8e0)
