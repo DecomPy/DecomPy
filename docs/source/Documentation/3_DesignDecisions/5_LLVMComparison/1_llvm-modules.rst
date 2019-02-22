@@ -24,6 +24,7 @@ Useful Member Functions and Variables in the LLVMModule Class
 
     - getInstructionCount(): Returns the number of non debug instructions in the module.
     - LLVM modules have functions which return the list of functions, globals, and symbol tables.
+    LLVM Documention: https://llvm.org/doxygen/classllvm_1_1Module.html
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -38,6 +39,7 @@ Useful Member Functions and Variables in the LLVMFunction Class
     - viewCFG: Compare functions with Control Flow Graph
     - getBasicBlockLst: Compare the functions basic blocks
     - getValueSymbolTable: Compare the function's symbol table
+    LLVM Documention: http://llvm.org/doxygen/classllvm_1_1Function.html
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ Useful Member Functions and Variables in the BasicBlock Class
     Functions and modules are made of basic blocks. Basic blocks are made of instructions that make up the program.
 
     - instructionsWithoutDebug: Compare basic blocks by instructions.
+    LLVM Documentation: http://llvm.org/doxygen/classllvm_1_1BasicBlock.html
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -57,6 +60,7 @@ Useful Member Functions and Variables in the Instruction Class
     - getMetadata: Returns metadata that may be useful for comparison. Should contain information such as operands.
     - There area variety of functions that will return the details of the instruction, like isBitwiseLogicOp or
       isUnaryOp
+    LLVM Documention: https://llvm.org/doxygen/classllvm_1_1Instruction.html#ac9422ce2b7c1a541da2e14f637cb4c10
 
 ------------------------------------------------------------------------------------------------------------------------
 
