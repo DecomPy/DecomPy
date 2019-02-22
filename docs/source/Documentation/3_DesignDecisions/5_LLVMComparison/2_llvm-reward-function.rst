@@ -55,4 +55,15 @@ Instruction level comparisons:
 
 ------------------------------------------------------------------------------------------------------------------------
 
-Function
+Basic Block Level Comparison:
+    Basic blocks can be compared at an instruction level. Then, the similarity of a basic block may be used to
+    calculate the similarity of whole functions.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Function Level Comparison:
+    Function similarity may be calculated by the similarity of its basic block and its instructions, but it can also
+    be calculated by attribute of the function. The function's symbol table can be used not only directly for
+    comparison, but also to determine which variables are the same across to different functions with different
+    variable names. Control flow graph comparison can be used to see if the two different programs accomplish their
+    behavior in the same or similar ways.
