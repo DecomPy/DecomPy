@@ -14,3 +14,7 @@ section entitled "Transform Passes" which gives a (technical and confusing)
 explanation of each of the passes which result in llvm transformation (as
 opposed to passes which perform analysis, which actually still might be
 useful for other things such as the heuristics for state analysis.
+
+`This page
+<https://blog.regehr.org/archives/1603>`_
+provides a very detailed analysis of some of the llvm optimization passes.
