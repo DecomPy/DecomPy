@@ -14,7 +14,7 @@ class Reward{
 
     private:
     int instructionCountReward(Function* fnc1, Function* fnc2);
-    int identicalInstructionCountReward(Function* fnc1, Function* fnc2);
+    int identicalInstructionCountReward(Function &fnc1, Function* fnc2);
 };
 
 int Reward::getReward(Function* fnc1, Function* fnc2){
@@ -36,21 +36,23 @@ int Reward::instructionCountReward(Function* fnc1, Function* fnc2){
 }
 
 
-int Reward::identicalInstructionCountReward(Function* fnc1, Function* fnc2){
+int Reward::identicalInstructionCountReward(Function &fnc1, Function* fnc2){
 //try 1
-//    for (iplist<BasicBlock>::iterator iter = fnc1->getBasicBlockList().begin(); iter != fnc1->getBasicBlockList().end();
-//    iter++){
+//    for (iplist<BasicBlock>::iterator iter = fnc1.getBasicBlockList().begin(); iter != fnc1.getBasicBlockList().end(); iter++){
 //        BasicBlock* currBB = iter;
 //    }
 
 //try 2
-//    for (Function::iterator b = fnc1->begin(), be = fnc1->end(); b != be; ++b) {
-//        BasicBlock* BB = *&b;
+//    for (Function::iterator b = fnc1.begin(), be = fnc1.end(); b != be; ++b) {
+//        BasicBlock* BB = *b;
 //    }
 
 //try 3
 //    for (BasicBlock &BB : fnc1)
-//        errs() << "Basic block (name=" << BB.getName() << ") has " << BB.size() << " instructions.\n";
+//        errs() << "Basic block (name=" << BB.getName() << ") has " <<
+//        BB.size() << " instructions.\n";
+
+    for (auto &B : fnc1);
     return 0;
 }
 
