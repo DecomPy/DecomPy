@@ -7,6 +7,7 @@ printf "\nInstalling git\n"
 sudo apt-get install git
 
 printf "\nCloning LLVM project\n"
+cd ~
 git clone https://github.com/llvm/llvm-project.git
 cd llvm-project
 
