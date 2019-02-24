@@ -5,7 +5,7 @@
 
 using namespace llvm;
 
-//c++ -g RewardFunction.cpp `llvm-config --cxxflags --ldflags --libs core` -o RewardFunction
+//c++ -g decompy/ai-rl/RewardFunction.cpp `llvm-config --cxxflags --ldflags --libs core` -lpthread -o RewardFunction
 
 class Reward{
 
@@ -37,16 +37,24 @@ int Reward::instructionCountReward(Function* fnc1, Function* fnc2){
 
 
 int Reward::identicalInstructionCountReward(Function* fnc1, Function* fnc2){
-//    for (Function::iterator b = fnc1->begin(), be = fnc1->end(); b != be; ++b) {
-//        BasicBlock* BB = b.pointer;
+//try 1
+//    for (iplist<BasicBlock>::iterator iter = fnc1->getBasicBlockList().begin(); iter != fnc1->getBasicBlockList().end();
+//    iter++){
+//        BasicBlock* currBB = iter;
 //    }
 
-    for (inst_iterator I = inst_begin(fnc1), E = inst_end(fnc1); I != E; ++I)
-        errs() << *I << "\n";
-    //std::unordered_map instrMap;
+//try 2
+//    for (Function::iterator b = fnc1->begin(), be = fnc1->end(); b != be; ++b) {
+//        BasicBlock* BB = *&b;
+//    }
+
+//try 3
+//    for (BasicBlock &BB : fnc1)
+//        errs() << "Basic block (name=" << BB.getName() << ") has " << BB.size() << " instructions.\n";
     return 0;
 }
 
 int main(){
     return 0;
 }
+
