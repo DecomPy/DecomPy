@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Dealing with Invalid Passes &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="llc" href="../Llc/index.html" />
+    <link rel="prev" title="LLVM Versions" href="2_LLVM_Versioning.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Design and Architecture</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design and Architecture</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_OptnoneIssues.html">Optnone issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_LLVM_Versioning.html">LLVM Versions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dealing with Invalid Passes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#manual-selection-of-llvm-passes">Manual Selection of LLVM passes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deferred-judgement-to-the-agent">Deferred judgement to the Agent</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">Design and Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Opt/index.html">Opt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">Design and Architecture</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">Design and Architecture</a> &raquo;</li>
+        
+      <li>Dealing with Invalid Passes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/EquivClasses/3_DealingWithInvalidPasses.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dealing-with-invalid-passes">
+<h1>Dealing with Invalid Passes<a class="headerlink" href="#dealing-with-invalid-passes" title="Permalink to this headline">¶</a></h1>
+<p>One major problem with the idea of generating small snippets of equivalency classes
+is that what is locally equivalent may not be what is globally equivalent. Essentially,
+it comes down to two major choices (or a combination there of). We can either attempt
+to manually determine which passes do not suffer from this “scope mismatch” or we can
+defer this judgement to the RL agent in some way. Both have a number of advantages and
+disadvantages which I will discuss here.</p>
+<div class="section" id="manual-selection-of-llvm-passes">
+<h2>Manual Selection of LLVM passes<a class="headerlink" href="#manual-selection-of-llvm-passes" title="Permalink to this headline">¶</a></h2>
+<p>One major issue, sadly, is time. This task is daunting not only due to the highly technical
+nature, but also due to the lack of documentations on llvm passes individually. In the end,
+opt is not a tool designed to perform target transformations. It is a tool designed to perform
+subsequent lists of optimizations which are sometimes heavily interdependent. Many of these
+optimizations, while not resulting in “scope mismatch” themselves, may depend on passes which
+do. While it is certainly possible to perform before and after analyis of each pass event still,
+this provides another layer of complexity to an already difficult task. Even some passes which
+seem innocent with the wrong context could easily result in incorrect swaps.</p>
+<p>The major advantage on the other hand, is that the ML will be much easier if we can assume that
+all operations perfomred by the ML agent are inherintly safe and we do not have to perform our
+own checks to make sure of this.</p>
+</div>
+<div class="section" id="deferred-judgement-to-the-agent">
+<h2>Deferred judgement to the Agent<a class="headerlink" href="#deferred-judgement-to-the-agent" title="Permalink to this headline">¶</a></h2>
+<p>While this may save time in terms of research and manual selection, it will certainly create
+issues in the ML. If the ML’s operations cannot be assumed to be safe, we run the risk of
+ruining the llvm code so that it cannot be further lifted into C code.</p>
+<p>One big advantage of this choice is that theoretically the code we write for training the ML
+agent could just as easily work for a database where all of the swaps are contextually safe.
+Essentially, we are just perfoming safety checks and giving the agent a heavy negative reward
+and backrolling the code so it can continue. If this action happened with a better database,
+it would just never deal with backrolling since no invalid operations happen. This of course,
+means writing code that would never run had we done our investigation right, but even assuming
+we do a decent job with our manual selection, this might be useful.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Llc/index.html" class="btn btn-neutral float-right" title="llc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="2_LLVM_Versioning.html" class="btn btn-neutral float-left" title="LLVM Versions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Design and Architecture" href="DeadCodeEliminationPasses/index.html" />
     <link rel="prev" title="Using RetDec" href="../3_DesignDecisions/5_UsingAnExistingDecompiler/2_RetDec.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -84,7 +86,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Design Decisions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="DeadCodeEliminationPasses/index.html">Design and Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="EquivClasses/index.html">Design and Architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Opt/index.html">Design and Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMP/index.html">Design and Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Opt/index.html">Opt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="WhatAreLLVMModules/index.html">Design and Architecture</a></li>
 </ul>
 </li>
 </ul>
@@ -169,11 +174,36 @@
 <li class="toctree-l1"><a class="reference internal" href="EquivClasses/index.html">Design and Architecture</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="EquivClasses/1_OptnoneIssues.html">Optnone issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="EquivClasses/2_LLVM_Versioning.html">LLVM Versions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="EquivClasses/3_UsefulPasses.html">Useful Passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="EquivClasses/3_DealingWithInvalidPasses.html">Dealing with Invalid Passes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="EquivClasses/3_DealingWithInvalidPasses.html#manual-selection-of-llvm-passes">Manual Selection of LLVM passes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="EquivClasses/3_DealingWithInvalidPasses.html#deferred-judgement-to-the-agent">Deferred judgement to the Agent</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Opt/index.html">Design and Architecture</a><ul>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Llc/index.html">llc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Llc/1_llc.html">llc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="OpenMP/index.html">Design and Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="OpenMP/1_OpenMP.html">Using OpenMP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Opt/index.html">Opt</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Opt/1_References.html">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Opt/2_OptPasses.html">Looking at opt Passes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Opt/2_OptPasses.html#simplifycfg">-simplifycfg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Opt/2_OptPasses.html#sroa">-sroa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Opt/2_OptPasses.html#instcombine">-instcombine</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="WhatAreLLVMModules/index.html">Design and Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="WhatAreLLVMModules/LLVM_Modules.html">What Are LLVM Modules?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="WhatAreLLVMModules/LLVM_Modules.html#bibliography">Bibliography</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -191,7 +221,7 @@
         <a href="DeadCodeEliminationPasses/index.html" class="btn btn-neutral float-right" title="Design and Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../3_DesignDecisions/5_UsingAnExistingDecompiler/2_RetDec.html" class="btn btn-neutral" title="Using RetDec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../3_DesignDecisions/5_UsingAnExistingDecompiler/2_RetDec.html" class="btn btn-neutral float-left" title="Using RetDec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -217,26 +247,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

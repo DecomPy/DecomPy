@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Design and Architecture &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Opt &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="References" href="1_References.html" />
-    <link rel="prev" title="Useful Passes" href="../EquivClasses/3_UsefulPasses.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
+    <link rel="prev" title="Using OpenMP" href="../OpenMP/1_OpenMP.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -84,10 +86,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Design and Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Design and Architecture</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Design and Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">Design and Architecture</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Opt</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="1_References.html">References</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_OptPasses.html">Looking at opt Passes</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">Design and Architecture</a></li>
 </ul>
 </li>
 </ul>
@@ -137,7 +143,7 @@
         
           <li><a href="../index.html">Design Decisions</a> &raquo;</li>
         
-      <li>Design and Architecture</li>
+      <li>Opt</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -156,11 +162,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="design-and-architecture">
-<h1>Design and Architecture<a class="headerlink" href="#design-and-architecture" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="opt">
+<h1>Opt<a class="headerlink" href="#opt" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="1_References.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_OptPasses.html">Looking at opt Passes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2_OptPasses.html#simplifycfg">-simplifycfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_OptPasses.html#sroa">-sroa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_OptPasses.html#instcombine">-instcombine</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -176,7 +188,7 @@
         <a href="1_References.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../EquivClasses/3_UsefulPasses.html" class="btn btn-neutral" title="Useful Passes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../OpenMP/1_OpenMP.html" class="btn btn-neutral float-left" title="Using OpenMP" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -202,26 +214,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

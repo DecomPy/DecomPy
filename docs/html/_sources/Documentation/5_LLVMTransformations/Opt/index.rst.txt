@@ -1,5 +1,5 @@
-Design and Architecture
-***********************
+Opt
+***
 
 .. toctree::
     :glob:
