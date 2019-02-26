@@ -2,7 +2,7 @@ LLVM Comparison for Tracking Decompiling Progress
 **************************************************
 
 The team needs to use the LLVM API to create a reward function that will judge how close we are to our goal of lifting
-decompiled LLVM into commpiler generated unoptimized LLVM. Specifically, we will need to compare two LLVM functions,
+decompiled LLVM into compiler generated unoptimized LLVM. Specifically, we will need to compare two LLVM functions,
 one compiled by Clang to unoptimized LLVM and the other lifted by a decompiler to LLVM. This document outlines which
 aspects of an LLVM program we might want to compare and how these can be quantified as a reward function. It is
 important to note that as the team trains the RL agent, the reward function will need to be refined.
@@ -11,14 +11,14 @@ important to note that as the team trains the RL agent, the reward function will
 
 What to compare?
     The team will be using the equivalency class method described in the RL part of the documentation to transform  the
-    LLVM. This method is garanteed to retain the behavior of the program, so our reward function will not need to
+    LLVM. This method is guaranteed to retain the behavior of the program, so our reward function will not need to
     compare behavior.
 
     Additionally, we plan to decompile at a function by function level, so we will not have to worry about comparing
     whole programs.
 
     Instead, the team will focus on the LLVM classes for Functions, Basic Blocks, and Instructions. The LLVM
-    Comparator function will provide good reference for comparison, although that class is used tocompare behavior.
+    Comparator function will provide good reference for comparison, although that class is used to compare behavior.
 
     Possible attributes to compare include:
 
@@ -37,7 +37,7 @@ What to compare?
 
 Instruction level comparisons:
     The number of instructions, number of identical instructions and number of instructions of the same type are all
-    easily obtained from the functions provided by the LLVM API. However, these might not provided the best
+    easily obtained from the functions provided by the LLVM API. However, these might not provide the best
     information. Two functions can have the same behavior and the same instructions but still be internally very
     different. Two functions can have the same number of addition operators, for example, but have all or most of them
     used in different parts of the functions for two different reasons. And we are not likely to have many precisely
@@ -67,3 +67,4 @@ Function Level Comparison:
     comparison, but also to determine which variables are the same across to different functions with different
     variable names. Control flow graph comparison can be used to see if the two different programs accomplish their
     behavior in the same or similar ways.
+

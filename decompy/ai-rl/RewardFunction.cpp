@@ -79,7 +79,7 @@ int Reward::identicalInstructionTypeCountReward(Function &fnc1, Function &fnc2){
 
     for(Instruction* in1 :f1Instructions) {
         for(Instruction* in2 : f2Instructions) {
-            if(in2-> getOpcode() == in1->getOpcode()) {
+            if(in2->getOpcode() == in1->getOpcode()) {
                 identicalInstructionCount = identicalInstructionCount + 1;
             }
         }
@@ -153,25 +153,23 @@ Function* makeLLVMFunction2(std::string name){
 
     //the following names the arguments. Not strictly necessary, LLVM will name them
     Value* x = args++; //Sets equal to args, then increments to the next arg
-    x->setName("x"); //sets name
+    x->setName("x1"); //sets name
     Value* y = args++; //Sets equal to args, then increments to the next arg
-    y->setName("y"); //sets name
-    Value* z = args++; //Sets equal to args, then increments to the next arg
-    z->setName("z"); //sets name
+    y->setName("y1"); //sets name
     //now we will keep the x, y, and z, pointers because the will be used later
 
     //std::cout <<
 
     //BasicBlock are... The basic building blocks of a program. Every function has one (the stuff between the curly braces
     //this function needs on, so we make one:
-    BasicBlock* block = BasicBlock::Create(TheContext, "entry", mul_add);
+    BasicBlock* block = BasicBlock::Create(TheContext, "entry1", mul_add);
     //unless a lot of control is needed, us IR Builder
     IRBuilder<> builder(block); //convinience interface for creating instructions.
 
     //creates a binary operation. In this case, it is a multiplication instruction
     //the builder creates and appends this instruction to the end of the block
     // it returns the value returned by the instruction.
-    Value* tmp = builder.CreateBinOp(Instruction::Mul, x, y, "tmp");
+    Value* tmp = builder.CreateBinOp(Instruction::Mul, x, y, "tmp1");
     //this is a return instruction
     builder.CreateRet(tmp);
 
@@ -199,7 +197,8 @@ int main(){
     std::cout << "The total reward is 167: " << totalReward << std::endl;
 
     //for some reason I can't delete both fncs
-    delete fnc2;
+    //delete fnc2;
+    delete fnc;
     return 0;
 }
 
