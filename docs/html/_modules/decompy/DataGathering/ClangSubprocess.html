@@ -166,13 +166,14 @@
     <span class="k">def</span> <span class="nf">compile_cfile</span><span class="p">(</span><span class="n">file_in</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">output_type</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compiles the specified C file with Clang, using the specified args.</span>
-<span class="sd">        Stores this file in the specified location and lists the new file in</span>
-<span class="sd">        the output file. If this is being used to filter the input file and</span>
-<span class="sd">        if the C file successfully compiles it will be entered in the filter file</span>
+<span class="sd">        Stores this file in the specified location and returns the location as a string.</span>
+<span class="sd">        If this is being used to filter the input file and</span>
+<span class="sd">        if the C file successfully compiles it will be entered in the filter file.</span>
+
 <span class="sd">        :param file_in: File to compile</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        :param output_type: the type that the file must be compiled to, such as</span>
-<span class="sd">            &quot;elf&#39;</span>
+<span class="sd">            &quot;elf&quot;</span>
 <span class="sd">        :param args: Arguments for the compiler to use while compiling</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -190,10 +191,12 @@
 <div class="viewcode-block" id="Clang.compile_all"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.compile_all">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">compile_all</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">out_type</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compiles all C files listed in the input file with Clang, using the</span>
-<span class="sd">        specified args. Stores these files in the specified location and lists</span>
-<span class="sd">        the new files in the output file. If this is being used to filter the</span>
-<span class="sd">        input files, the C files that successfully compile will be entered in.</span>
+<span class="sd">        Compiles the C file given as a path with Clang, using the specified args.</span>
+<span class="sd">        Writes to a file by calling compile_cfile then returns the</span>
+<span class="sd">        specified location of the file path. If this is being used</span>
+<span class="sd">        to filter the input files, the C files that successfully</span>
+<span class="sd">        compile will be entered in.</span>
+
 <span class="sd">        :param file_path: File with list of C file names to compile</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        :param out_type: the type that the file must be compiled to, such as &quot;elf&quot;</span>
@@ -219,8 +222,10 @@
 <div class="viewcode-block" id="Clang.to_assembly"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_assembly">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_assembly</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        compiles all C files listed in the input file to x86 assembly.</span>
-<span class="sd">        Writes the name of successful files to output file.</span>
+<span class="sd">        Compiles the C file given as a path to x86 assembly.</span>
+<span class="sd">        Writes to a file by calling compile_cfile through compile_all</span>
+<span class="sd">        then returns the specified location of the file path.</span>
+
 <span class="sd">        :param file_path: file path to compile</span>
 <span class="sd">        :param newlocation: location to save assembly files to</span>
 <span class="sd">        :return: the file location which llvm_unopt was saved to.</span>
@@ -233,9 +238,10 @@
 <div class="viewcode-block" id="Clang.to_elf"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_elf">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_elf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        compiles all C files listed in the input file to elf executables.</span>
-<span class="sd">        Writes the name of successful files to output file. Writes the name of</span>
-<span class="sd">        successful C files to filter file.</span>
+<span class="sd">        Compiles the C file given as a path to elf executables.</span>
+<span class="sd">        Writes to a file by calling compile_cfile through compile_all</span>
+<span class="sd">        then returns the specified location of the file path.</span>
+
 <span class="sd">        :param file_path: file path to compile</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -245,8 +251,10 @@
 <div class="viewcode-block" id="Clang.to_llvm_opt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_opt">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_llvm_opt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">,</span> <span class="n">optlevel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        compiles all C files listed in the input file to optimized LLVM IR, at</span>
-<span class="sd">        the specified opt level. Writes the name of successful files to output file</span>
+<span class="sd">        Compiles the C file given as a path to optimized LLVM IR, at</span>
+<span class="sd">        the specified opt level. Writes to a file by calling compile_cfile</span>
+<span class="sd">        through compile_all then returns the specified location of the file path.</span>
+
 <span class="sd">        :param file_path: File with list of C file names to compile</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        :return: the file location which llvm_unopt was saved to.</span>
@@ -259,8 +267,10 @@
 <div class="viewcode-block" id="Clang.to_llvm_unopt"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_llvm_unopt">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_llvm_unopt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        compiles all C files listed in the input file to unoptimized LLVM IR.</span>
-<span class="sd">        Writes the name of successful files to output file.</span>
+<span class="sd">        Compiles the C file given as a path to unoptimized LLVM IR.</span>
+<span class="sd">        Writes to a file by calling compile_cfile through compile_all</span>
+<span class="sd">        then returns the specified location of the file path.</span>
+
 <span class="sd">        :param file_path: File with list of C file names to compile</span>
 <span class="sd">        :param newlocation: location to save LLVM files to</span>
 <span class="sd">        :return: the file location which llvm_unopt was saved to.</span>
@@ -273,7 +283,9 @@
 <div class="viewcode-block" id="Clang.to_object_file"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.ClangSubprocess.Clang.to_object_file">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_object_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">newlocation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compiles all C files listed in the input file to clang.</span>
+<span class="sd">        Compiles the C file given as a path to an object file.</span>
+<span class="sd">        Writes to a file by calling compile_cfile</span>
+<span class="sd">        through compile_all then returns the specified location of the file path.</span>
 
 <span class="sd">        :param file_path: File with list of C file names to compile</span>
 <span class="sd">        :param newlocation: location to save Object files to</span>

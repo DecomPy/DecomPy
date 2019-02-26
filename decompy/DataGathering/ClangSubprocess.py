@@ -17,13 +17,14 @@ class Clang:
     def compile_cfile(file_in, newlocation, output_type, args):
         """
         Compiles the specified C file with Clang, using the specified args.
-        Stores this file in the specified location and lists the new file in
-        the output file. If this is being used to filter the input file and
-        if the C file successfully compiles it will be entered in the filter file
+        Stores this file in the specified location and returns the location as a string.
+        If this is being used to filter the input file and
+        if the C file successfully compiles it will be entered in the filter file.
+
         :param file_in: File to compile
         :param newlocation: location to save LLVM files to
         :param output_type: the type that the file must be compiled to, such as
-            "elf'
+            "elf"
         :param args: Arguments for the compiler to use while compiling
         """
 
@@ -41,10 +42,12 @@ class Clang:
     @staticmethod
     def compile_all(file_path, newlocation, out_type, args=""):
         """
-        Compiles all C files listed in the input file with Clang, using the
-        specified args. Stores these files in the specified location and lists
-        the new files in the output file. If this is being used to filter the
-        input files, the C files that successfully compile will be entered in.
+        Compiles the C file given as a path with Clang, using the specified args.
+        Writes to a file by calling compile_cfile then returns the
+        specified location of the file path. If this is being used
+        to filter the input files, the C files that successfully
+        compile will be entered in.
+
         :param file_path: File with list of C file names to compile
         :param newlocation: location to save LLVM files to
         :param out_type: the type that the file must be compiled to, such as "elf"
@@ -70,8 +73,10 @@ class Clang:
     @staticmethod
     def to_assembly(file_path, newlocation):
         """
-        compiles all C files listed in the input file to x86 assembly.
-        Writes the name of successful files to output file.
+        Compiles the C file given as a path to x86 assembly.
+        Writes to a file by calling compile_cfile through compile_all
+        then returns the specified location of the file path.
+
         :param file_path: file path to compile
         :param newlocation: location to save assembly files to
         :return: the file location which llvm_unopt was saved to.
@@ -84,9 +89,10 @@ class Clang:
     @staticmethod
     def to_elf(file_path, newlocation):
         """
-        compiles all C files listed in the input file to elf executables.
-        Writes the name of successful files to output file. Writes the name of
-        successful C files to filter file.
+        Compiles the C file given as a path to elf executables.
+        Writes to a file by calling compile_cfile through compile_all
+        then returns the specified location of the file path.
+
         :param file_path: file path to compile
         :param newlocation: location to save LLVM files to
         """
@@ -96,8 +102,10 @@ class Clang:
     @staticmethod
     def to_llvm_opt(file_path, newlocation, optlevel=""):
         """
-        compiles all C files listed in the input file to optimized LLVM IR, at
-        the specified opt level. Writes the name of successful files to output file
+        Compiles the C file given as a path to optimized LLVM IR, at
+        the specified opt level. Writes to a file by calling compile_cfile
+        through compile_all then returns the specified location of the file path.
+
         :param file_path: File with list of C file names to compile
         :param newlocation: location to save LLVM files to
         :return: the file location which llvm_unopt was saved to.
@@ -110,8 +118,10 @@ class Clang:
     @staticmethod
     def to_llvm_unopt(file_path, newlocation):
         """
-        compiles all C files listed in the input file to unoptimized LLVM IR.
-        Writes the name of successful files to output file.
+        Compiles the C file given as a path to unoptimized LLVM IR.
+        Writes to a file by calling compile_cfile through compile_all
+        then returns the specified location of the file path.
+
         :param file_path: File with list of C file names to compile
         :param newlocation: location to save LLVM files to
         :return: the file location which llvm_unopt was saved to.
@@ -124,7 +134,9 @@ class Clang:
     @staticmethod
     def to_object_file(file_path, newlocation):
         """
-        Compiles all C files listed in the input file to clang.
+        Compiles the C file given as a path to an object file.
+        Writes to a file by calling compile_cfile
+        through compile_all then returns the specified location of the file path.
 
         :param file_path: File with list of C file names to compile
         :param newlocation: location to save Object files to
