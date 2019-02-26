@@ -83,6 +83,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/4_DecompilerInformation/index.html">Decompiler Information</a></li>
 </ul>
 
             
@@ -177,6 +178,7 @@
 <span class="c1"># OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span>
 
 <span class="kn">import</span> <span class="nn">urllib.request</span><span class="o">,</span> <span class="nn">urllib.error</span><span class="o">,</span> <span class="nn">urllib.parse</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -193,7 +195,6 @@
     <span class="k">def</span> <span class="nf">getContent</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves the content from a link</span>
-
 <span class="sd">        :param link: An absolute URL</span>
 <span class="sd">        :return: page content</span>
 <span class="sd">        :return: str</span>
@@ -227,7 +228,6 @@
 <span class="sd">        :param link: An absolute URL</span>
 <span class="sd">        :return: list of visible text</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">def</span> <span class="nf">visible</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="s1">&#39;[document]&#39;</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="kc">False</span>

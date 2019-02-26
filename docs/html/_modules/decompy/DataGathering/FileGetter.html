@@ -83,6 +83,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/4_DecompilerInformation/index.html">Decompiler Information</a></li>
 </ul>
 
             
@@ -176,23 +177,35 @@
 <span class="c1"># OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</span>
 <span class="c1"># OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">fileinput</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 
 <div class="viewcode-block" id="FileGetter"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FileGetter">[docs]</a><span class="k">class</span> <span class="nc">FileGetter</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Handles the download of GitHub repositories and extracting the useful files&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.json&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;github&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;github&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;github&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">authenticated</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;github&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;github&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__update_meta</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Updates the download time in the META file to the current time in target directory</span>
-<span class="sd">        :param target_directory: Directory to update the META file</span>
+<span class="sd">        Updates the download time and popualtes it with any necessary info in the json file to the current</span>
+<span class="sd">        time in target directory.</span>
+<span class="sd">        :param target_directory: Directory to update the json file</span>
 <span class="sd">        :return: Nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -200,75 +213,108 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
             <span class="k">return</span>
 
-        <span class="c1"># Create config.META if it doesn&#39;t exist, place download timestamp there</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">target_directory</span> <span class="o">+</span> <span class="s2">&quot;config.META&quot;</span><span class="p">)):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="s2">&quot;config.META&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;File download timestamp: &quot;</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
-        <span class="c1"># Otherwise config.META does exist. Update the correct line</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">update_time_stamp</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileinput</span><span class="o">.</span><span class="n">input</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="s2">&quot;config.META&quot;</span><span class="p">)),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s2">&quot;File download timestamp: &quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;File download timestamp:&quot;</span> <span class="o">+</span>
-                                  <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))),</span>
-                    <span class="n">update_time_stamp</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">),</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">update_time_stamp</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="s2">&quot;config.META&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;File download timestamp:&quot;</span><span class="p">)</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">target_directory</span> <span class="o">+</span> <span class="s2">&quot;/repo.json&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Makes sure we have the file, otherwise create it</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json_file</span><span class="p">)</span>
+
+            <span class="c1"># parse json if it&#39;s there</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+            <span class="c1"># new date</span>
+            <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;master_download_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">json_file</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File Not Found&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="FileGetter.download_all_files"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.FileGetter.download_all_files">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">download_all_files</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">download_all_files</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles the downloading of ZIP archives and extracting the appropriate files into the target directory.</span>
-<span class="sd">        :param repo_urls: list of URLs to repositories. URLs must be to the top level of the repositories</span>
+<span class="sd">        :param repo_urls: get the list of URLs to repositories. URLs must be to the top level of the repositories</span>
+<span class="sd">        :type: str</span>
 <span class="sd">        :param target_directories: File directory to store the files</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param username: the github username.</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param password: the github password.</span>
+<span class="sd">        :type: str</span>
 <span class="sd">        :return: Nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Convert any input into a list. This is so that I only have to create a loop for lists later on</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="n">repo_urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">repo_urls</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">target_directories</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="n">target_directories</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_directories</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Convert any input into a list. This is so that I only have to create a loop for lists later on</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">repo_urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">repo_urls</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">target_directories</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">target_directories</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_directories</span><span class="p">]</span>
 
-        <span class="c1"># Attempt to generate a name for the target directory if there is not one already</span>
-        <span class="k">if</span> <span class="n">target_directories</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">target_directories</span> <span class="o">=</span> <span class="p">[</span><span class="n">repo_urls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">repo_urls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]]</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">target_directories</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># Attempt to generate a name for the target directory if there is not one already</span>
+            <span class="k">if</span> <span class="n">target_directories</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">target_directories</span> <span class="o">=</span> <span class="p">[</span><span class="n">repo_urls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">repo_urls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">target_directories</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="c1"># Don&#39;t want to download files from multiple repos into one folder, do we?</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_directories</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Length of list of URLs must be either 1 or the same as the length of the list of target directories&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
+            <span class="c1"># Don&#39;t want to download files from multiple repos into one folder, do we?</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_directories</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Length of list of URLs must be either 1 or the same as the length of the list of target directories&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
 
-        <span class="c1"># Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder</span>
-        <span class="k">for</span> <span class="n">repo_url</span><span class="p">,</span> <span class="n">target_directory</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="p">)):</span>
-            <span class="n">target_subdirectory</span> <span class="o">=</span> <span class="n">target_directory</span> <span class="o">+</span> <span class="s2">&quot;/Unfiltered&quot;</span>
+            <span class="c1"># Does the actual work. Iterates through repo URLs, and stores files from them to corresponding folder</span>
+            <span class="k">for</span> <span class="n">repo_url</span><span class="p">,</span> <span class="n">target_directory</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="p">)):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">target_subdirectory</span> <span class="o">=</span> <span class="n">target_directory</span> <span class="o">+</span> <span class="s2">&quot;/Unfiltered&quot;</span>
 
-            <span class="c1"># Create the directories needed to make sure files have a place to be stored</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">)</span>
+                    <span class="c1"># Create the directories needed to make sure files have a place to be stored</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_directory</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">target_subdirectory</span><span class="p">)</span>
+                    <span class="c1"># print(target_subdirectory) shows the folder</span>
 
-            <span class="c1"># Download the zip of the repository</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">repo_url</span> <span class="o">+</span> <span class="s2">&quot;/archive/master.zip&quot;</span><span class="p">)</span>
-            <span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span>
+                    <span class="c1"># Download the zip of the repository</span>
+                    <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">repo_url</span> <span class="o">+</span> <span class="s2">&quot;/archive/master.zip&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">repo_url</span> <span class="o">+</span> <span class="s2">&quot;/archive/master.zip&quot;</span><span class="p">)</span>
 
-            <span class="c1"># Save the appropriate files into target_subdirectory. Change file names so they are unique while being</span>
-            <span class="c1"># stored in the same directory</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">archive</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c&quot;</span><span class="p">):</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target_subdirectory</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                    <span class="c1"># test for 403</span>
+                    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">403</span><span class="p">:</span>
+                        <span class="c1"># get time that we need to wait and wait for that time.</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;uh oh, rate limited!&quot;</span><span class="p">)</span>
 
-            <span class="n">FileGetter</span><span class="o">.</span><span class="n">__update_meta</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span></div></div>
+                        <span class="c1"># wait their time if found</span>
+                        <span class="n">limit</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span>
+                        <span class="k">if</span> <span class="s2">&quot;X-RateLimit-Reset&quot;</span> <span class="ow">in</span> <span class="n">limit</span><span class="p">:</span>
+                            <span class="n">wait</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="p">[</span><span class="s2">&quot;X-RateLimit-Reset&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
 
+                            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">wait</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>  <span class="c1"># wait 2 minutes then try again.</span>
+
+                    <span class="c1"># download zip</span>
+                    <span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span>
+
+                    <span class="c1"># Save the appropriate files into target_subdirectory. Change file names so they are unique while being</span>
+                    <span class="c1"># stored in the same directory</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">archive</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c&quot;</span><span class="p">):</span>
+                            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target_subdirectory</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+                    <span class="n">FileGetter</span><span class="o">.</span><span class="n">__update_meta</span><span class="p">(</span><span class="n">target_directory</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Zip files error&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="k">pass</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Download all files error&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">pass</span></div></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">timer</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -277,12 +323,12 @@
     <span class="c1"># FileGetter.download_all_files([&quot;https://github.com/DecomPy/valid_and_compilable_1&quot;,</span>
     <span class="c1">#                                &quot;https://github.com/DecomPy/invalid_and_uncompilable_1&quot;]</span>
     <span class="c1">#                               , [&quot;A&quot;, &quot;B&quot;])</span>
-    <span class="n">FileGetter</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming&quot;</span><span class="p">)</span>
+    <span class="c1"># FileGetter.download_all_files(&quot;https://github.com/hexagon5un/AVR-Programming&quot;)</span>
     <span class="c1"># GitHubScraper.download_all_files([&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM&quot;],</span>
     <span class="c1">#                                  &quot;FolderA&quot;)</span>
     <span class="c1"># GitHubScraper.download_all_files(&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher&quot;)</span>
     <span class="c1"># GitHubScraper.download_all_files(&quot;https://github.com/torvalds/linux&quot;, &quot;Huge repo&quot;)</span>
-    <span class="c1"># FileGetter.download_all_files(&quot;https://github.com/torvalds/linux&quot;)</span>
+    <span class="n">FileGetter</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="s2">&quot;https://github.com/torvalds/linux&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">timer</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;minutes&quot;</span><span class="p">)</span>
 </pre></div>
 

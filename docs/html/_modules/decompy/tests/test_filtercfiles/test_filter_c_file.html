@@ -83,6 +83,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/1_Installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Documentation/4_DecompilerInformation/index.html">Decompiler Information</a></li>
 </ul>
 
             
@@ -148,7 +149,6 @@
   <h1>Source code for decompy.tests.test_filtercfiles.test_filter_c_file</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">from</span> <span class="nn">decompy.DataGathering.FilterC</span> <span class="k">import</span> <span class="n">FilterC</span>
-<span class="kn">import</span> <span class="nn">os</span>
 
 
 <div class="viewcode-block" id="FilterCTest"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_filtercfiles.html#decompy.tests.test_filtercfiles.test_filter_c_file.FilterCTest">[docs]</a><span class="k">class</span> <span class="nc">FilterCTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
@@ -161,8 +161,12 @@
 <span class="sd">        Initializes a test filter C unit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span> <span class="o">=</span> <span class="n">FilterC</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fail_file</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree_fail.c&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pass_file</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_folder</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/binary_search/Unfiltered&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pass_folder</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/fibonnaci_search/Unfiltered&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_file</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/binary_search/Unfiltered/binary_search_tree_fail.c&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pass_file</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/fibonnaci_search/Unfiltered/fibonacciSearch.c&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;decompy/tests/test_filtercfiles/files/&quot;</span>  <span class="c1"># actual folder &quot;decompy/data/Repositories&quot;</span></div>
 
 <div class="viewcode-block" id="FilterCTest.test_bytes"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_filtercfiles.html#decompy.tests.test_filtercfiles.test_filter_c_file.FilterCTest.test_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">test_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -270,29 +274,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_file</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="n">test_headers2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">test_headers2</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="FilterCTest.test_valid_folder"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_filtercfiles.html#decompy.tests.test_filtercfiles.test_filter_c_file.FilterCTest.test_valid_folder">[docs]</a>    <span class="k">def</span> <span class="nf">test_valid_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterCTest.test_valid_filtering"><a class="viewcode-back" href="../../../../Documentation/2_Decompy/decompy.tests.test_filtercfiles.html#decompy.tests.test_filtercfiles.test_filter_c_file.FilterCTest.test_valid_filtering">[docs]</a>    <span class="k">def</span> <span class="nf">test_valid_filtering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        tests reading a folder and filtering/unfiltering the files.</span>
+<span class="sd">        tests returning the correct amount</span>
 <span class="sd">        :return: bool assert</span>
 <span class="sd">        :rtype: assert</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_folder</span><span class="p">(</span><span class="s2">&quot;decompy/tests/test_filtercfiles/files&quot;</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">size1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span>
-
-        <span class="c1"># 1 files in its directory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">size1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">size2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span>
-
-        <span class="c1"># 2 files in its directory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">size2</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
-
-        <span class="c1"># remove filtered_list.META</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META&quot;</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META&quot;</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_folder</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FilterC</span><span class="o">.</span><span class="n">check_valid_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_folder</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

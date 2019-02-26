@@ -1,6 +1,5 @@
 import unittest
 from decompy.DataGathering.FilterC import FilterC
-import os
 
 
 class FilterCTest(unittest.TestCase):
@@ -13,8 +12,12 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = FilterC()
-        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/unfiltered/binary_search_tree_fail.c"
-        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnaci_search/unfiltered/fibonacciSearch.c"
+        self.fail_folder = "decompy/tests/test_filtercfiles/files/binary_search/Unfiltered"
+        self.pass_folder = "decompy/tests/test_filtercfiles/files/fibonnaci_search/Unfiltered"
+
+        self.fail_file = "decompy/tests/test_filtercfiles/files/binary_search/Unfiltered/binary_search_tree_fail.c"
+        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnaci_search/Unfiltered/fibonacciSearch.c"
+
         self.folder = "decompy/tests/test_filtercfiles/files/"  # actual folder "decompy/data/Repositories"
 
     def test_bytes(self):
@@ -122,29 +125,14 @@ class FilterCTest(unittest.TestCase):
         self.assertTrue(self.FilterC.check_valid_data(self.pass_file, 4000, 21, test_headers2))
         self.assertFalse(self.FilterC.check_valid_data(self.pass_file, 1, 1, test_headers2))
 
-    def test_valid_folder(self):
+    def test_valid_filtering(self):
         """
-        tests reading a folder and filtering/unfiltering the files.
+        tests returning the correct amount
         :return: bool assert
         :rtype: assert
         """
-        self.FilterC.check_valid_folder("decompy/tests/test_filtercfiles/files")
-
-        with open("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META") as f:
-            size1 = sum(1 for _ in f)
-
-        # 1 files in its directory
-        self.assertTrue(size1 == 1)
-
-        with open("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META") as f:
-            size2 = sum(1 for _ in f)
-
-        # 2 files in its directory
-        self.assertTrue(size2 == 2)
-
-        # remove filtered_list.META
-        os.remove("decompy/tests/test_filtercfiles/files/fibonnaci_search/filtered_list.META")
-        os.remove("decompy/tests/test_filtercfiles/files/binary_search/filtered_list.META")
+        self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 2)
+        self.assertTrue(len(self.FilterC.check_valid_folder(self.fail_folder)) == 1)
 
 
 if __name__ == '__main__':

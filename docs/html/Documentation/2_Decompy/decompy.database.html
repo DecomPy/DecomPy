@@ -79,6 +79,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../1_Installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_DecompilerInformation/index.html">Decompiler Information</a></li>
 </ul>
 
             
@@ -168,22 +169,26 @@
 <code class="descname">create_table</code><span class="sig-paren">(</span><em>create_table_sql</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.create_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>create a table from the create_table_sql statement
 :param create_table_sql: a CREATE TABLE statement
-:return:</p>
+:return: bool or nothing.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.database.db.Database.delete_meta">
-<code class="descname">delete_meta</code><span class="sig-paren">(</span><em>repo_name</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.delete_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.delete_meta" title="Permalink to this definition">¶</a></dt>
+<code class="descname">delete_meta</code><span class="sig-paren">(</span><em>author_repo_key</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.delete_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.delete_meta" title="Permalink to this definition">¶</a></dt>
 <dd><p>delete meta data with this repo name, and the ml data as a result of cascading.
-:param repo_name: the repository name
+:param author_repo_key: the author repo key from Github used to uniquely identify each situation.
+:param override: whether or not to override the transaction builder. Useful if we want it immediately
+or not going to have greater than 1000 transactoins.
 :return: bool</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.database.db.Database.delete_ml">
-<code class="descname">delete_ml</code><span class="sig-paren">(</span><em>file_name</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.delete_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.delete_ml" title="Permalink to this definition">¶</a></dt>
+<code class="descname">delete_ml</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.delete_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.delete_ml" title="Permalink to this definition">¶</a></dt>
 <dd><p>delete ml data with this file name.
 :param file_name: the file name to delete.
+:param override: whether or not to override the transaction builder. Useful if we want it immediately
+or not going to have greater than 1000 transactoins.
 :return: nothing</p>
 </dd></dl>
 
@@ -220,16 +225,39 @@
 
 <dl class="method">
 <dt id="decompy.database.db.Database.insert_meta">
-<code class="descname">insert_meta</code><span class="sig-paren">(</span><em>repo_name</em>, <em>repo_license</em>, <em>url</em>, <em>author</em>, <em>filter_approval_date</em>, <em>llvm_gen_date</em>, <em>filter_date</em>, <em>compilation_date</em>, <em>master_download_date</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.insert_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.insert_meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>inserts or replaces if it exists new meta row by adding it to the transaction builder into the meta table or replaces existing one.
-:return: nothing</p>
+<code class="descname">insert_meta</code><span class="sig-paren">(</span><em>meta_tuple</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.insert_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.insert_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>inserts or replaces if it exists new meta row by adding it to the transaction builder into the meta table
+or replaces existing one.
+:param meta_tuple: the meta tuple to add the info. Contains author_repo_key, repo_name, license, url, author,
+filter_approval_date, llvm_gen_date, filter_date, compilation_date, master_download_date, and whether or
+not to override.
+:type: tuple - str (not null), str (not null), str, str (not null), str (not null),
+str (not null), str (not null), str (not null), str (not null), str (not null)
+:param override: to override the transaction to immediately process the query or not.
+:type: bool
+:return: bool or nothing</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.database.db.Database.insert_ml">
-<code class="descname">insert_ml</code><span class="sig-paren">(</span><em>file_path</em>, <em>repo_name</em>, <em>source_code</em>, <em>object_file</em>, <em>llvm_unop</em>, <em>llvm_op</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.insert_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.insert_ml" title="Permalink to this definition">¶</a></dt>
-<dd><p>inserts or replaces if it exists a new ml row by adding it to the transaction builder
-:return: nothing</p>
+<code class="descname">insert_ml</code><span class="sig-paren">(</span><em>ml_tuple</em>, <em>override=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/database/db.html#Database.insert_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.database.db.Database.insert_ml" title="Permalink to this definition">¶</a></dt>
+<dd><p>inserts or replaces, if it exists, a new ml row by adding it to the transaction builder. Can override.
+:param ml_tuple: file_path, author_repo_key, source_code, cleaned_source_code, object_file, llvm_unop, and llvm_op
+:type: tuple - str (not null), str (not null), str (not null), str (not null), binary (not null), str (not null), str (not null),</p>
+<blockquote>
+<div>binary (not null), str (not null)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>override</strong> – to override the transaction to immediately process the query or not.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bool or nothing</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
