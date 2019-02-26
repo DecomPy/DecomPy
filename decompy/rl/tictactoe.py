@@ -1,3 +1,6 @@
+# This code is property of JochemWubs
+# https://github.com/JochemWubs
+
 def ll_as_string(list_of_lists, no_characters=3):
     return '\n'.join(''.join(str(value).center(no_characters) for value in row) for row in list_of_lists)
 
