@@ -43,32 +43,6 @@ class ClangSubprocessTest(unittest.TestCase):
             shutil.rmtree(self.object_path)
         except Exception as e:
             print(e)
-    #
-    # def test_empty_input_file(self):
-    #     """
-    #     Attempts to call all compile functions with an empty input file. Should throw NoInputFileException.
-    #     """
-    #     with self.assertRaises(Clang.NoInputFileException):
-    #         Clang.Clang.to_assembly(self.inputCName, self.assembly_path)
-    #     with self.assertRaises(Clang.NoInputFileException):
-    #         Clang.Clang.to_elf(self.inputCName, self.elf_path)
-    #     with self.assertRaises(Clang.NoInputFileException):
-    #         Clang.Clang.to_llvm_opt(self.inputCName, self.llvm_path)
-    #     with self.assertRaises(Clang.NoInputFileException):
-    #         Clang.Clang.to_llvm_unopt(self.inputCName, self.llvm_path)
-    #
-    # def test_c_file_not_exist(self):
-    #     """
-    #     Attempts to call all compile functions with a file that doesn't exist. Should throw FileDoesNotExistException.
-    #     """
-    #     with self.assertRaises(Clang.FileDoesNotExistException):
-    #         Clang.Clang.to_assembly(self.inputCName, self.assembly_path)
-    #     with self.assertRaises(Clang.FileDoesNotExistException):
-    #         Clang.Clang.to_elf(self.inputCName, self.elf_path)
-    #     with self.assertRaises(Clang.FileDoesNotExistException):
-    #         Clang.Clang.to_llvm_opt(self.inputCName, self.llvm_path)
-    #     with self.assertRaises(Clang.FileDoesNotExistException):
-    #         Clang.Clang.to_llvm_unopt(self.inputCName, self.llvm_path)
 
     def test_c_file_exists(self):
         """
@@ -80,9 +54,9 @@ class ClangSubprocessTest(unittest.TestCase):
 
         obj_path = Clang.Clang.to_object_file(self.inputCName, self.object_path)
         self.assertTrue(Path(obj_path).exists())
-        #
-        # elf_path = Clang.Clang.to_elf(self.inputCName, self.elf_path)
-        # self.assertTrue(Path(elf_path).exists())
+
+        elf_path = Clang.Clang.to_elf(self.inputCName, self.elf_path)
+        self.assertTrue(Path(elf_path).exists())
 
         opt_path = Clang.Clang.to_llvm_opt(self.inputCName, self.llvm_path)
         self.assertTrue(Path(opt_path).exists())
