@@ -262,7 +262,10 @@ class CreateLocalData:
                             for filtered_obj in json_data["filtered_files"]:
 
                                 # init the file
-                                filtered_file = filtered_obj["filtered_path"].replace(" ", "\ ")  # fix files with spaces in them.
+                                filtered_file = filtered_obj["filtered_path"].replace(" ", "\\ ")  # fix files with spaces in them.
+                                filtered_file = cld.change_stored_directory(self.folder, filtered_file)
+
+                                # get file path to confirm
                                 filtered_file_path = Path(filtered_file)
 
                                 # check if file exists or wasting time
@@ -275,6 +278,7 @@ class CreateLocalData:
 
                                     if object_path is not None and opt_llvm_path is not None and \
                                             unopt_llvm_path is not None and elf_path is not None and assembly_path is not None:
+
                                         # add it to object
                                         filtered_files.append({
                                                 "filtered_path": filtered_obj["filtered_path"],
@@ -354,13 +358,13 @@ class CreateLocalData:
 
                                         # get new file path by appending our cwd
                                         cwd = os.getcwd()
-                                        llvm_op_file_path = cwd + "/" + file_path["opt_llvm_path"]
-                                        llvm_unop_file_path = cwd + "/" + file_path["unopt_llvm_path"]
-                                        o_file_path = cwd + "/" + file_path["object_path"]
-                                        c_file_path = file_path["filtered_path"]
-                                        c_file_path_read = cwd + "/" + file_path["filtered_path"]
-                                        elf_file_path = cwd + "/" + file_path["elf_path"]
-                                        assembly_file_path = cwd + "/" + file_path["assembly_path"]
+                                        llvm_op_file_path = cwd + "/" + cld.change_stored_directory(self.folder, file_path["opt_llvm_path"])
+                                        llvm_unop_file_path = cwd + "/" + cld.change_stored_directory(self.folder, file_path["unopt_llvm_path"])
+                                        o_file_path = cwd + "/" + cld.change_stored_directory(self.folder, file_path["object_path"])
+                                        c_file_path = cld.change_stored_directory(self.folder, file_path["filtered_path"])
+                                        c_file_path_read = cld.change_stored_directory(self.folder, cwd + "/" + file_path["filtered_path"])
+                                        elf_file_path = cld.change_stored_directory(self.folder, cwd + "/" + file_path["elf_path"])
+                                        assembly_file_path = cld.change_stored_directory(self.folder,  cwd + "/" + file_path["assembly_path"])
 
                                         # read object file
                                         with open(o_file_path, "rb") as object_f:
@@ -376,10 +380,9 @@ class CreateLocalData:
 
                                         # read c file path
                                         with open(c_file_path_read, "r") as cf:
-                                            c_data = cf.read()
-
                                             # read c_data and get clean data from it
-                                            clean_c_data = FormatCode.format(c_data)
+                                            c_data = cf.read()
+                                            clean_c_data = FormatCode.FormatCode.format(c_data)
 
                                         # read elf
                                         with open(elf_file_path, "rb") as ef:
@@ -477,6 +480,22 @@ class CreateLocalData:
                 print("Running all stages error:", e)
                 pass
 
+    @staticmethod
+    def change_stored_directory(folder, file_path):
+        """
+        Changes the stored directory in the repo.json to the specified folder name.
+        This is especially useful if you are changing the name from the recommended "Repositories" to another name.
+        :param folder: the new folder to look for
+        :param file_path: the file path to change
+        :return: the new file path
+        :rtype: str
+        """
+        file = file_path.split('/')
+        file[0] = folder
+        file_path = "/".join(file)
+
+        return file_path
+
 
 if __name__ == "__main__":
     # cld = CreateLocalData()
@@ -486,7 +505,7 @@ if __name__ == "__main__":
     # cld.stage4_generate_llvm()
     # cld.stage5_insert_database()
     cld = CreateLocalData()
-    print("Beginning to download all C data in 10 seconds...")
+    print("Beginning to download some C data in 10 seconds...")
     time.sleep(10)
     cld.all_stages_increment("2014-04-11", "2019-04-11", 1, 10)
 

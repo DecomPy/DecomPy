@@ -30,7 +30,8 @@ class FormatCode:
     @staticmethod
     def format(input_string):
         """
-        Takes in a string of C source code. Returns a string of decommented and formatted C code
+        Takes in a string of C source code. Returns a string of decommented and formatted C code.
+        Make sure you have clang-format-6.0 installed. Try something like `sudo apt-get install clang-format-6.0`
         :param input_string: C source code as a string
         :return: Decommented and formatted C source code as a string
         """
@@ -46,8 +47,8 @@ class FormatCode:
         # Format options are found in file .clang-format
         # Format option details are found at https://clang.llvm.org/docs/ClangFormatStyleOptions.html
         formatted_stdout = subprocess.run([
-            # Call Clang-format. Try "sudo apt-get install clang-format" if it has an error
-            "clang-format",
+            # Call Clang-format. Try "sudo apt-get install clang-format-6.0" if it has an error: MAKE SURE IT IS 6.0!!!
+            "clang-format-6.0",
             # Make it use the formatting from .clang-format, found in nearest parent directory
             "-style=file",
             # input path to read from
