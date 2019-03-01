@@ -35,7 +35,7 @@ Modules house Functions, which are executable code.
 
 Functions contain BasicBlocks, which are continguous chunks of instructions.
 
-Instructions are single code operations, roughly on the same level of RISC machine code.
+Instructions are single code operations, roughly on the same level of RISC machine code. This is the level we will operate on most of the time.
 
 Most things in LLVM (including the above) are C++ classes that inherit from a base class called Value. A Value is any data that can be used in a computation
 - a number or the address of some code, for example. Global variables and constants are also Values. [4]
