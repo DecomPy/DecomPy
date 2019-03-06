@@ -13,20 +13,22 @@ class Driver:
         :param pass_counter:
         :type: int
         :param old_state:
-        :type: string
+        :type: str
         :param new_state:
-        :type: string
+        :type: str
         """
         self.pass_counter = pass_counter
         self.old_state = old_state
         self.new_state = new_state
         pass
 
-    def pass_optimized_llvm_and_get_back_unoptimized_llvm(self, llvm_unop):
+    def pass_optimized_llvm_and_get_back_unoptimized_llvm(self, llvm_opt):
         """
         The driver receives optimized LLVM and generates unoptimized, or more readable, LLVM.
-        :param llvm_unop: the unoptimized llvm
-        :type: string
+        :param llvm_opt: the unoptimized llvm
+        :type: str
+        :return llvm_unop: the unoptimized, more human readable, LLVM
+        :rtype: str
         """
         pass
 
