@@ -1,4 +1,4 @@
-from decompy.RL.Action import PassAction
+from decompy.RL.Action import PastAction
 from decompy.RL.ActionGenerator import ActionGenerator
 
 
