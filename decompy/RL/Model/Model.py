@@ -1,4 +1,5 @@
-from decompy.RL.Action import Action
+from decompy.RL.Reward import RewardFunction
+from decompy.RL.ActionChooser import ActionChooser
 
 
 class Model:
