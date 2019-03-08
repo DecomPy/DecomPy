@@ -13,6 +13,8 @@
 #include "llvm/IR/CallingConv.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/Support/SourceMgr.h"
+#include "llvm/IRReader/IRReader.h"
 
 #include <math.h>
 #include <cstdlib>
