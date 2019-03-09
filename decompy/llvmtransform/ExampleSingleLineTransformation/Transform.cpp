@@ -1,5 +1,3 @@
-//Code is obtained from branch US258
-
 #include "Transform.hpp"
 
 using namespace llvm;
@@ -15,9 +13,6 @@ int main(){
     SMDiagnostic error;
     Instruction *fromInstruction, *toInstruction;
     std::unique_ptr<Module> module = parseIRFile("example.bc", error, context);
-
-    //There is only one function in this list
-    Module::FunctionListType& functionList = module->getFunctionList();
 
     //Iterate through function, basic block, then individual instructions
     //There's only one Function here, so the iteration syntax is not needed.
@@ -56,6 +51,7 @@ int main(){
             basicBlock->print(errs());
         }
     }
+    //Write transformed IR to file
     std::string type_str;
     llvm::raw_string_ostream rso(type_str);
     module->print(rso, nullptr);
