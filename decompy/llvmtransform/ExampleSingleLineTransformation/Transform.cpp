@@ -56,7 +56,7 @@ int main(){
     llvm::raw_string_ostream rso(type_str);
     module->print(rso, nullptr);
     std::ofstream writeFile;
-    writeFile.open("exampled_transformed.ll");
+    writeFile.open("example_transformed.ll");
     writeFile << rso.str();
     writeFile.close();
     return 0;
