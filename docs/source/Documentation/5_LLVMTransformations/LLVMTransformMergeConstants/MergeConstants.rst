@@ -1,4 +1,4 @@
-How Does MergeConstants Word?
+How Does MergeConstants Work?
 *****************************
 
 The ConstantMerge class has method ``mergeConstants`` that finds duplicate global constants and merges them together. The method has one parameter, a

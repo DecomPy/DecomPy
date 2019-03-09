@@ -1,4 +1,4 @@
-Design and Architecture
+Merge Constants
 ***********************
 
 .. toctree::

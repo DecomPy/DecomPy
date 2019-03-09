@@ -1,4 +1,4 @@
-What Are LLVM Modules
+SingleLineReplacement
 ***********************
 
 .. toctree::
