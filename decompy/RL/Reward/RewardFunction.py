@@ -1,5 +1,11 @@
 # TODO: import statements
 # TODO: decide which things need to be static.
+import ctypes
+import pathlib
+
+libreward_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libRewardFunction.so")
+print(libreward_path)
+libreward = ctypes.CDLL(str(libreward_path))
 
 
 class RewardFunction:
@@ -26,5 +32,18 @@ class RewardFunction:
         :type: str
         :return:
         """
-        pass
+        # TODO: Update the model instead of returning
+        return RewardFunction.__wrap_llvm_reward_function(current_llvm, old_llvm, optimal_llvm)
 
+    @staticmethod
+    def __wrap_llvm_reward_function(original, changed, goal):
+        original_charp = ctypes.create_string_buffer(str.encode(original))
+        changed_charp = ctypes.create_string_buffer(str.encode(changed))
+        goal_charp = ctypes.create_string_buffer(str.encode(goal))
+
+        reward = libreward.calcReward(original_charp, changed_charp, goal_charp)
+        return reward
+
+
+if __name__ == "__main__":
+    print(RewardFunction().create_reward("1", "2", "3"))
