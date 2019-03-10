@@ -1,6 +1,7 @@
 #define NEG_DIFERENCE_REWARD 1
 
 #include "RewardFunction.h"
+
 /* This will:
  *      Take in three strings which represent: PastLLVMFunction, CurrentLLVMFunction, NewLLVMFunction
  *      Convert those to LLVM Function objects
@@ -21,6 +22,24 @@ int Reward::calcReward(char* original, char* changed, char* goal) {
 
 int calcReward(char* original, char* changed, char* goal) {
     return Reward::calcReward(original, changed, goal);
+}
+
+llvm::Function* toLLVMFunction(char* stringRep, char* name){
+    static llvm::LLVMContext TheContext;
+    llvm::SMDiagnostic diag = llvm::SMDiagnostic();
+    llvm::MemoryBufferRef mbRef = llvm::MemoryBufferRef(llvm::StringRef(stringRep), llvm::StringRef(name));
+    std::unique_ptr<llvm::Module> originalMod = llvm::parseIR(mbRef, *(&diag), TheContext);
+
+    int fncN = 0;
+    auto f = originalMod->getFunctionList().begin();
+    for(auto end = originalMod->getFunctionList().end(); f != end; ++f) {
+        fncN++;
+    }
+    if(fncN!=1){
+        //throw std::invalid_argument("The LLVM should have one function and only one function.");
+    }
+    llvm::Function* fnc= llvm::dyn_cast<llvm::Function>(*(&f));
+    return fnc;
 }
 
  // The code contained in the  following function (instructionSimilarity) is a modified section of code pulled from
