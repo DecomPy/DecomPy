@@ -1,4 +1,4 @@
-# TODO: import statements
+from decompy.RL.Model import Model
 # TODO: decide which things need to be static.
 
 
@@ -7,6 +7,8 @@ class RewardFunction:
     Step 5: Takes the current state (state after modification), the old state (state before modification) and goal state
     and determines if the action leads to an improved state. Then it updates the Model with the Decision.
     """
+
+    model = Model.Model(None)  # TODO: get decision history?
 
     def __init__(self):
         """
@@ -24,7 +26,7 @@ class RewardFunction:
         :type: str
         :param optimal_llvm: the optimal LLVM
         :type: str
-        :return:
+        :return: nothing
         """
         pass
 

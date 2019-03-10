@@ -8,7 +8,7 @@ class TrieGenerator:
     """
 
     def __init__(self):
-        self.database = SnippetRepository()
+        self.database = SnippetRepository.SnippetRepository()
         pass
 
     def generates_trie(self):

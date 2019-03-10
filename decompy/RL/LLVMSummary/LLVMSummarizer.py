@@ -9,6 +9,8 @@ class LLVMSummarizer:
     def __init__(self, llvm):
         """
         Initializes the class.
+        :param: llvm
+        :type: str
         """
         pass
 

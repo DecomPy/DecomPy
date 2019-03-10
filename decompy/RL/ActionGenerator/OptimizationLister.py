@@ -1,8 +1,7 @@
-from decompy.RL.Action import PastAction
+from decompy.RL.Action import PassAction
 from decompy.RL.ActionGenerator import ActionGenerator
 
 
-# TODO: decide if I should be extending, then override the method or not? The class diagram shows the same method.
 class OptimizationLister(ActionGenerator.ActionGenerator):
     """
     Step 2.1 The OptimizationLister generates a list of optimization based actions.

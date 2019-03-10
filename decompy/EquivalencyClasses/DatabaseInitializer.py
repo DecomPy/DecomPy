@@ -14,7 +14,7 @@ class DatabaseInitializer:
         loads the content of the database
         :param root_directory: the root directory to load the database from.
         :type: str
-        :return:
+        :return: nothing
         """
         pass
 

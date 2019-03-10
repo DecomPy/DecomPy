@@ -1,5 +1,6 @@
 from decompy.RL.Reward import RewardFunction
 from decompy.RL.ActionChooser import ActionChooser
+from decompy.RL.Model import Decision
 
 
 class Model:
@@ -9,10 +10,15 @@ class Model:
     decision_history might be good as a database using the repository pattern.
     First example from: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
     """
-    class __Model:
+
+    # static instance of model
+    instance = None
+
+    class Model:
         """
         Singleton instance of Model.
         """
+        # TODO: where is decision_history coming from?
         def __init__(self, decision_history):
             """
             Creates a new singleton with the decision_history info.
@@ -28,7 +34,8 @@ class Model:
             :type: LLVMSummary
             :param possible_actions:
             :type: list<Action>
-            :return:
+            :return: a list of decisions.
+            :rtype: list<Decision>
             """
             pass
 
@@ -37,11 +44,9 @@ class Model:
             Updates the model based off a decision.
             :param decision: the decision to update the model
             :type: Decision
-            :return:
+            :return: nothing
             """
-
-    # static instance of model
-    instance = None
+            pass
 
     def __init__(self, decision_history):
         """
@@ -60,4 +65,5 @@ class Model:
         :return:
         """
         return getattr(self.instance, name)
+
 

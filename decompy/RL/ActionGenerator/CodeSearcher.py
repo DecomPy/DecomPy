@@ -2,7 +2,6 @@ from decompy.RL.Action import SwapAction
 from decompy.RL.ActionGenerator import ActionGenerator
 
 
-# TODO: decide if I should be extending, then override the method or not? The class diagram shows the same method.
 class CodeSearcher:
     """
     Step 2.2 The CodeSearcher looks for all possible swaps which can be made using the Equivalency Classes.

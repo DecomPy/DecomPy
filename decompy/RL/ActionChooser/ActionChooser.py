@@ -1,5 +1,5 @@
 from decompy.RL.Action import Action
-# TODO: add more imports so it works
+from decompy.RL.Model import Model
 
 
 class ActionChooser:
@@ -8,7 +8,12 @@ class ActionChooser:
     The ActionChooser then decides on an Action.
     """
 
+    model = Model.Model(None)  # TODO: decide if correct implementation of singleton model for implementation.
+
     def __init__(self):
+        """
+        initiates the Action Chooser.
+        """
         pass
 
     def choose_action(self, actions, llvm_summary):

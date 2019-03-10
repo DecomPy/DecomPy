@@ -1,6 +1,7 @@
-# from cli_frontend import LiftSubprocess as ls
-# from cli_frontend import OutputFormatter as of
-# from driver import driver
+from decompy.cli_frontend import LifterSubprocess
+from decompy.cli_frontend import OutputFormatter
+from decompy.RL.Driver import Driver
+import argparse
 
 
 class ArgumentProcessor:

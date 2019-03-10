@@ -1,4 +1,4 @@
-# TODO: import statements
+from decompy.RL.Action import Action
 # TODO: decide which things need to be static.
 
 
@@ -13,11 +13,13 @@ class StateChanger:
         """
         pass
 
-    def change_state(self, llvm):
+    def change_state(self, llvm, action):
         """
         Takes the Action from step 3 and generates new LLVM based off that action.
         :param: llvm
         :type: str
+        :param: action
+        :type: Action
         """
         pass
 
