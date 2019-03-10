@@ -48,6 +48,34 @@ int Reward::instructionCountReward(Function &fnc1, Function &fnc2){
     return perDif;
 }
 
+// The code contained inthe  following function (isSameOperationAs) is a section of code pulled from LLVM's API here:
+//https://llvm.org/doxygen/IR_2Instruction_8cpp_source.html#l00469
+// The original code was close to what we needed, but was too strict for our purposes. It has been repurposed to check
+// for equality with our standards
+// The following is the copyright notice found in the original file:
+ //===-- Instruction.cpp - Implement the Instruction class -----------------===//
+ //
+ // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+ // See https://llvm.org/LICENSE.txt for license information.
+ // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+ //
+ //===----------------------------------------------------------------------===//
+ //
+ // This file implements the Instruction class for the IR library.
+ //
+ //===----------------------------------------------------------------------===//
+bool isSameOperationAs(const Instruction *I, const Instruction *I2){
+   if (I2->getOpcode() != I->getOpcode() ||
+       I2->getNumOperands() != I->getNumOperands()){
+        return false;
+    }
+   for (unsigned i = 0, e = I2->getNumOperands(); i != e; ++i)
+     if (I2->getOperand(i)->getType()->getTypeID() != I->getOperand(i)->getType()->getTypeID()){
+     return false;
+    }
+   return true;
+ }
+
 //returns the # of instructions in each fnnc with isSameOperationAs.
 int Reward::identicalInstructionTypeCountReward(Function &fnc1, Function &fnc2){
     int instructionCount1 = fnc1.getInstructionCount();
@@ -79,7 +107,7 @@ int Reward::identicalInstructionTypeCountReward(Function &fnc1, Function &fnc2){
 
     for(Instruction* in1 :f1Instructions) {
         for(Instruction* in2 : f2Instructions) {
-            if(in2->isSameOperationAs(in1, llvm::Instruction::CompareIgnoringAlignment)) {
+            if(isSameOperationAs(in1, in2)) {
                 identicalInstructionCount = identicalInstructionCount + 1;
             }
         }
