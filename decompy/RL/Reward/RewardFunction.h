@@ -16,8 +16,8 @@ class Reward{
     static int calcReward(char* oldLLVM, char* newLLVM, char* goalLLVM);
 
     private:
-    static llvm::Function* toLLVMFunction(char* stringRep, char* name);
-    static int myersDiffReward(llvm::Function &fnc1, llvm::Function &fnc2);
+    static llvm::Function* toLLVMFunction(char* stringRep, const char* name);
+    static int myersDiff(llvm::Function &fnc1, llvm::Function &fnc2);
     static int instructionSimilarity(const llvm::Instruction *I, const llvm::Instruction *I2);
 
 };
