@@ -2,6 +2,13 @@
 
 #include "RewardFunction.h"
 
+#include "llvm/IR/IRPrintingPasses.h"
+#include "llvm/IR/PassManager.h"
+#include "llvm/IR/CallingConv.h"
+#include "llvm/IR/Verifier.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/Support/raw_ostream.h"
+#include "llvm/Pass.h"
 /* This will:
  *      Take in three strings which represent: PastLLVMFunction, CurrentLLVMFunction, NewLLVMFunction
  *      Convert those to LLVM Function objects
@@ -16,38 +23,43 @@
 
  //clang++-8 -g decompy/RL/Reward/RewardFunction.cpp `llvm-config-8 --cxxflags --ldflags --libs core` -lpthread -o RewardFunction
 
-int Reward::calcReward(char* oldLLVM, char* newLLVM, char* goalLLVM) {
-    llvm::Function* oldLLVMFnc = toLLVMFunction(oldLLVM, "oldLLVM");
-    llvm::Function* newLLVMFnc = toLLVMFunction(newLLVM, "newLLVM");
-    llvm::Function* goalLLVMFnc = toLLVMFunction(goalLLVM, "goalLLVM");
+int Reward::calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
+    static llvm::LLVMContext TheContext;
+    llvm::SMDiagnostic diag;// = llvm::SMDiagnostic();
+
+    llvm::MemoryBufferRef mbRefOld = llvm::MemoryBufferRef(llvm::StringRef(oldLLVM), llvm::StringRef("oldLLVM"));
+    std::unique_ptr<llvm::Module> oldMod = llvm::parseIR(mbRefOld, *(&diag), TheContext);
+
+    auto of = oldMod->getFunctionList().begin();
+    llvm::Function* oldLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&of));
+
+    //toLLVMFunction(oldLLVM, "oldLLVM", oldLLVMFnc);
+
+    llvm::MemoryBufferRef mbRefNew = llvm::MemoryBufferRef(llvm::StringRef(newLLVM), llvm::StringRef("newLLVM"));
+    std::unique_ptr<llvm::Module> newMod = llvm::parseIR(mbRefNew, *(&diag), TheContext);
+
+    auto nf = newMod->getFunctionList().begin();
+    llvm::Function* newLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&nf));
+
+    //llvm::Function* newLLVMFnc = toLLVMFunction(newLLVM, "newLLVM");
+
+    llvm::MemoryBufferRef mbRefGoal = llvm::MemoryBufferRef(llvm::StringRef(goalLLVM), llvm::StringRef("goalLLVM"));
+    std::unique_ptr<llvm::Module> goalMod = llvm::parseIR(mbRefGoal, *(&diag), TheContext);
+
+    auto gf = goalMod->getFunctionList().begin();
+    llvm::Function* goalLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&gf));
+
+    //llvm::Function* goalLLVMFnc = toLLVMFunction(goalLLVM, "goalLLVM");
 
     int oldDifference = myersDiff(*(oldLLVMFnc), *(goalLLVMFnc));
     int newDifference = myersDiff(*(newLLVMFnc), *(goalLLVMFnc));
 
-    int reward = newDifference - oldDifference;
+    int reward = oldDifference - newDifference;
     return reward;
 }
 
-int calcReward(char* oldLLVM, char* newLLVM, char* goalLLVM) {
+int calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
     return Reward::calcReward(oldLLVM, newLLVM, goalLLVM);
-}
-
-llvm::Function* Reward::toLLVMFunction(char* stringRep, const char* name){
-    static llvm::LLVMContext TheContext;
-    llvm::SMDiagnostic diag = llvm::SMDiagnostic();
-    llvm::MemoryBufferRef mbRef = llvm::MemoryBufferRef(llvm::StringRef(stringRep), llvm::StringRef(name));
-    std::unique_ptr<llvm::Module> originalMod = llvm::parseIR(mbRef, *(&diag), TheContext);
-
-    int fncN = 0;
-    auto f = originalMod->getFunctionList().begin();
-    for(auto end = originalMod->getFunctionList().end(); f != end; ++f) {
-        fncN++;
-    }
-    if(fncN!=1){
-        //throw std::invalid_argument("The LLVM should have one function and only one function.");
-    }
-    llvm::Function* fnc= llvm::dyn_cast<llvm::Function>(*(&f));
-    return fnc;
 }
 
 //The following function uses the "Myer's Diff Algorithm" first described here: http://www.xmailserver.org/diff2.pdf
@@ -84,32 +96,33 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
     int maxSteps = instructionCount1 + instructionCount2;
     int xValues[maxSteps*2+1];
 
-    //xValues are technically indexed from -d to +d. How do I do that without negative index
-    //index = d+masSteps
+    //xValues are technically indexed from -d to +d. Hw do I do that without negative index
+    //index = k+maxSteps
 
     xValues[1+maxSteps] = 0; // the x value at 1 must be 0 to start
 
     for(int d = 0; d < maxSteps; d++){
-        for(int k = -d; k < d; k+=2){
+        for(int k = -d; k <= d; k+=2){
+            int index = k + maxSteps;
             int x = 0;
-            if(k==-d ||(k!=d && xValues[k-1] < xValues[k+1])){
-                x = xValues[k+1];
+            if(k==-d ||(k!=d && xValues[index-1] < xValues[index+1])){
+                x = xValues[index+1];
             }
             else{
-                x = xValues[k-1];
+                x = xValues[index-1];
             }
 
-            int y = k - x;
-
-            while(x < instructionCount1 && y < instructionCount2 && instructionSimilarity((ins1[x]), ins2[y])){
+            int y = x - k;
+            while(x < instructionCount1 && y < instructionCount2 && isSameOperationAs(ins1[x], ins2[y])){
                 x++;
                 y++;
             }
 
-            xValues[k] = x;
+            xValues[index] = x;
             if(x >= instructionCount1 && y >= instructionCount2){
                 return d; //this is the number of differences
             }
+
         }
     }
     return -1;
@@ -129,43 +142,74 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
  // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
  //
  //===----------------------------------------------------------------------===//
-int Reward::instructionSimilarity(const llvm::Instruction *I, const llvm::Instruction *I2){
-    double equalValue = 101; //if the following calculation results in 101, they are equal
-    int similarity = 0; //this represents how similar they are
 
-    //this value will be a percent of the number of same type operands divided by the total number of operands
-    double sameOpNumberDifference = 0;
-    double sameOps = 0;
-    double totalOps = I2->getNumOperands() + I->getNumOperands();
-
-    if (I2->getOpcode() != I->getOpcode()) similarity +=1;
-
-    for (unsigned i = 0, e = I2->getNumOperands(), h = I->getNumOperands(); i != e && i != h; ++i){
-        if (I2->getOperand(i)->getType()->getTypeID() != I->getOperand(i)->getType()->getTypeID()){
-            sameOps+=1;
-        }
+bool Reward::isSameOperationAs(const llvm::Instruction *I, const llvm::Instruction *I2){
+   if (I2->getOpcode() != I->getOpcode() ||
+       I2->getNumOperands() != I->getNumOperands()){
+        return false;
     }
-
-    sameOpNumberDifference = round(((sameOps/totalOps)*2)*100);
-
-    similarity += sameOpNumberDifference;
-
-    //similarity is how similar they are, difference is how different
-    //this fnc gives a negative reward to punish difference in instructions
-    //to give a positive reward, simply return similarity instead of difference
-    int difference = similarity - equalValue;
-
-    int reward = 0;
-    if(difference ==  0){
-        reward = 0;
+   for (unsigned i = 0, e = I2->getNumOperands(); i != e; ++i)
+     if (I2->getOperand(i)->getType()->getTypeID() != I->getOperand(i)->getType()->getTypeID()){
+     return false;
     }
-    else if(NEG_DIFERENCE_REWARD == 1){
-        reward = difference;
-    }
-    else{
-        reward = similarity;
-    }
+   return true;
+ }
 
-    return reward;
+//this is a protoype of  a similarity function to quantify similarity instead of checking equality. testlater
+//int Reward::instructionSimilarity(const llvm::Instruction *I, const llvm::Instruction *I2){
+//    double equalValue = 101; //if the following calculation results in 101, they are equal
+//    int similarity = 0; //this represents how similar they are
+//
+//    //this value will be a percent of the number of same type operands divided by the total number of operands
+//    double sameOpNumberDifference = 0;
+//    double sameOps = 0;
+//    double totalOps = I2->getNumOperands() + I->getNumOperands();
+//
+//    std::cout << "tot " << I2->getNumOperands() << std::endl;
+//
+//    if (I2->getOpcode() != I->getOpcode()) return -100;
+//
+//
+//    for (unsigned i = 0, e = I2->getNumOperands(), h = I->getNumOperands(); i != e && i != h; ++i){
+//        std::cout << "insde" << i << std::endl;
+//        I2->getOperand(i);//->getType();//->getTypeID();
+//        std::cout << "1" << std::endl;
+//        I->getOperand(i)->getType()->getTypeID();
+//        std::cout << "2" << std::endl;
+//        if (I2->getOperand(i)->getType()->getTypeID() != I->getOperand(i)->getType()->getTypeID()){
+//            sameOps+=1;
+//        }
+//    }
+//
+//    sameOpNumberDifference = round(((sameOps/totalOps)*2)*100);
+//
+//    similarity += sameOpNumberDifference;
+//
+//    //similarity is how similar they are, difference is how different
+//    //this fnc gives a negative reward to punish difference in instructions
+//    //to give a positive reward, simply return similarity instead of difference
+//    int difference = similarity - equalValue;
+//
+//    int reward = 0;
+//    if(difference ==  0){
+//        reward = 0;
+//    }
+//    else if(NEG_DIFERENCE_REWARD == 1){
+//        reward = difference;
+//    }
+//    else{
+//        reward = similarity;
+//    }
+//
+//    return reward;
+//}
+
+int main(){
+    const char* llvmOld = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}";
+    const char* llvmNew = "define i32 @mul_add(i32 %x, i32 %y) {\n entry:\n  %tmp = mul i32 %x, %y\n  ret i32 %tmp\n}";
+    const char* llvmGoal = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\n entry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add i32 %tmp, %z\n  %tmp3 = add i32 %tmp2, %z\n  ret i32 %tmp3\n}";
+
+    std::cout << Reward::calcReward(llvmOld, llvmNew, llvmGoal) << std::endl;
+
+    return 1;
 }
-

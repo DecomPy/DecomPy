@@ -10,15 +10,16 @@
 
 #include <stdexcept>
 #include <math.h>
+#include <iostream>
 
 class Reward{
     public:
-    static int calcReward(char* oldLLVM, char* newLLVM, char* goalLLVM);
+    static int calcReward(const char* oldLLVM, const char* newLLVM, const  char* goalLLVM);
 
     private:
-    static llvm::Function* toLLVMFunction(char* stringRep, const char* name);
+//    static void toLLVMFunction(const char* stringRep, const char* name, llvm::Function* fnc);
     static int myersDiff(llvm::Function &fnc1, llvm::Function &fnc2);
-    static int instructionSimilarity(const llvm::Instruction *I, const llvm::Instruction *I2);
+    static bool isSameOperationAs(const llvm::Instruction *I, const llvm::Instruction *I2);
 
 };
 
