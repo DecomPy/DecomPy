@@ -2,6 +2,7 @@
 # TODO: decide which things need to be static.
 import ctypes
 import pathlib
+from decompy.RL.Model import Model
 
 libreward_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libRewardFunction.so")
 print(libreward_path)
@@ -13,6 +14,8 @@ class RewardFunction:
     Step 5: Takes the current state (state after modification), the old state (state before modification) and goal state
     and determines if the action leads to an improved state. Then it updates the Model with the Decision.
     """
+
+    model = Model.Model(None)  # TODO: get decision history?
 
     def __init__(self):
         """
