@@ -37,7 +37,24 @@ class SnippetRepository:
         # walk recursively in given folder
         for root, dirs, files in os.walk(file_path):
             try:
+                # get data to construct new snippet object
+                # id = folder name past the Snippet stuff + llvm class name
+                # class id = folder name past the Snippet stuff
+                # llvm = the string representation of LLVM from that file
                 
+                # search through the files
+                for basename in files:
+                    # only looking for llvm files
+                    if basename.endswith(self.llvm_path):
+                        # read in the content
+                        with open(root+"/"+dirs+"/"+basename, "r") as llvm_str:
+                            llvm = llvm_str.read()
+
+                        # add snippet to
+                        snippet = Snippet.Snippet(dirs+"/"+basename, dirs, llvm)
+                        self.snippets.append(snippet)
+                        print(snippet)
+                        print(dirs+"/"+basename, dirs, "stuff")
 
             except Exception as e:
                 print("Could not find the file...", e)
