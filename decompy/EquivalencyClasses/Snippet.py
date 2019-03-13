@@ -20,4 +20,3 @@ class Snippet:
         self.llvm = llvm
         self.class_id = class_id
         pass
-
