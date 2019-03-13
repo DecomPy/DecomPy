@@ -21,7 +21,7 @@
  // For task #376, the isSameOperationAs() function will work well for our purposes. A modified version of that function
  // was first tested in  the Reward function example
 
- //clang++-8 -g decompy/RL/Reward/RewardFunction.cpp `llvm-config-8 --cxxflags --ldflags --libs core` -lpthread -o RewardFunction
+ //clang++-8 -g decompy/RL/Reward/RewardFunction.cpp `llvm-config-8 --cxxflags --ldflags --libs core` -o RewardFunction
 
 int Reward::calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
     static llvm::LLVMContext TheContext;
