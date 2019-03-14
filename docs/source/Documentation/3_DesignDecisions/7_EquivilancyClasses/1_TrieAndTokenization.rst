@@ -31,4 +31,11 @@ Trie:
 
 ------------------------------------------------------------------------------------------------------------------------
 
-Tokenizer
+Tokenizer:
+    To allow for multiple types of tokenization, we will create tokenizer classes that each implement a "tokenize"
+    method. A tokenizer will be a member of the trie, and the trie will call this tokenizer to generate the list of
+    tokens to be used as a key for the snippet.
+
+    The initial tokenizer will just parse the string into a list of characters, but by using this design we will
+    have the flexibility of having a more complex tokenizer and being able to use it without much change to the code.
+    Other tokenizer options are listed below:
