@@ -8,7 +8,7 @@ class RewardFunction:
     and determines if the action leads to an improved state. Then it updates the Model with the Decision.
     """
 
-    model = Model.Model(None)  # TODO: get decision history?
+    model = Model(None)  # TODO: get decision history?
 
     def __init__(self):
         """
