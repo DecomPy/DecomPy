@@ -46,18 +46,21 @@ class SnippetRepository:
                 for basename in files:
                     # only looking for llvm files
                     if basename.endswith(self.llvm_path):
+                        # get info based off root file
+
+                        folder = root.split('/')
+                        folder = folder[len(folder)-1]
+
                         # read in the content
-                        with open(root+"/"+dirs+"/"+basename, "r") as llvm_str:
+                        with open(root+"/"+basename, "r") as llvm_str:
                             llvm = llvm_str.read()
 
                         # add snippet to
-                        snippet = Snippet.Snippet(dirs+"/"+basename, dirs, llvm)
+                        snippet = Snippet.Snippet(folder+"/"+basename, folder, llvm)
                         self.snippets.append(snippet)
-                        print(snippet)
-                        print(dirs+"/"+basename, dirs, "stuff")
 
             except Exception as e:
-                print("Could not find the file...", e)
+                print("Error...", e)
                 pass
 
         return self.snippets

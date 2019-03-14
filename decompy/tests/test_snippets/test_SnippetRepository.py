@@ -1,38 +1,55 @@
-# import unittest
-# from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
-# from pathlib import Path, PurePath
-# import shutil
-# import json
-#
-#
-# class TestRepoStructure(unittest.TestCase):
-#
-#     @classmethod
-#     def setUpClass(cls):
-#         cls.rs = RepoStructure()
-#
-#         with open(Path(__file__).parent.joinpath("filteredOfflineResults.json"), "r") as json_file:
-#             cls.rs.json_file = json.load(json_file)
-#
-#         # read into our filtered repos
-#         cls.rs.batch_format(cls.rs.json_file, "2018-11-08 16:02:43.266002")
-#
-#     @classmethod
-#     def tearDownClass(cls):
-#         shutil.rmtree(cls.rs.root)
-#
-#     def test_folder_and_file_generation(self):
-#         repositories = Path("Repositories")
-#         repos = [item.name for item in repositories.iterdir() if item.is_dir()]
-#
-#         self.assertEqual(set(repos), {'danking-sad-c', 'smillingrainbow-ProjetAlgoC', 'tenfar-android_bootable_recovery_cn', 'aquila-dev-CINK_KING_JB_KERNEL'})
-#
-#     def test_meta_file_contents(self):
-#         meta_files = [config.open().read() for config in Path(self.rs.root).glob("*/repo.json")]
-#
-#         def correct_meta(file):
-#             j = json.loads(file)
-#             self.assertTrue({"url", "name", "author", "filter_date"}.issubset(set(j.keys())))
-#
-#         for file in meta_files:
-#             correct_meta(file)
+import unittest
+import os
+from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
+
+
+class TestRepoStructure(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sr = SnippetRepository()
+
+        # run from /DecomPy/
+        cls.fp = os.getcwd()+"/decompy/tests/test_snippets/Snippets/"
+
+    def test_read_snippets_from_file(self):
+        snippets = self.sr.read_snippets_from_file(self.fp)
+
+        self.assertTrue(len(snippets) == 4)
+
+        # have to do this weird loop because it was giving me files in a random order.
+        for i in range(len(snippets)):
+
+            # first one
+            if snippets[i].id == "Class1/1.ll":
+                self.assertTrue(snippets[i].id == "Class1/1.ll")
+                self.assertTrue(snippets[i].class_id == "Class1")
+                self.assertTrue(snippets[i].llvm == "; ModuleID = 1.ll\n; test")
+
+                # second
+            if snippets[i].id == "Class1/2.ll":
+                self.assertTrue(snippets[i].id == "Class1/2.ll")
+                self.assertTrue(snippets[i].class_id == "Class1")
+                self.assertTrue(snippets[i].llvm == "; ModuleID = 2.ll")
+
+                # third
+            if snippets[i].id == "Class2/1.ll":
+                self.assertTrue(snippets[i].id == "Class2/1.ll")
+                self.assertTrue(snippets[i].class_id == "Class2")
+                self.assertTrue(snippets[i].llvm == "; ModuleID = 1.ll")
+
+                # fourth
+            if snippets[i].id == "Class2/2.ll":
+                self.assertTrue(snippets[i].id == "Class2/2.ll")
+                self.assertTrue(snippets[i].class_id == "Class2")
+                self.assertTrue(snippets[i].llvm == "; ModuleID = 2.ll")
+
+
+
+
+
+
+
+
+
+
