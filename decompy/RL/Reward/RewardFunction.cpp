@@ -58,10 +58,11 @@ int Reward::calcReward(const char* oldLLVM, const char* newLLVM, const char* goa
     return reward;
 }
 
-int calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
-    return Reward::calcReward(oldLLVM, newLLVM, goalLLVM);
+extern "C" {
+    int calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
+        return Reward::calcReward(oldLLVM, newLLVM, goalLLVM);
+    }
 }
-
 //The following function uses the "Myer's Diff Algorithm" first described here: http://www.xmailserver.org/diff2.pdf
 //I will be following the tutorial/explanation provided here: https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/
 
@@ -204,12 +205,12 @@ bool Reward::isSameOperationAs(const llvm::Instruction *I, const llvm::Instructi
 //    return reward;
 //}
 
-int main(){
-    const char* llvmOld = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}";
-    const char* llvmNew = "define i32 @mul_add(i32 %x, i32 %y) {\n entry:\n  %tmp = mul i32 %x, %y\n  ret i32 %tmp\n}";
-    const char* llvmGoal = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\n entry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add i32 %tmp, %z\n  %tmp3 = add i32 %tmp2, %z\n  ret i32 %tmp3\n}";
-
-    std::cout << Reward::calcReward(llvmOld, llvmNew, llvmGoal) << std::endl;
-
-    return 1;
-}
+//int main(){
+//    const char* llvmOld = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}";
+//    const char* llvmNew = "define i32 @mul_add(i32 %x, i32 %y) {\n entry:\n  %tmp = mul i32 %x, %y\n  ret i32 %tmp\n}";
+//    const char* llvmGoal = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\n entry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add i32 %tmp, %z\n  %tmp3 = add i32 %tmp2, %z\n  ret i32 %tmp3\n}";
+//
+//    std::cout << Reward::calcReward(llvmOld, llvmNew, llvmGoal) << std::endl;
+//
+//    return 1;
+//}

@@ -23,8 +23,4 @@ class Reward{
 
 };
 
-extern "C" {
-    int calcReward(char* original, char* changed, char* goal);
-}
-
 #endif
