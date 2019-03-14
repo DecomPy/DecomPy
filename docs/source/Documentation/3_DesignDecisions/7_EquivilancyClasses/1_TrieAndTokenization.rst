@@ -23,7 +23,11 @@ The Search Algorithm:
 ------------------------------------------------------------------------------------------------------------------------
 
 Trie:
-
+    We plan to use the Trie library implemented by Google here: https://github.com/google/pygtrie. PygTrie for a
+    collection to be passed as the Key and an object for the Value. We will tokenize each snippet, starting first
+    with a tokenizer that simply parses the snippet into a list of characters, then improving the design if time
+    permits. This list of tokens will be used as the Key, while our Snippet object (which contains a snippet id, an
+    equivalency class id, and the snippet string) will be the value.
 
 ------------------------------------------------------------------------------------------------------------------------
 
