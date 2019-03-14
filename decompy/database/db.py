@@ -172,7 +172,7 @@ class Database:
         :return: bool or nothing
         """
         try:
-            sql = "REPLACE INTO ml_table(file_path, author_repo_key, source_code, cleaned_source code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            sql = "REPLACE INTO ml_table(file_path, author_repo_key, source_code, cleaned_source_code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
             self.__transaction_builder(sql, ml_tuple, override)
             return True
