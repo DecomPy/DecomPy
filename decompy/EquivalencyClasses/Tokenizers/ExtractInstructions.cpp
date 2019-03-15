@@ -5,6 +5,7 @@ Extracts all the Instructions within a module and outputs it to a file so it is 
 #include "llvm/IRReader/IRReader.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
+#include "llvm/IR/Verifier.h"
 
 #include <fstream>
 #include <iostream>

@@ -1,3 +1,5 @@
+from decompy.EquivalencyClasses.Snippet import Snippet
+
 class CharacterTokenizer:
 
     @staticmethod
@@ -8,12 +10,9 @@ class CharacterTokenizer:
         :return: tuple of string tokens
         """
 
-        writeFile = open("input", 'w')
-        writeFile.write(snippet.llvm)
-        writeFile.close()
-
-        return tuple(snippet)
+        return tuple(snippet.llvm.split())
 
 
 if __name__ == "__main__":
-    print("hi")
+    snippet = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
+    print(CharacterTokenizer.tokenize(snippet))
