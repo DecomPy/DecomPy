@@ -12,7 +12,7 @@ int main(){
     LLVMContext context;
     SMDiagnostic error;
     Instruction *fromInstruction, *toInstruction;
-    std::unique_ptr<Module> module = parseIRFile("example.bc", error, context);
+    std::unique_ptr<Module> module = parseIRFile("example.", error, context);
 
     //Iterate through function, basic block, then individual instructions
     //There's only one Function here, so the iteration syntax is not needed.
