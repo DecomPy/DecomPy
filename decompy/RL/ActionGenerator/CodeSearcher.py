@@ -14,7 +14,9 @@ class CodeSearcher:
         :type: Trie
         """
         self.trie = trie
-        pass
+    
+    def _tokenize_current_state(self, current_state_string):
+        return list("This is a sentence and we are searching for snippets which match it")
 
     def find_swaps(self, llvm_current_state):
         """
@@ -24,5 +26,14 @@ class CodeSearcher:
         :return: list of actions
         :rtype: list<SwapAction>
         """
-        pass
+        tokens = self._tokenize_current_state(llvm_current_state)
+        for starting_cursor in range(len(tokens)):
+            trie.
+
+
+if __name__ == "__main__":
+    from decompy.EquivalencyClasses.TrieGenerator import TrieGenerator
+    trieGen = TrieGenerator()
+    trie = trieGen.generates_trie()
+    codesearcher = CodeSearcher(trie)
 
