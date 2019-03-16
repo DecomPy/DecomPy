@@ -1,5 +1,5 @@
 
-// combine redundant instructionsB
+// combine constants
 int main() {
 
     int test = 2 + 3;

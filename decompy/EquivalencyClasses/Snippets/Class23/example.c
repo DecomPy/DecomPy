@@ -1,5 +1,4 @@
 
-// attempts at trying to get a more consistent format such as PEMDAS (for now?)
 // order of operations (try to achieve PEMDAS?)
 int main() {
 
@@ -23,6 +22,8 @@ int main() {
 
     // what we want: 4 + 2 - 3;
     int result_smaller2 = test4 + test2 - test3;
+
+    //TODO: implement bottom once approved if this is a worthy cause
 
     // what we get: 2 + 4 * 5
     int result_smaller4 = test2 + test4 * test5;
