@@ -1,0 +1,1 @@
+This class is a difficult one because it involves looping. The idea is that instead of having multiple for loops that are looping over the same thing (another difficult thing to assess) then it will combine the for loops. Another situation is if we wanted to do the inverse of this, and produce multiple for loops instead of one. Both could be ways of optimization/refactoring.
