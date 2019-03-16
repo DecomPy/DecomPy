@@ -1,0 +1,1 @@
+This class essentially removes a redundant variable, which may cause more harm than good. It then uses that idea for basic operations.
