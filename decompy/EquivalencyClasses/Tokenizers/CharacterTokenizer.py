@@ -5,14 +5,14 @@ import subprocess
 class CharacterTokenizer:
 
     @staticmethod
-    def tokenize(snippet):
+    def tokenize(llvm):
         """
         Takes a snipppet and returns a tuple of string tokens of it's LLVM ASM IR
         :param snippet: Snippet
         :return: tuple of string tokens
         """
 
-        return tuple(snippet.llvm.replace(',', ' ').split())
+        return tuple(llvm.replace(',', ' ').split())
 
     @staticmethod
     def tokenize_ir_file(llvm):
