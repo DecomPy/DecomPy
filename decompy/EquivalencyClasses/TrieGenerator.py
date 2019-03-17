@@ -30,7 +30,6 @@ class TrieGenerator:
         return mytrie
 
 def traverse_callback(path_conv, path, children, value=None):
-    list1 = []
     if value:
         return path_conv(path)
     children = list(children)
