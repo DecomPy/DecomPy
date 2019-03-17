@@ -1,40 +1,51 @@
-#from decompy.EquivalencyClasses.Snippet import Snippet
-import os
+from decompy.EquivalencyClasses.Snippet import Snippet
 import subprocess
+
 
 class CharacterTokenizer:
 
     @staticmethod
-    def tokenize(snippet):
+    def tokenize(data, is_snippet = False):
         """
-        Takes a snipppet and returns a tuple of string tokens of it's LLVM ASM IR
-        :param snippet: Snippet
+        Takes in llvm and extracts tokens from it
+        :param data: Snippet
+        :param is_snippet: True if it is a Snippet (and will be treated only as a string) or a Module (and will be converted to LLVM for instruction extraction)
         :return: tuple of string tokens
         """
 
-        return tuple(snippet.llvm.replace(',', ' ').split())
+        # Extract instructions from decompiled Modules or Functions
+        if not is_snippet:
+            instruction_str = subprocess.run(args=['./' + sh_location, file_name])
+        # Extract LLVM ASM IR from handwritten or otherwise generated snippets
+        elif type(data) is Snippet:
+            instruction_str = data.llvm
+        # Didn't get appropriate data
+        else:
+            return False
 
-    @staticmethod
-    def tokenize_ir_file(llvm):
-        """
-        Takes in a LLVM module file name as well as the location of ExtractInstructions.out relative to where this method is being called to tokenize LLVM
-        modules
-        :param file_name: name of LLVM IR module file, relative to where this is being called
-        :param sh_location: filepath of ExtractInstruction.sh relative to where this is being called
-        :return:
-        """
+        # Does the actual tokenizing
+        instruction_str = instruction_str.split()
+        token_list = []
+        for token in instruction_str:
+            if ',' in token:
+                token_list.append(token.replace(',', ""))
+                token_list.append(',')
+            else:
+                token_list.append(token)
 
-        subprocess.run(args=['./' + sh_location, file_name])
+        flat_token_list = []
 
-        with open('output') as o:
-            tokens = o.read().replace(',', ' ').split()
+        # Flatten list
+        for i in token_list:
+            if type(i) is list:
+                for j in i:
+                    flat_token_list.append(j)
+            else:
+                flat_token_list.append(i)
 
-        return tuple(tokens)
+        return tuple(flat_token_list)
 
 
 if __name__ == "__main__":
-    #snippet = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
-    #print(CharacterTokenizer.tokenize(snippet))
-
-    #When being called from Decompy directory
-    CharacterTokenizer.tokenize_ir_file("decompy/EquivalencyClasses/Tokenizers/example.ll", "decompy/EquivalencyClasses/Tokenizers/RunMeInThisDirectory.sh")
+    s = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
+    print(CharacterTokenizer.tokenize(s, True))
