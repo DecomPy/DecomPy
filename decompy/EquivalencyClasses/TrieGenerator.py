@@ -38,5 +38,10 @@ def traverse_callback(path_conv, path, children, value=None):
 
 if __name__ == "__main__":
     tgen = TrieGenerator()
+    print("What's in the trie:", [s.llvm for s in tgen.database.get_snippets()])
     t = tgen.generates_trie()
-    print(t.traverse(traverse_callback))
+    
+    print("element at hello: ", t["hello"])
+    print("are there elements past hello?", t.has_subtrie("hello"))
+    print("elements from the start of helloagain this is a test hello", [(element.key, element.value) for element in t.prefixes("helloagain this is a test hello")])
+    print("is there an element at helloa?", t.has_key("helloa"))
