@@ -25,7 +25,7 @@ class TrieGenerator:
         snippetlist = self.database.get_snippets()
         # iterate through the snippets. each snippet should be a snippet obj
         for snippet in snippetlist:
-            tokens = CharacterTokenizer.tokenize(snippet.llvm)
+            tokens = CharacterTokenizer.tokenize(snippet, True)
             mytrie[tokens] = snippet
         return mytrie
 
@@ -35,6 +35,7 @@ def traverse_callback(path_conv, path, children, value=None):
         return path_conv(path)
     children = list(children)
     return children
+
 
 if __name__ == "__main__":
     tgen = TrieGenerator()

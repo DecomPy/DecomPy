@@ -17,13 +17,13 @@ class SnippetRepository:
         :rtype: list<Snippets>
         """
 
-        snip = Snippet(0, "helloagain", 0)
+        snip = Snippet(0, "alloca i32, align 4", 0)
 
-        snip1 = Snippet(1, "hello", 0)
+        snip1 = Snippet(1, "alloca i32, align 5", 0)
 
-        snip2 = Snippet(2, "neveragain", 1)
+        snip2 = Snippet(2, "alloca i32, align 6", 1)
 
-        snip3 = Snippet(3, "whats up", 0)
+        snip3 = Snippet(3, "alloca i32, align 7", 0)
 
         return [snip, snip1, snip2, snip3]
 
