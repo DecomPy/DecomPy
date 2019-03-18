@@ -1,9 +1,21 @@
 from decompy.EquivalencyClasses.Snippet import Snippet
-import subprocess
+
 import ctypes
+import pathlib
+
+libextract_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libExtractInstructions.so")
+print(libextract_path)
+libextract = ctypes.CDLL(str(libextract_path))
+libextract.extract_instructions.restype=ctypes.c_char_p
 
 
 class CharacterTokenizer:
+
+    @staticmethod
+    def _wrap_extract_instructions(module_string):
+        module_charp = ctypes.create_string_buffer(str.encode(module_string))
+        extract = libextract.extract_instructions(module_charp)
+        return extract.decode("UTF-8")
 
     @staticmethod
     def tokenize(data, is_snippet):
@@ -16,7 +28,7 @@ class CharacterTokenizer:
 
         # Extract instructions from decompiled Modules or Functions
         if not is_snippet:
-            instruction_str = subprocess.run(args=['./' + sh_location, file_name])
+            instruction_str = CharacterTokenizer._wrap_extract_instructions(data)
         # Extract LLVM ASM IR from handwritten or otherwise generated snippets
         elif type(data) is Snippet:
             instruction_str = data.llvm
@@ -48,18 +60,20 @@ class CharacterTokenizer:
 
 
 if __name__ == "__main__":
-    s = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
-    print(CharacterTokenizer.tokenize(s, True))
+    # s = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
+    # print(CharacterTokenizer.tokenize(s, True))
 
-    m = "; ModuleID = 'example.cpp'\nsource_filename = \"example.cpp\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = " \
-        "\"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline\nnounwind optnone uwtable\ndefine dso_local i32 @_Z7examplei(i32) #0 {\n %2 = alloca i32, " \
-        "align 4\n %3 = alloca i32, align 4\n store i32 %0, i32* %2, align 4\n %4 = load i32, i32* %2, align 4\n %5 = add nsw i32 %4, 3\n store i32 %5, " \
-        "i32* %3, align 4\n %6 = load i32, i32* %3, align 4\n ret i32 %6\n}\nattributes #0 = { noinline nounwind optnone uwtable " \
-        "\"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" " \
-        "\"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" " \
-        "\"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" " \
-        "\"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" " \
-        "\"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version " \
-        "8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"} "
+    # m = "; ModuleID = 'example.cpp'\nsource_filename = \"example.cpp\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = " \
+    #     "\"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline\nnounwind optnone uwtable\ndefine dso_local i32 @_Z7examplei(i32) #0 {\n %2 = alloca i32, " \
+    #     "align 4\n %3 = alloca i32, align 4\n store i32 %0, i32* %2, align 4\n %4 = load i32, i32* %2, align 4\n %5 = add nsw i32 %4, 3\n store i32 %5, " \
+    #     "i32* %3, align 4\n %6 = load i32, i32* %3, align 4\n ret i32 %6\n}\nattributes #0 = { noinline nounwind optnone uwtable " \
+    #     "\"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" " \
+    #     "\"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" " \
+    #     "\"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" " \
+    #     "\"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" " \
+    #     "\"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version " \
+    #     "8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"} "
 
-    # print(CharacterTokenizer.tokenize(m, False))
+    m = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}"
+
+    print(CharacterTokenizer.tokenize(m, False))

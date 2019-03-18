@@ -43,19 +43,21 @@ std::string extractInstructions(std::string llvm) {
         }
     }
     rso.write('\0');
-
     return rso.str();
 }
 
 extern "C" {
-    const char* extractInstructions(char* module) {
+    char* extract_instructions(char* module) {
         std::string moduleString(module);
-        return extractInstructions(moduleString).c_str();;
+        std::string string = extractInstructions(moduleString);
+        char* charp = (char*) malloc(string.size() + 1);
+        strcpy(charp, string.c_str());
+        return charp;
     }
 }
 
 int main() {
     std::cout <<
-    extractInstructions("define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}")
+    extract_instructions((char*)"define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}")
     << std::endl;
 }
