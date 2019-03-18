@@ -1,4 +1,6 @@
 from decompy.EquivalencyClasses.Tokenizers.CharacterTokenizer import CharacterTokenizer
+from decompy.RL.Action.SwapAction import SwapAction
+
 
 class CodeSearcher:
     """
@@ -25,10 +27,11 @@ class CodeSearcher:
 
         tokens = CharacterTokenizer.tokenize(llvm_current_state, False)
         for starting_cursor in range(len(tokens)):
-            identified += [(prefix.value.class_id, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
+            identified += [(prefix.value, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
 
-        # These really need to be swap actions not snippets
-        return identified
+        swaps = [SwapAction(snippet, index) for snippet, index in identified]
+
+        return swaps
 
 
 if __name__ == "__main__":
@@ -53,5 +56,6 @@ if __name__ == "__main__":
 
     swaps = codesearcher.find_swaps(m)
 
-    print(swaps)
+    for swap in swaps:
+        print(str(swap))
 
