@@ -63,7 +63,6 @@ if __name__ == "__main__":
     s = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
     print(CharacterTokenizer.tokenize(s, True))
 
-    m = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}"
     with open("example.ll") as f:
         m = f.read()
 
