@@ -1,5 +1,6 @@
 from decompy.EquivalencyClasses.Snippet import Snippet
 import subprocess
+import ctypes
 
 
 class CharacterTokenizer:
