@@ -1,6 +1,4 @@
-This class un-does the local_unnamed_addr opt.
-
-Note: If we find snippet 1 in the code, we can swap it with snippet 2. We can not do the reverse.
-Note: The types here could be turned into pattern to be matched, which would make this a lot more flexible
-Note: Similar de-opts can be made for having a different number of parameters and different types. this could be
-auto-generated. Perhaps even a Pass could be made for this
+When performing an action such as: "ar[0] = a;", unoptimized LLVM will first index to the 0th index in the point type,
+then store that index, then load the value "a" into that index. Since it is the 0th index, loading the address of that
+index is unecessary. The address of the 0th index is the address of the pointer itself. So optimized LLVM changes this
+to a simple store instruction. This equiv class represents that.

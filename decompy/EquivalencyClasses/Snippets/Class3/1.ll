@@ -1,1 +1,2 @@
-define void @copyArray(i8* nocapture, i8* nocapture readonly, i32) local_unnamed_addr #0 {
+%10 = getelementptr inbounds i32, i32* %9, i64 0
+store i32 %8, i32* %10, align 4
