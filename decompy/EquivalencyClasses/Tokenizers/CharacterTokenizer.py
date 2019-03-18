@@ -1,4 +1,5 @@
 from decompy.EquivalencyClasses.Snippet import Snippet
+import re
 
 import ctypes
 import pathlib
@@ -37,33 +38,20 @@ class CharacterTokenizer:
             return False
 
         # Does the actual tokenizing
-        instruction_str = instruction_str.split()
-        token_list = []
-        for token in instruction_str:
-            if ',' in token:
-                token_list.append(token.replace(',', ""))
-                token_list.append(',')
-            else:
-                token_list.append(token)
+        token_list = re.split('(\s)', instruction_str)
 
-        flat_token_list = []
+        # Get rid of spaces
+        token_list = [token for token in token_list if token != ' ']
 
-        # Flatten list
-        for i in token_list:
-            if type(i) is list:
-                for j in i:
-                    flat_token_list.append(j)
-            else:
-                flat_token_list.append(i)
 
-        return tuple(flat_token_list)
+        return tuple(token_list)
 
 
 if __name__ == "__main__":
     s = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
     print(CharacterTokenizer.tokenize(s, True))
 
-    with open("example.ll") as f:
-        m = f.read()
+    # with open("example.ll") as f:
+    #    m = f.read()
 
-    print(CharacterTokenizer.tokenize(m, False))
+    # print(CharacterTokenizer.tokenize(m, False))
