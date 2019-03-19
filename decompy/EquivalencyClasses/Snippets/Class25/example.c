@@ -1,6 +1,4 @@
 
-// this snippet tries to achieve PEMDAS by making multiplication first rather than division.
-// I am interested to see how this plans out espeically if someone uses paranthesis.
 // order of operations (try to achieve PEMDAS?)
 int main() {
 
