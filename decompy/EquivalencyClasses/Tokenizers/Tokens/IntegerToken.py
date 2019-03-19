@@ -27,6 +27,9 @@ class IntegerToken(Token):
             return True
         return False
 
+    def __str__(self):
+        return "<Unknown Integer: %s>" % hex(id(self))
+
 
 if __name__ == "__main__":
     a = IntegerToken()

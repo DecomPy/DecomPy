@@ -4,11 +4,12 @@ from decompy.EquivalencyClasses.Tokenizers.Tokens.IntegerToken import IntegerTok
 
 import ctypes
 import pathlib
+import re
 
 libextract_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libExtractInstructions.so")
 print(libextract_path)
 libextract = ctypes.CDLL(str(libextract_path))
-libextract.extract_instructions.restype=ctypes.c_char_p
+libextract.extract_instructions.restype = ctypes.c_char_p
 
 
 class Tokenizer:
@@ -27,7 +28,7 @@ class Tokenizer:
         tokens = list(tokens_tuple)
 
         for i in range(len(tokens)):
-            if tokens[i][0] == "%":
+            if len(tokens[i]) > 0 and tokens[i][0] == "%":
                 if tokens[i] not in variable_dict:
                     variable_dict[tokens[i]] = VariableToken()
                 tokens[i] = variable_dict[tokens[i]]
@@ -38,7 +39,6 @@ class Tokenizer:
                 tokens[i] = integer_dict[tokens[i]]
 
         return tuple(tokens)
-
 
     @staticmethod
     def tokenize(data, is_snippet):
@@ -60,36 +60,26 @@ class Tokenizer:
             return False
 
         # Does the actual tokenizing
-        instruction_str = instruction_str.split()
-        token_list = []
-        for token in instruction_str:
-            if ',' in token:
-                token_list.append(token.replace(',', ""))
-                token_list.append(',')
-            else:
-                token_list.append(token)
+        token_list = re.split('(\s|,)', instruction_str)
 
-        flat_token_list = []
+        # Get rid of spaces
+        token_list = [token for token in token_list if token not in ['', ' ']]
 
-        # Flatten list
-        for i in token_list:
-            if type(i) is list:
-                for j in i:
-                    flat_token_list.append(j)
-            else:
-                flat_token_list.append(i)
-
-        return tuple(flat_token_list)
+        return tuple(token_list)
 
 
 if __name__ == "__main__":
-    s = Snippet(0, "%1 = alloca i32, align 4\n%2 = alloca i32, align 4", 0)
-    print(Tokenizer.tokenize(s, True))
+    import pathlib
 
-    with open("example.ll") as f:
+    with open(str(pathlib.PurePath(__file__).parent) + "/example.ll") as f:
         m = f.read()
 
     result = Tokenizer.tokenize(m, False)
     meta = Tokenizer.extract_meta_tokens(result)
-    print(result, meta, end="\n")
 
+    print(result)
+
+    for token_stream in [result, meta]:
+        for token in token_stream:
+            print("(%s)" % str(token), end=" ")
+        print("*"*100)

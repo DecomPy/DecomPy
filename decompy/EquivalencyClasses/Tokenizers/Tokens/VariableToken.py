@@ -19,6 +19,9 @@ class VariableToken(Token):
             return True
         return False
 
+    def __str__(self):
+        return "<Unknown Variable: %s>" % hex(id(self))
+
 
 if __name__ == "__main__":
     a = VariableToken()
