@@ -5,6 +5,6 @@
 
 	Use the commands below to convert the c codes to llvm codes.
 
-		clang -S -emit-llvm Class7.c
+		clang -S -emit-llvm 7.c
 
-		clang -S -emit-llvm Class8.c
+		clang -S -emit-llvm 8.c
