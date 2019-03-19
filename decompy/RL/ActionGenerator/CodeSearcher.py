@@ -1,4 +1,4 @@
-from decompy.EquivalencyClasses.Tokenizers.CharacterTokenizer import CharacterTokenizer
+from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 from decompy.RL.Action.SwapAction import SwapAction
 
 
@@ -25,7 +25,7 @@ class CodeSearcher:
         """
         identified = []
 
-        tokens = CharacterTokenizer.tokenize(llvm_current_state, False)
+        tokens = Tokenizer.tokenize(llvm_current_state, False)
         for starting_cursor in range(len(tokens)):
             identified += [(prefix.value, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
 

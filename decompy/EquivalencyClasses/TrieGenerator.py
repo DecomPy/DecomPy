@@ -1,7 +1,7 @@
 #to run you need to instal pygtree: pip install pygtrie
 
 from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
-from decompy.EquivalencyClasses.Tokenizers.CharacterTokenizer import CharacterTokenizer
+from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 import pygtrie as trie
 
 
@@ -25,7 +25,7 @@ class TrieGenerator:
         snippetlist = self.database.get_snippets()
         # iterate through the snippets. each snippet should be a snippet obj
         for snippet in snippetlist:
-            tokens = CharacterTokenizer.tokenize(snippet, True)
+            tokens = Tokenizer.tokenize(snippet, True)
             mytrie[tokens] = snippet
         return mytrie
 
