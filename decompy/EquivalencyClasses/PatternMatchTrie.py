@@ -19,8 +19,10 @@ class PatternMatchTrie:
         last_set = None
 
         for token in key:
-            if token in current:
-                index = current.index(token)
+            keys = [c.key for c in current]
+            if token in keys:
+                index = keys.index(token)
+                last_set = current[index]
                 current = current[index].next
             else:
                 last_set = PatternMatchTrie.Node(token, "", [])
