@@ -1,8 +1,6 @@
-#to run you need to instal pygtree: pip install pygtrie
-
 from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
 from decompy.EquivalencyClasses.Tokenizers.CharacterTokenizer import CharacterTokenizer
-import pygtrie as trie
+from decompy.EquivalencyClasses.PatternMatchTrie import PatternMatchTrie as Trie
 
 
 class TrieGenerator:
@@ -21,7 +19,7 @@ class TrieGenerator:
         :return: Trie
         :rtype: Trie
         """
-        mytrie = trie.Trie() #what do I put in the constructor?
+        mytrie = Trie()
         snippetlist = self.database.get_snippets()
         # iterate through the snippets. each snippet should be a snippet obj
         for snippet in snippetlist:
@@ -29,19 +27,10 @@ class TrieGenerator:
             mytrie[tokens] = snippet
         return mytrie
 
-def traverse_callback(path_conv, path, children, value=None):
-    list1 = []
-    if value:
-        return path_conv(path)
-    children = list(children)
-    return children
 
 if __name__ == "__main__":
     tgen = TrieGenerator()
     print("What's in the trie:", [s.llvm for s in tgen.database.get_snippets()])
     t = tgen.generates_trie()
     
-    print("element at hello: ", t["hello"])
-    print("are there elements past hello?", t.has_subtrie("hello"))
-    print("elements from the start of helloagain this is a test hello", [(element.key, element.value) for element in t.prefixes("helloagain this is a test hello")])
-    print("is there an element at helloa?", t.has_key("helloa"))
+    print(t)
