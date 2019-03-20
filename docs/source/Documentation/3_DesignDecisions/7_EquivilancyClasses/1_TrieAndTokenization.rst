@@ -14,10 +14,12 @@ The Search Algorithm:
     "matching" as keys, a prefix search on "match" would return the values at "mat" and "match". We will use this to
     search for snippets.
     The algorithm for our search uses this as follows:
+
         - Perform prefix search on the trie, using all of the code starting at the first line
             - The code starting from this line will need to be normalized so that variable names match
         - Any snippets that are found are added to a snippet list
         - Repeat, starting the prefix search from the next line
+
     This process is repeated whenever we need to search for snippets from our snippet repository.
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -42,38 +44,45 @@ Trie:
     Pygtrie does not natively support any "pattern matching" functionality, as it depends on dictionaries, which
     depend on hash functions. A hash function would not work with our pattern matching. We saw two possibilities for
     resolving this. The following is the method we chose to use, which involves us making our own trie:
+
         - TODO
 
     This method to solve the issue involves modifying pygtrie. We will not use this method, but it is described below:
+
         - First, define tokens as such: Either a token is a StringToken, whose hash is the string's hash and whose
-        value is exact, or a token is a PatternToken, whose hash is a unique ID and whose value changes every time we
-        search the trie.  PattonToken will have a bool value "assigned" as well.
+          value is exact, or a token is a PatternToken, whose hash is a unique ID and whose value changes every time we
+          search the trie.  PattonToken will have a bool value "assigned" as well.
         - As previously described, the trie will have a list of tokens as keys, and the snippet that those tokens
-        represent as values.
+          represent as values.
         - The module will also be tokenized in the same way that the keys are tokenized.
         - We perform prefix search. With this method, each token in the module is a step in the search path, and each
-         token in the key is a step to the value :
+          token in the key is a step to the value :
+
             - If the token from the search path is a String Token, perform the search as usual, meaning the way
-            pygtrie already does it (use the built in "dict" method to get the next value in the path).
+              pygtrie already does it (use the built in "dict" method to get the next value in the path).
             - If the token from the search path is a Pattern Token whose "assigned" attribute is true, perform the
-            search as usual
+              search as usual
             - If the token from the search path is a Pattern Token whose "assigned" attribute is false, then we will
-            not be able to use the dictionary get method to get the next value. We have to assign one of the
-            appropriate PatternTokens from the trie to this PatternToken from the module.
+              not be able to use the dictionary get method to get the next value. We have to assign one of the
+              appropriate PatternTokens from the trie to this PatternToken from the module.
+
                 - Get all of the keys in the children of the current node (since we cannot use get on the children)
                 - Get all of the keys which are unassigned PatternTokens. If there are no more unassigned pattern
-                tokens, the prefix search is over.
+                  tokens, the prefix search is over.
                 - Get all of the PatternToken keys which match the pattern of the PatternToken we are looking for. If
-                 there are none, the search is over
+                  there are none, the search is over
                 - Any of the remaining PatternTokens might be the token that correctly matches our module
-                PatternToken, so we will have to try all of them. When we try each, we will:
+                  PatternToken, so we will have to try all of them. When we try each, we will:
+
                     - Set the module PatternToken's unique ID to that of the key PatternToken. Now the two wil hash
-                    to each other. (NOTE: This is dangerous because hash functions should not be mutable! This is part
-                    of why we are not using this method!)
+                      to each other. (NOTE: This is dangerous because hash functions should not be mutable! This is part
+                      of why we are not using this method!)
                     - Continue the search as usual
                     - Once we reach the end of searching down this path, if there are no results, we repeat the process
-                    with the next PatternToken. We must remember to set the old token's "assigned" attribute back to
-                    false.
+                      with the next PatternToken. We must remember to set the old token's "assigned" attribute back to
+                      false.
+
+
 
 
 ------------------------------------------------------------------------------------------------------------------------
