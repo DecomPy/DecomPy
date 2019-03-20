@@ -23,16 +23,15 @@ class CodeSearcher:
         :return: list of actions
         :rtype: list<SwapAction>
         """
-        identified = []
+        swaps = []
 
         tokens = Tokenizer.tokenize(llvm_current_state, False)
         for starting_cursor in range(len(tokens)):
-            identified += [(prefix.value, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
+            identified = [(prefix, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
 
-        swaps = []
-        for snippet, location in identified:
-            for option in snippet.get_swaps():
-                swaps.append(SwapAction(option, location))
+            for snippet, location in identified:
+                for option in snippet.get_swaps():
+                    swaps.append(SwapAction(option.render(), location))
 
         return swaps
 
@@ -61,4 +60,5 @@ if __name__ == "__main__":
 
     for swap in swaps:
         print(str(swap))
-        print(swap.snippet.render())
+        print(swap.llvm)
+        print()

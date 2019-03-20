@@ -77,8 +77,7 @@ if __name__ == "__main__":
     result = Tokenizer.tokenize(m, False)
     meta, _, _ = Tokenizer.extract_meta_tokens(result)
 
-    print(result)
-
+    print("*" * 100)
     for token_stream in [result, meta]:
         for token in token_stream:
             print("(%s)" % str(token), end=" ")
