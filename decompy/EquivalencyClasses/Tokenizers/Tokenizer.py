@@ -1,4 +1,3 @@
-from decompy.EquivalencyClasses.Snippet import Snippet
 from decompy.EquivalencyClasses.Tokenizers.Tokens.VariableToken import VariableToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.IntegerToken import IntegerToken
 
@@ -7,7 +6,6 @@ import pathlib
 import re
 
 libextract_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libExtractInstructions.so")
-print(libextract_path)
 libextract = ctypes.CDLL(str(libextract_path))
 libextract.extract_instructions.restype = ctypes.c_char_p
 
@@ -21,9 +19,11 @@ class Tokenizer:
         return extract.decode("UTF-8")
 
     @staticmethod
-    def extract_meta_tokens(tokens_tuple, integers=()):
-        variable_dict = {}
-        integer_dict = {}
+    def extract_meta_tokens(tokens_tuple, integers=(), variable_dict=None, integer_dict=None):
+        if variable_dict is None:
+            variable_dict = {}
+        if integer_dict is None:
+            integer_dict = {}
 
         tokens = list(tokens_tuple)
 
@@ -38,7 +38,7 @@ class Tokenizer:
                     integer_dict[tokens[i]] = IntegerToken()
                 tokens[i] = integer_dict[tokens[i]]
 
-        return tuple(tokens)
+        return tuple(tokens), variable_dict, integer_dict
 
     @staticmethod
     def tokenize(data, is_snippet):
@@ -49,12 +49,12 @@ class Tokenizer:
         :return: tuple of string tokens
         """
 
-        # Extract instructions from decompiled Modules or Functions
-        if not is_snippet:
-            instruction_str = Tokenizer._wrap_extract_instructions(data)
         # Extract LLVM ASM IR from handwritten or otherwise generated snippets
-        elif type(data) is Snippet:
-            instruction_str = data.llvm
+        if is_snippet and isinstance(data, str):
+            instruction_str = data
+        # Extract instructions from decompiled Modules or Functions
+        elif isinstance(data, str):
+            instruction_str = Tokenizer._wrap_extract_instructions(data)
         # Didn't get appropriate data
         else:
             return False
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         m = f.read()
 
     result = Tokenizer.tokenize(m, False)
-    meta = Tokenizer.extract_meta_tokens(result)
+    meta, _, _ = Tokenizer.extract_meta_tokens(result)
 
     print(result)
 

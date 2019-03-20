@@ -29,7 +29,10 @@ class CodeSearcher:
         for starting_cursor in range(len(tokens)):
             identified += [(prefix.value, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
 
-        swaps = [SwapAction(snippet, index) for snippet, index in identified]
+        swaps = []
+        for snippet, location in identified:
+            for option in snippet.get_swaps():
+                swaps.append(SwapAction(option, location))
 
         return swaps
 
@@ -58,4 +61,4 @@ if __name__ == "__main__":
 
     for swap in swaps:
         print(str(swap))
-
+        print(swap.snippet.render())

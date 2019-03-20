@@ -2,8 +2,12 @@ from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
 
 class IntegerToken(Token):
+
     def __init__(self):
         Token.__init__(self)
+        self._value = None
+
+    def reset(self):
         self._value = None
 
     def value(self):

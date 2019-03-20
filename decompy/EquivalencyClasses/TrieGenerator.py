@@ -21,13 +21,14 @@ class TrieGenerator:
         :return: Trie
         :rtype: Trie
         """
-        mytrie = trie.Trie() #what do I put in the constructor?
+        mytrie = trie.Trie()
         snippetlist = self.database.get_snippets()
         # iterate through the snippets. each snippet should be a snippet obj
         for snippet in snippetlist:
-            tokens = Tokenizer.tokenize(snippet, True)
+            tokens = snippet.get_meta_tokens()
             mytrie[tokens] = snippet
         return mytrie
+
 
 def traverse_callback(path_conv, path, children, value=None):
     list1 = []

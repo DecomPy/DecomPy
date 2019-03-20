@@ -6,6 +6,9 @@ class VariableToken(Token):
         Token.__init__(self)
         self._value = None
 
+    def reset(self):
+        self._value = None
+
     def value(self):
         if not self._value:
             raise AttributeError("Cannot resolve an unassigned variable token")
