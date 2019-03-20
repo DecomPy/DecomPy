@@ -1,4 +1,6 @@
-from decompy.EquivalencyClasses import SnippetRepository
+from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
+from decompy.EquivalencyClasses.Tokenizers.CharacterTokenizer import CharacterTokenizer
+from decompy.EquivalencyClasses.PatternMatchTrie import PatternMatchTrie as Trie
 
 
 class TrieGenerator:
@@ -8,7 +10,7 @@ class TrieGenerator:
     """
 
     def __init__(self):
-        self.database = SnippetRepository.SnippetRepository()
+        self.database = SnippetRepository()
         pass
 
     def generates_trie(self):
@@ -17,5 +19,18 @@ class TrieGenerator:
         :return: Trie
         :rtype: Trie
         """
-        pass
+        mytrie = Trie()
+        snippetlist = self.database.get_snippets()
+        # iterate through the snippets. each snippet should be a snippet obj
+        for snippet in snippetlist:
+            tokens = CharacterTokenizer.tokenize(snippet.llvm)
+            mytrie[tokens] = snippet
+        return mytrie
 
+
+if __name__ == "__main__":
+    tgen = TrieGenerator()
+    print("What's in the trie:", [s.llvm for s in tgen.database.get_snippets()])
+    t = tgen.generates_trie()
+    
+    print(t)
