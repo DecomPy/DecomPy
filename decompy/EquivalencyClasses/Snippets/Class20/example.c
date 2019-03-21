@@ -1,14 +1,14 @@
-
-// setting a value if it doesn't equal it
+// a common expression that could be represented much easier such as below
+// z = x - ( x - y) ==> z = y
 int main() {
+    // example
 
-    // int x = 0;
-    // x++;
+    // z = x - ( x - y) ==> z = y
+    int x = 3;
+    int y = 2;
+    int z = x - ( x - y);
 
     // vs
-
-    int x = 0;
-    x = x + 1;
-
-    return 0;
+    // int y = 2;
+    // int z = y;
 }
