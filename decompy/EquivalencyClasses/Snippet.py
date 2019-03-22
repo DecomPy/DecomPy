@@ -57,10 +57,11 @@ class Snippet:
 
     def render(self):
         rendered_llvm = ""
-        for token in self.get_meta_tokens():
-            rendered_llvm += Token.resolve(token)
-            # TODO: Fix this space for newlines and last token
-            rendered_llvm += " "
+        tokens = self.get_meta_tokens()
+        for i in range(len(tokens)):
+            rendered_llvm += Token.resolve(tokens[i])
+            if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i+1] != ",":
+                rendered_llvm += " "
         return rendered_llvm
 
     def get_rendered_swaps(self):
