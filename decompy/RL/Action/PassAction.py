@@ -1,7 +1,7 @@
-from decompy.RL.Action import Action
+from decompy.RL.Action.Action import Action
 
 
-class PassAction(Action.Action):
+class PassAction(Action):
     """
     Data Structure for a LLVM Optimization Pass Action.
     """
@@ -16,5 +16,17 @@ class PassAction(Action.Action):
         super(PassAction, self).__init__()
         self.pass_name = pass_name
         self.pass_args = pass_args_list
+
+    def do_action(self):
+        """
+        an action performed based off an LLVM pass.
+        TODO: implementer add more info
+        :return:
+        """
         pass
 
+
+# test to see it if runs
+if __name__ == "__main__":
+    pa = PassAction("test", ("-01", "hello"))
+    pa.do_action()
