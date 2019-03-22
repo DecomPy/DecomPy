@@ -1,5 +1,4 @@
 from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
-from decompy.EquivalencyClasses.Tokenizers.CharacterTokenizer import CharacterTokenizer
 from decompy.EquivalencyClasses.PatternMatchTrie import PatternMatchTrie as Trie
 
 
@@ -23,7 +22,7 @@ class TrieGenerator:
         snippetlist = self.database.get_snippets()
         # iterate through the snippets. each snippet should be a snippet obj
         for snippet in snippetlist:
-            tokens = CharacterTokenizer.tokenize(snippet.llvm)
+            tokens = snippet.get_meta_tokens()
             mytrie[tokens] = snippet
         return mytrie
 
