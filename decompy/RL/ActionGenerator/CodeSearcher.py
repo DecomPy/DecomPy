@@ -1,5 +1,4 @@
 from decompy.RL.Action import SwapAction
-from decompy.RL.ActionGenerator import ActionGenerator
 
 
 class CodeSearcher:
@@ -16,13 +15,14 @@ class CodeSearcher:
         self.trie = trie
         pass
 
-    def find_swaps(self, llvm_current_state):
+    @staticmethod
+    def find_swaps(llvm_current_state):
         """
         Takes in the current llvm state and generates a list of swap actions on it.
         :param llvm_current_state: the unoptimized llvm
         :type: string
-        :return: list of actions
+        :return: list of swap actions
         :rtype: list<SwapAction>
         """
-        pass
+        return []
 
