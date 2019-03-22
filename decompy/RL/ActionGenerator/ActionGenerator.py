@@ -11,7 +11,7 @@ class ActionGenerator:
 
     trie = TrieGenerator().generates_trie()
     ol = OptimizationLister()
-    cs = CodeSearcher(trie)  # TODO: add trie?
+    cs = CodeSearcher(trie)
 
     def __init__(self):
         """
