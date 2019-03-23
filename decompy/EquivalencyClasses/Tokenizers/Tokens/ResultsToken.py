@@ -39,10 +39,12 @@ if __name__ == "__main__":
     v1 = IntegerToken()
     v2 = IntegerToken()
 
-    r1 = ResultsToken([lambda x1, x2: x1 + x2, v1, v2])
+    r1 = ResultsToken([lambda x1, x2: x1 * (-1 * x2), v1, v2])
+    r2 = ResultsToken([lambda x1, x2: abs(x1), r1, 0])
 
     v1 == "34"
     v2 == "12"
 
     result(r1)
+    result(r2)
 
