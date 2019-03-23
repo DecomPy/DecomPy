@@ -10,13 +10,13 @@ class Snippet:
 
     def __init__(self, id, llvm, class_id, integers_consts=(), variables=None, integers=None):
         """
-        the content of a snippet.
-        :param id: the id of the snippet.
-        :type: integer
-        :param llvm: the llvm snippet
-        :type: string
-        :param class_id: id of class
-        :type: integer
+
+        :param id: The id of the snippet
+        :param llvm: The llvm that this snippet handles
+        :param class_id: The class id of the llvm
+        :param integers_consts: All integer constants which exist in the snippet
+        :param variables: An optional parameter for mapping between snippets (use pre-existing tokens for variables)
+        :param integers: An optional parameter for mapping between snippets (use pre-existing tokens for constants)
         """
         if integers is None:
             integers = {}
