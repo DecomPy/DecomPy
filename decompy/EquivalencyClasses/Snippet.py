@@ -31,12 +31,15 @@ class Snippet:
         self.integer_dict = integers
 
         self._tokens = Tokenizer.tokenize(self.llvm, True)
+        self._swaps = []
+        self._initialize_tokens()
+
+    def _initialize_tokens(self):
         self._meta_tokens, self.variable_dict, self.integer_dict = \
             Tokenizer.extract_meta_tokens(self._tokens,
                                           self.integer_consts,
                                           variable_dict=self.variable_dict,
                                           integer_dict=self.integer_dict)
-        self._swaps = []
 
     @classmethod
     def _from_existing(cls, connect_from, connect_to):
@@ -47,7 +50,7 @@ class Snippet:
                    integers=connect_from.integer_dict)
 
     def add_connection(self, other):
-        self._swaps.append(Snippet._from_existing(self, other))
+        self._swaps.append(other.__class__._from_existing(self, other))
 
     def get_meta_tokens(self):
         return self._meta_tokens
@@ -58,7 +61,7 @@ class Snippet:
     def render(self):
         rendered_llvm = ""
         for token in self.get_meta_tokens():
-            rendered_llvm += Token.resolve(token)
+            rendered_llvm += str(Token.resolve(token))
             # TODO: Fix this space for newlines and last token
             rendered_llvm += " "
         return rendered_llvm
