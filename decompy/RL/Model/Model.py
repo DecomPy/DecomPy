@@ -1,4 +1,3 @@
-from decompy.RL.Reward import RewardFunction
 from decompy.RL.ActionChooser import ActionChooser
 from decompy.RL.Model import Decision
 
