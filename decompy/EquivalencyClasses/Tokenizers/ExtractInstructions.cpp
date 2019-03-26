@@ -46,8 +46,6 @@ std::string extractInstructions(std::string llvm) {
     return rso.str();
 }
 
-std::string
-
 extern "C" {
     char* extract_instructions(char* module) {
         std::string moduleString(module);
