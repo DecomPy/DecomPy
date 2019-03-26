@@ -6,7 +6,7 @@ python:
 # This will install any apt dependencies in travis-apt-requirements.txt
 before_install:
   - sudo apt update
-  - source llvm-requirements.sh
+  - ./llvm-requirements.sh
   - cat travis-apt-requirements.txt | xargs sudo apt install
 
 # command to install dependencies for python using pip
