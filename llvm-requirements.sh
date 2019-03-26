@@ -21,4 +21,4 @@ fi
 echo Adding the llvm snapshot key to apt keys.
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 sudo apt update
-sudo apt install llvm-8 clang-8 lldb-8 lld-8
+sudo apt install -y llvm-8 clang-8 lldb-8 lld-8

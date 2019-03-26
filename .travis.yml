@@ -7,6 +7,7 @@ python:
 before_install:
   - sudo apt update
   - cat travis-apt-requirements.txt | xargs sudo apt install
+  - ./llvm-requirements.sh
 
 # command to install dependencies for python using pip
 install:
