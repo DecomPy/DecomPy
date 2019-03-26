@@ -43,13 +43,3 @@ class TestRepoStructure(unittest.TestCase):
                 self.assertTrue(snippets[i].id == "Class2/2.ll")
                 self.assertTrue(snippets[i].class_id == "Class2")
                 self.assertTrue(snippets[i].llvm == "; ModuleID = 2.ll")
-
-
-
-
-
-
-
-
-
-

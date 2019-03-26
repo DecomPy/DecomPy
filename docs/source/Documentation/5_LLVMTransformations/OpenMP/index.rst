@@ -1,0 +1,7 @@
+OpenMP
+******
+
+.. toctree::
+    :glob:
+
+    *

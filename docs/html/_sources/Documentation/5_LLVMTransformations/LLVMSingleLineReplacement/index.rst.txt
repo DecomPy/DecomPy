@@ -1,0 +1,7 @@
+SingleLineReplacement
+***********************
+
+.. toctree::
+    :glob:
+
+    *

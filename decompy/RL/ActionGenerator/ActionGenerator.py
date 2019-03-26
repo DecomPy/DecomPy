@@ -1,6 +1,6 @@
-from decompy.RL.Action import Action
-from decompy.RL.ActionGenerator import OptimizationLister
-from decompy.RL.ActionGenerator import CodeSearcher
+from decompy.RL.ActionGenerator.OptimizationLister import OptimizationLister
+from decompy.RL.ActionGenerator.CodeSearcher import CodeSearcher
+from decompy.EquivalencyClasses.TrieGenerator import TrieGenerator
 
 
 class ActionGenerator:
@@ -9,14 +9,14 @@ class ActionGenerator:
     llvm state it received in Step 1.
     """
 
-    ol = OptimizationLister.OptimizationLister()
-    cs = CodeSearcher.CodeSearcher() # TODO: add trie
+    trie = TrieGenerator().generates_trie()
+    ol = OptimizationLister()
+    cs = CodeSearcher(trie)
 
     def __init__(self):
         """
         init for ActionGenerator
         """
-        pass
 
     def list_actions(self, llvm_unop):
         """
@@ -27,22 +27,25 @@ class ActionGenerator:
         :return: list of actions
         :rtype: list<Action>
         """
+        return self.__list_swap_actions(llvm_unop) + self.__list_optimizations_actions(llvm_unop)
 
     def __list_swap_actions(self, llvm_unop):
         """
         A list of the possible swap actions based off of the unop llvm.
         :param llvm_unop: the unoptimized llvm
         :type: string
-        :return: list of actions
+        :return: list of swap actions
         :rtype: list<Action>
         """
+        return self.cs.find_swaps(llvm_unop)
+
     def __list_optimizations_actions(self, llvm_unop):
         """
-        A list of possible optimization actions (Pass Actino) based off the unop llvm.
+        A list of possible optimization actions (Pass Action) based off the unop llvm.
         :param llvm_unop: the unoptimized llvm
         :type: string
-        :return: list of actions
+        :return: list of pass actions
         :rtype: list<Action>
         """
-        pass
+        return self.ol.list_optimizations_actions(llvm_unop)
 
