@@ -1,7 +1,5 @@
-CODENAME=cat /etc/lsb-release | grep CODENAME | cut -d "=" -f2
-
-DEB_LLVM="deb http://apt.llvm.org/bionic/ llvm-toolchain-${CODENAME}-8 main"
-DEB_SRC_LLVM="deb-src http://apt.llvm.org/bionic/ llvm-toolchain-${CODENAME}-8 main"
+DEB_LLVM="deb http://apt.llvm.org/bionic/ llvm-toolchain-${1}-8 main"
+DEB_SRC_LLVM="deb-src http://apt.llvm.org/bionic/ llvm-toolchain-${1}-8 main"
 
 echo "Making a copy of your source list as a precaution."
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
