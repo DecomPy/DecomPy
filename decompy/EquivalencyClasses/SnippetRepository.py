@@ -1,7 +1,7 @@
 import os
 import errno
 
-from decompy.EquivalencyClasses import Snippet
+from decompy.EquivalencyClasses.Snippet import Snippet
 
 
 class SnippetRepository:
@@ -17,10 +17,22 @@ class SnippetRepository:
     def get_snippets(self):
         """
         Gets the list of snippets that it has read in.
+        this is only a sample for now!!!
         :return: snippets
         :rtype: list<Snippets>
         """
-        return self.snippets
+
+        snip = Snippet(0, "%7 = alloca i32, align 4", 0)
+        snip1 = Snippet(1, "%7 = alloca i32, align 5", 0)
+        snip2 = Snippet(2, "%7 = alloca i32, align 6", 0)
+        snip3 = Snippet(3, "%7 = alloca i32, align 7", 0)
+
+        snip.add_connection(snip1)
+        snip.add_connection(snip2)
+        snip.add_connection(snip3)
+
+        return [snip, snip1, snip2, snip3]
+        # return self.snippets # uncomment for when using with read_snippets and no longer an example.
 
     def read_snippets_from_file(self, file_path):
         """
@@ -56,7 +68,7 @@ class SnippetRepository:
                             llvm = llvm_str.read()
 
                         # add snippet to
-                        snippet = Snippet.Snippet(folder+"/"+basename, folder, llvm)
+                        snippet = Snippet(folder+"/"+basename, llvm, folder)
                         self.snippets.append(snippet)
 
             except Exception as e:
@@ -66,7 +78,4 @@ class SnippetRepository:
         return self.snippets
 
     # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
-
-
-
 
