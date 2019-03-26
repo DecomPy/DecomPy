@@ -1,10 +1,11 @@
+dist: xenial
 language: python
 cache: pip
 python:
   - "3.6"
 
 before_install:
-  - sudo bash llvm-requirements.sh trusty
+  - sudo bash llvm-requirements.sh xenial
 
 # command to install dependencies for python using pip
 install:
