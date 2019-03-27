@@ -16,7 +16,7 @@ class Action(ABC):
         super().__init__()
 
     @abstractmethod
-    def do_action(self):
+    def do_action(self, current_state):
         """
         Does an action (based on PassAction, SwapAction)
         """
