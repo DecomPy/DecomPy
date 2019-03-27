@@ -19,6 +19,16 @@ Extracts all the Instructions within a module and outputs it to a file so it is 
 
 using namespace llvm;
 
+// taken from https://stackoverflow.com/questions/30440369/error-expected-unqualified-id-on-extern-c
+#ifdef __cplusplus
+    extern "C"
+    {
+#endif
+    char* extract_instructions(char* module); /* insert correct prototype */
+        /* add other C function prototypes here if needed */
+#ifdef __cplusplus
+    }
+#endif
 /**
  * Takes in a LLVM Module/Function (must be properly formed), extracts all instructions, and returns them as a string
  * @param llvm Module or Function AS A STRING
@@ -46,18 +56,16 @@ std::string extractInstructions(std::string llvm) {
     return rso.str();
 }
 
-extern "C" {
-    char* extract_instructions(char* module) {
-        std::string moduleString(module);
-        std::string string = extractInstructions(moduleString);
-        char* charp = (char*) malloc(string.size() + 1);
-        strcpy(charp, string.c_str());
-        return charp;
-    }
+
+char* extract_instructions(char* module) {
+    std::string moduleString(module);
+    std::string string = extractInstructions(moduleString);
+    char* charp = (char*) malloc(string.size() + 1);
+    strcpy(charp, string.c_str());
+    return charp;
 }
 
+
 int main() {
-    std::cout <<
-    extract_instructions((char*)"define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}")
-    << std::endl;
+    extract_instructions((char*)"define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}");
 }
