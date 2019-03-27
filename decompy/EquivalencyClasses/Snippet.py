@@ -56,13 +56,7 @@ class Snippet:
         return self._swaps
 
     def render(self):
-        rendered_llvm = ""
-        tokens = self.get_meta_tokens()
-        for i in range(len(tokens)):
-            rendered_llvm += Token.resolve(tokens[i])
-            if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i+1] != ",":
-                rendered_llvm += " "
-        return rendered_llvm
+        return Tokenizer.reassemble(self.get_meta_tokens())
 
     def get_rendered_swaps(self):
         rendered = []
