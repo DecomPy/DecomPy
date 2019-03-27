@@ -1,4 +1,3 @@
-from decompy.RL.Action import PassAction
 
 
 class OptimizationLister:
@@ -21,3 +20,7 @@ class OptimizationLister:
         """
         return []
 
+
+# test to see it if runs
+if __name__ == "__main__":
+    pass
