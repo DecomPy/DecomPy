@@ -1,4 +1,3 @@
-# TODO: decide how to implement id (from database?)
 from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
@@ -10,7 +9,6 @@ class Snippet:
 
     def __init__(self, id, llvm, class_id, integers_consts=(), variables=None, integers=None):
         """
-
         :param id: The id of the snippet
         :param llvm: The llvm that this snippet handles
         :param class_id: The class id of the llvm
