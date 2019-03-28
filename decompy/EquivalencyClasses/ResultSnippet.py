@@ -23,7 +23,6 @@ class ResultSnippet(Snippet):
 
     @classmethod
     def _from_existing(cls, connect_from, connect_to):
-        print("RESULTS:", connect_to.results)
         return cls(connect_to.id,
                    connect_to.llvm,
                    connect_to.class_id,
@@ -46,10 +45,9 @@ if __name__ == "__main__":
 
     snip.add_connection(snip1)
 
-    print(snip.get_unrendered_swaps())
+    print("unrendered:", snip.get_unrendered_swaps())
 
     var2 == "12"
     var4 == "24"
 
-    print(snip.get_rendered_swaps())
-    print(Token.resolve(r1))
+    print("Rendered:", snip.get_rendered_swaps())

@@ -7,6 +7,7 @@ from decompy.EquivalencyClasses.ResultSnippet import ResultSnippet
 from decompy.EquivalencyClasses.Snippet import Snippet
 from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 from decompy.EquivalencyClasses.Operators import Operators
+from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
 
 
 class SnippetRepository:
@@ -65,7 +66,7 @@ class SnippetRepository:
                                     processed.append(unprocessed[i][1:])
                                 else:
                                     processed.append(lookup_for_snippet[unprocessed[i]])
-                            results[result[0]] = processed
+                            results[result[0]] = ResultsToken(processed)
                         t = ResultSnippet(other_id, other_parts["code"], other_class_id, results=results)
                         s.add_connection(t)
                     else:
@@ -176,5 +177,5 @@ if __name__ == "__main__":
     # print(s.variable_dict)
     # print(s.ge
     # t_swaps()[0].variable_dict)
-    print(s.get_unrendered_swaps())
+    print("Rendered", s.get_rendered_swaps())
     # print(s.get_rendered_swaps())

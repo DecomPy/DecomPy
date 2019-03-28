@@ -78,7 +78,7 @@ class Tokenizer:
     def reassemble(tokens):
         rendered_llvm = ""
         for i in range(len(tokens)):
-            rendered_llvm += Token.resolve(tokens[i])
+            rendered_llvm += str(Token.resolve(tokens[i]))
             if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i + 1] != ",":
                 rendered_llvm += " "
         return rendered_llvm
