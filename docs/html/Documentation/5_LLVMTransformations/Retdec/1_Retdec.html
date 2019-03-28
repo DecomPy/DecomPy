@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Why Retdec? &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="What Are LLVM Modules" href="../WhatAreLLVMModules/index.html" />
+    <link rel="prev" title="Retargetable Decompiler (RetDec)" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Opt/index.html">Opt</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Retargetable Decompiler (RetDec)</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Why Retdec?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#optimization-flags">Optimization Flags</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
+        
+          <li><a href="index.html">Retargetable Decompiler (RetDec)</a> &raquo;</li>
+        
+      <li>Why Retdec?</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/Retdec/1_Retdec.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="why-retdec">
+<h1>Why Retdec?<a class="headerlink" href="#why-retdec" title="Permalink to this headline">¶</a></h1>
+<p>The original thought was to use the passes that Retdec uses to transform its code when lifting binary to LLVM, but they do not add an easy way to access it.
+Retdec lifts binary to LLVM, using various decompilation optimizations, which can be flagged from their list.
+Additionally, Retdec can bring LLVM to HLL (higher level language) such as C.</p>
+<div class="section" id="optimization-flags">
+<h2>Optimization Flags<a class="headerlink" href="#optimization-flags" title="Permalink to this headline">¶</a></h2>
+<p>I found a few relevant flags for our purposes, although they are for decompiling. <cite>–backend-enabled-opts list</cite> and <cite>–backend-disabled-opts list</cite> where <cite>list</cite> is a comma separated list.
+And no optimizations: <cite>–backend-no-opts</cite>, however we still get some optimizations, but the output is drastically different and less readable.
+A list of flags can be found here: <a class="reference external" href="https://github.com/blacktop/docker-retdec">https://github.com/blacktop/docker-retdec</a></p>
+<p>Here are a list of optimization flags (passes):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GotoStmtOptimizer</span>
+<span class="n">RemoveUselessCastsOptimizer</span>
+<span class="n">UnusedGlobalVarOptimizer</span>
+<span class="n">DeadLocalAssignOptimizer</span>
+<span class="n">SimpleCopyPropagationOptimizer</span>
+<span class="n">CopyPropagationOptimizer</span>
+<span class="n">AuxiliaryVariablesOptimizer</span>
+<span class="n">SimplifyArithmExprOptimizer</span>
+<span class="n">IfStructureOptimizer</span>
+<span class="n">LoopLastContinueOptimizer</span>
+<span class="n">PreWhileTrueLoopConvOptimizer</span>
+<span class="n">WhileTrueToForLoopOptimizer</span>
+<span class="n">WhileTrueToWhileCondOptimizer</span>
+<span class="n">IfBeforeLoopOptimizer</span>
+<span class="n">LLVMIntrinsicsOptimizer</span>
+<span class="n">VoidReturnOptimizer</span>
+<span class="n">BreakContinueReturnOptimizer</span>
+<span class="n">BitShiftOptimizer</span>
+<span class="n">DerefAddressOptimizer</span>
+<span class="n">EmptyArrayToStringOptimizer</span>
+<span class="n">BitOpToLogOpOptimizer</span>
+<span class="n">SimplifyArithmExprOptimizer</span>
+<span class="n">UnusedGlobalVarOptimizer</span>
+<span class="n">DeadLocalAssignOptimizer</span>
+<span class="n">SimpleCopyPropagationOptimizer</span>
+<span class="n">CopyPropagationOptimizer</span>
+<span class="n">SelfAssignOptimizer</span>
+<span class="n">VarDefForLoopOptimizer</span>
+<span class="n">VarDefStmtOptimizer</span>
+<span class="n">EmptyStmtOptimizer</span>
+<span class="n">GotoStmtOptimizer</span>
+<span class="n">SimplifyArithmExprOptimizer</span>
+<span class="n">DeadCodeOptimizer</span>
+<span class="n">DerefToArrayIndexOptimizer</span>
+<span class="n">IfToSwitchOptimizer</span>
+<span class="n">CCastOptimizer</span>
+<span class="n">CArrayArgOptimizer</span>
+</pre></div>
+</div>
+<p>Here is a list of optimizations it performs when running <cite>–backend-no-opts</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Main</span> <span class="n">function</span> <span class="n">identification</span> <span class="n">optimization</span>
+<span class="n">Libgcc</span> <span class="n">idioms</span> <span class="n">optimization</span>
+<span class="n">LLVM</span> <span class="n">instruction</span> <span class="n">optimization</span>
+<span class="n">Conditional</span> <span class="n">branch</span> <span class="n">optimization</span>
+<span class="n">Syscalls</span> <span class="n">optimization</span>
+<span class="n">Stack</span> <span class="n">optimization</span>
+<span class="n">Constants</span> <span class="n">optimization</span>
+<span class="n">Function</span> <span class="n">parameters</span> <span class="ow">and</span> <span class="n">returns</span> <span class="n">optimization</span>
+<span class="n">Register</span> <span class="n">localization</span> <span class="n">optimization</span>
+<span class="n">LLVM</span> <span class="n">instruction</span> <span class="n">optimization</span>
+<span class="n">Simple</span> <span class="n">types</span> <span class="n">recovery</span> <span class="n">optimization</span>
+<span class="n">Disassembly</span> <span class="n">generation</span>
+<span class="n">Assembly</span> <span class="n">mapping</span> <span class="n">instruction</span> <span class="n">removal</span>
+<span class="n">C</span><span class="o">++</span> <span class="k">class</span> <span class="nc">hierarchy</span> <span class="n">optimization</span>
+<span class="n">Selected</span> <span class="n">functions</span> <span class="n">optimization</span>
+<span class="n">Unreachable</span> <span class="n">functions</span> <span class="n">optimization</span>
+<span class="n">LLVM</span> <span class="n">instruction</span> <span class="n">optimization</span>
+<span class="n">x86</span> <span class="n">address</span> <span class="n">spaces</span> <span class="n">optimization</span>
+<span class="n">Value</span> <span class="n">protection</span> <span class="n">optimization</span>
+<span class="n">LLVM</span>
+<span class="n">Simple</span> <span class="n">types</span> <span class="n">recovery</span> <span class="n">optimization</span>
+<span class="n">Stack</span> <span class="n">pointer</span> <span class="n">operations</span> <span class="n">optimization</span>
+<span class="n">LLVM</span> <span class="n">instruction</span> <span class="n">optimization</span>
+<span class="n">Instruction</span> <span class="n">idioms</span> <span class="n">optimization</span>
+<span class="n">Global</span> <span class="n">to</span> <span class="n">local</span> <span class="n">optimization</span>
+<span class="n">Dead</span> <span class="k">global</span> <span class="n">assign</span> <span class="n">optimization</span>
+<span class="n">LLVM</span>
+<span class="n">Phi2Seq</span> <span class="n">optimization</span>
+<span class="n">Value</span> <span class="n">protection</span> <span class="n">optimization</span>
+<span class="n">LLVM</span>
+<span class="n">Bitcode</span> <span class="n">Writer</span>
+<span class="n">Assembly</span> <span class="n">Writer</span>
+<span class="n">Cleanup</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../WhatAreLLVMModules/index.html" class="btn btn-neutral float-right" title="What Are LLVM Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Retargetable Decompiler (RetDec)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
