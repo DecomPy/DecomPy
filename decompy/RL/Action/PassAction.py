@@ -17,7 +17,7 @@ class PassAction(Action):
         self.pass_name = pass_name
         self.pass_args = pass_args_list
 
-    def do_action(self):
+    def do_action(self, current_state):
         """
         an action performed based off an LLVM pass.
         TODO: implementer add more info

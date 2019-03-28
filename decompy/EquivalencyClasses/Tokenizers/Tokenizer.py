@@ -1,6 +1,7 @@
 from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.VariableToken import VariableToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.IntegerToken import IntegerToken
+from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
 import ctypes
 import pathlib
@@ -72,6 +73,15 @@ class Tokenizer:
         token_list = [token for token in token_list if token not in ['', ' ']]
 
         return tuple(token_list)
+
+    @staticmethod
+    def reassemble(tokens):
+        rendered_llvm = ""
+        for i in range(len(tokens)):
+            rendered_llvm += Token.resolve(tokens[i])
+            if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i + 1] != ",":
+                rendered_llvm += " "
+        return rendered_llvm
 
 
 if __name__ == "__main__":
