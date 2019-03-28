@@ -27,7 +27,7 @@ using namespace llvm;
  * Takes in a LLVM Module/Function (must be properly formed), creates a file from the content
  * @param llvm Module or Function AS A STRING
  */
-void extractInstructions(std::string llvm, std::string outputFileName) {
+void extractInstructions(std::string llvm, std::string fileName) {
     LLVMContext context;
     SMDiagnostic error;
     MemoryBufferRef mbRef = MemoryBufferRef(StringRef(llvm), StringRef("llvm"));
@@ -37,16 +37,17 @@ void extractInstructions(std::string llvm, std::string outputFileName) {
     llvm::raw_string_ostream rso(type_str);
     module->print(rso, nullptr);
     std::ofstream writeFile;
-    writeFile.open(outputFileName);
+    writeFile.open(fileName);
     writeFile << rso.str();
     writeFile.close();
 }
 
 extern "C" {
-    void extract_instructions(char* module, char* outputFileName) {
+    void extract_instructions(char* module/*, char* outputFileName*/) {
         std::string moduleString(module);
         std::string outputFileNameString(outputFileName);
         extractInstructions(moduleString, outputFileNameString);
+        extractInstructions(moduleString);
     }
 }
 
