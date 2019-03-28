@@ -1,0 +1,7 @@
+Equivalency Classes
+*******************
+
+.. toctree::
+    :glob:
+
+    *
