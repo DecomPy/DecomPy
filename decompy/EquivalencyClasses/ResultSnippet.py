@@ -8,6 +8,7 @@ class ResultSnippet(Snippet):
     swaps (can only be swapped into). It calculates it's value
     based on the value matched by the previous snippet.
     """
+
     def __init__(self, id, llvm, class_id, results, integers_consts=(), variables=None, integers=None):
         self.results = results
         super().__init__(id, llvm, class_id, integers_consts, variables, integers)
@@ -22,14 +23,17 @@ class ResultSnippet(Snippet):
 
     @classmethod
     def _from_existing(cls, connect_from, connect_to):
+        print("RESULTS:", connect_to.results)
         return cls(connect_to.id,
                    connect_to.llvm,
                    connect_to.class_id,
-                   results=connect_to.results)
+                   results=connect_to.results,
+                   variables=connect_from.variable_dict)
 
 
 if __name__ == "__main__":
     from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
+    from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
     snip = Snippet(0, "%1 = alloca i32, align 4\n2", 0, integers_consts=('4', '2'))
 
@@ -48,5 +52,4 @@ if __name__ == "__main__":
     var4 == "24"
 
     print(snip.get_rendered_swaps())
-
-
+    print(Token.resolve(r1))

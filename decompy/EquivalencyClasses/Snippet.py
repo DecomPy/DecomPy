@@ -1,3 +1,4 @@
+# TODO: decide how to implement id (from database?)
 from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
@@ -9,12 +10,13 @@ class Snippet:
 
     def __init__(self, id, llvm, class_id, integers_consts=(), variables=None, integers=None):
         """
-        :param id: The id of the snippet
-        :param llvm: The llvm that this snippet handles
-        :param class_id: The class id of the llvm
-        :param integers_consts: All integer constants which exist in the snippet
-        :param variables: An optional parameter for mapping between snippets (use pre-existing tokens for variables)
-        :param integers: An optional parameter for mapping between snippets (use pre-existing tokens for constants)
+        the content of a snippet.
+        :param id: the id of the snippet.
+        :type: integer
+        :param llvm: the llvm snippet
+        :type: string
+        :param class_id: id of class
+        :type: integer
         """
         if integers is None:
             integers = {}
@@ -29,15 +31,12 @@ class Snippet:
         self.integer_dict = integers
 
         self._tokens = Tokenizer.tokenize(self.llvm, True)
-        self._swaps = []
-        self._initialize_tokens()
-
-    def _initialize_tokens(self):
         self._meta_tokens, self.variable_dict, self.integer_dict = \
             Tokenizer.extract_meta_tokens(self._tokens,
                                           self.integer_consts,
                                           variable_dict=self.variable_dict,
                                           integer_dict=self.integer_dict)
+        self._swaps = []
 
     @classmethod
     def _from_existing(cls, connect_from, connect_to):
@@ -57,12 +56,7 @@ class Snippet:
         return self._swaps
 
     def render(self):
-        rendered_llvm = ""
-        for token in self.get_meta_tokens():
-            rendered_llvm += str(Token.resolve(token))
-            # TODO: Fix this space for newlines and last token
-            rendered_llvm += " "
-        return rendered_llvm
+        return Tokenizer.reassemble(self.get_meta_tokens())
 
     def get_rendered_swaps(self):
         rendered = []

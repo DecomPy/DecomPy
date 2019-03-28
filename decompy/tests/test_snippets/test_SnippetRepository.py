@@ -13,7 +13,7 @@ class TestRepoStructure(unittest.TestCase):
         cls.fp = os.getcwd()+"/decompy/tests/test_snippets/Snippets/"
 
     def test_read_snippets_from_file(self):
-        snippets = self.sr.read_snippets_from_file(self.fp)
+        snippets = self.sr._read_snippets_from_file(self.fp)
 
         self.assertTrue(len(snippets) == 4)
 
