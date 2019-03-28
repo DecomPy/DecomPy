@@ -1,24 +1,26 @@
-from decompy.RL.Action import PassAction
-from decompy.RL.ActionGenerator import ActionGenerator
 
 
-class OptimizationLister(ActionGenerator.ActionGenerator):
+class OptimizationLister:
     """
     Step 2.1 The OptimizationLister generates a list of optimization based actions.
     """
 
     def __init__(self):
-        super(ActionGenerator, self).__init__()
         pass
 
-    def list_optimizations_actions(self, llvm_unop):
+    @staticmethod
+    def list_optimizations_actions(llvm_unop):
         """
         The driver calls the ActionGenerator to get a list of possible actions for the current
         LLVM state it received in step 1.
         :param llvm_unop: the unoptimized llvm
         :type: string
-        :return: list of actions
-        :rtype: list<Action>
+        :return: list of pass actions
+        :rtype: list<PassAction>
         """
-        pass
+        return []
 
+
+# test to see it if runs
+if __name__ == "__main__":
+    pass

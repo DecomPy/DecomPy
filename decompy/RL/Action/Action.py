@@ -1,5 +1,7 @@
+from abc import ABC, abstractmethod
 
-class Action:
+
+class Action(ABC):
     """
     Step 2: The Driver calls the ActionGenerator to get a list of possible actions for the current
     llvm state it received in Step 1.
@@ -7,11 +9,16 @@ class Action:
     """
 
     def __init__(self):
-        pass
-
-    def do_action(self):
         """
-        Does an action.
+        initiates an Action Object. In this case, it is an abstract object,
+        but it is implemented by PassAction and SwapAction.
+        """
+        super().__init__()
+
+    @abstractmethod
+    def do_action(self, llvm_str):
+        """
+        Does an action (based on PassAction, SwapAction)
         """
         pass
 
