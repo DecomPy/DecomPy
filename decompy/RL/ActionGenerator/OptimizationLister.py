@@ -1,5 +1,6 @@
-from decompy.RL.Action import PassAction
+import inspect
 
+import decompy.RL.ActionGenerator.OptPassActions as OptPassActions
 
 class OptimizationLister:
     """
@@ -7,7 +8,20 @@ class OptimizationLister:
     """
 
     def __init__(self):
-        pass
+        self.passes = self._get_all_passes()
+
+    @staticmethod
+    def _get_all_passes():
+        passes = []
+
+        opt_pass_cls = inspect.getmembers(OptPassActions, inspect.isclass)
+        retdec_pass_cls = []
+        llvm_api_cls = []
+        pass_cls = opt_pass_cls + retdec_pass_cls + llvm_api_cls
+        for pass_action in pass_cls:
+            passes.append(pass_action[1]())
+
+        return passes
 
     @staticmethod
     def list_optimizations_actions(llvm_unop):
@@ -21,3 +35,7 @@ class OptimizationLister:
         """
         return []
 
+
+# test to see it if runs
+if __name__ == "__main__":
+    OptimizationLister()

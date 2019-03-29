@@ -1,4 +1,3 @@
-# TODO: decide how to implement id (from database?)
 from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
@@ -13,10 +12,10 @@ class Snippet:
         the content of a snippet.
         :param id: the id of the snippet.
         :type: integer
-        :param llvm: the llvm snippet
-        :type: string
         :param class_id: id of class
         :type: integer
+        :param llvm: the llvm snippet
+        :type: string
         """
         if integers is None:
             integers = {}
