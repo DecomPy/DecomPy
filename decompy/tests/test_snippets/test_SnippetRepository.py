@@ -14,7 +14,7 @@ class TestRepoStructure(unittest.TestCase):
 
 
     def test_read_snippets_from_file(self):
-        snippets = self.sr._read_snippets_from_file()
+        snippets = self.sr._read_snippets_from_file(None)
 
         self.assertTrue(len(snippets) == 4)
 
