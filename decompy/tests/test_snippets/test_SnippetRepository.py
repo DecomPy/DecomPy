@@ -15,7 +15,7 @@ class TestRepoStructure(unittest.TestCase):
     def test_read_snippets_from_file(self):
         snippets = self.sr._read_snippets_from_file(None)
 
-        self.assertTrue(len(snippets) == 4)
+        self.assertTrue(len(snippets) == 6)
 
         # have to do this weird loop because it was giving me files in a random order.
         for i in range(len(snippets)):
@@ -45,10 +45,10 @@ class TestRepoStructure(unittest.TestCase):
                 self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
 
     def test_snippet_repository(self):
-        repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./SnippetRepoExamples"))
+        repo = SnippetRepository(os.getcwd() + "/decompy/tests/test_snippets/Snippets/SnippetRepoExamples")
         s = repo.get_snippets()[0]
         self.assertTrue(s.variable_dict["%2"] == "%1")
-        self.asserTrue(s.variable_dict["%3"] == "%5")
+        self.assertTrue(s.variable_dict["%3"] == "%5")
         self.assertTrue(s.integer_dict["4"] == 12)
         self.assertTrue(s.integer_dict["5"] == 15)
 
