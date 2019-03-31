@@ -22,23 +22,23 @@ class TestRepoStructure(unittest.TestCase):
             # first one
             if snippets[i][0] == "Class1/1.ll":
                 # self.assertTrue(snippets[i][0] == "Class1/1.ll")
-                self.assertTrue(snippets[i][1] == "Class1")
-                self.assertTrue(snippets[i][2] == "; ModuleID = 1.ll\n; test")
+                self.assertTrue(snippets[i][2] == "Class1")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 1.ll\n; test")
 
-                # second
+            # second
             if snippets[i][0] == "Class1/2.ll":
                 # self.assertTrue(snippets[i][0] == "Class1/2.ll")
-                self.assertTrue(snippets[i][1] == "Class1")
-                self.assertTrue(snippets[i][2] == "; ModuleID = 2.ll")
+                self.assertTrue(snippets[i][2] == "Class1")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
 
-                # third
+            # third
             if snippets[i][0] == "Class2/1.ll":
                 # self.assertTrue(snippets[i][0] == "Class2/1.ll")
-                self.assertTrue(snippets[i][1] == "Class2")
-                self.assertTrue(snippets[i][2] == "; ModuleID = 1.ll")
+                self.assertTrue(snippets[i][2] == "Class2")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 1.ll")
 
-                # fourth
+            # fourth
             if snippets[i][0] == "Class2/2.ll":
                 # self.assertTrue(snippets[i].id == "Class2/2.ll")
-                self.assertTrue(snippets[i][1] == "Class2")
-                self.assertTrue(snippets[i][2] == "; ModuleID = 2.ll")
+                self.assertTrue(snippets[i][2] == "Class2")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
