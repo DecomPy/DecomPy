@@ -1,5 +1,6 @@
 import unittest
 import os
+import pathlib
 from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
 
 
@@ -42,3 +43,17 @@ class TestRepoStructure(unittest.TestCase):
                 # self.assertTrue(snippets[i].id == "Class2/2.ll")
                 self.assertTrue(snippets[i][2] == "Class2")
                 self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
+
+    def test_snippet_repository(self):
+        repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./SnippetRepoExamples"))
+        s = repo.get_snippets()[0]
+        self.assertTrue(s.variable_dict["%2"] == "%1")
+        self.asserTrue(s.variable_dict["%3"] == "%5")
+        self.assertTrue(s.integer_dict["4"] == 12)
+        self.assertTrue(s.integer_dict["5"] == 15)
+
+        # print(s.variable_dict)
+        # print(s.ge
+        # t_swaps()[0].variable_dict)
+        print("Rendered", s.get_rendered_swaps())
+        # print(s.get_rendered_swaps())
