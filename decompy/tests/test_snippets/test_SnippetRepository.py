@@ -7,13 +7,14 @@ class TestRepoStructure(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.sr = SnippetRepository()
-
         # run from /DecomPy/
-        cls.fp = os.getcwd()+"/decompy/tests/test_snippets/Snippets/"
+        cls.fp = os.getcwd() + "/decompy/tests/test_snippets/Snippets/"
+        cls.sr = SnippetRepository(cls.fp)
+
+
 
     def test_read_snippets_from_file(self):
-        snippets = self.sr._read_snippets_from_file(self.fp)
+        snippets = self.sr._read_snippets_from_file()
 
         self.assertTrue(len(snippets) == 4)
 

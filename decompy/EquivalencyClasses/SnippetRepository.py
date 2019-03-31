@@ -127,8 +127,11 @@ class SnippetRepository:
         snippets = []
         # loop through all files from given path
         if not os.path.exists(file_path):
-            # example output [Errno 2] No such file or directory: 'your file path'
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), file_path)
+            # use our repo path instead
+            file_path = self.repo_path
+            if not os.path.exists(file_path):
+                # example output [Errno 2] No such file or directory: 'your file path'
+                raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), file_path)
 
         # walk recursively in given folder
         for root, dirs, files in os.walk(file_path):
