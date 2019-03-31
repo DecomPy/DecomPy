@@ -1,5 +1,7 @@
+from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.VariableToken import VariableToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.IntegerToken import IntegerToken
+from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
 import ctypes
 import pathlib
@@ -19,11 +21,13 @@ class Tokenizer:
         return extract.decode("UTF-8")
 
     @staticmethod
-    def extract_meta_tokens(tokens_tuple, integers=(), variable_dict=None, integer_dict=None):
+    def extract_meta_tokens(tokens_tuple, integers=(), results_dict=None, variable_dict=None, integer_dict=None):
         if variable_dict is None:
             variable_dict = {}
         if integer_dict is None:
             integer_dict = {}
+        if results_dict is None:
+            results_dict = {}
 
         tokens = list(tokens_tuple)
 
@@ -33,7 +37,10 @@ class Tokenizer:
                     variable_dict[tokens[i]] = VariableToken()
                 tokens[i] = variable_dict[tokens[i]]
 
-            if tokens[i] in integers:
+            elif tokens[i] in results_dict:
+                tokens[i] = results_dict[tokens[i]]
+
+            elif tokens[i] in integers:
                 if tokens[i] not in integer_dict:
                     integer_dict[tokens[i]] = IntegerToken()
                 tokens[i] = integer_dict[tokens[i]]
@@ -67,6 +74,15 @@ class Tokenizer:
 
         return tuple(token_list)
 
+    @staticmethod
+    def reassemble(tokens):
+        rendered_llvm = ""
+        for i in range(len(tokens)):
+            rendered_llvm += str(Token.resolve(tokens[i]))
+            if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i + 1] != ",":
+                rendered_llvm += " "
+        return rendered_llvm
+
 
 if __name__ == "__main__":
     import pathlib
@@ -81,4 +97,4 @@ if __name__ == "__main__":
     for token_stream in [result, meta]:
         for token in token_stream:
             print("(%s)" % str(token), end=" ")
-        print("*"*100)
+        print("*" * 100)

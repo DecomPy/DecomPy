@@ -1,5 +1,6 @@
 import unittest
 import os
+import pathlib
 from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
 
 
@@ -7,39 +8,52 @@ class TestRepoStructure(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.sr = SnippetRepository()
-
         # run from /DecomPy/
-        cls.fp = os.getcwd()+"/decompy/tests/test_snippets/Snippets/"
+        cls.fp = os.getcwd() + "/decompy/tests/test_snippets/Snippets/"
+        cls.sr = SnippetRepository(cls.fp)
 
     def test_read_snippets_from_file(self):
-        snippets = self.sr.read_snippets_from_file(self.fp)
+        snippets = self.sr._read_snippets_from_file(None)
 
-        self.assertTrue(len(snippets) == 4)
+        self.assertTrue(len(snippets) == 6)
 
         # have to do this weird loop because it was giving me files in a random order.
         for i in range(len(snippets)):
 
             # first one
-            if snippets[i].id == "Class1/1.ll":
-                self.assertTrue(snippets[i].id == "Class1/1.ll")
-                self.assertTrue(snippets[i].class_id == "Class1")
-                self.assertTrue(snippets[i].llvm == "; ModuleID = 1.ll\n; test")
+            if snippets[i][0] == "Class1/1.ll":
+                # self.assertTrue(snippets[i][0] == "Class1/1.ll")
+                self.assertTrue(snippets[i][2] == "Class1")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 1.ll\n; test")
 
-                # second
-            if snippets[i].id == "Class1/2.ll":
-                self.assertTrue(snippets[i].id == "Class1/2.ll")
-                self.assertTrue(snippets[i].class_id == "Class1")
-                self.assertTrue(snippets[i].llvm == "; ModuleID = 2.ll")
+            # second
+            if snippets[i][0] == "Class1/2.ll":
+                # self.assertTrue(snippets[i][0] == "Class1/2.ll")
+                self.assertTrue(snippets[i][2] == "Class1")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
 
-                # third
-            if snippets[i].id == "Class2/1.ll":
-                self.assertTrue(snippets[i].id == "Class2/1.ll")
-                self.assertTrue(snippets[i].class_id == "Class2")
-                self.assertTrue(snippets[i].llvm == "; ModuleID = 1.ll")
+            # third
+            if snippets[i][0] == "Class2/1.ll":
+                # self.assertTrue(snippets[i][0] == "Class2/1.ll")
+                self.assertTrue(snippets[i][2] == "Class2")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 1.ll")
 
-                # fourth
-            if snippets[i].id == "Class2/2.ll":
-                self.assertTrue(snippets[i].id == "Class2/2.ll")
-                self.assertTrue(snippets[i].class_id == "Class2")
-                self.assertTrue(snippets[i].llvm == "; ModuleID = 2.ll")
+            # fourth
+            if snippets[i][0] == "Class2/2.ll":
+                # self.assertTrue(snippets[i].id == "Class2/2.ll")
+                self.assertTrue(snippets[i][2] == "Class2")
+                self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
+
+    def test_snippet_repository(self):
+        repo = SnippetRepository(os.getcwd() + "/decompy/tests/test_snippets/Snippets/SnippetRepoExamples")
+        s = repo.get_snippets()[0]
+        self.assertTrue(s.variable_dict["%2"] == "%1")
+        self.assertTrue(s.variable_dict["%3"] == "%5")
+        self.assertTrue(s.integer_dict["4"] == 12)
+        self.assertTrue(s.integer_dict["5"] == 15)
+
+        # print(s.variable_dict)
+        # print(s.ge
+        # t_swaps()[0].variable_dict)
+        print("Rendered", s.get_rendered_swaps())
+        # print(s.get_rendered_swaps())

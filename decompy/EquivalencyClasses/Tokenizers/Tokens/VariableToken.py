@@ -22,6 +22,17 @@ class VariableToken(Token):
             return True
         return False
 
+    def __hash__(self):
+        """
+        This hash matches this EXACT token object.
+        Any other token is different since they can
+        possibly take on different values. This is
+        used by the Tokenizer when looking for
+        ResultTokens.
+        :return: the id of this token
+        """
+        return id(self)
+
     def __str__(self):
         return "<Unknown Variable: %s>" % hex(id(self))
 
