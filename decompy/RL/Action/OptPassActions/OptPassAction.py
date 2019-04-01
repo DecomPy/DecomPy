@@ -1,4 +1,5 @@
 from decompy.RL.Action.PassAction import PassAction
+from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 
 import ctypes
 import pathlib
@@ -22,6 +23,10 @@ class OptPassAction(PassAction):
 
         # Run the command line command
         subprocess.Popen(self.command_line_command.split())
+
+        # Retokenize the module
+        with open('output.ll') as g:
+            return g.read()
 
     def _make_llvm_module_file(self, llvm_str):
         """

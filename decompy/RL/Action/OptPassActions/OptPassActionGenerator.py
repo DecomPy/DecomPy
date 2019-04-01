@@ -5,10 +5,10 @@ class OptPassActionGenerator:
 
     @staticmethod
     def generate_opt_pass_actions():
-        opt_list = ["-adce", "-break-crit-edges", "-constmerge", "-constprop", "-dce", "-deadargelim", "-die", "-dse",
+        opt_list = ["-adce", "-argpromotion", "-break-crit-edges", "-constmerge", "-constprop", "-dce", "-deadargelim", "-die", "-dse",
                     "-functionattrs", "-globaldce", "-globalopt", "-gvn", "-indvars", "-inline", "-instcombine", "-jump-threading", "-lcssa", "-licm",
                     "-loop-deletion", "-loop-extract", "-loop-extract-single", "-loop-rotate", "-loop-unswitch", "-lowerinvoke", "-lowerswitch", "-mem2reg",
-                    "-partial-inliner", "-prune-eh", "-reassociate", "-reg2mem", "-sccp", "-simplifycfg", "-sink", "-strip-dead-prototypes"]
+                    "-mergefunc", "-partial-inliner", "-prune-eh", "-reassociate", "-reg2mem", "-sccp", "-simplifycfg", "-sink", "-strip-dead-prototypes"]
 
         # Had to remove -deadtypeelim and -block-placement because apparently they don't really exist
 
