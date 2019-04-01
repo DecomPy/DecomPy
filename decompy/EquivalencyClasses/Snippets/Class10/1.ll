@@ -1,6 +1,9 @@
-%1 = icmp slt i32 %0, [N1: Positive]
+; $SWAP=Snippets/Class9/2.ll
+; $POSITIVE_INTEGERS=0
+; $NEGATIVE_INTEGERS=-10
+%1 = icmp slt i32 %0, 0
 br i1 %1, label %2, label %3
 
 ; <label>:2:
-%4 = icmp sgt i32 %0, [N2: Negative]
+%4 = icmp sgt i32 %0, -10
 br i1 %4, label %3, label %5

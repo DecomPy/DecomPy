@@ -10,6 +10,6 @@ int main() {
      result_smaller1 = test2 / test4 * test5;
 
     // what we want: 5 * 4 / 2
-    int result_smaller2 = test5 * test4 + test2;
+    int result_smaller2 = test5 * test4 / test2;
 
 }
