@@ -1,0 +1,7 @@
+Action Choosing
+***************
+
+.. toctree::
+    :glob:
+
+    *
