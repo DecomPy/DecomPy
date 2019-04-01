@@ -1,0 +1,4 @@
+%X = alloca i32, align 4
+store i32 5, i32* %X, align 4
+%Y = add i32 %X, 1
+%Z = add i32 %Y, 2
