@@ -1,0 +1,1 @@
+This is a class that represnts an if sstatement like this: if(a<4&&a>-10). This will need patterns to be matched
