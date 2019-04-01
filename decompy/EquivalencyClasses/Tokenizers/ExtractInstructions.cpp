@@ -56,7 +56,6 @@ std::string extractInstructions(std::string llvm) {
     return rso.str();
 }
 
-
 char* extract_instructions(char* module) {
     std::string moduleString(module);
     std::string string = extractInstructions(moduleString);
@@ -67,5 +66,7 @@ char* extract_instructions(char* module) {
 
 
 int main() {
-    extract_instructions((char*)"define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}");
+    std::cout <<
+    extract_instructions((char*)"define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}")
+    << std::endl;
 }
