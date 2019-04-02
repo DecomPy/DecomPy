@@ -28,7 +28,7 @@ class ResultsToken(Token):
 
 
 if __name__ == "__main__":
-    from decompy.EquivalencyClasses.Tokenizers.Tokens.IntegerToken import IntegerToken
+    from decompy.EquivalencyClasses.Tokenizers.Tokens.PositiveIntegerToken import PositiveIntegerToken
 
     def result(token):
         try:
@@ -36,8 +36,8 @@ if __name__ == "__main__":
         except AttributeError as _:
             print("Token value: unassigned")
 
-    v1 = IntegerToken()
-    v2 = IntegerToken()
+    v1 = PositiveIntegerToken()
+    v2 = PositiveIntegerToken()
 
     r1 = ResultsToken([lambda x1, x2: x1 * (-1 * x2), v1, v2])
     r2 = ResultsToken([lambda x1, x2: abs(x1), r1, 0])

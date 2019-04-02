@@ -1,7 +1,7 @@
 from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
 
-class IntegerToken(Token):
+class SignedIntegerToken(Token):
 
     def __init__(self):
         Token.__init__(self)
@@ -21,8 +21,8 @@ class IntegerToken(Token):
         if isinstance(other, int):
             self._value = other
             return True
-        elif isinstance(other, str):
-            for char in other:
+        elif isinstance(other, str) and other[0] in '-0123456789':
+            for char in other[1:]:
                 if char not in "0123456789":
                     return False
             self._value = int(other)
@@ -36,8 +36,8 @@ class IntegerToken(Token):
 
 
 if __name__ == "__main__":
-    a = IntegerToken()
-    b = IntegerToken()
+    a = SignedIntegerToken()
+    b = SignedIntegerToken()
 
     def result():
         try:

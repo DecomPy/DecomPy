@@ -8,38 +8,57 @@ class Snippet:
     A snippet representation from the database.
     """
 
-    def __init__(self, id, llvm, class_id, integers_consts=(), variables=None, integers=None):
+    def __init__(self, id, llvm, class_id,
+                 positive_integer_consts=(), negative_integer_consts=(), signed_integer_consts=(),
+                 positive_integers=None, negative_integers=None, signed_integers=None,
+                 variables=None):
         """
 
         :param id: The id of the snippet
         :param llvm: The llvm that this snippet handles
         :param class_id: The class id of the llvm
-        :param integers_consts: All integer constants which exist in the snippet
+        :param positive_integer_consts: All integer constants which exist in the snippet
         :param variables: An optional parameter for mapping between snippets (use pre-existing tokens for variables)
-        :param integers: An optional parameter for mapping between snippets (use pre-existing tokens for constants)
+        :param positive_integers: An optional parameter for mapping between snippets (use pre-existing tokens for constants)
         """
-        if integers is None:
-            integers = {}
+        if positive_integers is None:
+            positive_integers = {}
+        if negative_integers is None:
+            negative_integers = {}
+        if signed_integers is None:
+            signed_integers = {}
         if variables is None:
             variables = {}
 
         self.id = id
         self.llvm = llvm
         self.class_id = class_id
-        self.integer_consts = integers_consts
+
+        self.positive_integer_consts = positive_integer_consts
+        self.negative_integer_consts = negative_integer_consts
+        self.signed_integer_consts = signed_integer_consts
+
+        self.positive_integer_dict = positive_integers
+        self.negative_integer_dict = negative_integers
+        self.signed_integer_dict = signed_integers
+
         self.variable_dict = variables
-        self.integer_dict = integers
 
         self._tokens = Tokenizer.tokenize(self.llvm, True)
         self._swaps = []
         self._initialize_tokens()
 
     def _initialize_tokens(self):
-        self._meta_tokens, self.variable_dict, self.integer_dict = \
+        self._meta_tokens, self.variable_dict, \
+        self.positive_integer_dict, self.negative_integer_dict, self.signed_integer_dict = \
             Tokenizer.extract_meta_tokens(self._tokens,
-                                          self.integer_consts,
+                                          self.positive_integer_consts,
+                                          self.negative_integer_consts,
+                                          self.signed_integer_consts,
                                           variable_dict=self.variable_dict,
-                                          integer_dict=self.integer_dict)
+                                          positive_integer_dict=self.positive_integer_dict,
+                                          negative_integer_dict=self.negative_integer_dict,
+                                          signed_integer_dict=self.signed_integer_dict)
 
     @classmethod
     def _from_existing(cls, connect_from, connect_to):
@@ -47,7 +66,9 @@ class Snippet:
                    connect_to.llvm,
                    connect_to.class_id,
                    variables=connect_from.variable_dict,
-                   integers=connect_from.integer_dict)
+                   positive_integers=connect_from.positive_integer_dict,
+                   negative_integers=connect_from.negative_integer_dict,
+                   signed_integers=connect_from.signed_integer_dict)
 
     def add_connection(self, other):
         self._swaps.append(other.__class__._from_existing(self, other))
