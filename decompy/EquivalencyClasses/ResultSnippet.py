@@ -9,17 +9,18 @@ class ResultSnippet(Snippet):
     based on the value matched by the previous snippet.
     """
 
-    def __init__(self, id, llvm, class_id, results, integers_consts=(), variables=None, integers=None):
+    def __init__(self, id, llvm, class_id, results, positive_integer_consts=(), variables=None, positive_integers=None):
         self.results = results
-        super().__init__(id, llvm, class_id, integers_consts, variables, integers)
+        super().__init__(id, llvm, class_id, positive_integer_consts, variables, positive_integers)
 
     def _initialize_tokens(self):
-        self._meta_tokens, self.variable_dict, self.integer_dict = \
+        self._meta_tokens, self.variable_dict, \
+        self.positive_integer_dict, self.negative_integer_dict, self.signed_integer_dict = \
             Tokenizer.extract_meta_tokens(self._tokens,
-                                          self.integer_consts,
+                                          self.positive_integer_consts,
                                           variable_dict=self.variable_dict,
                                           results_dict=self.results,
-                                          integer_dict=self.integer_dict)
+                                          positive_integer_dict=self.positive_integer_dict)
 
     @classmethod
     def _from_existing(cls, connect_from, connect_to):
@@ -32,12 +33,15 @@ class ResultSnippet(Snippet):
 
 if __name__ == "__main__":
     from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
-    from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
-    snip = Snippet(0, "%1 = alloca i32, align 4\n2", 0, integers_consts=('4', '2'))
+    snip = Snippet(0, "%1 = alloca i32, align 4\n-2", 0, positive_integer_consts=('4',), negative_integer_consts=('-2',))
 
-    var4 = snip.integer_dict['4']
-    var2 = snip.integer_dict['2']
+    print(snip.positive_integer_dict)
+    print(snip.negative_integer_dict)
+    print(snip.signed_integer_dict)
+
+    var4 = snip.positive_integer_dict['4']
+    var2 = snip.negative_integer_dict['-2']
     r1 = ResultsToken([lambda x1, x2: x1 + x2, var2, var4])
     results = {'6': r1}
 
@@ -47,7 +51,7 @@ if __name__ == "__main__":
 
     print("unrendered:", snip.get_unrendered_swaps())
 
-    var2 == "12"
+    var2 == "-37"
     var4 == "24"
 
     print("Rendered:", snip.get_rendered_swaps())

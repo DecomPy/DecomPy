@@ -42,7 +42,7 @@ class SnippetRepository:
         snippets = []
         for id, parts, class_id in ready:
             if parts["swaps"]:
-                s = Snippet(id, parts["code"], class_id, integers_consts=parts["integer_consts"])
+                s = Snippet(id, parts["code"], class_id, positive_integer_consts=parts["integer_consts"])
 
                 for connection in parts["swaps"]:
                     try:
@@ -56,7 +56,7 @@ class SnippetRepository:
                                 raise ValueError("Error in snippet id %s, invalid result token" % id)
                             if result[1] not in Operators:
                                 raise ValueError("Error in snippet id %s, invalid operator" % id)
-                            lookup_for_snippet = s.integer_dict
+                            lookup_for_snippet = s.positive_integer_dict
                             unprocessed = [Operators[result[1]]] + result[2:]
                             processed = []
                             for i in range(len(unprocessed)):
