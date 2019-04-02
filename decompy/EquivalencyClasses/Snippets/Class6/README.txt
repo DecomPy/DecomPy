@@ -1,10 +1,11 @@
 
-	In this directory, two different if-else statements are being compared.
-	In particular, the inequalities in the if-else statements are being
-	compared (a == b) vs (a != b). The results should be identical.
+In this directory, pointer arithmetic is performed. I'm unsure of how useful this will actually be, but LLVM IR does represent it in different ways.
 
-	Use the commands below to convert the c codes to llvm codes.
+For example:
+    // int a[4];
+    * (a + 4) = 5;
 
-		clang -S -emit-llvm 5.c
+    // is the same as, however the lower does fewer operations
 
-		clang -S -emit-llvm 6.c
+    // int a[4];
+    a[3] = 5;

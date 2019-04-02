@@ -1,25 +1,15 @@
 
-int sendback(int bin, int num) {
-	
-    if(bin == 1) {
-        num = 5;
-    }
-    
-    else {
-        num = 10;
-    }
-    
-    return num;
-}
+// example with negatives.
+int main() {
+    // initial
+//    int x = 5;
+//    int y = -3;
+//    int z = x - -y;
 
-int main()
-{
-    int bin = 1;
-    int num = 0;
-    
-    int val = sendback(bin, num);
-    
-    //printf("The integer is %d\n", val);
+    // same as
+    int x2 = 5;
+    int y2 = 3;
+    int z2 = x2 + y2;
     
     return 0;
 }

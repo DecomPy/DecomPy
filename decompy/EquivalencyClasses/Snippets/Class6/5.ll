@@ -1,12 +1,7 @@
-%5 = load i32, i32* %3, align 4
-  
-%6 = icmp ne i32 %5, 1
-   
-store i32 10, i32* %4, align 4
-    
-store i32 5, i32* %4, align 4
-   
-%10 = load i32, i32* %4, align 4
-  
-ret i32 %10
-
+; ModuleID = '5.c'
+;  %1 = alloca i32, align 4
+;  %2 = alloca [4 x i32], align 16
+;  store i32 0, i32* %1, align 4
+  %3 = getelementptr inbounds [4 x i32], [4 x i32]* %2, i32 0, i32 0
+  %4 = getelementptr inbounds i32, i32* %3, i64 4
+  store i32 5, i32* %4, align 4

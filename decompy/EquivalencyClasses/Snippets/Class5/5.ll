@@ -1,12 +1,5 @@
-%5 = load i32, i32* %3, align 4
-  
-%6 = icmp ne i32 %5, 1
-   
-store i32 10, i32* %4, align 4
-    
-store i32 5, i32* %4, align 4
-   
-%10 = load i32, i32* %4, align 4
-  
-ret i32 %10
-
+; SWAP=Snippets/Class5/6.ll
+; POSITIVE_INTEGERS=0,5
+; NEGATIVE_INTEGERS=-3
+%1 = sub nsw i32 0, -3
+%2 = sub nsw i32 5, %1
