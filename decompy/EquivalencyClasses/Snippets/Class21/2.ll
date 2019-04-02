@@ -1,2 +1,3 @@
-; ModuleID = 2.ll TODO: change 0 to variable?
-store i32 0, i32* %x, align 4
+; SWAP=Snipets/Class21/1.ll
+; POSITIVE_INTEGERS=5
+store i32 5, i32* %x, align 4
