@@ -1,3 +1,6 @@
-%4 = sub nsw i32 %2, %3
-%5 = sub nsw i32 %1, %4
-store i32 %5, i32* %z, align 4
+; $SWAP=Snipets/Class21/2.ll
+; $POSITIVE_INTEGERS=3,2
+; $RESULTS=2,PLUS,2,C0
+%1 = sub nsw i32 3, 2
+%3 = sub nsw i32 3, %1
+store i32 2, i32* %3, align 4
