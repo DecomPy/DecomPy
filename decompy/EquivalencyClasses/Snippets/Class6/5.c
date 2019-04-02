@@ -1,12 +1,13 @@
 int main()
 {
-    // pointer arithmetic
-    int a[4];
-    * (a + 4) = 5;
+    // adding negative
+//    int var1 = -3;
+//    int var2 = 4;
+//    int x = var1 + var2;
 
-    // same as
-    // int a;
-    // a[4]
-
+    // vs subtracting
+    int var3 = 3;
+    int var4 = 4;
+    int y = var4 - var3;
     return 0;
 }
