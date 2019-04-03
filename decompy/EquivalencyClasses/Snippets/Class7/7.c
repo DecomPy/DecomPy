@@ -1,21 +1,10 @@
-
-int sendback(int test, int incrementer) {
-	// For loop test 
-    for(test = 0; test < 10; test++) {
-    	incrementer++;
-	}
-	
-	return incrementer;
-}
-
+//#include <stdio.h>
 // Comparison of iterators: While loop vs. For loop
 int main() {
 
-    int test = 0;
-    int incrementer = 0;
-	
-	int final_val = sendback(test, incrementer);
-	//printf("The integer is %d\n", final_val);
-	
+    int test = 3;
+    int test2 = 3 << 2;
+//    printf("%d", test2);
+
 	return 0;
 }
