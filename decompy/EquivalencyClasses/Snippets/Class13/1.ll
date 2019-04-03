@@ -1,3 +1,6 @@
+; $SWAP=Snippets/Class13/2.ll
+; $POSITIVE_INTEGERS=1
+; TODO: ask vatricia to look this over.
 ; <label>:W:                                      ; preds = %10, %2
   %BOOL = icmp slt i32 %C, %L ;COMPARE
   br i1 %BOOL, label %B, label %E ;BRANCH

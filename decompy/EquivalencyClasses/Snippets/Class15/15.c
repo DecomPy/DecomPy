@@ -1,14 +1,10 @@
+#include <stdint.h>
 
 int main()
 {
-    int a = 10;
-    int counter = 0;
-    
-    for(int i = 0; i < a; i++) {
-        counter++;
-    }
-    
-    int final_val = counter;
+    // this class stores variables that are uint8_t into a more general int (int32)
+    uint8_t test1 = 100;
+    int test2 = 100;
 
     return 0;
 }

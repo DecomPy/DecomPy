@@ -1,3 +1,6 @@
+; $SWAP=Snippets/Class13.1.ll
+; $POSITIVE_INTEGERS=0,8,3,1,24,16,32
+; $NEGATIVE_INTEGERS=8,4,1
 define void @fnc(i32* nocapture, i32) local_unnamed_addr #0 {
   %3 = icmp sgt i32 %L, 0 ;IF LENGTH IS 0
   br i1 %3, label %4, label %E ;BRANCH TO THE END OTHERWISE CONTINUE
