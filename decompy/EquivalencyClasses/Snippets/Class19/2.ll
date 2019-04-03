@@ -1,5 +1,4 @@
 ; $SWAP=Snipets/Class19/2.ll
-; $POSITIVE_INTEGERS=3,2
-; $RESULTS=6,PLUS,3,3
-; TODO: ask if I can keep PLUS or should I use MULT here?
+; $POSITIVE_INTEGERS=3,2 ;TODO: I need this 2 specifically.
+; $RESULTS=6,MULTIPLY,3,2 ;TODO: do I need results?
 %1 = mul nsw i32 3, 2

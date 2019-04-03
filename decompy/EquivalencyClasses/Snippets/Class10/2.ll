@@ -1,7 +1,7 @@
 ; $SWAP=NONE
 ; $POSITIVE_INTEGERS=0
-; $NEGATIVE_INTEGERS=-10
-; $RESULTS=9,ABS,-9,C0
+; $NEGATIVE_INTEGERS=10
+; $RESULTS=9,ABS,-9,MINUS,C1
 ; $RESULTS=9,PLUS,0,9
 ; TODO: confirm this is correct
 ; before we had
