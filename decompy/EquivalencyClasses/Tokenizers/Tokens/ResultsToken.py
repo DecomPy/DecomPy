@@ -24,7 +24,7 @@ class ResultsToken(Token):
         return id(self) == id(other)
 
     def __str__(self):
-        return "<Result Variable: %s (%s, %s)>" % (hex(id(self)), str(self._operator), str(self._operands))
+        return "<Result Variable: %s (%s, %s)>" % (hex(id(self)), str(self._operator), str([str(elem) for elem in self._operands]))
 
 
 if __name__ == "__main__":
