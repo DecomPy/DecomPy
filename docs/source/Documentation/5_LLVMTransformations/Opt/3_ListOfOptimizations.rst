@@ -24,13 +24,11 @@ Passes We Will Use:
 All passes which involve removing dead code may be useful to our RL Agent. Our agent will perform swaps and passes
 which may generate code that no longer matters. Dead code elimination will remove this code, thus simplifying the
 result.
-
-**-argpromotion: Promote ‘by reference’ arguments to scalars**
-
-**-block-placement: Profile Guided Basic Block Placement**
+**Likely does not depend on other passes**
 
 **-break-crit-edges: Break critical edges in CFG**
-This may be required for other passes that cannot handle critical edges. (The other passes are unknwn at this time.)
+This may be required for other passes that cannot handle critical edges. (The other passes are unknown at this time.)
+**Does not depend on other passes**
 
 **-constmerge: Merge Duplicate Global Constants**
 
@@ -40,9 +38,6 @@ This may be required for other passes that cannot handle critical edges. (The ot
 All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
 **-deadargelim: Dead Argument Elimination**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
-
-**-deadtypeelim: Dead Type Elimination**
 All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
 **-die: Dead Instruction Elimination**
@@ -66,6 +61,7 @@ This may be required by other passes.
 **-inline: Function Integration/Inlining**
 
 **-instcombine: Combine redundant instructions**
+**Does not depend on other passes**
 
 **-jump-threading: Jump Threading**
 If a condition is always true, or always false, this will get rid of it.
@@ -73,6 +69,7 @@ If a condition is always true, or always false, this will get rid of it.
 **-lcssa: Loop-Closed SSA Form Pass**
 
 **-licm: Loop Invariant Code Motion**
+**Does not depend on other passes**
 
 **-loop-deletion: Delete dead loops**
 All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
@@ -82,6 +79,7 @@ All passes which involve removing dead code may be useful. See Aggressive Dead C
 **-loop-extract-single: Extract at most one loop into a new function**
 
 **-loop-rotate: Rotate Loops**
+**Does not depend on other passes**
 
 **-loop-simplify: Canonicalize natural loops**
 This may be required for other passes.
@@ -95,22 +93,26 @@ Branches may be easier to deal with than switches.
 
 **-mem2reg: Promote Memory to Register**
 The RL Agemt may find that some snippet swaps work better when done with registers.
+**Does not depend on other passes**
 
 **-mergefunc: Merge Functions**
 
 **-partial-inliner: Partial Inliner**
 
 **-prune-eh: Remove unused exception handling info**
+**Does not depend on other passes**
 
 **-reassociate: Reassociate expressions**
 
 **-reg2mem: Demote all values to stack slots**
 The RL Agemt may find that some snippet swaps work better when done with memory.
+**Does not depend on other passes**
 
 **-sccp: Sparse Conditional Constant Propagation**
 
 **-simplifycfg: Simplify the CFG**
 This simplifies the control flow graph, which might make the end result more readable.
+**Does not depend on other passes**
 
 **-sink: Code sinking**
 
@@ -125,8 +127,17 @@ A description of why we are not using these passes is coming soon.
 **-always-inline: Inliner for always_inline functions**
 This only inlines function that are marked with a keyword. The other inlining functions work fine for our purposes.
 
+**-argpromotion: Promote ‘by reference’ arguments to scalars**
+Will convert array objects to scalars, which complicates the code unnecessarily.
+
 **-aggressive-instcombine: Combine expression patterns**
 the regular instcombine optimization should suffice. This one is less efficient.
+
+**-block-placement: Profile Guided Basic Block Placement**
+Doesn't actually work
+
+**-deadtypeelim: Dead Type Elimination**
+Doesn't actually work
 
 **-internalize: Internalize Global Symbols**
 Our code, for our demo, will not have main functions.
