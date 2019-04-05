@@ -160,6 +160,13 @@ class SnippetRepository:
             # use our repo path instead
             file_path = self.repo_path
 
+        try:
+            file_path = pathlib.Path(file_path)
+            file_path = str(file_path.resolve())
+        except Exception as e:
+            print(e)
+            pass
+
         # check if it exists
         if file_path is None or not os.path.exists(file_path):
             # example output [Errno 2] No such file or directory: 'your file path'
@@ -202,7 +209,7 @@ class SnippetRepository:
 if __name__ == "__main__":
     import pathlib
 
-    repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./SnippetRepoExamples"))
+    repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./Snippets"))
     s = repo.get_snippets()[0]
     s.variable_dict["%2"] == "%1"
     s.variable_dict["%3"] == "%5"

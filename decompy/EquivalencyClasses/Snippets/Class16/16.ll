@@ -1,22 +1,5 @@
-%7 = load i32, i32* %4, align 4
-  
-%8 = load i32, i32* %2, align 4
-  
-%9 = icmp sle i32 %7, %8
- 
-%11 = load i32, i32* %3, align 4
-  
-%12 = add nsw i32 %11, 1
-  
-store i32 %12, i32* %3, align 4
-   
-%14 = load i32, i32* %4, align 4
-  
-%15 = add nsw i32 %14, 1
-  
-store i32 %15, i32* %4, align 4
-   
-%17 = load i32, i32* %3, align 4
-  
-store i32 %17, i32* %5, align 4
-  
+; $SWAP=Snippets/Class16/15.ll
+; POSITIVE_INTEGERS=10,2
+%1 = load i32, i32* 10, align 4
+%2 = srem i32 %1, 2
+store i32 %2, i32* %a, align 4

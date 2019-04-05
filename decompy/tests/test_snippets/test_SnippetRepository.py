@@ -49,8 +49,8 @@ class TestRepoStructure(unittest.TestCase):
         s = repo.get_snippets()[0]
         self.assertTrue(s.variable_dict["%2"] == "%1")
         self.assertTrue(s.variable_dict["%3"] == "%5")
-        self.assertTrue(s.integer_dict["4"] == 12)
-        self.assertTrue(s.integer_dict["5"] == 15)
+        self.assertTrue(s.positive_integer_dict["4"] == 12)
+        self.assertTrue(s.positive_integer_dict["5"] == 15)
 
         # print(s.variable_dict)
         # print(s.ge

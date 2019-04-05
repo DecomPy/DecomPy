@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class10/1.ll
+; $SWAP=Snippets/Class14/2.ll
 ; $POSITIVE_INTEGERS=0
 ; $NEGATIVE_INTEGERS=10
 ; TODO: confirm with Vatricia

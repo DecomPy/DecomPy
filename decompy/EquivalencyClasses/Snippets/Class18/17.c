@@ -1,28 +1,11 @@
 
-int sendback(int bin, int num) {
-	
-   switch(bin) {
-      case 1 :
-         num = 5;
-         break;
-      case 0 :
-         num = 10;
-         break;
-      default :
-         num = 0;
-   }
-    
-    return num;
-}
-
 int main()
 {
-    int bin = 1;
-    int num = 0;
-    
-    int val = sendback(bin, num);
-    
-    //printf("The integer is %d\n", val);
-    
+    // when people do n / 2 it is semantically equivalent to n >> 1 (base 10 vs base 2)
+    int n = 10;
+    // int a = n >> 1;
+     int b = n / 2;
+
     return 0;
 }
+
