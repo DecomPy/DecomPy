@@ -15,112 +15,125 @@ Because of this, the passes that we won't be using are only those that we know w
 
 Detailed descriptions of the following passes can be found at: https://llvm.org/docs/Passes.html#transform-passes
 In the following documentation, we will outline which passes we will be using and why, and which passes we won't be
-using and why.
+using and why. We will also describe the order that passes must be run in. Some passes might require being run in a
+particular order. While it is possible that the RL agent may learn this ordering on its own, it would be helpful to
+figure out the required passes ourselves.
 
 Passes We Will Use:
 -------------------
 
-**-adce: Aggressive Dead Code Elimination**
-All passes which involve removing dead code may be useful to our RL Agent. Our agent will perform swaps and passes
-which may generate code that no longer matters. Dead code elimination will remove this code, thus simplifying the
-result.
-**Likely does not depend on other passes**
+This section has been split into four parts: Opt passes that are **independent** (they do not require other passes
+to run before them), passes that are **dependent**, passes that are **likely independent**,  and passes that are
+**unknown** (still being researched.) It is important to note that some passes may *seem* like they do nothing when
+run on the wrong type of program. We may test if opt passes are independent, but we might falsely label opt passes as
+*dependent* simply because we did not use code with the proper features (ie, code without constants will not change
+with const merge). Since the decompiler will be able to learn what passes go in which order, it is best to default
+all passes to "independent." This prevents mistakes *we* might make without enough data; the RL Agent will learn the
+correct ordering better than us.
 
-**-break-crit-edges: Break critical edges in CFG**
-This may be required for other passes that cannot handle critical edges. (The other passes are unknown at this time.)
-**Does not depend on other passes**
+Independent Passes:
+    **-break-crit-edges: Break critical edges in CFG**
+    This may be required for other passes that cannot handle critical edges. (The other passes are unknown at this time.)
 
-**-constmerge: Merge Duplicate Global Constants**
+    **-gvn: Global Value Numbering**
 
-**-constprop: Simple constant propagation**
+    **-instcombine: Combine redundant instructions**
 
-**-dce: Dead Code Elimination**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-jump-threading: Jump Threading**
+    If a condition is always true, or always false, this will get rid of it.
 
-**-deadargelim: Dead Argument Elimination**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-licm: Loop Invariant Code Motion**
 
-**-die: Dead Instruction Elimination**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-loop-extract: Extract loops into new functions**
 
-**-dse: Dead Store Elimination**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-loop-extract-single: Extract at most one loop into a new function**
 
-**-functionattrs: Deduce function attributes**
+    **-loop-rotate: Rotate Loops**
 
-**-globaldce: Dead Global Elimination**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-mem2reg: Promote Memory to Register**
+    The RL Agemt may find that some snippet swaps work better when done with registers.
 
-**-globalopt: Global Variable Optimizer**
+    **-prune-eh: Remove unused exception handling info**
 
-**-gvn: Global Value Numbering**
+    **-reg2mem: Demote all values to stack slots**
+    The RL Agemt may find that some snippet swaps work better when done with memory.
 
-**-indvars: Canonicalize Induction Variables**
-This may be required by other passes.
+    **-simplifycfg: Simplify the CFG**
+    This simplifies the control flow graph, which might make the end result more readable.
 
-**-inline: Function Integration/Inlining**
 
-**-instcombine: Combine redundant instructions**
-**Does not depend on other passes**
+Likely Independent Passes:
+    **-adce: Aggressive Dead Code Elimination**
+    All passes which involve removing dead code may be useful to our RL Agent. Our agent will perform swaps and passes
+    which may generate code that no longer matters. Dead code elimination will remove this code, thus simplifying the
+    result.
 
-**-jump-threading: Jump Threading**
-If a condition is always true, or always false, this will get rid of it.
+    **-constmerge: Merge Duplicate Global Constants**
 
-**-lcssa: Loop-Closed SSA Form Pass**
+    **-constprop: Simple constant propagation**
 
-**-licm: Loop Invariant Code Motion**
-**Does not depend on other passes**
+    **-dce: Dead Code Elimination**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-loop-deletion: Delete dead loops**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-deadargelim: Dead Argument Elimination**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-loop-extract: Extract loops into new functions**
+    **-die: Dead Instruction Elimination**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-loop-extract-single: Extract at most one loop into a new function**
+    **-dse: Dead Store Elimination**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-loop-rotate: Rotate Loops**
-**Does not depend on other passes**
+    **-functionattrs: Deduce function attributes**
 
-**-loop-simplify: Canonicalize natural loops**
-This may be required for other passes.
+    **-globaldce: Dead Global Elimination**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-loop-unswitch: Unswitch loops**
+    **-globalopt: Global Variable Optimizer**
 
-**-lowerinvoke: Lower invokes to calls, for unwindless code generators**
+    **-inline: Function Integration/Inlining**
+    Inlined functions are functions to be called faster than normal
 
-**-lowerswitch: Lower SwitchInsts to branches**
-Branches may be easier to deal with than switches.
+    **-loop-deletion: Delete dead loops**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-mem2reg: Promote Memory to Register**
-The RL Agemt may find that some snippet swaps work better when done with registers.
-**Does not depend on other passes**
+    **-lowerinvoke: Lower invokes to calls, for unwindless code generators**
 
-**-mergefunc: Merge Functions**
+    **-lowerswitch: Lower SwitchInsts to branches**
+    Branches may be easier to deal with than switches.
 
-**-partial-inliner: Partial Inliner**
+    **-mergefunc: Merge Functions**
 
-**-prune-eh: Remove unused exception handling info**
-**Does not depend on other passes**
+    **-partial-inliner: Partial Inliner**
 
-**-reassociate: Reassociate expressions**
+    **-strip-dead-prototypes: Strip Unused Function Prototypes**
+    All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
 
-**-reg2mem: Demote all values to stack slots**
-The RL Agemt may find that some snippet swaps work better when done with memory.
-**Does not depend on other passes**
 
-**-sccp: Sparse Conditional Constant Propagation**
+Unknown Passes:
+    **-indvars: Canonicalize Induction Variables**
+    This may be required by other passes.
 
-**-simplifycfg: Simplify the CFG**
-This simplifies the control flow graph, which might make the end result more readable.
-**Does not depend on other passes**
+    **-lcssa: Loop-Closed SSA Form Pass**
+    This may be required by other passes.
 
-**-sink: Code sinking**
+    **-loop-simplify: Canonicalize natural loops**
+    This may be required for other passes.
 
-**-strip-dead-prototypes: Strip Unused Function Prototypes**
-All passes which involve removing dead code may be useful. See Aggressive Dead Code Elimination for more information.
+    **-reassociate: Reassociate expressions**
+    This makes other passes more efffective
+
+    **-sccp: Sparse Conditional Constant Propagation**
+
+    **-sink: Code sinking**
+
+
+Dependent Passses:
+    **-loop-unswitch: Unswitch loops**
+    Depends on -lcim
 
 Passes We Will Not Use:
--------------------
+-----------------------
 
 A description of why we are not using these passes is coming soon.
 
@@ -177,12 +190,9 @@ Unknown Passes:
 
 These passes are under consideration.
 
-**-bb-vectorize: Basic-Block Vectorization**
-This combines instructions into "vector instructions." This may make the end result less clear, but what a vector
-instruction is exactly is not known.
-
 **-codegenprepare: Optimize for code generation**
 This pass "munges" the code, which should make it worse. It is unknown if other passes we need require it though.
+**Does not depend on other passes**
 
 **-loweratomic: Lower atomic intrinsics to non-atomic form**
 This may not make the code worse, but it is unknown if it will make it better.
