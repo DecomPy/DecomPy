@@ -1,4 +1,5 @@
 
+    import Decision
     """
     Need to import the Decision class in order to access the methods defined in that class.
     """
@@ -13,19 +14,20 @@ class model:
     A retrieveDecision instance of the Decision() class is being instantiated here.
     """
 
-    retrieveDecision.getPastSummary()
+    retrieveDecision.get_summary()
     """
-    A getPastSummary() method needs to be defined in the Decision class.
+    A get_summary() method needs to be defined in the Decision class.
     This method will return self.summary. Its parameter should be self.    
     """
 
-    retrieveDecision.getReward()
+    retrieveDecision.get_reward()
     """
-    A getReward() method needs to be defined in the Decision class.
+    A get_reward() method needs to be defined in the Decision class.
     This method will return self.reward. Its parameter should be self.    
     """
-    retrieveDecision.getAction()
+
+    retrieveDecision.get_action()
     """
-    A getAction() method needs to be defined in the Decision class.
+    A get_action() method needs to be defined in the Decision class.
     This method will return self.action. Its parameter should be self.    
     """
