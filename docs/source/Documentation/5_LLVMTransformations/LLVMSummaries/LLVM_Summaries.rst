@@ -569,6 +569,17 @@ Prints a dom tree. Not sure how useful tree or graphs are for LLVM summaries.
                 [8] %62 {39,40}
               [7] %65 {42,43}
 
+**Likely Information for Summaries**
+---------------------------------------
+
+After running through all the analysis passes, I think `instcout`,  `aa-eval`, `loops`, and `regions` are the best candidates for collecting summary
+information with. `instcount` outputs the number of each type of instruction, and this information can be used to decide if actions like `instcombine` should
+take place. `aa-eval` does things with pointers, and I don't know how it can be useful, but since the information is summarized nicely the RL agent might
+find a useful way to interpret the data. `loops` can be used to count the number of loops as well as their depths, which relates to actions like `loop-unroll`
+and related. `regions` outputs regions, and similarly to `aa-eval`, I don't know what they are but the RL agent might be able to find them useful.
+
+Other data can be collected if effort is used to use the LLVM API, but for now this is good enough.
+
 **Sources**
 -----------
 

@@ -16,7 +16,6 @@ opt -stats -analyze -iv-users example.ll &> analysis_output_iv-users.txt
 opt -stats -analyze -lazy-value-info example.ll &> analysis_output_lazy-value-info.txt
 opt -stats -analyze -libcall-aa example.ll &> analysis_output_libcall-aa.txt
 opt -stats -analyze -lint example.ll &> analysis_output_lint.txt
-
 opt -stats -analyze -print-externalfnconstants example.ll &> analysis_output_print-externalfnconstants.txt
 opt -stats -analyze -print-function example.ll &> analysis_output_print-function.txt
 opt -stats -analyze -print-module example.ll &> analysis_output_print-module.txt
@@ -26,7 +25,6 @@ opt -stats -analyze -scalar-evolution example.ll &> analysis_output_scalar-evolu
 opt -stats -analyze -scev-aa example.ll &> analysis_output_scev-aa.txt
 opt -stats -analyze -stack-safety example.ll &> analysis_output_stack-safety.txt
 opt -stats -analyze -targetdata example.ll &> analysis_output_targetdata.txt
-
 opt -stats -analyze -memdep example.ll &> analysis_output_memdep.txt
 opt -stats -analyze -module-debuginfo example.ll &> analysis_output_module-debuginfo.txt
 opt -stats -analyze -postdomfrontier example.ll &> analysis_output_postdomfrontier.txt

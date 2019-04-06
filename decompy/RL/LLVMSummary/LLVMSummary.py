@@ -7,7 +7,7 @@ class LLVMSummary:
     """
 
     # TODO: finish this?
-    def __init__(self):
+    def __init__(self, instcounts, loops, aa, regions):
         """
         Initializes the object.
         """
