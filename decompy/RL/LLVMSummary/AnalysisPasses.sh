@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-clang++-8 -S -emit-llvm example.cpp
+clang -S -emit-llvm example.cpp
 opt -stats -analyze -instcount example.ll &> analysis_output_instcount.txt
 opt -stats -analyze -loops example.ll &> analysis_output_loops.txt
 opt -stats -analyze -aa-eval example.ll &> analysis_output_aa-eval.txt
@@ -26,3 +26,12 @@ opt -stats -analyze -scalar-evolution example.ll &> analysis_output_scalar-evolu
 opt -stats -analyze -scev-aa example.ll &> analysis_output_scev-aa.txt
 opt -stats -analyze -stack-safety example.ll &> analysis_output_stack-safety.txt
 opt -stats -analyze -targetdata example.ll &> analysis_output_targetdata.txt
+
+opt -stats -analyze -memdep example.ll &> analysis_output_memdep.txt
+opt -stats -analyze -module-debuginfo example.ll &> analysis_output_module-debuginfo.txt
+opt -stats -analyze -postdomfrontier example.ll &> analysis_output_postdomfrontier.txt
+opt -stats -analyze -print-alias-sets example.ll &> analysis_output_print-alias-sets.txt
+opt -stats -analyze -print-callgraph example.ll &> analysis_print-callgraph.txt
+opt -stats -analyze -print-callgraph-sccs example.ll &> analysis_print-callgraph-sccs.txt
+opt -stats -analyze -print-cfg-sccs example.ll &> analysis_print-cfg-sccs.txt
+opt -stats -analyze -print-dom-info example.ll &> analysis_print-dom-info.txt

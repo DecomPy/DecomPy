@@ -462,6 +462,113 @@ Not quite sure what it does, and I don't know what the data means so I can't cre
 
 Not implemented
 
+
+**-memdemp**
+An analysis that determines what memory operation it depended on for a given memory operation. It builds off of alias analysis information.
+I could not find an output, and a Pass::print does not exist for this. In terms of an LLVM Summary, it is not useful.
+However, from its descrption it is useful, and may have some important logic behind the scenes.
+
+Doesn't print anything
+
+
+**-module-debuginfo**
+Prints decoded debug info as human-readable metadata. May be useful for debugging info, but for an LLVM Summary, most likely not.
+
+Doesn't print anything (except for debug info)
+
+
+**-postdomfrontier**
+Could not get this to run.
+
+Doesn't print anything
+
+
+**-print-alias-sets**
+Prints the aliases (I assume pointers?) of the module. LLVM docs does not have anything on this
+
+::
+
+    Alias Set Tracker: 8 alias sets for 8 pointer values.
+      AliasSet[0x2351ad0, 1] must alias, Mod/Ref   Pointers: (i32* %1, 4)
+      AliasSet[0x2351b70, 1] must alias, Mod/Ref   Pointers: (i32* %b, 4)
+      AliasSet[0x2351c10, 1] must alias, Mod/Ref   Pointers: (i32* %i, 4)
+      AliasSet[0x2351cb0, 1] must alias, Mod/Ref   Pointers: (i32* %j, 4)
+      AliasSet[0x23595f0, 1] must alias, Mod/Ref   Pointers: (i32* %k, 4)
+      AliasSet[0x2359690, 1] must alias, Mod/Ref   Pointers: (i32* %i1, 4)
+      AliasSet[0x2359730, 1] must alias, Mod/Ref   Pointers: (i32* %j2, 4)
+      AliasSet[0x23597d0, 1] must alias, Mod/Ref   Pointers: (i32* %i3, 4)
+
+
+**-print-callgraph**
+Prints a call graph to human-readable form. Used for functions. May be useful if we could somehow interpret it?
+
+::
+
+    CallGraph Root is: <<null function: 0x0x256c4b0>>
+    Call graph node <<null function>><<0x256c4b0>>  #uses=0
+        CS<0x0> calls function '_Z7examplei'
+
+    Call graph node for function: '_Z7examplei'<<0x257b4b0>>  #uses=1
+
+
+**-print-callgraph-sccs**
+Another callgraph but this is for strongly connected components. Not sure how this will be useful for an LLVM summary.
+
+::
+
+    SCCs for the program in PostOrder:
+    SCC #1 : _Z7examplei,
+    SCC #2 : external node,
+
+
+**-print-cfg-sccs**
+Another callgraph but this is for strongly connected components. such as functions Not sure how this will be useful for an LLVM summary.
+Refer to the example.c code to further understand this (these are nested for loops).
+
+::
+
+    SCCs for Function _Z7examplei in PostOrder:
+    SCC #1 : ,
+    SCC #2 : , , ,
+    SCC #3 : ,
+    SCC #4 : , , , , , , ,
+    SCC #5 : ,
+    SCC #6 : , , , , , , , , , , ,
+    SCC #7 : ,
+
+
+**-print-dom-info**
+Prints a dom tree. Not sure how useful tree or graphs are for LLVM summaries.
+
+::
+
+    Inorder Dominator Tree:
+  [1] %0 {0,49}
+    [2] %12 {1,48}
+      [3] %15 {2,21}
+        [4] %16 {3,20}
+          [5] %19 {4,15}
+            [6] %20 {5,14}
+              [7] %23 {6,9}
+                [8] %26 {7,8}
+              [7] %29 {10,13}
+                [8] %30 {11,12}
+          [5] %33 {16,19}
+            [6] %34 {17,18}
+      [3] %37 {22,47}
+        [4] %38 {23,46}
+          [5] %41 {24,35}
+            [6] %42 {25,34}
+              [7] %45 {26,29}
+                [8] %48 {27,28}
+              [7] %51 {30,33}
+                [8] %52 {31,32}
+          [5] %55 {36,45}
+            [6] %56 {37,44}
+              [7] %59 {38,41}
+                [8] %62 {39,40}
+              [7] %65 {42,43}
+
 **Sources**
 -----------
 
