@@ -277,6 +277,191 @@ Doesn't print anything
 
 Doesn't print anything
 
+**-print-externalfnconstants**
+
+Doesn't print anything
+
+**-print-function**
+
+Prints the function in LLVM IR ASM. Not usable for summary because it's literally not consolidating any information.
+
+**-print-module**
+
+Prints the module in LLVM IR ASM. Not usable for summary because it's literally not consolidating any information.
+
+**-print-used-types**
+
+Not implemented
+
+**-regions**
+
+Not sure what regions are, but it does provide statistics that can be put in the summary.
+Sample output below:
+
+::
+
+    Printing analysis 'Detect single entry single exit regions' for function '_Z7examplei':
+    Region tree:
+    [0] %1 => <Function Return>
+      [1] %20 => %45
+        [2] %24 => %41
+          [3] %28 => %37
+      [1] %46 => %63
+        [2] %50 => %59
+      [1] %64 => %73
+    End region tree
+    ===-------------------------------------------------------------------------===
+                              ... Statistics Collected ...
+    ===-------------------------------------------------------------------------===
+
+    7 region - The # of regions
+    6 region - The # of simple regions
+
+
+**-scalar-evolution**
+
+It might mean how scalars change over time, but I don't know and it doesn't provide consolidated information I can use for the summary. Sample output below:
+
+::
+
+    Printing analysis 'Scalar Evolution Analysis' for function '_Z7examplei':
+    Classifying expressions for: @_Z7examplei
+      %2 = alloca i32, align 4
+      -->  %2 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %3 = alloca i32, align 4
+      -->  %3 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %4 = alloca i32, align 4
+      -->  %4 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %5 = alloca i32, align 4
+      -->  %5 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %6 = alloca i32, align 4
+      -->  %6 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %7 = alloca i32, align 4
+      -->  %7 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %8 = alloca i32, align 4
+      -->  %8 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %9 = alloca i32, align 4
+      -->  %9 U: [0,-3) S: [-9223372036854775808,9223372036854775805)
+      %10 = load i32, i32* %2, align 4
+      -->  %10 U: full-set S: full-set
+      %11 = add nsw i32 %10, 3
+      -->  (3 + %10) U: full-set S: full-set
+      %12 = load i32, i32* %2, align 4
+      -->  %12 U: full-set S: full-set
+      %13 = add nsw i32 %12, 4
+      -->  (4 + %12) U: full-set S: full-set
+      %14 = load i32, i32* %3, align 4
+      -->  %14 U: full-set S: full-set
+      %15 = add nsw i32 %14, 1
+      -->  (1 + %14) U: full-set S: full-set
+      %16 = load i32, i32* %3, align 4
+      -->  %16 U: full-set S: full-set
+      %17 = add nsw i32 %16, 1
+      -->  (1 + %16) U: full-set S: full-set
+      %18 = load i32, i32* %3, align 4
+      -->  %18 U: full-set S: full-set
+      %19 = add nsw i32 %18, 1
+      -->  (1 + %18) U: full-set S: full-set
+      %21 = load i32, i32* %4, align 4
+      -->  %21 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %20: Variant, %24: Invariant, %28: Invariant }
+      %25 = load i32, i32* %5, align 4
+      -->  %25 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %24: Variant, %20: Variant, %28: Invariant }
+      %29 = load i32, i32* %6, align 4
+      -->  %29 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant, %24: Variant, %20: Variant }
+      %32 = load i32, i32* %3, align 4
+      -->  %32 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant, %24: Variant, %20: Variant }
+      %33 = add nsw i32 %32, 1
+      -->  (1 + %32) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant, %24: Variant, %20: Variant }
+      %35 = load i32, i32* %6, align 4
+      -->  %35 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant, %24: Variant, %20: Variant }
+      %36 = add nsw i32 %35, 1
+      -->  (1 + %35) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant, %24: Variant, %20: Variant }
+      %39 = load i32, i32* %5, align 4
+      -->  %39 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %24: Variant, %20: Variant, %28: Invariant }
+      %40 = add nsw i32 %39, 1
+      -->  (1 + %39) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %24: Variant, %20: Variant, %28: Invariant }
+      %43 = load i32, i32* %4, align 4
+      -->  %43 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %20: Variant, %24: Invariant, %28: Invariant }
+      %44 = add nsw i32 %43, 1
+      -->  (1 + %43) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %20: Variant, %24: Invariant, %28: Invariant }
+      %47 = load i32, i32* %7, align 4
+      -->  %47 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %46: Variant, %50: Invariant }
+      %51 = load i32, i32* %8, align 4
+      -->  %51 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %50: Variant, %46: Variant }
+      %54 = load i32, i32* %3, align 4
+      -->  %54 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %50: Variant, %46: Variant }
+      %55 = add nsw i32 %54, 1
+      -->  (1 + %54) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %50: Variant, %46: Variant }
+      %57 = load i32, i32* %8, align 4
+      -->  %57 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %50: Variant, %46: Variant }
+      %58 = add nsw i32 %57, 1
+      -->  (1 + %57) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %50: Variant, %46: Variant }
+      %61 = load i32, i32* %7, align 4
+      -->  %61 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %46: Variant, %50: Invariant }
+      %62 = add nsw i32 %61, 1
+      -->  (1 + %61) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %46: Variant, %50: Invariant }
+      %65 = load i32, i32* %9, align 4
+      -->  %65 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %64: Variant }
+      %68 = load i32, i32* %3, align 4
+      -->  %68 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %64: Variant }
+      %69 = add nsw i32 %68, 1
+      -->  (1 + %68) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %64: Variant }
+      %71 = load i32, i32* %9, align 4
+      -->  %71 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %64: Variant }
+      %72 = add nsw i32 %71, 1
+      -->  (1 + %71) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %64: Variant }
+      %74 = load i32, i32* %3, align 4
+      -->  %74 U: full-set S: full-set
+    Determining loop execution counts for: @_Z7examplei
+    Loop %64: Unpredictable backedge-taken count.
+    Loop %64: Unpredictable max backedge-taken count.
+    Loop %64: Unpredictable predicated backedge-taken count.
+    Loop %50: Unpredictable backedge-taken count.
+    Loop %50: Unpredictable max backedge-taken count.
+    Loop %50: Unpredictable predicated backedge-taken count.
+    Loop %46: Unpredictable backedge-taken count.
+    Loop %46: Unpredictable max backedge-taken count.
+    Loop %46: Unpredictable predicated backedge-taken count.
+    Loop %28: Unpredictable backedge-taken count.
+    Loop %28: Unpredictable max backedge-taken count.
+    Loop %28: Unpredictable predicated backedge-taken count.
+    Loop %24: Unpredictable backedge-taken count.
+    Loop %24: Unpredictable max backedge-taken count.
+    Loop %24: Unpredictable predicated backedge-taken count.
+    Loop %20: Unpredictable backedge-taken count.
+    Loop %20: Unpredictable max backedge-taken count.
+    Loop %20: Unpredictable predicated backedge-taken count.
+
+**-scev-aa**
+
+Doesn't print text
+
+**-stack-safety**
+
+Not quite sure what it does, and I don't know what the data means so I can't create a summary with it. Example output below:
+
+::
+
+    Printing analysis 'Stack Safety Analysis':
+      @_Z7examplei
+        args uses:
+          []: full-set
+        allocas uses:
+          [4]: [0,4)
+          [4]: [0,4)
+          [4]: [0,4)
+          [4]: [0,4)
+          [4]: [0,4)
+          [4]: [0,4)
+          [4]: [0,4)
+          [4]: [0,4)
+
+
+
+**-targetdata**
+
+Not implemented
+
 **Sources**
 -----------
 
