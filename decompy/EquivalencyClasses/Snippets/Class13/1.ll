@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class13/2.ll
+; $SWAP=Class13/2.ll
 ; $POSITIVE_INTEGERS=1
 ; TODO: ask vatricia to look this over.
 ; <label>:W:                                      ; preds = %10, %2

@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class4/2.ll
+; $SWAP=Class4/2.ll
 ; $POSITIVE_INTEGERS=0
 ; $NEGATIVE_INTEGERS=10
 %1 = icmp slt i32 %0, 0

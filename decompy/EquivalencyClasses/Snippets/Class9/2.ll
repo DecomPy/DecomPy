@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class9/2.ll
+; $SWAP=Class9/1.ll
 ; $POSITIVE_INTEGERS=0
 ; $NEGATIVE_INTEGERS=10
 %1 = load i32, i32* %0, align 4

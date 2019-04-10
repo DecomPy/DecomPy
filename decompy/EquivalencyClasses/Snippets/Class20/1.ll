@@ -1,4 +1,4 @@
-; $SWAP=Snipets/Class21/2.ll
+; $SWAP=Class21/2.ll
 ; $POSITIVE_INTEGERS=3,2
 ; $RESULTS=2,PLUS,2,C0
 %1 = sub nsw i32 3, 2

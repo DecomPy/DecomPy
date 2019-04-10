@@ -1,4 +1,4 @@
-; $SWAP=Snipets/Class19/2.ll
+; $SWAP=Class19/2.ll
 ; $POSITIVE_INTEGERS=3
 ; $RESULTS=6,PLUS,3,3
 %1 = load i32, i32* 3, align 4

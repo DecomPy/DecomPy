@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class11/1.ll
+; $SWAP=Class11/1.ll
 ; $POSITIVE_INTEGERS=3,20
 %6 = icmp slt i32 %X, 3
 br i1 %6, label %7, label %E

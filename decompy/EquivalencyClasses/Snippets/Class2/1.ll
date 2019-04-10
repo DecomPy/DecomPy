@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class2/2.ll
+; $SWAP=Class2/2.ll
 ; $POSITIVE_INTEGERS=12,22
 store i32 12, i32* %x, align 4
 %0 = load i32* %x, align 4

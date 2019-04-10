@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class11/1.ll
+; $SWAP=Class11/1.ll
 ; $POSITIVE_INTEGERS=3,20
 ; $RESULTS=-20,NEGATE,20,C0
 ; $RESULTS=-21,MINUS,-20,C1

@@ -1,4 +1,4 @@
-; $SWAP=Snippets/Class13.1.ll
+; $SWAP=Class13.1.ll
 ; $POSITIVE_INTEGERS=0,8,3,1,24,16,32
 ; $NEGATIVE_INTEGERS=8,4,1
 define void @fnc(i32* nocapture, i32) local_unnamed_addr #0 {
