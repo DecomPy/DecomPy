@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>llc &mdash; DecomPy 0.0.1 documentation</title>
+  <title>Tokenizing LLVM &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -34,9 +34,7 @@
   <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="llc" href="1_llc.html" />
-    <link rel="prev" title="How Does MergeConstants Work?" href="../LLVMTransformMergeConstants/MergeConstants.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,24 +78,11 @@
               
             
             
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">llc</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="1_llc.html">llc</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Opt/index.html">Opt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
 </ul>
 
             
@@ -143,15 +128,13 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
-        
-      <li>llc</li>
+      <li>Tokenizing LLVM</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/5_LLVMTransformations/Llc/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/3_DesignDecisions/7_EquivilancyClasses/3_llvm_tokenizing.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,13 +147,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="llc">
-<h1>llc<a class="headerlink" href="#llc" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="1_llc.html">llc</a></li>
-</ul>
-</div>
+  <div class="section" id="tokenizing-llvm">
+<h1>Tokenizing LLVM<a class="headerlink" href="#tokenizing-llvm" title="Permalink to this headline">¶</a></h1>
+<p><strong>Motivation</strong></p>
+<p>The reason LLVM needs to be tokenized is so those tokens can be used to generate a trie. The trie is used to figure out if sections of the decompiled code
+match with any snippets that we create so that it is known that they can be swapped.</p>
+<p><strong>Possible Methods</strong></p>
+<p>There are two methods to tokenize LLVM: the first is the treat the LLVM textual assembly as strings, and the second is to build custom tokens out of the the
+LLVM IR using the LLVM API.</p>
+<p><strong>Advantages and Disadvantages of using String Manipulation</strong></p>
+<p><em>Advantages</em></p>
+<p>String manipulation is very easy to tokenize compared to trying to tokenize via the LLVM API. Typical delimitation rules are followed i.e. tokens are delimited
+by delimiters such as whitespace, commas, braces, etc.</p>
+<p>Creating the trie with strings is much more straightforward than using LLVM classes.</p>
+<p><em>Disadvantages</em></p>
+<p>I can’t think of any disadvantages. Information will be lost with using string manipulation, but it won’t be harmful unless that information is needed.</p>
+<p><strong>Advantages and Disadvantages of using LLVM API</strong></p>
+<p><em>Advantages</em></p>
+<p>As much information about every aspect of every instruction can be preserved. For example, if a <code class="docutils literal notranslate"><span class="pre">BinaryOperator</span></code> is tokenized, it’s <code class="docutils literal notranslate"><span class="pre">ValueName</span></code>, both
+<code class="docutils literal notranslate"><span class="pre">Operands</span></code>, the relations of each <code class="docutils literal notranslate"><span class="pre">Operand</span></code> with previous instructions. It may turn out that this information is needed, but I can’t think of a use case
+where this information is needed.</p>
+<p><em>Disadvantages</em></p>
+<p>Working with the LLVM API is very tedious, and it may be the case that every child of the <em>Value</em> class will need it’s own code to tokenize, as there is no
+built-in tokenizing code within LLVM.</p>
+<p><strong>Current Plan of Action</strong></p>
+<p>Currently, tokenizing will take place by normalizing all the variables from the start point onwards, then doing a token-by-token walk through the decompiled
+code comparing it with the tree to find if there are matching snippets. We will use string manipulation because that is all that is needed effectively
+tokenize.</p>
 </div>
 
 
@@ -178,15 +181,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="1_llc.html" class="btn btn-neutral float-right" title="llc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../LLVMTransformMergeConstants/MergeConstants.html" class="btn btn-neutral float-left" title="How Does MergeConstants Work?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

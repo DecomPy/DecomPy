@@ -326,7 +326,7 @@
 <span class="sd">        :return: bool or nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;REPLACE INTO ml_table(file_path, author_repo_key, source_code, cleaned_source code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)&quot;</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;REPLACE INTO ml_table(file_path, author_repo_key, source_code, cleaned_source_code, object_file, elf, llvm_unop, llvm_op, assembly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)&quot;</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__transaction_builder</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">ml_tuple</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>

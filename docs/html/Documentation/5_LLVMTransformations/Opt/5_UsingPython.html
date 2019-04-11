@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using Python to Track Dependencies &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="What Are LLVM Modules" href="../WhatAreLLVMModules/index.html" />
+    <link rel="prev" title="Optimization Order" href="4_OptimizationOrder.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Opt</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_References.html">References</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_OptPasses.html">Looking at opt Passes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_ListOfOptimizations.html">List of Optimizations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_OptimizationOrder.html">Optimization Order</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Using Python to Track Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
+        
+          <li><a href="index.html">Opt</a> &raquo;</li>
+        
+      <li>Using Python to Track Dependencies</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/Opt/5_UsingPython.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-python-to-track-dependencies">
+<h1>Using Python to Track Dependencies<a class="headerlink" href="#using-python-to-track-dependencies" title="Permalink to this headline">¶</a></h1>
+<p>In order to find out which llvm passes depend on other llvm passes, we realized
+that we could run each of the passes in opt in the default order and determine
+which actually affected the code. If something affected the code, then it would
+have to be either independent of all other passes, or it would have to be
+dependent on a pass that was run before it. By using opt’s print-after-all,
+we were able to output the name of the pass followed by the code after running
+that pass. The following two commands can be used in conjunction to output
+a file which will contain all of the transitions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clang</span><span class="o">-</span><span class="mi">8</span> <span class="o">-</span><span class="n">S</span> <span class="o">-</span><span class="n">emit</span><span class="o">-</span><span class="n">llvm</span> <span class="n">test</span><span class="o">.</span><span class="n">c</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">8</span> <span class="o">-</span><span class="nb">print</span><span class="o">-</span><span class="n">after</span><span class="o">-</span><span class="nb">all</span> <span class="o">-</span><span class="n">S</span> <span class="o">-</span><span class="n">O3</span> <span class="n">test</span><span class="o">.</span><span class="n">ll</span> <span class="o">-</span><span class="n">o</span> <span class="n">test2</span><span class="o">.</span><span class="n">ll</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">output</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>This can be repeated for different optimization levels (replace -O3 with
+-O1, -Os, etc.) and with different files (some files may cause different
+passes to take effect). Each of these different pass sequences will generate
+a different ordered list of passes. Each pass in that list can only possibly
+be dependent on a pass before it. Because of this, we can take the intersection
+of each set over and over again, slowly whittling the list of passes which
+each pass can be dependent on down to a more managable number. The following is
+the python program we used to implement this algorithm</p>
+<div class="sphinx-tabs docutils container">
+<div class="ui top attached tabular menu sphinx-menu docutils container">
+<div class="active item sphinx-data-tab-UHl0aG9u docutils container">
+<div class="docutils container">
+Python</div>
+</div>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-UHl0aG9u active docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">all_passes</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;IR Dump After (.*?) \*\*\*\n(.*?)\*\*\*&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+<span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;output.O3.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;output.2.O3.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;output.3.O3.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;output.3.Os.txt&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;output.3.O1.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;output.3.Oz.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;output.4.O1.txt&quot;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">change_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">prev_module</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">llvm_pass</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">llvm_pass</span> <span class="ow">in</span> <span class="n">all_passes</span><span class="p">:</span>
+                        <span class="n">all_passes</span><span class="p">[</span><span class="n">llvm_pass</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">change_list</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_passes</span><span class="p">[</span><span class="n">llvm_pass</span><span class="p">])</span>
+                        <span class="n">all_passes</span><span class="p">[</span><span class="n">llvm_pass</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_passes</span><span class="p">[</span><span class="n">llvm_pass</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">change_list</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">prev_module</span> <span class="o">!=</span> <span class="n">module</span><span class="p">:</span>
+                        <span class="n">change_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">llvm_pass</span><span class="p">)</span>
+                <span class="n">prev_module</span> <span class="o">=</span> <span class="n">module</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">all_passes</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_passes</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span> <span class="n">all_passes</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following shows the dependencies that the above script determined after
+running 4 simple C programs at varying optimization levels through.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Instrument</span> <span class="n">function</span> <span class="n">entry</span><span class="o">/</span><span class="n">exit</span> <span class="k">with</span> <span class="n">calls</span> <span class="n">to</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">mcount</span><span class="p">()</span> <span class="p">(</span><span class="n">pre</span> <span class="n">inlining</span><span class="p">)</span> <span class="mi">1</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">Simplify</span> <span class="n">the</span> <span class="n">CFG</span> <span class="mi">1</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">SROA</span> <span class="mi">1</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">Early</span> <span class="n">CSE</span> <span class="mi">1</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">Lower</span> <span class="s1">&#39;expect&#39;</span> <span class="n">Intrinsics</span> <span class="mi">1</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">Force</span> <span class="nb">set</span> <span class="n">function</span> <span class="n">attributes</span> <span class="mi">1</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">Infer</span> <span class="nb">set</span> <span class="n">function</span> <span class="n">attributes</span> <span class="mi">2</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Call</span><span class="o">-</span><span class="n">site</span> <span class="n">splitting</span> <span class="mi">2</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Interprocedural</span> <span class="n">Sparse</span> <span class="n">Conditional</span> <span class="n">Constant</span> <span class="n">Propagation</span> <span class="mi">2</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Called</span> <span class="n">Value</span> <span class="n">Propagation</span> <span class="mi">2</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Global</span> <span class="n">Variable</span> <span class="n">Optimizer</span> <span class="mi">2</span> <span class="p">{</span><span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Promote</span> <span class="n">Memory</span> <span class="n">to</span> <span class="n">Register</span> <span class="mi">3</span> <span class="p">{</span><span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Dead</span> <span class="n">Argument</span> <span class="n">Elimination</span> <span class="mi">4</span> <span class="p">{</span><span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">}</span>
+<span class="n">Combine</span> <span class="n">redundant</span> <span class="n">instructions</span> <span class="mi">5</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Remove</span> <span class="n">unused</span> <span class="n">exception</span> <span class="n">handling</span> <span class="n">info</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Function</span> <span class="n">Integration</span><span class="o">/</span><span class="n">Inlining</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Deduce</span> <span class="n">function</span> <span class="n">attributes</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Promote</span> <span class="s1">&#39;by reference&#39;</span> <span class="n">arguments</span> <span class="n">to</span> <span class="n">scalars</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Call-site splitting&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Interprocedural Sparse Conditional Constant Propagation&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Early</span> <span class="n">CSE</span> <span class="n">w</span><span class="o">/</span> <span class="n">MemorySSA</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Speculatively</span> <span class="n">execute</span> <span class="n">instructions</span> <span class="k">if</span> <span class="n">target</span> <span class="n">has</span> <span class="n">divergent</span> <span class="n">branches</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Jump</span> <span class="n">Threading</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Value</span> <span class="n">Propagation</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Combine</span> <span class="n">pattern</span> <span class="n">based</span> <span class="n">expressions</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Call-site splitting&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Interprocedural Sparse Conditional Constant Propagation&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Conditionally</span> <span class="n">eliminate</span> <span class="n">dead</span> <span class="n">library</span> <span class="n">calls</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">PGOMemOPSize</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Tail</span> <span class="n">Call</span> <span class="n">Elimination</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Reassociate</span> <span class="n">expressions</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Canonicalize</span> <span class="n">natural</span> <span class="n">loops</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">LCSSA</span> <span class="n">Verifier</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Loop</span><span class="o">-</span><span class="n">Closed</span> <span class="n">SSA</span> <span class="n">Form</span> <span class="n">Pass</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Rotate</span> <span class="n">Loops</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Loop</span> <span class="n">Invariant</span> <span class="n">Code</span> <span class="n">Motion</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Unswitch</span> <span class="n">loops</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Induction</span> <span class="n">Variable</span> <span class="n">Simplification</span> <span class="mi">10</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Simplify the CFG&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Recognize</span> <span class="n">loop</span> <span class="n">idioms</span> <span class="mi">11</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Induction Variable Simplification&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Simplify the CFG&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Delete</span> <span class="n">dead</span> <span class="n">loops</span> <span class="mi">11</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Induction Variable Simplification&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Simplify the CFG&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">Unroll</span> <span class="n">loops</span> <span class="mi">11</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Induction Variable Simplification&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Simplify the CFG&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+<span class="n">MergedLoadStoreMotion</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Global</span> <span class="n">Value</span> <span class="n">Numbering</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">MemCpy</span> <span class="n">Optimization</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Sparse</span> <span class="n">Conditional</span> <span class="n">Constant</span> <span class="n">Propagation</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Demanded</span> <span class="n">bits</span> <span class="n">analysis</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Bit</span><span class="o">-</span><span class="n">Tracking</span> <span class="n">Dead</span> <span class="n">Code</span> <span class="n">Elimination</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Dead</span> <span class="n">Store</span> <span class="n">Elimination</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Aggressive</span> <span class="n">Dead</span> <span class="n">Code</span> <span class="n">Elimination</span> <span class="mi">6</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">A</span> <span class="n">No</span><span class="o">-</span><span class="n">Op</span> <span class="n">Barrier</span> <span class="n">Pass</span> <span class="mi">7</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Eliminate</span> <span class="n">Available</span> <span class="n">Externally</span> <span class="n">Globals</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Deduce</span> <span class="n">function</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">RPO</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Dead</span> <span class="n">Global</span> <span class="n">Elimination</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Float</span> <span class="n">to</span> <span class="nb">int</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Loop</span> <span class="n">Distribution</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Loop</span> <span class="n">Vectorization</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Loop</span> <span class="n">Load</span> <span class="n">Elimination</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">SLP</span> <span class="n">Vectorizer</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Warn</span> <span class="n">about</span> <span class="n">non</span><span class="o">-</span><span class="n">applied</span> <span class="n">transformations</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Alignment</span> <span class="kn">from</span> <span class="nn">assumptions</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Strip</span> <span class="n">Unused</span> <span class="n">Function</span> <span class="n">Prototypes</span> <span class="mi">9</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">}</span>
+<span class="n">Merge</span> <span class="n">Duplicate</span> <span class="n">Global</span> <span class="n">Constants</span> <span class="mi">10</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Strip Unused Function Prototypes&#39;</span><span class="p">}</span>
+<span class="n">Loop</span> <span class="n">Sink</span> <span class="mi">20</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Induction Variable Simplification&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Unroll loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Loop Invariant Code Motion&#39;</span><span class="p">,</span> <span class="s1">&#39;Loop Distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Aggressive Dead Code Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Rotate Loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Canonicalize natural loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Simplify the CFG&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Warn about non-applied transformations&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Strip Unused Function Prototypes&#39;</span><span class="p">}</span>
+<span class="n">Remove</span> <span class="n">redundant</span> <span class="n">instructions</span> <span class="mi">11</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Canonicalize natural loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Strip Unused Function Prototypes&#39;</span><span class="p">}</span>
+<span class="n">Hoist</span><span class="o">/</span><span class="n">decompose</span> <span class="n">integer</span> <span class="n">division</span> <span class="ow">and</span> <span class="n">remainder</span> <span class="mi">11</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Float to int&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;A No-Op Barrier Pass&#39;</span><span class="p">,</span> <span class="s1">&#39;Canonicalize natural loops&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Strip Unused Function Prototypes&#39;</span><span class="p">}</span>
+<span class="n">Inliner</span> <span class="k">for</span> <span class="n">always_inline</span> <span class="n">functions</span> <span class="mi">8</span> <span class="p">{</span><span class="s1">&#39;Force set function attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove unused exception handling info&#39;</span><span class="p">,</span> <span class="s1">&#39;Global Variable Optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;Module Verifier&#39;</span><span class="p">,</span> <span class="s1">&#39;Combine redundant instructions&#39;</span><span class="p">,</span> <span class="s1">&#39;Promote Memory to Register&#39;</span><span class="p">,</span> <span class="s1">&#39;Dead Argument Elimination&#39;</span><span class="p">,</span> <span class="s1">&#39;Infer set function attributes&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../WhatAreLLVMModules/index.html" class="btn btn-neutral float-right" title="What Are LLVM Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="4_OptimizationOrder.html" class="btn btn-neutral float-left" title="Optimization Order" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
