@@ -1,0 +1,7 @@
+LLVM Summaries
+***********************
+
+.. toctree::
+    :glob:
+
+    *
