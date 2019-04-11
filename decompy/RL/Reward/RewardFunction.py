@@ -2,6 +2,7 @@
 # TODO: decide which things need to be static.
 import ctypes
 import pathlib
+from decompy.RL.Model import Decision
 #from decompy.RL.Model import Model
 
 libreward_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libRewardFunction.so")
@@ -23,7 +24,7 @@ class RewardFunction:
         """
         pass
 
-    def create_reward(self, current_llvm, old_llvm, optimal_llvm):
+    def create_reward(self, current_llvm, old_llvm, optimal_llvm, summary, action):
         """
         Takes the current state (modified state), the old state (before modifications), optimal_llvm and determines
         if the action leads to an improved state by creating a new reward. It then updates the model with the Decision.
@@ -33,10 +34,15 @@ class RewardFunction:
         :type: str
         :param optimal_llvm: the optimal LLVM
         :type: str
-        :return:
+        :param summary: the the summary of the current state LLVM
+        :type: Action
+        :param action: the action that was performed
+        :type: LLVMSummary
         """
-        # TODO: Update the model instead of returning
-        return RewardFunction.__wrap_llvm_reward_function(current_llvm, old_llvm, optimal_llvm)
+        reward = RewardFunction.__wrap_llvm_reward_function(current_llvm, old_llvm, optimal_llvm)
+        decision = Decision(summary, reward, action)
+        # TODO: Update the model
+        return reward
 
     @staticmethod
     def __wrap_llvm_reward_function(original, changed, goal):
