@@ -21,7 +21,7 @@ class Model:
         def __init__(self, decision_history):
             """
             Creates a new singleton with the decision_history info.
-            :param decision_history: a list of Decisions.
+            :param decision_history: a dictionary of Decisions.
             """
             self.decision_history = decision_history
             pass
@@ -45,12 +45,22 @@ class Model:
             :type: Decision
             :return: nothing
             """
+            # get hash representation from llvm summary
+            hashed = hash(decision.summary)
+
+            # if it already exists, then add it to a list
+            if hashed in self.decision_history:
+                decision_list = self.decision_history[hashed]
+                decision_list.append(decision)
+                decision = decision_list  # for convenience
+
+            self.decision_history[hashed] = decision
             pass
 
     def __init__(self, decision_history):
         """
         creates a new singleton with the decision_history info
-        :param decision_history: a list of Decisions.
+        :param decision_history: a dictonary of Decisions.
         """
         if not Model.instance:
             Model.instance = Model.__Model(decision_history)
