@@ -38,6 +38,39 @@ class Model:
             """
             pass
 
+        def get_decision_by_hash(self, hashed_llvm):
+            """
+            gets the decision by hashed_llvm summary.
+            :param hashed_llvm: the hashed_llvm summary
+            :return: a decision or None if not found.
+            :rtype: Decision
+            """
+            return self.decision_history[hashed_llvm]
+
+        def get_all_decisions_dictionary(self, hashed_llvm):
+            """
+            gets the decision by hashed_llvm summary.
+            :param hashed_llvm: the hashed_llvm summary
+            :return: a decision or None if not found.
+            :rtype: Decision
+            """
+            dict_list = []
+            # loop through all keys, add them to a new list
+            for key, value in self.decision_history:
+                if type(value) is list:
+                    dict_list.extend(value)
+                else:
+                    dict_list.append(value)
+            return self.decision_history[hashed_llvm]
+
+        def get_all_decisions_list(self):
+            """
+            gets all decisions and puts them into a list.
+            :return: a decision list
+            :rtype: list<Decision>
+            """
+            return (for _ in self.decision_history.iteritems())
+
         def update_model(self, decision):
             """
             Updates the model based off a decision.
@@ -55,7 +88,6 @@ class Model:
                 decision = decision_list  # for convenience
 
             self.decision_history[hashed] = decision
-            pass
 
     def __init__(self, decision_history):
         """
