@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Searching for Snippets: Tries and Tokenization &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Searching for Snippets: Tries and Tokenization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/7_EquivilancyClasses/1_TrieAndTokenization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="searching-for-snippets-tries-and-tokenization">
+<h1>Searching for Snippets: Tries and Tokenization<a class="headerlink" href="#searching-for-snippets-tries-and-tokenization" title="Permalink to this headline">¶</a></h1>
+<p>The actions that the RL Agent will take will be to swap out small snippets (of the code being decompiled0 with
+snippets that are different, but produce the same behavior. We will have a collection of snippets, and everytime an
+action is taken we will search the code for a possible swap. We plan on tokenizing the snippets and creating a trie
+which we will use to search the code. This document outlines the general plan for this, as well as the specific
+approach we will take.</p>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>The Search Algorithm:</dt>
+<dd><p class="first">A trie is especially good at prefix matching. For example: For a trie containing the words “mat”, “match”, and
+“matching” as keys, a prefix search on “match” would return the values at “mat” and “match”. We will use this to
+search for snippets.
+The algorithm for our search uses this as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>Perform prefix search on the trie, using all of the code starting at the first line</dt>
+<dd><ul class="first last">
+<li>The code starting from this line will need to be normalized so that variable names match</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>Any snippets that are found are added to a snippet list</li>
+<li>Repeat, starting the prefix search from the next line</li>
+</ul>
+</div></blockquote>
+<p class="last">This process is repeated whenever we need to search for snippets from our snippet repository.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Trie:</dt>
+<dd>We plan to use the Trie library implemented by Google here: <a class="reference external" href="https://github.com/google/pygtrie">https://github.com/google/pygtrie</a>. PygTrie for a
+collection to be passed as the Key and an object for the Value. We will tokenize each snippet, starting first
+with a tokenizer that simply parses the snippet into a list of characters, then improving the design if time
+permits. This list of tokens will be used as the Key, while our Snippet object (which contains a snippet id, an
+equivalency class id, and the snippet string) will be the value.</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Tokenizer:</dt>
+<dd><p class="first">To allow for multiple types of tokenization, we will create tokenizer classes that each implement a “tokenize”
+method. A tokenizer will be a member of the trie, and the trie will call this tokenizer to generate the list of
+tokens to be used as a key for the snippet.</p>
+<p class="last">The initial tokenizer will just parse the string into a list of characters, but by using this design we will
+have the flexibility of having a more complex tokenizer and being able to use it without much change to the code.
+Other tokenizer options are listed below:</p>
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

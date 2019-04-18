@@ -1,0 +1,1 @@
+This is the same as class 4, but assuming that mem to reg did not happen

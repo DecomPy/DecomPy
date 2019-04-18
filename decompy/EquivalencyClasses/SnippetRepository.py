@@ -20,6 +20,8 @@ class SnippetRepository:
 
         self.commands = {
             "POSITIVE_INTEGERS": self.positive_integers,
+            "NEGATIVE_INTEGERS": self.negative_integers,
+            "SIGNED_INTEGERS": self.signed_integers,
             "SWAP": self.swap,
             "RESULTS": self.results
         }
@@ -42,7 +44,10 @@ class SnippetRepository:
         snippets = []
         for id, parts, class_id in ready:
             if parts["swaps"]:
-                s = Snippet(id, parts["code"], class_id, integers_consts=parts["integer_consts"])
+                s = Snippet(id, parts["code"], class_id,
+                            positive_integer_consts=parts["positive_integer_consts"],
+                            negative_integer_consts=parts["negative_integer_consts"],
+                            signed_integer_consts=parts["signed_integer_consts"])
 
                 for connection in parts["swaps"]:
                     try:
@@ -51,12 +56,17 @@ class SnippetRepository:
                         raise ValueError("Error in snippet id: %s, no snippet matching %s" % (id, connection))
                     if "results" in other_parts:
                         results = {}
+                        lookup_for_snippet = {}
+                        lookup_for_snippet.update(s.positive_integer_dict)
+                        lookup_for_snippet.update(s.negative_integer_dict)
+                        lookup_for_snippet.update(s.signed_integer_dict)
+
                         for result in other_parts["results"]:
                             if len(result) < 2:
                                 raise ValueError("Error in snippet id %s, invalid result token" % id)
                             if result[1] not in Operators:
                                 raise ValueError("Error in snippet id %s, invalid operator" % id)
-                            lookup_for_snippet = s.integer_dict
+
                             unprocessed = [Operators[result[1]]] + result[2:]
                             processed = []
                             for i in range(len(unprocessed)):
@@ -66,8 +76,17 @@ class SnippetRepository:
                                     processed.append(unprocessed[i][1:])
                                 else:
                                     processed.append(lookup_for_snippet[unprocessed[i]])
-                            results[result[0]] = ResultsToken(processed)
-                        t = ResultSnippet(other_id, other_parts["code"], other_class_id, results=results)
+                            r = ResultsToken(processed)
+                            lookup_for_snippet.update({result[0]: r})
+                            results[result[0]] = r
+                        t = ResultSnippet(other_id, other_parts["code"], other_class_id, results=results, variables=s.variable_dict,
+                                          positive_integer_consts=s.positive_integer_consts,
+                                          negative_integer_consts=s.negative_integer_consts,
+                                          signed_integer_consts=s.signed_integer_consts,
+                                          positive_integers=s.positive_integer_dict,
+                                          negative_integers=s.negative_integer_dict,
+                                          signed_integers=s.signed_integer_dict
+                                          )
                         s.add_connection(t)
                     else:
                         t = Snippet(other_id, other_parts["code"], other_class_id)
@@ -89,8 +108,16 @@ class SnippetRepository:
             building["swaps"] = args.split(",")
         return building
 
+    def signed_integers(self, args, building):
+        building["signed_integer_consts"] = [str(int(val)) for val in args.split(",")]
+        return building
+
+    def negative_integers(self, args, building):
+        building["negative_integer_consts"] = [str(int(val)) for val in args.split(",")]
+        return building
+
     def positive_integers(self, args, building):
-        building["integer_consts"] = [str(int(val)) for val in args.split(",")]
+        building["positive_integer_consts"] = [str(int(val)) for val in args.split(",")]
         return building
 
     def _run_meta_instructions(self, parsed):
@@ -107,7 +134,11 @@ class SnippetRepository:
     def _filter_meta_instructions(self, unfiltered):
         parsed = []
         for id, text, class_id in unfiltered:
-            seperated = {"meta": [], "code": "", "tokens": [], "integer_consts": [], "swaps": None}
+            seperated = {"meta": [], "code": "", "tokens": [],
+                         "positive_integer_consts": [],
+                         "negative_integer_consts": [],
+                         "signed_integer_consts": [],
+                         "swaps": None}
             for line in text.split("\n"):
                 if line[:3] == "; $":
                     seperated["meta"].append(line[3:])
@@ -128,6 +159,13 @@ class SnippetRepository:
         if file_path is None:
             # use our repo path instead
             file_path = self.repo_path
+
+        try:
+            file_path = pathlib.Path(file_path)
+            file_path = str(file_path.resolve())
+        except Exception as e:
+            print(e)
+            pass
 
         # check if it exists
         if file_path is None or not os.path.exists(file_path):
@@ -171,15 +209,19 @@ class SnippetRepository:
 if __name__ == "__main__":
     import pathlib
 
-    repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./SnippetRepoExamples"))
+    repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./Snippets"))
     s = repo.get_snippets()[0]
     s.variable_dict["%2"] == "%1"
     s.variable_dict["%3"] == "%5"
-    s.integer_dict["4"] == 12
-    s.integer_dict["5"] == 15
+    s.positive_integer_dict["4"] == 12
+    s.positive_integer_dict["5"] == 15
 
-    # print(s.variable_dict)
-    # print(s.ge
-    # t_swaps()[0].variable_dict)
-    print("Rendered", s.get_rendered_swaps())
-    # print(s.get_rendered_swaps())
+    print("Original:\n", s.get_meta_tokens(), sep="")
+    print()
+
+    for i in s.get_unrendered_swaps():
+        print("Unrendered:\n", str(i), sep="")
+        print()
+
+    for i in s.get_rendered_swaps():
+        print("Rendered:\n", str(i), sep="")
