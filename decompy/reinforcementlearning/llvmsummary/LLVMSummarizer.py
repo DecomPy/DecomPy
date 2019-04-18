@@ -1,4 +1,4 @@
-from decompy.RL.LLVMSummary.LLVMSummary import LLVMSummary
+from decompy.reinforcementlearning.llvmsummary.LLVMSummary import LLVMSummary
 
 import ctypes
 import pathlib

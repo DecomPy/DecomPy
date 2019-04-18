@@ -1,5 +1,5 @@
 from decompy.datagathering import *
-from decompy.database import db
+from decompy.database import Database
 from pathlib import Path
 import os
 import shutil
@@ -53,7 +53,7 @@ class CreateLocalData:
         self.repo_json_filtered_name = repo_json_filtered_name
         self.filtered_repos = filtered_repos
         self.FilterC = FilterC()
-        self.db = db.Database(database_name)
+        self.db = Database.Database(database_name)
         self.verbose = verbose
         self.config_file = config_file
         self.username = None

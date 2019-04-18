@@ -1,4 +1,4 @@
-from decompy.DataGathering.CreateLocalData import CreateLocalData
+from decompy.datagathering.CreateLocalData import CreateLocalData
 import unittest
 import shutil
 import os

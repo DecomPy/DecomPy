@@ -1,5 +1,5 @@
 import unittest
-from decompy.database.db import Database as db
+from decompy.database.Database import Database as db
 
 
 class DatabaseTest(unittest.TestCase):

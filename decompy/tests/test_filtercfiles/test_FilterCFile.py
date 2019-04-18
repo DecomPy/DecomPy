@@ -1,5 +1,5 @@
 import unittest
-from decompy.DataGathering.FilterC import FilterC
+from decompy.datagathering.FilterC import FilterC
 
 
 class FilterCTest(unittest.TestCase):

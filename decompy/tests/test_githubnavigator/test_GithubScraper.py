@@ -1,7 +1,7 @@
 # import datetime
 # import os
 # import unittest
-# from decompy.DataGathering.FileGetter import FileGetter
+# from decompy.datagathering.FileGetter import FileGetter
 # import shutil
 # import json
 #

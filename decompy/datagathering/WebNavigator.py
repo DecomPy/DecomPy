@@ -42,7 +42,7 @@ class WebNavigator:
     TIMER = 0  # Used if TIMING is enabled
 
     @staticmethod
-    def getContent(link):
+    def get_content(link):
         """
         Retrieves the content from a link
         :param link: An absolute URL
@@ -71,7 +71,7 @@ class WebNavigator:
         return pageSource
 
     @staticmethod
-    def getVisibleTextContent(link):
+    def get_visible_text_content(link):
         """
         Retrieves only the visible text from a link (no tags, etc.)
 
@@ -97,7 +97,7 @@ class WebNavigator:
             return ""
 
     @staticmethod
-    def getLinks(content):
+    def get_links(content):
         """
         Finds all links contained on a page from a link
 
@@ -110,7 +110,7 @@ class WebNavigator:
         return links
 
     @staticmethod
-    def limitDomain(absoluteLinks, domain):
+    def limit_domain(absoluteLinks, domain):
         """
         Prunes all links outside of a given domain
 
@@ -124,7 +124,7 @@ class WebNavigator:
         return set(filter(domainRegex.search, absoluteLinks))
 
     @staticmethod
-    def getAbsolute(ResolvedParent, RelativeLinks):
+    def get_absolute(ResolvedParent, RelativeLinks):
         """
         Creates absolute URLs from a set of links and their parent
 
@@ -137,7 +137,7 @@ class WebNavigator:
         return set(urllib.parse.urljoin(ResolvedParent, RelativeLink) for RelativeLink in RelativeLinks)
 
     @staticmethod
-    def getAbsoluteLinksFromPage(link, domain=None):
+    def get_absolute_links_from_page(link, domain=None):
         """
         Combines above methods into single explore method
 
@@ -145,17 +145,17 @@ class WebNavigator:
         :param domain: the domain of the above link to stay within (default is no domain limiting)
         :return: set of absolute URLs within a page
         """
-        content = WebNavigator.getContent(link)
-        links = WebNavigator.getLinks(content)
-        absLinks = WebNavigator.getAbsolute(link, links)
+        content = WebNavigator.get_content(link)
+        links = WebNavigator.get_links(content)
+        absLinks = WebNavigator.get_absolute(link, links)
         localLinks = absLinks
         if domain:
-            localLinks = WebNavigator.limitDomain(absLinks, domain)
+            localLinks = WebNavigator.limit_domain(absLinks, domain)
         return localLinks
 
 
 if __name__ == "__main__":
-    print(WebNavigator.getAbsoluteLinksFromPage("https://github.com/DecomPy/DecomPy"))
+    print(WebNavigator.get_absolute_links_from_page("https://github.com/DecomPy/DecomPy"))
     # print("WebNavigator does nothing in its main")
     # print(WebNavigator.getFileURLSFromGitHubRepo("https://github.com/DecomPy/valid_and_compilable_1"))
     # WebNavigator.getFilesfromGitHubFileURLs(["https://github.com/DecomPy/valid_and_compilable_1/blob/master/main.c",

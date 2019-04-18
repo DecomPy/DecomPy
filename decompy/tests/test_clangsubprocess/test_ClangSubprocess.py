@@ -1,5 +1,5 @@
 import unittest
-import decompy.DataGathering.ClangSubprocess as Clang
+import decompy.datagathering.ClangSubprocess as Clang
 from pathlib import Path
 import os
 import shutil
