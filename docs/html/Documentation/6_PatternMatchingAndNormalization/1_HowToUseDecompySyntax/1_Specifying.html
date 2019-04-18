@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to Use Decompy’s Syntax &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="Using Decompy’s Syntax for Patterns" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Pattern Matching and Normalization</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Using Decompy’s Syntax for Patterns</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How to Use Decompy’s Syntax</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Pattern Matching and Normalization</a> &raquo;</li>
+        
+          <li><a href="index.html">Using Decompy’s Syntax for Patterns</a> &raquo;</li>
+        
+      <li>How to Use Decompy’s Syntax</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/6_PatternMatchingAndNormalization/1_HowToUseDecompySyntax/1_Specifying.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-use-decompy-s-syntax">
+<h1>How to Use Decompy’s Syntax<a class="headerlink" href="#how-to-use-decompy-s-syntax" title="Permalink to this headline">¶</a></h1>
+<p>One part of decompy’s design that was critical for being able to perform swaps
+for snippets was the normalization and pattern matching features. Since normalization
+happens automatically and is a subset of pattern matching I will simply say pattern
+matching for the rest of this document.</p>
+<p>Pattern Matching in decompy is described inline in the snippet declarations as “llvm
+comments” at the top of the code. The llvm in snippets is perfectly valid llvm which
+can be parsed by the llvm API. The comments specify what to do to tokenize it and match
+irrelevant data. For example, if the code has a number hard coded in, but that number
+is not needed for the snippet to make the swap (only the fact that it stays the same)
+then you could specify:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>; $POSITIVE_INTEGERS=4</dd>
+</dl>
+<p>where 4 is that number. You can arbitrarily match any sentinal value, so if there are
+other number that actually MUST be there (i.e. an alloca align 4, where the 4 can’t
+change) you can change the sentinal to any other number, as long as python can read
+it in (python can read in really large ints….).</p>
+<p>Every command in the swapping mechanism must begin appear at the start of the code
+and be prefixed with “; $” to indicate that it is a command. Other comments SHOULD
+be allowed (they are not extensively tested in the middle of commands at this time).
+The commands available are as follows:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>; $SWAP=
+; $POSTIVE_INTEGERS=
+; $RESULTS=</dd>
+</dl>
+<p>All commands are case sensitive and are all capital letters.</p>
+<p>SWAP must appear first and follow one of the two following syntaxes:
+1. ; $SWAP=NONE
+2. ; $SWAP=Folder/file.ll,Folder/file2.ll</p>
+<p>In otherwords, either a snippet which cannot be swapped which is explicitly specified
+using NONE, or a snippet which can be swapped using the ID’s which are generated for
+each snippet consisting currently of the path to the file starting at the root path
+of the folder initialized in the SnippetRepo object.</p>
+<p>POSITIVE_INTEGERS takes in a list of all of the integers that should be variablized.
+Any of the listed numbers will afterward match a single integer of any value. If a number
+was used twice, then both result will only match the SAME number. In other words, you
+can specify a snippet which has multiple occurences of the same number by simply using
+that number twice in the code and adding it as an POSITIVE_INTEGER. POSTIVE_INTEGER
+takes in a comma seperated list of integers. Spaces SHOULD be supported but are advised
+against at this time. (It is not well tested).</p>
+<p>The last an most complicated command is $RESULTS. Unlike the other commands, it is
+allowed to specify more than one result. The result must take the form:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>; $RESULTS=Value, OPERATOR, Int,Int</dd>
+</dl>
+<p>Where Value is the value to tokenize as a result object (meaning it will only match the
+value computed by the result), OPERATOR is an operator (as listed in operators.py, I will
+talk more about this further down), and Int is a POSITIVE_INTEGER specified in the swap
+that lead into this swap. RESULTS can be chained, meaning that further operators can be
+applied to make more complicated expressions as needed.</p>
+<p>In addition, there is one more syntax that is supported by the result operator. You can
+specify instead of an Int from the previous snippet a value such as C12. This will use
+the value “12” in the computation, regardless of the previous snippet. This is useful for
+compiler specific optimizations on certain architectures which introduce hard coded values.
+It is also useful for implementing operators which work on a single value. For example,
+since the RESULT command works by applying the reduce command from python to the result of
+a list, the operator ABS (absolute value) which takes in a single value is impossible to run.
+To make it work, we can modify it to use the following lambda expression instead:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>lambda x, y: abs(x)</dd>
+</dl>
+<p>The result of this is that every value except the first in the list will be tossed out and the
+only remaining value will be the absolute value of the first thing in the list. This means
+we can now specifiy and absolute value result like follows:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>$ RESULTS=9, ABS, -9, C0</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Using Decompy’s Syntax for Patterns" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

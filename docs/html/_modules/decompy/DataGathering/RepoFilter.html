@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>decompy.DataGathering.RepoFilter &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>decompy.DataGathering.RepoFilter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for decompy.DataGathering.RepoFilter</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="c1"># from decompy.DataGathering.WebNavigator import WebNavigator</span>
+
+
+<div class="viewcode-block" id="RepoFilter"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter">[docs]</a><span class="k">class</span> <span class="nc">RepoFilter</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    First draft of the RepoFilter using the GitHub api. This class searches for repositories on GitHub matching</span>
+<span class="sd">    a search. It was written with offline queries in mind as I did not have access to the internet most of the</span>
+<span class="sd">    time while writing it. This might be useful in the end for backups / redundancy however and provides the</span>
+<span class="sd">    ability save a list so that another query does not have to be made to GitHub and so that results will not</span>
+<span class="sd">    change as repositories change. Using too old of a list might be bad however as the content will not match</span>
+<span class="sd">    what is being filtered on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blacklist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_page</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for RepoFilter. Choose search term string, language string, a blacklist for the descriptions (i.e.</span>
+<span class="sd">        ignore all repos which contain the phrase &quot;C++&quot; in their descriptions), and the number of results to display</span>
+<span class="sd">        per page. The results per page defaults to 100 as this is the max allowed per page through GitHub&#39;s api.</span>
+
+<span class="sd">        :param self:</span>
+<span class="sd">        :param search: A search string</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param language: The language to limit searches to</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param blacklist: A list of terms to disallow in the description</span>
+<span class="sd">        :type: list</span>
+<span class="sd">        :param per_page: The number of results to gather &quot;per page&quot;</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param username: the user&#39;s github name</span>
+<span class="sd">        :param password: the user&#39;s github password for authentication for more repos</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">blacklist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">blacklist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">search</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">language</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span> <span class="o">=</span> <span class="n">blacklist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">per_page</span> <span class="o">=</span> <span class="n">per_page</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+
+<div class="viewcode-block" id="RepoFilter.get_results"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">page</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a single request to the GitGub api for a page with results matching</span>
+<span class="sd">        the search criteria</span>
+
+<span class="sd">        :param date: because github only allows us 1000 results because they are bad at making an api.</span>
+<span class="sd">        :type; str</span>
+
+<span class="sd">        :param self:</span>
+<span class="sd">        :param page: Which page of results should be fetched</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">language_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
+            <span class="n">language_string</span> <span class="o">=</span> <span class="s2">&quot;language:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s2">&quot;C&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.github.com/search/repositories?q=</span><span class="si">%s%s</span><span class="s2">+created:</span><span class="si">%s</span><span class="s2">&amp;page=</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">requote_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">),</span> <span class="n">language_string</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># get the api request to prepare downloading the zips with authentication</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting url, error&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># test for 403</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">403</span><span class="p">:</span>
+                <span class="c1"># get time that we need to wait and wait for that time.</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;uh oh, rate limited!&quot;</span><span class="p">)</span>
+
+                <span class="c1"># wait their time if found</span>
+                <span class="n">limit</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span>
+                <span class="k">if</span> <span class="s2">&quot;X-RateLimit-Reset&quot;</span> <span class="ow">in</span> <span class="n">limit</span><span class="p">:</span>
+
+                    <span class="c1"># parses time to wait in seconds</span>
+                    <span class="n">wait</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="p">[</span><span class="s2">&quot;X-RateLimit-Reset&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">wait</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>  <span class="c1"># wait 2 minutes then try again.</span>
+
+            <span class="n">json_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">json_content</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;JSON web navigator error&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RepoFilter.offline_results"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.offline_results">[docs]</a>    <span class="k">def</span> <span class="nf">offline_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">start_page</span><span class="p">,</span> <span class="n">end_page</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the list of all repos for offline usage.</span>
+
+<span class="sd">        :param filename: The name that will be given to the generated file</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param date: the date to search for</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param start_page: The index of the first page that should be saved</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        :param end_page: The index of the last page that should be saved</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">all_json</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_page</span><span class="p">,</span> <span class="n">end_page</span><span class="p">):</span>
+            <span class="n">all_json</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">results_file</span><span class="p">:</span>
+            <span class="n">results_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">all_json</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RepoFilter.filter_repo"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.filter_repo">[docs]</a>    <span class="k">def</span> <span class="nf">filter_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine if the given Repo matches our desired criteria. Uses the GitHub info beyond what</span>
+<span class="sd">        a simple search has the options of doing.</span>
+
+<span class="sd">        :param repo: The json from the GitHub repo to filter</span>
+<span class="sd">        :type: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">repo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="s2">&quot;fork&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">repo</span> <span class="ow">and</span> <span class="s2">&quot;description&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">repo</span> <span class="ow">and</span> <span class="s2">&quot;size&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">repo</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="s2">&quot;description&quot;</span> <span class="ow">in</span> <span class="n">repo</span> <span class="ow">and</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">item</span> <span class="ow">in</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s2">&quot;size&quot;</span> <span class="ow">in</span> <span class="n">repo</span> <span class="ow">and</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s2">&quot;fork&quot;</span> <span class="ow">in</span> <span class="s2">&quot;fork&quot;</span> <span class="ow">and</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;fork&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;fork&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="RepoFilter.get_filtered_list"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.get_filtered_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unfiltered_repos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filters a list of repositories</span>
+
+<span class="sd">        :param unfiltered_repos: The list of Unfiltered repositories</span>
+<span class="sd">        :tpye: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_repo</span><span class="p">,</span> <span class="n">unfiltered_repos</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RepoFilter.offline_filtered_list"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.offline_filtered_list">[docs]</a>    <span class="k">def</span> <span class="nf">offline_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">unfiltered_repos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter a list of repositories and save it to JSON for persistent usage</span>
+
+<span class="sd">        :param filename: The name to save the file as</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param unfiltered_repos: The list of repos to filter</span>
+<span class="sd">        :type: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Definitely need to rename this method</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">filtered_file</span><span class="p">:</span>
+            <span class="n">filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_list</span><span class="p">(</span><span class="n">unfiltered_repos</span><span class="p">)</span>
+            <span class="n">json_filtered</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">filtered</span><span class="p">)</span>
+            <span class="n">filtered_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_filtered</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RepoFilter.offline_read_json"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.offline_read_json">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">offline_read_json</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read in a json file</span>
+
+<span class="sd">        :param filename: The filename to read</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">RepoFilter</span><span class="p">(</span><span class="s2">&quot;C &quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">blacklist</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;C++&quot;</span><span class="p">])</span>
+
+    <span class="n">switch</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Which action?&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">switch</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span><span class="p">:</span>
+        <span class="n">rf</span><span class="o">.</span><span class="n">offline_results</span><span class="p">(</span><span class="s2">&quot;offlineResults.json&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">switch</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+        <span class="n">repos</span> <span class="o">=</span> <span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="s2">&quot;offlineResults.json&quot;</span><span class="p">)</span>
+        <span class="n">rf</span><span class="o">.</span><span class="n">offline_filtered_list</span><span class="p">(</span><span class="s2">&quot;filteredOfflineResults.json&quot;</span><span class="p">,</span> <span class="n">repos</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/tabs.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinx_tabs/semantic-ui-2.2.10/tab.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
