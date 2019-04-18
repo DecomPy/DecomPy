@@ -3,11 +3,11 @@ import errno
 
 import re
 
-from decompy.EquivalencyClasses.ResultSnippet import ResultSnippet
-from decompy.EquivalencyClasses.Snippet import Snippet
-from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
-from decompy.EquivalencyClasses.Operators import Operators
-from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
+from decompy.equivalencyclasses.ResultSnippet import ResultSnippet
+from decompy.equivalencyclasses.Snippet import Snippet
+from decompy.equivalencyclasses.tokenizers.Tokenizer import Tokenizer
+from decompy.equivalencyclasses.Operators import Operators
+from decompy.equivalencyclasses.tokenizers.Tokens.ResultsToken import ResultsToken
 
 
 class SnippetRepository:

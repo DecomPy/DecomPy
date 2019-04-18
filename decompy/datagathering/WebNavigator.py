@@ -29,7 +29,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import urllib.request, urllib.error, urllib.parse
-import requests
 from bs4 import BeautifulSoup
 import re
 import time

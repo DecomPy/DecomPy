@@ -1,4 +1,4 @@
-from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
+from decompy.equivalencyclasses.tokenizers.tokens.Token import Token
 
 
 class PatternMatchTrie:

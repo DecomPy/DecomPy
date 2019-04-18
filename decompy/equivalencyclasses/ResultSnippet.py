@@ -1,5 +1,5 @@
-from decompy.EquivalencyClasses.Snippet import Snippet
-from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
+from decompy.equivalencyclasses.Snippet import Snippet
+from decompy.equivalencyclasses.tokenizers.Tokenizer import Tokenizer
 
 
 class ResultSnippet(Snippet):

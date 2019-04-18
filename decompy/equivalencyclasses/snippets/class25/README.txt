@@ -1,0 +1,17 @@
+
+// this snippet tries to achieve PEMDAS by making multiplication first rather than division.
+// I am interested to see how this plans out espeically if someone uses paranthesis.
+// order of operations (try to achieve PEMDAS?)
+int main() {
+
+    int test2 = 2;
+    int test4 = 4;
+    int test5 = 5;
+
+    // what we get: 2 / 4 * 5
+     result_smaller1 = test2 / test4 * test5;
+
+    // what we want: 5 * 4 / 2
+    int result_smaller2 = test5 * test4 + test2;
+
+}

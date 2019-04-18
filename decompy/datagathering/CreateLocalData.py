@@ -1,4 +1,4 @@
-from decompy.DataGathering import *
+from decompy.datagathering import *
 from decompy.database import db
 from pathlib import Path
 import os

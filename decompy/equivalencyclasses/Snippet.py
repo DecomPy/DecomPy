@@ -1,6 +1,6 @@
 # TODO: decide how to implement id (from database?)
-from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
-from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
+from decompy.equivalencyclasses.tokenizers.Tokenizer import Tokenizer
+from decompy.equivalencyclasses.tokenizers.tokens.Token import Token
 
 
 class Snippet:

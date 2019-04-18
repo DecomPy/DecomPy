@@ -1,5 +1,5 @@
-from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
-from decompy.EquivalencyClasses.PatternMatchTrie import PatternMatchTrie as Trie
+from decompy.equivalencyclasses.SnippetRepository import SnippetRepository
+from decompy.equivalencyclasses.PatternMatchTrie import PatternMatchTrie as Trie
 
 
 class TrieGenerator:
