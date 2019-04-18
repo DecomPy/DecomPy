@@ -6,11 +6,20 @@ class LLVMSummary:
     A summary of the LLVM
     """
 
+    instcounts = None
+    loops = None
+    aa = None
+    regions = None
+
     # TODO: finish this?
-    def __init__(self):
+    def __init__(self, instcounts, loops, aa, regions):
         """
         Initializes the object.
         """
+        self.instcounts = instcounts
+        self.loops = loops
+        self.aa = aa
+        self.regions = regions
         pass
 
     def __str__(self):
