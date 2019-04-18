@@ -1,5 +1,8 @@
+from decompy.EquivalencyClasses.Tokenizers.Tokens.NegativeIntegerToken import NegativeIntegerToken
+from decompy.EquivalencyClasses.Tokenizers.Tokens.SignedIntegerToken import SignedIntegerToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.VariableToken import VariableToken
-from decompy.EquivalencyClasses.Tokenizers.Tokens.IntegerToken import IntegerToken
+from decompy.EquivalencyClasses.Tokenizers.Tokens.PositiveIntegerToken import PositiveIntegerToken
+from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 
 import ctypes
 import pathlib
@@ -19,11 +22,20 @@ class Tokenizer:
         return extract.decode("UTF-8")
 
     @staticmethod
-    def extract_meta_tokens(tokens_tuple, integers=(), variable_dict=None, integer_dict=None):
+    def extract_meta_tokens(tokens_tuple,
+                            positive_integers=(), negative_integers=(), signed_integers=(),
+                            positive_integer_dict=None, negative_integer_dict=None, signed_integer_dict=None,
+                            results_dict=None, variable_dict=None):
         if variable_dict is None:
             variable_dict = {}
-        if integer_dict is None:
-            integer_dict = {}
+        if results_dict is None:
+            results_dict = {}
+        if positive_integer_dict is None:
+            positive_integer_dict = {}
+        if negative_integer_dict is None:
+            negative_integer_dict = {}
+        if signed_integer_dict is None:
+            signed_integer_dict = {}
 
         tokens = list(tokens_tuple)
 
@@ -33,12 +45,24 @@ class Tokenizer:
                     variable_dict[tokens[i]] = VariableToken()
                 tokens[i] = variable_dict[tokens[i]]
 
-            if tokens[i] in integers:
-                if tokens[i] not in integer_dict:
-                    integer_dict[tokens[i]] = IntegerToken()
-                tokens[i] = integer_dict[tokens[i]]
+            elif tokens[i] in results_dict:
+                tokens[i] = results_dict[tokens[i]]
 
-        return tuple(tokens), variable_dict, integer_dict
+            elif tokens[i] in positive_integers:
+                if tokens[i] not in positive_integer_dict:
+                    positive_integer_dict[tokens[i]] = PositiveIntegerToken()
+                tokens[i] = positive_integer_dict[tokens[i]]
+
+            elif tokens[i] in negative_integers:
+                if tokens[i] not in negative_integer_dict:
+                    negative_integer_dict[tokens[i]] = NegativeIntegerToken()
+                tokens[i] = negative_integer_dict[tokens[i]]
+
+            elif tokens[i] in signed_integers:
+                if tokens[i] not in signed_integer_dict:
+                    signed_integer_dict[tokens[i]] = SignedIntegerToken()
+                tokens[i] = signed_integer_dict[tokens[i]]
+        return tuple(tokens), variable_dict, positive_integer_dict, negative_integer_dict, signed_integer_dict
 
     @staticmethod
     def tokenize(data, is_snippet):
@@ -67,6 +91,15 @@ class Tokenizer:
 
         return tuple(token_list)
 
+    @staticmethod
+    def reassemble(tokens):
+        rendered_llvm = ""
+        for i in range(len(tokens)):
+            rendered_llvm += str(Token.resolve(tokens[i]))
+            if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i + 1] != ",":
+                rendered_llvm += " "
+        return rendered_llvm
+
 
 if __name__ == "__main__":
     import pathlib
@@ -75,10 +108,10 @@ if __name__ == "__main__":
         m = f.read()
 
     result = Tokenizer.tokenize(m, False)
-    meta, _, _ = Tokenizer.extract_meta_tokens(result)
+    meta, _, _, _, _ = Tokenizer.extract_meta_tokens(result)
 
     print("*" * 100)
     for token_stream in [result, meta]:
         for token in token_stream:
             print("(%s)" % str(token), end=" ")
-        print("*"*100)
+        print("*" * 100)

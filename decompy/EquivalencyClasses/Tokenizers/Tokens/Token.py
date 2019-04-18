@@ -19,7 +19,6 @@ class Token(ABC):
     def reset_all():
         for token in Token.__all_tokens:
             token.reset()
-            print("RESET", token)
 
     @classmethod
     def resolve(cls, test):

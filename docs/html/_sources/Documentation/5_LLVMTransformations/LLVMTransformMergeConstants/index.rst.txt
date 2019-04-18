@@ -1,7 +1,0 @@
-Merge Constants
-***********************
-
-.. toctree::
-    :glob:
-
-    *

@@ -1,7 +1,0 @@
-Binary Lifting
-**************
-
-.. toctree::
-    :glob:
-
-    *

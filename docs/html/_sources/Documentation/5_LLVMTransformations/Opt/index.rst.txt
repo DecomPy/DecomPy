@@ -1,7 +1,0 @@
-Opt
-***
-
-.. toctree::
-    :glob:
-
-    *

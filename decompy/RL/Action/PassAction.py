@@ -14,6 +14,7 @@ class PassAction(Action):
         super(PassAction, self).__init__()
         self.pass_name = pass_name
 
+
     def do_action(self, llvm):
         """
         an action performed based off an LLVM pass.
