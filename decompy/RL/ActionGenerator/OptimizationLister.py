@@ -7,7 +7,6 @@ class OptimizationLister:
 
     def __init__(self):
         self.passes = self._get_all_passes()
-        print(self.passes)
 
     @staticmethod
     def _get_all_passes():
