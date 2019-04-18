@@ -1,1 +1,0 @@
-const merge 5 * 3 vs 15.

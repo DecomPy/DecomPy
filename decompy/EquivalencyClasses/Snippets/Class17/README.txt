@@ -1,1 +1,0 @@
-multiplying by 2 is equivalent to left shifting by 1.
