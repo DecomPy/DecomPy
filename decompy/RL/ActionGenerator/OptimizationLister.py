@@ -1,6 +1,4 @@
-import inspect
-
-import decompy.RL.ActionGenerator.OptPassActions as OptPassActions
+from decompy.RL.ActionGenerator.OptPassActionGenerator import OptPassActionGenerator
 
 class OptimizationLister:
     """
@@ -9,17 +7,11 @@ class OptimizationLister:
 
     def __init__(self):
         self.passes = self._get_all_passes()
+        print(self.passes)
 
     @staticmethod
     def _get_all_passes():
-        passes = []
-
-        opt_pass_cls = inspect.getmembers(OptPassActions, inspect.isclass)
-        retdec_pass_cls = []
-        llvm_api_cls = []
-        pass_cls = opt_pass_cls + retdec_pass_cls + llvm_api_cls
-        for pass_action in pass_cls:
-            passes.append(pass_action[1]())
+        passes = OptPassActionGenerator.generate_opt_pass_actions()
 
         return passes
 
