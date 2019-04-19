@@ -9,7 +9,7 @@ class ClangSubprocessTest(unittest.TestCase):
     """
     tests ClangSubprocess class to compile files
     """
-    cwd = os.getcwd() + "/decompy/tests/test_ClangSubprocess/cDir"
+    cwd = os.getcwd() + "/decompy/tests/test_clangSubprocess/cDir"
     inputCName = cwd+"/example2.c"
 
     llvm_path = cwd + "/LLVM"
