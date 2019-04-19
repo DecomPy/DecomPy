@@ -7,7 +7,7 @@ from decompy.equivalencyclasses.ResultSnippet import ResultSnippet
 from decompy.equivalencyclasses.Snippet import Snippet
 from decompy.equivalencyclasses.tokenizers.Tokenizer import Tokenizer
 from decompy.equivalencyclasses.Operators import Operators
-from decompy.equivalencyclasses.tokenizers.Tokens.ResultsToken import ResultsToken
+from decompy.equivalencyclasses.tokenizers.tokens.ResultsToken import ResultsToken
 
 
 class SnippetRepository:
