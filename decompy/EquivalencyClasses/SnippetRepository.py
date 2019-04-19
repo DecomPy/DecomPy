@@ -211,17 +211,17 @@ if __name__ == "__main__":
 
     repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./Snippets"))
     s = repo.get_snippets()[0]
-    s.variable_dict["%2"] == "%1"
-    s.variable_dict["%3"] == "%5"
-    s.positive_integer_dict["4"] == 12
-    s.positive_integer_dict["5"] == 15
-
-    print("Original:\n", s.get_meta_tokens(), sep="")
-    print()
-
-    for i in s.get_unrendered_swaps():
-        print("Unrendered:\n", str(i), sep="")
-        print()
-
-    for i in s.get_rendered_swaps():
-        print("Rendered:\n", str(i), sep="")
+    # s.variable_dict["%2"] == "%1"
+    # s.variable_dict["%3"] == "%5"
+    # s.positive_integer_dict["4"] == 12
+    # s.positive_integer_dict["5"] == 15
+    #
+    # print("Original:\n", s.get_meta_tokens(), sep="")
+    # print()
+    #
+    # for i in s.get_unrendered_swaps():
+    #     print("Unrendered:\n", str(i), sep="")
+    #     print()
+    #
+    # for i in s.get_rendered_swaps():
+    #     print("Rendered:\n", str(i), sep="")
