@@ -1,7 +1,0 @@
-LLVM Comparison
-***************
-
-.. toctree::
-    :glob:
-
-    *
