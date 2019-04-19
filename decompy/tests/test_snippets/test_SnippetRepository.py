@@ -1,7 +1,7 @@
 import unittest
 import os
 import pathlib
-from decompy.EquivalencyClasses.SnippetRepository import SnippetRepository
+from decompy.equivalencyclasses.SnippetRepository import SnippetRepository
 
 
 class TestRepoStructure(unittest.TestCase):

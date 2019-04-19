@@ -1,5 +1,5 @@
 import unittest
-from decompy.DataGathering.RepoStructure import RepoStructure
+from decompy.datagathering.RepoStructure import RepoStructure
 from pathlib import Path, PurePath
 import shutil
 import json
