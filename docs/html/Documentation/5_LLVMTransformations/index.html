@@ -17,36 +17,34 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
+  
+  
     
 
   
+
   <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Dead Code Elimination" href="DeadCodeEliminationPasses/index.html" />
     <link rel="prev" title="Current Suggestion and Closing Remarks" href="../4_DecompilerInformation/1_HowDecompilersWork/6_CurrentSuggestion.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
+
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search">
           
 
           
@@ -88,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
 <li class="toctree-l2"><a class="reference internal" href="EquivClasses/index.html">Equivalency Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVMSummaries/index.html">LLVM Summaries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Llc/index.html">llc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="OpenMP/index.html">OpenMP</a></li>
@@ -189,6 +188,16 @@
 <li class="toctree-l2"><a class="reference internal" href="LLVMSingleLineReplacement/SingleLineReplacement.html">Single Line Replacement via LLVM</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="LLVMSummaries/index.html">LLVM Summaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="LLVMSummaries/LLVM_Summaries.html">LLVM Summaries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="LLVMSummaries/LLVM_Summaries.html#introduction"><strong>Introduction</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="LLVMSummaries/LLVM_Summaries.html#obtaining-information-for-summaries"><strong>Obtaining Information for Summaries</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="LLVMSummaries/LLVM_Summaries.html#likely-information-for-summaries"><strong>Likely Information for Summaries</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="LLVMSummaries/LLVM_Summaries.html#sources"><strong>Sources</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="LLVMTransformMergeConstants/index.html">Merge Constants</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="LLVMTransformMergeConstants/MergeConstants.html">How Does MergeConstants Work?</a></li>
 </ul>
@@ -209,6 +218,15 @@
 <li class="toctree-l3"><a class="reference internal" href="Opt/2_OptPasses.html#instcombine">-instcombine</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="Opt/3_ListOfOptimizations.html">List of Optimizations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Opt/3_ListOfOptimizations.html#transform-passes">Transform Passes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Opt/3_ListOfOptimizations.html#passes-we-will-use">Passes We Will Use:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Opt/3_ListOfOptimizations.html#passes-we-will-not-use">Passes We Will Not Use:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Opt/3_ListOfOptimizations.html#unknown-passes">Unknown Passes:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Opt/4_OptimizationOrder.html">Optimization Order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Opt/5_UsingPython.html">Using Python to Track Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="WhatAreLLVMModules/index.html">What Are LLVM Modules</a><ul>
@@ -233,7 +251,7 @@
         <a href="DeadCodeEliminationPasses/index.html" class="btn btn-neutral float-right" title="Dead Code Elimination" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../4_DecompilerInformation/1_HowDecompilersWork/6_CurrentSuggestion.html" class="btn btn-neutral float-left" title="Current Suggestion and Closing Remarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../4_DecompilerInformation/1_HowDecompilersWork/6_CurrentSuggestion.html" class="btn btn-neutral" title="Current Suggestion and Closing Remarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -259,16 +277,26 @@
   
 
 
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
