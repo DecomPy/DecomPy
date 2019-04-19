@@ -1,9 +1,8 @@
 ; $SWAP=Class14/2.ll
-; $POSITIVE_INTEGERS=0
-; $NEGATIVE_INTEGERS=10
-; TODO: confirm with Vatricia
+; $POSITIVE_INTEGERS=8
+; $NEGATIVE_INTEGERS=-10
 %1 = load i32, i32* %0, align 4
-%6 = icmp slt i32 %5, 0
+%6 = icmp slt i32 %5, 8
 br i1 %6, label %7, label %E
 
 ; <label>:7:                                      ; preds = %2

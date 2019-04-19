@@ -51,7 +51,6 @@ class SnippetRepository:
 
                 for connection in parts["swaps"]:
                     try:
-                        print(ready)
                         other_id, other_parts, other_class_id = ready[search_ready.index(connection)]
                     except ValueError:
                         raise ValueError("Error in snippet id: %s, no snippet matching %s" % (id, connection))
@@ -79,7 +78,7 @@ class SnippetRepository:
                                     try:
                                         processed.append(lookup_for_snippet[unprocessed[i]])
                                     except KeyError:
-                                        raise KeyError("Error in snippet id %s, variable not declared properly." % id)
+                                        raise KeyError("Error in snippet id %s, variable not declared properly: %s" % (id, unprocessed[i]))
                             r = ResultsToken(processed)
                             lookup_for_snippet.update({result[0]: r})
                             results[result[0]] = r
