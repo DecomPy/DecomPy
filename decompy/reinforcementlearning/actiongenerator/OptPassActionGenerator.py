@@ -1,4 +1,4 @@
-from decompy.RL.Action.OptPassActions.OptPassAction import OptPassAction
+from decompy.reinforcementlearning.actiongenerator.OptPassAction import OptPassAction
 
 
 class OptPassActionGenerator:

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Filtering the Repositories &mdash; DecomPy 0.0.1 documentation</title>
+  <title>LLVM Summaries &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Filtering the Files" href="2_FilterFiles.html" />
-    <link rel="prev" title="Data Gathering" href="index.html" /> 
+    <link rel="next" title="LLVM Summaries" href="LLVM_Summaries.html" />
+    <link rel="prev" title="Single Line Replacement via LLVM" href="../LLVMSingleLineReplacement/SingleLineReplacement.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -80,22 +80,24 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Filtering the Repositories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_FilterFiles.html">Filtering the Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_clangSubproc.html">Compiling C Source to Various Formats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LLVM Summaries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="LLVM_Summaries.html">LLVM Summaries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Opt/index.html">Opt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
 </ul>
 
             
@@ -141,17 +143,15 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+          <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
         
-          <li><a href="index.html">Data Gathering</a> &raquo;</li>
-        
-      <li>Filtering the Repositories</li>
+      <li>LLVM Summaries</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/3_DesignDecisions/2_DataGathering/1_RepoFiltering.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/LLVMSummaries/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,35 +164,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="filtering-the-repositories">
-<h1>Filtering the Repositories<a class="headerlink" href="#filtering-the-repositories" title="Permalink to this headline">¶</a></h1>
-<p>This is a log of major design decisions and reasoning made during creation of the Repo Filtering section of decompy.
-At the time of writing this, this is made up of two classes, the RepoFiltering class, and the RepoStructure class.</p>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Repo filtering is based around storing stages to json files</dt>
-<dd>Partially, this decision was driven by the fact that I would not have
-internet most of the time I was writing it. I do think that the end result
-has some merit however, since it allows modularly redoing sections as we
-improve and doesn’t overly utilize requests to GitHub (rate limiting).</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Using GitHub’s api</dt>
-<dd>By using GitHub’s api, it was much easier to generate a list of acceptable
-repos without doing costly web scrapping. There are some downsides though,
-since the request has a limited amount of info. For example, the license is
-not included, which may mean scraping is needed anyways, but at least we
-can limit it.</dd>
-</dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Using GitHub’s legacy api</dt>
-<dd>For me, this one feels odd. GitHub’s new api has a lot more features and
-seems really nice. However, it has two major problems. At the momement, it
-never seems to get nearly as good of results. It will find unrelated repos
-and I have to filter out way more. It also is much harder to use.</dd>
-</dl>
+  <div class="section" id="llvm-summaries">
+<h1>LLVM Summaries<a class="headerlink" href="#llvm-summaries" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LLVM_Summaries.html">LLVM Summaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#introduction"><strong>Introduction</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#obtaining-information-for-summaries"><strong>Obtaining Information for Summaries</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#likely-information-for-summaries"><strong>Likely Information for Summaries</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#sources"><strong>Sources</strong></a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -203,10 +187,10 @@ and I have to filter out way more. It also is much harder to use.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="2_FilterFiles.html" class="btn btn-neutral float-right" title="Filtering the Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="LLVM_Summaries.html" class="btn btn-neutral float-right" title="LLVM Summaries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Data Gathering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../LLVMSingleLineReplacement/SingleLineReplacement.html" class="btn btn-neutral" title="Single Line Replacement via LLVM" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
