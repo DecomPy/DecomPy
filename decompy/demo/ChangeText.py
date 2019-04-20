@@ -1,4 +1,4 @@
-from tkinter import tix as tkinter
+import tkinter
 
 
 class ChangeText(tkinter.Text):

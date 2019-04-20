@@ -19,8 +19,7 @@ class SwapAction(Action):
         self.ending_token = ending_token
 
     def __str__(self):
-        return "[%s | starting index: %d, ending index: %d]" % (type(self),
-                                                                self.starting_token,
+        return "[Swap starting index: %d, ending index: %d]" % (self.starting_token,
                                                                 self.ending_token)
 
     def do_action(self, current_state):

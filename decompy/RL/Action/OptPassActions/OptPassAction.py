@@ -41,7 +41,7 @@ class OptPassAction(PassAction):
         libextract.extract_instructions(module_charp)
 
     def __str__(self):
-        return "pass_name: " + self.pass_name + "\ncmd: " + self.command_line_command
+        return "Opt Pass: " + self.pass_name
 
 
 if __name__ == "__main__":

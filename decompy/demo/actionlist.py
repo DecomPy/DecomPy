@@ -9,7 +9,7 @@ class ActionList(tkinter.Frame):
 
     def addAction(self, action):
         frame = tkinter.Frame(self)
-        label = tkinter.Label(frame, text=str(action.starting_token) + ":" + str(action.ending_token))
+        label = tkinter.Label(frame, text=str(action))
         label.pack()
         frame.pack(side=tkinter.TOP, fill="x")
         self.actionList.append(frame)
@@ -30,5 +30,4 @@ class ActionList(tkinter.Frame):
     def updateActions(self, actions):
         self.clearActions()
         for action in actions:
-            print(action)
             self.addAction(action)

@@ -24,7 +24,7 @@ class OptimizationLister:
         :return: list of pass actions
         :rtype: list<PassAction>
         """
-        return []
+        return OptimizationLister._get_all_passes()
 
 
 # test to see it if runs
