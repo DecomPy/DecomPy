@@ -131,12 +131,7 @@ class FilterCTest(unittest.TestCase):
         :return: bool assert
         :rtype: assert
         """
-<<<<<<< HEAD:decompy/tests/test_filtercfiles/test_filter_c_file.py
         self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 0)
-=======
-        print(len(self.FilterC.check_valid_folder(self.pass_folder)))
-        self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 2)
->>>>>>> 857d752b2d60dd6826140f6ec41b53cc79b8c8f3:decompy/tests/test_filtercfiles/test_FilterCFile.py
         self.assertTrue(len(self.FilterC.check_valid_folder(self.fail_folder)) == 1)
 
 
