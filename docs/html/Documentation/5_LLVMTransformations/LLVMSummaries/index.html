@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Looking at opt Passes &mdash; DecomPy 0.0.1 documentation</title>
+  <title>LLVM Summaries &mdash; DecomPy 0.0.1 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="What Are LLVM Modules" href="../WhatAreLLVMModules/index.html" />
-    <link rel="prev" title="References" href="1_References.html" /> 
+    <link rel="next" title="LLVM Summaries" href="LLVM_Summaries.html" />
+    <link rel="prev" title="Single Line Replacement via LLVM" href="../LLVMSingleLineReplacement/SingleLineReplacement.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,20 +88,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../LLVMSummaries/index.html">LLVM Summaries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LLVM Summaries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="LLVM_Summaries.html">LLVM Summaries</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">Opt</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="1_References.html">References</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Looking at opt Passes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#simplifycfg">-simplifycfg</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sroa">-sroa</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#instcombine">-instcombine</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../Opt/index.html">Opt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
 </ul>
 </li>
@@ -153,15 +147,13 @@
         
           <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
         
-          <li><a href="index.html">Opt</a> &raquo;</li>
-        
-      <li>Looking at opt Passes</li>
+      <li>LLVM Summaries</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/Documentation/5_LLVMTransformations/Opt/2_OptPasses.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/LLVMSummaries/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -174,56 +166,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="looking-at-opt-passes">
-<h1>Looking at opt Passes<a class="headerlink" href="#looking-at-opt-passes" title="Permalink to this headline">¶</a></h1>
-<p>The following summaries are based on the longer blog post by John Regehr
-which can be found at <a class="reference external" href="https://blog.regehr.org/archives/1603">his site</a></p>
-<div class="section" id="simplifycfg">
-<h2>-simplifycfg<a class="headerlink" href="#simplifycfg" title="Permalink to this headline">¶</a></h2>
-<p>Simplifies the control flow graph of the code. This works by searching for
-basic blocks of llvm which have a single predeccessor and merging them into
-their predecesor. This prevents useless branching. It also merges branch
-instructions produced from code like</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd><dl class="first last docutils">
-<dt>if(x) {</dt>
-<dd>if(y) {</dd>
-</dl>
-</dd>
-</dl>
-<p>and reduces them into the more simple</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>if(x &amp; y) {</dd>
-</dl>
-<p>This pass could be useful, but I am unsure of some of the implications. It
-results in what is essentially dead code removal and I worry that in larger
-contexts, conclusions drawn on smaller pieces of code might not apply.</p>
-</div>
-<div class="section" id="sroa">
-<h2>-sroa<a class="headerlink" href="#sroa" title="Permalink to this headline">¶</a></h2>
-<p>Stands for “Scalar replacement of aggregates”. It’s goal is to make optimizations
-inteded to work for scalar values (single value variables) work for aggregates (for
-example structs in C). This works by replacing occurences of these aggregates in favor
-of each of its components.</p>
-<p>I believe this pass would be useful for our goals.</p>
-</div>
-<div class="section" id="instcombine">
-<h2>-instcombine<a class="headerlink" href="#instcombine" title="Permalink to this headline">¶</a></h2>
-<p>Instruction combiner is literally a large collection of operations that searches
-for redundent uses of operations. It sometimes performs more complex searches than
-direct equivalency by “canonicalizing” the code. This essentially means that code
-which may look different like</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>x - 1
-x + -1</dd>
-</dl>
-<p>are recognized as the same by forcing all code to follow the same rules. IE, it temporarily
-makes all subtractions addition of negatives.</p>
-<p>I believe that this pass would have limited use since it is somewhat difficult to perform on small
-operations, but do not thing it would be wholly unusefull.</p>
+  <div class="section" id="llvm-summaries">
+<h1>LLVM Summaries<a class="headerlink" href="#llvm-summaries" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LLVM_Summaries.html">LLVM Summaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#introduction"><strong>Introduction</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#obtaining-information-for-summaries"><strong>Obtaining Information for Summaries</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#likely-information-for-summaries"><strong>Likely Information for Summaries</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LLVM_Summaries.html#sources"><strong>Sources</strong></a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 
@@ -235,10 +189,10 @@ operations, but do not thing it would be wholly unusefull.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../WhatAreLLVMModules/index.html" class="btn btn-neutral float-right" title="What Are LLVM Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="LLVM_Summaries.html" class="btn btn-neutral float-right" title="LLVM Summaries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="1_References.html" class="btn btn-neutral float-left" title="References" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../LLVMSingleLineReplacement/SingleLineReplacement.html" class="btn btn-neutral float-left" title="Single Line Replacement via LLVM" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

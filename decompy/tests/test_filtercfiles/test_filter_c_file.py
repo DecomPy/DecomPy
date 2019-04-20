@@ -1,5 +1,5 @@
 import unittest
-from decompy.DataGathering.FilterC import FilterC
+from decompy.datagathering.FilterC import FilterC
 
 
 class FilterCTest(unittest.TestCase):
@@ -131,7 +131,7 @@ class FilterCTest(unittest.TestCase):
         :return: bool assert
         :rtype: assert
         """
-        self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 2)
+        self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 0)
         self.assertTrue(len(self.FilterC.check_valid_folder(self.fail_folder)) == 1)
 
 

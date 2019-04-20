@@ -1,7 +1,7 @@
-from decompy.DataGathering.FileGetter import FileGetter
-from decompy.DataGathering.RepoFilter import RepoFilter
-from decompy.DataGathering.RepoStructure import RepoStructure
-from decompy.DataGathering.ClangSubprocess import Clang
-from decompy.DataGathering.FilterC import FilterC
+from decompy.datagathering.FileGetter import FileGetter
+from decompy.datagathering.RepoFilter import RepoFilter
+from decompy.datagathering.RepoStructure import RepoStructure
+from decompy.datagathering.ClangSubprocess import Clang
+from decompy.datagathering.FilterC import FilterC
 
-__all__ = ["FileGetter", "RepoFilter", "RepoStructure", "Clang", "FilterC", "FormatCode"]
+__all__ = ["FileGetter", "RepoFilter", "RepoStructure", "ClangSubprocess", "FilterC", "FormatCode"]
