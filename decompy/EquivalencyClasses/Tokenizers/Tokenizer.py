@@ -1,3 +1,7 @@
+import multiprocessing
+import time
+from multiprocessing import Queue
+
 from decompy.EquivalencyClasses.Tokenizers.Tokens.NegativeIntegerToken import NegativeIntegerToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.SignedIntegerToken import SignedIntegerToken
 from decompy.EquivalencyClasses.Tokenizers.Tokens.VariableToken import VariableToken
@@ -65,6 +69,17 @@ class Tokenizer:
         return tuple(tokens), variable_dict, positive_integer_dict, negative_integer_dict, signed_integer_dict
 
     @staticmethod
+    def _safe_wrap_extract_instructions(data, out_q):
+        """
+        Used for running a C++ function that can segfault very easily. if out_q == 0, it probably segfaulted, otherwise not
+        :param data: llvm asm ir string
+        :param out_q: pointer (reference?) to multiprocess-safe queue that will contain the return value of the C++ function
+        :return:
+        """
+        instruction_str = Tokenizer._wrap_extract_instructions(data)
+        out_q.put(instruction_str)
+
+    @staticmethod
     def tokenize(data, is_snippet):
         """
         Takes in llvm and extracts tokens from it
@@ -78,7 +93,19 @@ class Tokenizer:
             instruction_str = data
         # Extract instructions from decompiled Modules or Functions
         elif isinstance(data, str):
-            instruction_str = Tokenizer._wrap_extract_instructions(data)
+            # instruction_str = Tokenizer._wrap_extract_instructions(data)
+            out_q = Queue()
+            p = multiprocessing.Process(
+                target=Tokenizer._safe_wrap_extract_instructions,
+                args=(data, out_q)
+            )
+            p.start()
+            p.join()
+            p.terminate()
+            if out_q.qsize() > 0:
+                instruction_str = out_q.get()
+            else:
+                return tuple()
         # Didn't get appropriate data
         else:
             return False
