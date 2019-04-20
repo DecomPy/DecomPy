@@ -12,11 +12,11 @@ class FilterCTest(unittest.TestCase):
         Initializes a test filter C unit.
         """
         self.FilterC = FilterC()
-        self.fail_folder = "decompy/tests/test_filtercfiles/files/binarysearch/unfiltered"
-        self.pass_folder = "decompy/tests/test_filtercfiles/files/fibonnacisearch/unfiltered"
+        self.fail_folder = "decompy/tests/test_filtercfiles/files/binarysearch/Unfiltered"
+        self.pass_folder = "decompy/tests/test_filtercfiles/files/fibonnacisearch/Unfiltered"
 
-        self.fail_file = "decompy/tests/test_filtercfiles/files/binarysearch/unfiltered/binary_search_tree_fail.c"
-        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnacisearch/unfiltered/fibonacciSearch.c"
+        self.fail_file = "decompy/tests/test_filtercfiles/files/binarysearch/Unfiltered/binary_search_tree_fail.c"
+        self.pass_file = "decompy/tests/test_filtercfiles/files/fibonnacisearch/Unfiltered/fibonacciSearch.c"
 
         self.folder = "decompy/tests/test_filtercfiles/files/"  # actual folder "decompy/data/Repositories"
 
@@ -131,7 +131,7 @@ class FilterCTest(unittest.TestCase):
         :return: bool assert
         :rtype: assert
         """
-        self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 0)
+        self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 2)
         self.assertTrue(len(self.FilterC.check_valid_folder(self.fail_folder)) == 1)
 
 
