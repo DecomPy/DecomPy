@@ -22,7 +22,7 @@ class OptPassAction(PassAction):
         OptPassAction._make_llvm_module_file(self, llvm_str)
 
         # Run the command line command
-        subprocess.Popen(self.command_line_command.split())
+        subprocess.call(self.command_line_command.split())
 
         # Retokenize the module
         with open('output.ll') as g:
