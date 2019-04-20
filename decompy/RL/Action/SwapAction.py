@@ -27,7 +27,7 @@ class SwapAction(Action):
         an action performed based off swap action.
         :return: the new llvm state after applying the action
         """
-        module_tokens = Tokenizer.tokenize(current_state, True)
+        module_tokens = Tokenizer.tokenize(current_state, False)
         snippet_tokens = Tokenizer.tokenize(self.llvm, True)
         new_state_tokens = module_tokens[:self.starting_token] + \
                snippet_tokens + \

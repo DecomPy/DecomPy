@@ -27,13 +27,11 @@ class CodeSearcher:
         swaps = []
 
         tokens = Tokenizer.tokenize(llvm_current_state, False)
-        print(tokens)
         for starting_cursor in range(len(tokens)):
             identified = [(prefix, starting_cursor) for prefix in self.trie.prefixes(tokens[starting_cursor:])]
             for snippet, location in identified:
-                print(repr(snippet))
                 for option in snippet.get_swaps():
-                    swaps.append(SwapAction(option.render(), location, location + len(tokens)))
+                    swaps.append(SwapAction(option.render(), location, location + len(option.get_meta_tokens())))
 
         return swaps
 

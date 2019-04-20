@@ -1,5 +1,4 @@
 from decompy.RL.Action.PassAction import PassAction
-from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 
 import ctypes
 import pathlib
