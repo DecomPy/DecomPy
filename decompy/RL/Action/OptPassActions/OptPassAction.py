@@ -3,6 +3,7 @@ from decompy.RL.Action.PassAction import PassAction
 import ctypes
 import pathlib
 import subprocess
+import os
 
 libextract_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "MakeLLFile.so")
 libextract = ctypes.CDLL(str(libextract_path))
@@ -25,7 +26,14 @@ class OptPassAction(PassAction):
 
         # Retokenize the module
         with open('output.ll') as g:
-            return g.read()
+            ret_str = g.read()
+
+        # Clean up generated files
+        os.remove('output.ll')
+        os.remove('module.ll')
+
+        # Return modified llvm so it can be tokenized
+        return ret_str
 
     def _make_llvm_module_file(self, llvm_str):
         """
