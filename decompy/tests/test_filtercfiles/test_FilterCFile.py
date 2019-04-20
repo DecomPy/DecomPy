@@ -131,6 +131,7 @@ class FilterCTest(unittest.TestCase):
         :return: bool assert
         :rtype: assert
         """
+        print(len(self.FilterC.check_valid_folder(self.pass_folder)))
         self.assertTrue(len(self.FilterC.check_valid_folder(self.pass_folder)) == 2)
         self.assertTrue(len(self.FilterC.check_valid_folder(self.fail_folder)) == 1)
 

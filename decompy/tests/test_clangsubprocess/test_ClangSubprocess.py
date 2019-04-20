@@ -9,7 +9,7 @@ class ClangSubprocessTest(unittest.TestCase):
     """
     tests ClangSubprocess class to compile files
     """
-    cwd = os.getcwd() + "/decompy/tests/test_clangSubprocess/cdir"
+    cwd = os.getcwd() + "/decompy/tests/test_clangsubprocess/cdir"
     inputCName = cwd+"/binary_search_tree.c"
 
     llvm_path = cwd + "/llvm"
@@ -36,20 +36,20 @@ class ClangSubprocessTest(unittest.TestCase):
         """
         Deletes files created in setup
         """
-        try:
-            shutil.rmtree(self.llvm_path)
-            shutil.rmtree(self.assembly_path)
-            shutil.rmtree(self.elf_path)
-            shutil.rmtree(self.object_path)
-        except Exception as e:
-            print(e)
+        # try:
+        #     shutil.rmtree(self.llvm_path)
+        #     shutil.rmtree(self.assembly_path)
+        #     shutil.rmtree(self.elf_path)
+        #     shutil.rmtree(self.object_path)
+        # except Exception as e:
+        #     print(e)
 
     def test_c_file_exists(self):
         """
         Attempts to call all compile functions with a correct file. Should compile
         """
-
         assem_path = Clang.Clang.to_assembly(self.inputCName, self.assembly_path)
+        print(assem_path, self.assembly_path)
         self.assertTrue(Path(assem_path).exists())
 
         obj_path = Clang.Clang.to_object_file(self.inputCName, self.object_path)
