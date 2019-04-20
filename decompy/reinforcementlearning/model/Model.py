@@ -1,5 +1,5 @@
-from decompy.RL.ActionChooser import ActionChooser
-from decompy.RL.Model import Decision
+from decompy.reinforcementlearning.actionchooser.ActionChooser import ActionChooser
+from decompy.reinforcementlearning.model.Decision import Decision
 
 
 class Model:

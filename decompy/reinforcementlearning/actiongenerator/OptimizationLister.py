@@ -1,4 +1,4 @@
-
+from decompy.reinforcementlearning.actiongenerator.OptPassActionGenerator import OptPassActionGenerator
 
 class OptimizationLister:
     """
@@ -6,7 +6,13 @@ class OptimizationLister:
     """
 
     def __init__(self):
-        pass
+        self.passes = self._get_all_passes()
+
+    @staticmethod
+    def _get_all_passes():
+        passes = OptPassActionGenerator.generate_opt_pass_actions()
+
+        return passes
 
     @staticmethod
     def list_optimizations_actions(llvm_unop):
@@ -23,4 +29,4 @@ class OptimizationLister:
 
 # test to see it if runs
 if __name__ == "__main__":
-    pass
+    OptimizationLister()

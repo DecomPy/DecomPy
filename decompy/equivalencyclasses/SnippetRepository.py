@@ -7,7 +7,7 @@ from decompy.equivalencyclasses.ResultSnippet import ResultSnippet
 from decompy.equivalencyclasses.Snippet import Snippet
 from decompy.equivalencyclasses.tokenizers.Tokenizer import Tokenizer
 from decompy.equivalencyclasses.Operators import Operators
-from decompy.equivalencyclasses.tokenizers.Tokens.ResultsToken import ResultsToken
+from decompy.equivalencyclasses.tokenizers.tokens.ResultsToken import ResultsToken
 
 
 class SnippetRepository:
@@ -75,7 +75,10 @@ class SnippetRepository:
                                 elif unprocessed[i][0] == "C":
                                     processed.append(unprocessed[i][1:])
                                 else:
-                                    processed.append(lookup_for_snippet[unprocessed[i]])
+                                    try:
+                                        processed.append(lookup_for_snippet[unprocessed[i]])
+                                    except KeyError:
+                                        raise KeyError("Error in snippet id %s, variable not declared properly: %s" % (id, unprocessed[i]))
                             r = ResultsToken(processed)
                             lookup_for_snippet.update({result[0]: r})
                             results[result[0]] = r
@@ -211,17 +214,17 @@ if __name__ == "__main__":
 
     repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./Snippets"))
     s = repo.get_snippets()[0]
-    s.variable_dict["%2"] == "%1"
-    s.variable_dict["%3"] == "%5"
-    s.positive_integer_dict["4"] == 12
-    s.positive_integer_dict["5"] == 15
-
-    print("Original:\n", s.get_meta_tokens(), sep="")
-    print()
-
-    for i in s.get_unrendered_swaps():
-        print("Unrendered:\n", str(i), sep="")
-        print()
-
-    for i in s.get_rendered_swaps():
-        print("Rendered:\n", str(i), sep="")
+    # s.variable_dict["%2"] == "%1"
+    # s.variable_dict["%3"] == "%5"
+    # s.positive_integer_dict["4"] == 12
+    # s.positive_integer_dict["5"] == 15
+    #
+    # print("Original:\n", s.get_meta_tokens(), sep="")
+    # print()
+    #
+    # for i in s.get_unrendered_swaps():
+    #     print("Unrendered:\n", str(i), sep="")
+    #     print()
+    #
+    # for i in s.get_rendered_swaps():
+    #     print("Rendered:\n", str(i), sep="")

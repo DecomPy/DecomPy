@@ -1,4 +1,4 @@
-from decompy.RL.Action import Action
+from decompy.reinforcementlearning.action.Action import Action
 # TODO: decide which things need to be static.
 
 

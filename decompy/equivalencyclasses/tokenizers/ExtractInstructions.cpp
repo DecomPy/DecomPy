@@ -40,7 +40,6 @@ std::string extractInstructions(std::string llvm) {
     //std::unique_ptr<Module> module = parseIRFile(fileName, error, context);
     MemoryBufferRef mbRef = MemoryBufferRef(StringRef(llvm), StringRef("llvm"));
     std::unique_ptr<Module> module = parseIR(mbRef, *&error, context);
-
     std::string type_str;
     llvm::raw_string_ostream rso(type_str);
 
