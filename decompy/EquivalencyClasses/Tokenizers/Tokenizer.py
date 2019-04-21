@@ -105,6 +105,7 @@ class Tokenizer:
             if out_q.qsize() > 0:
                 instruction_str = out_q.get()
             else:
+                print("Invalid Module.")
                 return tuple()
         # Didn't get appropriate data
         else:

@@ -1,4 +1,3 @@
-; $SWAP=Class6/6.ll,Class5/6.ll,Class5/5.ll
-; $POSITIVE_INTEGERS=5
-; $NEGATIVE_INTEGERS=3
-%1 = add nsw i32 -3, 5
+; $SWAP=Class6/6.ll
+; $SIGNED_INTEGERS=5,3
+%1 = add nsw i32 5, 3
