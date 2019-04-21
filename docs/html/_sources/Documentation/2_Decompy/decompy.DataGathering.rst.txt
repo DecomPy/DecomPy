@@ -60,15 +60,6 @@ decompy.DataGathering.RepoStructure module
     :undoc-members:
     :show-inheritance:
 
-decompy.DataGathering.WebNavigator module
------------------------------------------
-
-.. automodule:: decompy.DataGathering.WebNavigator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 Module contents
 ---------------
 

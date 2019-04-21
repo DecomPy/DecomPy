@@ -1,6 +1,6 @@
 from decompy.cli_frontend import LifterSubprocess
 from decompy.cli_frontend import OutputFormatter
-from decompy.RL.Driver import Driver
+from decompy.reinforcementlearning.Driver import Driver
 import argparse
 
 

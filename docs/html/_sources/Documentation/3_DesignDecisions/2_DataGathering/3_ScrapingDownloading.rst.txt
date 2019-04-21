@@ -17,9 +17,7 @@ other miscellaneous things that a person trying to figure out what's going on wo
 
 Relevant Classes
 ===================
-The classes that pertain to this section are GitHubScraper and it's parent, WebNavigator. Zachary Monroe made the
-WebNavigator class, and I just piggybacked off of it because it works. It's also well commented. I did have to
-modify it a bit so that when thing's don't work as intended I could fix it. The content on this page will all relate
+The classes that pertain to this section are GitHubScraper and it's parent. The content on this page will all relate
 to GitHubScraper.
 
 Relevant Methods
@@ -86,7 +84,7 @@ Getting Page Contents
 Look at
 
 .. highlights::
-    WebNavigator.getContent(link)
+    RepoFilter.get_results(link)
 
 The program sends out a request, and gets the page back. Most of the time.
 If the same GitHub URL is requested too many times, the GitHub server will give you one of the HTTP errors about
@@ -97,9 +95,9 @@ Extracting URLs from Page Content
 Look at
 
 .. highlights::
-    WebNavigator.getAbsoluteLinksFromPage(link, domain=None)
+    RepoFilter.get_results(date, page)
 
-I actually don't know how it works, so if you want to know, you actually have to look at it.
+GitHub gives us a nice list of urls to follow with its API. Remember to use your account info for more requests!
 
 Filtering Useful URLs from URLs
 -------------------------------
