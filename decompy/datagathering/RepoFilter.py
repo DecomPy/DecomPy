@@ -3,7 +3,6 @@ import requests
 import time
 import datetime
 from datetime import datetime
-# from decompy.DataGathering.WebNavigator import WebNavigator
 
 
 class RepoFilter:

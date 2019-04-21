@@ -167,13 +167,13 @@ class FilterC:
 
         # walk recursively in given folder
         for root, dirs, files in os.walk(folder):
-            # look for unfiltered files and only want "Unfiltered" (or filt_path_name)
+            # look for Unfiltered files and only want "Unfiltered" (or filt_path_name)
             try:
                 if root.endswith(filt_path_name):
 
                     # only look for c files
                     for basename in files:
-                        # unfiltered name
+                        # Unfiltered name
                         unfiltered_path = root + "/" + basename
 
                         # checks for valid data

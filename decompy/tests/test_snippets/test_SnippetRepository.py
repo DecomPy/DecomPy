@@ -45,7 +45,7 @@ class TestRepoStructure(unittest.TestCase):
                 self.assertTrue(snippets[i][1] == "; ModuleID = 2.ll")
 
     def test_snippet_repository(self):
-        repo = SnippetRepository(os.getcwd() + "/decompy/tests/test_snippets/snippets/SnippetRepoExamples")
+        repo = SnippetRepository(os.getcwd() + "/decompy/tests/test_snippets/snippets/snippetrepoexamples")
         s = repo.get_snippets()[0]
         self.assertTrue(s.variable_dict["%2"] == "%1")
         self.assertTrue(s.variable_dict["%3"] == "%5")
