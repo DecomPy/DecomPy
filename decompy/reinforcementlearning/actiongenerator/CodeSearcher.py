@@ -37,7 +37,7 @@ class CodeSearcher:
 
 
 if __name__ == "__main__":
-    from decompy.EquivalencyClasses.TrieGenerator import TrieGenerator
+    from decompy.equivalencyclasses.TrieGenerator import TrieGenerator
     trieGen = TrieGenerator()
     trie = trieGen.generates_trie()
     codesearcher = CodeSearcher(trie)

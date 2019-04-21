@@ -48,7 +48,7 @@ class ResultSnippet(Snippet):
 
 
 if __name__ == "__main__":
-    from decompy.EquivalencyClasses.Tokenizers.Tokens.ResultsToken import ResultsToken
+    from decompy.equivalencyclasses.tokenizers.tokens.ResultsToken import ResultsToken
 
     snip = Snippet(0, "%1 = alloca i32, align 4\n-2", 0, positive_integer_consts=('4',), negative_integer_consts=('-2',))
 
