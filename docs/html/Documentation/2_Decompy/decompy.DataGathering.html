@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -662,7 +664,7 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 
 <dl class="attribute">
 <dt id="decompy.DataGathering.FilterC.FilterC.script_dir">
-<code class="descname">script_dir</code><em class="property"> = '/mnt/c/Users/ygarrar1/Google Drive/SER 401/DecomPy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">script_dir</code><em class="property"> = '/mnt/c/users/zlmonroe/Documents/Spring2019/SER402/Project/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -850,135 +852,8 @@ the search criteria</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-decompy.DataGathering.WebNavigator">
-<span id="decompy-datagathering-webnavigator-module"></span><h2>decompy.DataGathering.WebNavigator module<a class="headerlink" href="#module-decompy.DataGathering.WebNavigator" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator">
-<em class="property">class </em><code class="descclassname">decompy.DataGathering.WebNavigator.</code><code class="descname">WebNavigator</code><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Defines methods for navigating web links</p>
-<dl class="attribute">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.DEBUG">
-<code class="descname">DEBUG</code><em class="property"> = False</em><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.DEBUG" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.TIMER">
-<code class="descname">TIMER</code><em class="property"> = 0</em><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.TIMER" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.TIMING">
-<code class="descname">TIMING</code><em class="property"> = False</em><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.TIMING" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getAbsolute">
-<em class="property">static </em><code class="descname">getAbsolute</code><span class="sig-paren">(</span><em>ResolvedParent</em>, <em>RelativeLinks</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getAbsolute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getAbsolute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates absolute URLs from a set of links and their parent</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ResolvedParent</strong> (<em>str</em>) – Any resolved parent URL</li>
-<li><strong>RelativeLinks</strong> (<em>set of strings</em>) – A set containing relative URLs</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The absolute URLs of the relative URLs</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">set of str</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getAbsoluteLinksFromPage">
-<em class="property">static </em><code class="descname">getAbsoluteLinksFromPage</code><span class="sig-paren">(</span><em>link</em>, <em>domain=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getAbsoluteLinksFromPage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getAbsoluteLinksFromPage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combines above methods into single explore method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>link</strong> – the absolute link to resolve</li>
-<li><strong>domain</strong> – the domain of the above link to stay within (default is no domain limiting)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">set of absolute URLs within a page</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getContent">
-<em class="property">static </em><code class="descname">getContent</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getContent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the content from a link
-:param link: An absolute URL
-:return: page content
-:return: str</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getLinks">
-<em class="property">static </em><code class="descname">getLinks</code><span class="sig-paren">(</span><em>content</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getLinks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getLinks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds all links contained on a page from a link</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> (<em>str</em>) – HTML content of a page</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a set of links</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">set of strings</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.getVisibleTextContent">
-<em class="property">static </em><code class="descname">getVisibleTextContent</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.getVisibleTextContent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.getVisibleTextContent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves only the visible text from a link (no tags, etc.)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>link</strong> – An absolute URL</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of visible text</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="decompy.DataGathering.WebNavigator.WebNavigator.limitDomain">
-<em class="property">static </em><code class="descname">limitDomain</code><span class="sig-paren">(</span><em>absoluteLinks</em>, <em>domain</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/WebNavigator.html#WebNavigator.limitDomain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.WebNavigator.WebNavigator.limitDomain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prunes all links outside of a given domain</p>
-<p>:param links A set of absolute links
-:type links: set of strings
-:param str domain: The domain used to filter the links. Should be of form example.com (not of www.google.com or <a class="reference external" href="https://www.example.com">https://www.example.com</a>)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A filtered set of links</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="decompy-datagathering-webnavigator-module">
+<h2>decompy.DataGathering.WebNavigator module<a class="headerlink" href="#decompy-datagathering-webnavigator-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-decompy.DataGathering">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-decompy.DataGathering" title="Permalink to this headline">¶</a></h2>
@@ -1550,7 +1425,7 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 
 <dl class="attribute">
 <dt id="decompy.DataGathering.FilterC.script_dir">
-<code class="descname">script_dir</code><em class="property"> = '/mnt/c/Users/ygarrar1/Google Drive/SER 401/DecomPy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">script_dir</code><em class="property"> = '/mnt/c/users/zlmonroe/Documents/Spring2019/SER402/Project/decompy/docs'</em><a class="headerlink" href="#decompy.DataGathering.FilterC.script_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1586,26 +1461,16 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
