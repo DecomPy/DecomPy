@@ -1,5 +1,4 @@
 import tkinter
-from time import time
 
 from decompy.RL.ActionGenerator.ActionGenerator import ActionGenerator
 from decompy.demo.actionlist import ActionList
@@ -21,7 +20,7 @@ class ActionDemo(tkinter.Frame):
         self.text2 = tkinter.Text(self)
         self.text2.pack(side=tkinter.RIGHT, expand=True, fill="both")
 
-        self.actionList = ActionList(self, self.text2)
+        self.actionList = ActionList(self, self.text1, self.text2)
         self.actionList.pack(side=tkinter.LEFT, fill="both", expand=True)
 
     def should_update(self, e):

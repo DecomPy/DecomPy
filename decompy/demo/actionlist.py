@@ -1,11 +1,15 @@
 import tkinter
 
+from decompy.demo.highlightText import highlightDiffs, configureHighlightColors
+
 
 class ActionList(tkinter.Frame):
-    def __init__(self, parent, output_textbox, active_color="red"):
+    def __init__(self, parent, input_textbox, output_textbox, active_color="red"):
         tkinter.Frame.__init__(self, parent)
         self.actionList = []
+        self.input_textbox = input_textbox
         self.output_textbox = output_textbox
+        configureHighlightColors(self.input_textbox, self.output_textbox)
         self.active_color = active_color
 
     def addAction(self, action, llvm_state):
@@ -37,3 +41,4 @@ class ActionList(tkinter.Frame):
     def executeAction(self, action, llvm_state):
         self.output_textbox.delete("1.0", tkinter.END)
         self.output_textbox.insert("1.0", action.do_action(llvm_state))
+        highlightDiffs(self.input_textbox, self.output_textbox)
