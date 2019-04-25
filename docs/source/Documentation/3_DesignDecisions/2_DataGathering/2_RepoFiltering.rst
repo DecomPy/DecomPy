@@ -6,6 +6,12 @@ At the time of writing this, this is made up of two classes, the RepoFiltering c
 
 -----------------------------------------------------------------------------------------------------------------
 
+Relevant Classes
+===================
+The classes that pertain to this section are ``RepoFilter.py`` and ``RepoStructure.py``.
+
+-----------------------------------------------------------------------------------------------------------------
+
 Repo Filtering is Based Around Storing Stages to JSON Files
     Partially, this decision was driven by the fact that I would not have                                                                  
     internet most of the time I was writing it. I do think that the end result                                                             
