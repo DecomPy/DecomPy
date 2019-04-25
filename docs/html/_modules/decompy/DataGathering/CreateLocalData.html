@@ -252,7 +252,7 @@
 <span class="sd">        :type: int</span>
 <span class="sd">        :param end_page: where to end the page (end page) default is 2.</span>
 <span class="sd">        :type: int</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">end_page</span> <span class="o">&lt;</span> <span class="n">start_page</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start page must be greater than end page.&quot;</span><span class="p">)</span>
@@ -287,7 +287,7 @@
 <span class="sd">        :type: str</span>
 <span class="sd">        :param password: the github user&#39;s password.</span>
 <span class="sd">        :type: str</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span><span class="p">:</span>  <span class="c1"># if we have repos, then sort through each rep in our json</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filtered_repos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf</span><span class="o">.</span><span class="n">offline_read_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo_json_filtered_name</span><span class="p">)</span>
@@ -306,11 +306,13 @@
 <div class="viewcode-block" id="CreateLocalData.stage3_filter_files"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.CreateLocalData.CreateLocalData.stage3_filter_files">[docs]</a>    <span class="k">def</span> <span class="nf">stage3_filter_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unfiltered_key</span><span class="o">=</span><span class="s2">&quot;Unfiltered&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.</span>
-<span class="sd">            Use the list provided and then insert them into json format. Currently uses default params.</span>
+<span class="sd">        Use the list provided and then insert them into json format. Currently uses default params.</span>
+
 <span class="sd">        :param unfiltered_key: the directory to search through</span>
 <span class="sd">        :type: str</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># walk recursively in given folder only looking for &#39;Unfiltered&#39;</span>
         <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">):</span>
 
@@ -356,22 +358,20 @@
 <span class="sd">        Stage 4 of the data gathering process: Generate LLVM and other data.</span>
 <span class="sd">        gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</span>
 
-
-<span class="sd">        :param folder: the file path of the folder to compile</span>
+<span class="sd">        :param folder: the file path of the folder to compile.</span>
 <span class="sd">        :type: str</span>
-
-<span class="sd">        :param llvm_file_path: the file path to save LLVM files to</span>
+<span class="sd">        :param llvm_file_path: the file path to save LLVM files to.</span>
 <span class="sd">        :type: str</span>
-<span class="sd">        :param object_file_path: the file path to save Object files to</span>
+<span class="sd">        :param object_file_path: the file path to save Object files to.</span>
 <span class="sd">        :type: str</span>
-
 <span class="sd">        :param elf_file_path: the file path for the elf file, defaults to &quot;elf&quot;.</span>
 <span class="sd">        :type: str</span>
-
 <span class="sd">        :param assembly_file_path: the file path for the assembly file, defaults to &quot;assembly&quot;.</span>
-<span class="sd">        type: str</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :type: str</span>
+
+<span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="n">folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span>
 
@@ -471,7 +471,7 @@
 <span class="sd">        stage 5 of the gathering process: load into the database reading the meta and other info.</span>
 <span class="sd">        :param folder: folder to iterate through to insert into database. Additionally, this generates cleaned C_Code to train off of.</span>
 <span class="sd">        :type: str</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder</span>

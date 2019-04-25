@@ -378,7 +378,7 @@ This is especially useful if you are changing the name from the recommended “R
 :type: int
 :param end_page: where to end the page (end page) default is 2.
 :type: int
-:return:</p>
+:return: void</p>
 </dd></dl>
 
 <dl class="method">
@@ -391,16 +391,14 @@ This is especially useful if you are changing the name from the recommended “R
 :type: str
 :param password: the github user’s password.
 :type: str
-:return:</p>
+:return: void</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="decompy.DataGathering.CreateLocalData.CreateLocalData.stage3_filter_files">
 <code class="descname">stage3_filter_files</code><span class="sig-paren">(</span><em>unfiltered_key='Unfiltered'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/CreateLocalData.html#CreateLocalData.stage3_filter_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.CreateLocalData.CreateLocalData.stage3_filter_files" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.</dt>
-<dd>Use the list provided and then insert them into json format. Currently uses default params.</dd>
-</dl>
+<dd><p>stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.
+Use the list provided and then insert them into json format. Currently uses default params.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -409,7 +407,7 @@ This is especially useful if you are changing the name from the recommended “R
 </tr>
 <tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">str</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
 </tr>
 </tbody>
 </table>
@@ -425,9 +423,9 @@ gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</p
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>folder</strong> – the file path of the folder to compile</li>
-<li><strong>llvm_file_path</strong> – the file path to save LLVM files to</li>
-<li><strong>object_file_path</strong> – the file path to save Object files to</li>
+<li><strong>folder</strong> – the file path of the folder to compile.</li>
+<li><strong>llvm_file_path</strong> – the file path to save LLVM files to.</li>
+<li><strong>object_file_path</strong> – the file path to save Object files to.</li>
 <li><strong>elf_file_path</strong> – the file path for the elf file, defaults to “elf”.</li>
 <li><strong>assembly_file_path</strong> – the file path for the assembly file, defaults to “assembly”.</li>
 </ul>
@@ -442,13 +440,17 @@ gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</p
 <tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">str</p>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>type: str
-:return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -457,7 +459,7 @@ gets file paths for llvm and object file path. Defaults to /LLVM and /Object.</p
 <dd><p>stage 5 of the gathering process: load into the database reading the meta and other info.
 :param folder: folder to iterate through to insert into database. Additionally, this generates cleaned C_Code to train off of.
 :type: str
-:return:</p>
+:return: void</p>
 </dd></dl>
 
 </dd></dl>
@@ -668,12 +670,6 @@ predetermined whitelisted headers, and predetermined blacklisted headers.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="decompy-datagathering-filtercompile-module">
-<h2>decompy.DataGathering.FilterCompile module<a class="headerlink" href="#decompy-datagathering-filtercompile-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="decompy-datagathering-githubscraper-module">
-<h2>decompy.DataGathering.GitHubScraper module<a class="headerlink" href="#decompy-datagathering-githubscraper-module" title="Permalink to this headline">¶</a></h2>
-</div>
 <div class="section" id="module-decompy.DataGathering.RepoFilter">
 <span id="decompy-datagathering-repofilter-module"></span><h2>decompy.DataGathering.RepoFilter module<a class="headerlink" href="#module-decompy.DataGathering.RepoFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -722,28 +718,24 @@ a simple search has the options of doing.</p>
 <dl class="method">
 <dt id="decompy.DataGathering.RepoFilter.RepoFilter.get_results">
 <code class="descname">get_results</code><span class="sig-paren">(</span><em>date</em>, <em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a single request to the GitGub api for a page with results matching
-the search criteria</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> – because github only allows us 1000 results because they are bad at making an api.</td>
-</tr>
-</tbody>
-</table>
-<p>:type; str</p>
+<dd><p>Makes a single request to the GitGub api for a page with results matching the search criteria.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>self</strong> – </li>
-<li><strong>page</strong> – Which page of results should be fetched</li>
+<li><strong>date</strong> – because github only allows us 1000 results because they are bad at making an api.</li>
+<li><strong>page</strong> – Which page of results should be fetched.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
 </td>
 </tr>
 </tbody>
@@ -1050,28 +1042,24 @@ a simple search has the options of doing.</p>
 <dl class="method">
 <dt id="decompy.DataGathering.RepoFilter.get_results">
 <code class="descname">get_results</code><span class="sig-paren">(</span><em>date</em>, <em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/decompy/DataGathering/RepoFilter.html#RepoFilter.get_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#decompy.DataGathering.RepoFilter.get_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a single request to the GitGub api for a page with results matching
-the search criteria</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> – because github only allows us 1000 results because they are bad at making an api.</td>
-</tr>
-</tbody>
-</table>
-<p>:type; str</p>
+<dd><p>Makes a single request to the GitGub api for a page with results matching the search criteria.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>self</strong> – </li>
-<li><strong>page</strong> – Which page of results should be fetched</li>
+<li><strong>date</strong> – because github only allows us 1000 results because they are bad at making an api.</li>
+<li><strong>page</strong> – Which page of results should be fetched.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first last">int</p>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body"><p class="first">str</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">int</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
 </td>
 </tr>
 </tbody>

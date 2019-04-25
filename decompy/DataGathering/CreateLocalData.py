@@ -101,7 +101,7 @@ class CreateLocalData:
         :type: int
         :param end_page: where to end the page (end page) default is 2.
         :type: int
-        :return:
+        :return: void
         """
         if end_page < start_page:
             print("Start page must be greater than end page.")
@@ -136,7 +136,7 @@ class CreateLocalData:
         :type: str
         :param password: the github user's password.
         :type: str
-        :return:
+        :return: void
         """
         if not self.filtered_repos:  # if we have repos, then sort through each rep in our json
             self.filtered_repos = self.rf.offline_read_json(self.repo_json_filtered_name)
@@ -155,11 +155,13 @@ class CreateLocalData:
     def stage3_filter_files(self, unfiltered_key="Unfiltered"):
         """
         stage 3 of the data gathering process: Filter the files out (C files). Get the good ones.
-            Use the list provided and then insert them into json format. Currently uses default params.
+        Use the list provided and then insert them into json format. Currently uses default params.
+
         :param unfiltered_key: the directory to search through
         :type: str
-        :return:
+        :return: void
         """
+
         # walk recursively in given folder only looking for 'Unfiltered'
         for root, dirs, files in os.walk(self.folder):
 
@@ -205,22 +207,20 @@ class CreateLocalData:
         Stage 4 of the data gathering process: Generate LLVM and other data.
         gets file paths for llvm and object file path. Defaults to /LLVM and /Object.
 
-
-        :param folder: the file path of the folder to compile
+        :param folder: the file path of the folder to compile.
         :type: str
-
-        :param llvm_file_path: the file path to save LLVM files to
+        :param llvm_file_path: the file path to save LLVM files to.
         :type: str
-        :param object_file_path: the file path to save Object files to
+        :param object_file_path: the file path to save Object files to.
         :type: str
-
         :param elf_file_path: the file path for the elf file, defaults to "elf".
         :type: str
-
         :param assembly_file_path: the file path for the assembly file, defaults to "assembly".
-        type: str
-        :return:
+        :type: str
+
+        :return: void
         """
+
         if folder is not None:
             self.folder = folder
 
@@ -320,7 +320,7 @@ class CreateLocalData:
         stage 5 of the gathering process: load into the database reading the meta and other info.
         :param folder: folder to iterate through to insert into database. Additionally, this generates cleaned C_Code to train off of.
         :type: str
-        :return:
+        :return: void
         """
         if folder is None:
             folder = self.folder
