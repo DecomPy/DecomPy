@@ -80,6 +80,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Decompiler Information</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">How Rule Based Decompilers Work</a><ul class="current">
@@ -262,14 +263,15 @@ returns of functions are.</p>
 <p>This section presents code-improving transformations used by a <strong>decompiler</strong>
 . The aim of these optimizations is to remove low-level language concepts and
 introduce high-level concepts that involve more than two operands.</p>
-<p>Dead-Register Elimination eliminates registers from code that is no longer used.</p>
-<p>Dead-Condition Code Elimination removes condition codes that are never used.</p>
-<p>Condition Code Propagation compresses the remaining conditions from
-Dead-Condition Code Elimination into more compact higher-level instructions.</p>
-<p>Register Arguments compresses multiple instructions that contain arguments
-into a single high-level instructions.</p>
-<p>Function Return Register(s) compress multiple instructions for returning
-registers from a function into a single high-level instruction.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Dead-Register Elimination eliminates registers from code that is no longer used.</li>
+<li>Dead-Condition Code Elimination removes condition codes that are never used.</li>
+<li>Condition Code Propagation compresses the remaining conditions from Dead-Condition Code Elimination into more compact higher-level instructions.</li>
+<li>Register Arguments compresses multiple instructions that contain arguments into a single high-level instructions.</li>
+<li>Function Return Register(s) compress multiple instructions for returning registers from a function into a single high-level instruction.</li>
+</ul>
+</div></blockquote>
 <p>The rest of the section follows a similar pattern to the portion already
 covered; multiple instructions that are part of the same subroutine are
 combined into a single high-level instruction. This makes the code (slightly)

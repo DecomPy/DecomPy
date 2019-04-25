@@ -80,6 +80,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
@@ -185,42 +186,42 @@ operation, <code class="docutils literal notranslate"><span class="pre">%4</span
 <p>The only header is <code class="docutils literal notranslate"><span class="pre">Transform.hpp</span></code>, which contains a bunch of LLVM includes which are helpful. I lost track of what does what, and probably put too many
 includes in that file.</p>
 <blockquote>
-<div>using namespace llvm</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">llvm</span></code></div></blockquote>
 <p>Using this namespace just saves me a lot of trouble because otherwise I’d have to type <code class="docutils literal notranslate"><span class="pre">llvm</span></code> a lot.</p>
 <blockquote>
-<div>void print()</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">print()</span></code></div></blockquote>
 <p>Just a nice function so I don’t have to type <code class="docutils literal notranslate"><span class="pre">std::cout</span> <span class="pre">&lt;&lt;</span> <span class="pre">someString</span> <span class="pre">&lt;&lt;</span> <span class="pre">std::endl</span></code> everytime I want to see something.</p>
 <blockquote>
-<div>int main()</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">main()</span></code></div></blockquote>
 <p>The fun stuff</p>
 <blockquote>
-<div>LLVMContext context</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">LLVMContext</span> <span class="pre">context</span></code></div></blockquote>
 <p>I don’t know how to describe it, it’s just important. I use it later to read in LLVM bitcode.</p>
 <blockquote>
-<div>SMDiagnostic error</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">SMDiagnostic</span> <span class="pre">error</span></code></div></blockquote>
 <p>Also no idea what this does. This is also needed to read in LLVM bitcode.</p>
 <blockquote>
-<div>Instruction *fromInstruction, *toInstruction</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">Instruction</span> <span class="pre">\*fromInstruction,</span> <span class="pre">\*toInstruction</span></code></div></blockquote>
 <p>These are placeholders for instructions that will be replaced later. I’m sure there’s a better way than what I’m doing it, but it works without breaking
 anything.</p>
 <blockquote>
-<div>std::unique_ptr&lt;Module&gt; module = parseIRFile(“example.bc”, error, context);</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">std::unique_ptr&lt;Module&gt;</span> <span class="pre">module</span> <span class="pre">=</span> <span class="pre">parseIRFile(&quot;example.bc&quot;,</span> <span class="pre">error,</span> <span class="pre">context);</span></code></div></blockquote>
 <p>Reads in the bitcode file so I can manipulate it.</p>
 <blockquote>
-<div>for (Module::iterator function = module-&gt;begin(); function != module-&gt;end(); function++)</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">(Module::iterator</span> <span class="pre">function</span> <span class="pre">=</span> <span class="pre">module-&gt;begin();</span> <span class="pre">function</span> <span class="pre">!=</span> <span class="pre">module-&gt;end();</span> <span class="pre">function++)</span></code></div></blockquote>
 <p>Iterator for functions within a module. It can be more compact written as <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">(auto</span> <span class="pre">&amp;function</span> <span class="pre">:</span> <span class="pre">module)</span></code>, but I feel like the way I wrote it makes it more
 obvious what’s going on.</p>
 <blockquote>
 <div>for (Function::iterator basicBlock = function-&gt;begin(); basicBlock != function-&gt;end(); basicBlock++)</div></blockquote>
 <p>Same as the other for loop, but for BasicBlocks</p>
 <blockquote>
-<div>basicBlock-&gt;print(errs());</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">basicBlock-&gt;print(errs());</span></code></div></blockquote>
 <p>LLVM’s way to print information to the terminal.</p>
 <blockquote>
-<div>for (BasicBlock::iterator instruction = basicBlock-&gt;begin(); instruction != basicBlock-&gt;end(); instruction++)</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">(BasicBlock::iterator</span> <span class="pre">instruction</span> <span class="pre">=</span> <span class="pre">basicBlock-&gt;begin();</span> <span class="pre">instruction</span> <span class="pre">!=</span> <span class="pre">basicBlock-&gt;end();</span> <span class="pre">instruction++)</span></code></div></blockquote>
 <p>Same as the other two for loops, just for Instructions this time.</p>
 <blockquote>
-<div>if (isa&lt;BinaryOperator&gt;(instruction))</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">(isa&lt;BinaryOperator&gt;(instruction))</span></code></div></blockquote>
 <p>The basically checks if <code class="docutils literal notranslate"><span class="pre">Instruction</span></code> “is a” <code class="docutils literal notranslate"><span class="pre">BinaryOperator</span></code>. Important for this example because addition is a binary operator, and I want to change all
 binary operations to multiply.</p>
 <blockquote>
@@ -229,25 +230,29 @@ binary operations to multiply.</p>
 casting an object of one type to another. This line and the previous line can be merges int <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">(BinaryOperator</span> <span class="pre">*binOp</span> <span class="pre">=</span> <span class="pre">dyn_cast&lt;BinaryOperator&gt;</span>
 <span class="pre">(instruction))</span></code>, but I thought the way I did it makes it bit more clear.</p>
 <blockquote>
-<div>instruction-&gt;print(errs());</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">instruction-&gt;print(errs());</span></code></div></blockquote>
 <p>prints instruction to terminal</p>
 <blockquote>
-<div>fromInstruction = binOp;</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">fromInstruction</span> <span class="pre">=</span> <span class="pre">binOp;</span></code></div></blockquote>
 <p>Since I know that the <code class="docutils literal notranslate"><span class="pre">binOp</span></code> is an instruction I want to replace, I save the pointer to it so I can replace it outside the loop. Attempting to change it
 inside the loop causes segmentation faults, probably because the iterator breaks.</p>
-<blockquote>
-<div><p>toInstruction = BinaryOperator::Create(</p>
-<p>Instruction::BinaryOps::Mul,</p>
-<p>instruction-&gt;getOperand(0),</p>
-<p>instruction-&gt;getOperand(1)</p>
-<p>);</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">toInstruction</span> <span class="o">=</span> <span class="n">BinaryOperator</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span>
+
+<span class="n">Instruction</span><span class="p">::</span><span class="n">BinaryOps</span><span class="p">::</span><span class="n">Mul</span><span class="p">,</span>
+
+<span class="n">instruction</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+
+<span class="n">instruction</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="p">);</span>
+</pre></div>
+</div>
 <p>Creates and stores an instruction that will replace <code class="docutils literal notranslate"><span class="pre">binOp</span></code> later. It takes in three parameters: <code class="docutils literal notranslate"><span class="pre">BinaryOps</span></code>, which is an <code class="docutils literal notranslate"><span class="pre">enum</span></code>, and two operands. A
 list of <code class="docutils literal notranslate"><span class="pre">BinaryOps</span></code> can be found at <a class="reference external" href="https://github.com/llvm-mirror/llvm/blob/master/include/llvm/IR/Instruction.def">https://github.com/llvm-mirror/llvm/blob/master/include/llvm/IR/Instruction.def</a>. The two operands are taken from
 <code class="docutils literal notranslate"><span class="pre">binOps</span></code> (or <code class="docutils literal notranslate"><span class="pre">instruction</span></code>, they’re really the same thing, one is just cast into the other) to create the new multiplication instruction. The new
 instruction is just stored because it can’t replace the current instruction yet.</p>
 <blockquote>
-<div>ReplaceInstWithInstr(fromInstruction, toInstruction);</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">ReplaceInstWithInstr(fromInstruction,</span> <span class="pre">toInstruction);</span></code></div></blockquote>
 <p>This does the actual replacing of instructions. It takes care of keeping replacing, keeping the lvalue in place, deleting the old instruction, deallocating
 memory, etc.</p>
 <p><strong>Conclusion</strong></p>

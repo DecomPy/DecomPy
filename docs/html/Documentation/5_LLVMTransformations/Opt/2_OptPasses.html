@@ -80,6 +80,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
@@ -185,19 +186,14 @@ which can be found at <a class="reference external" href="https://blog.regehr.or
 basic blocks of llvm which have a single predeccessor and merging them into
 their predecesor. This prevents useless branching. It also merges branch
 instructions produced from code like</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd><dl class="first last docutils">
-<dt>if(x) {</dt>
-<dd>if(y) {</dd>
-</dl>
-</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</pre></div>
+</div>
 <p>and reduces them into the more simple</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>if(x &amp; y) {</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</pre></div>
+</div>
 <p>This pass could be useful, but I am unsure of some of the implications. It
 results in what is essentially dead code removal and I worry that in larger
 contexts, conclusions drawn on smaller pieces of code might not apply.</p>
@@ -216,11 +212,10 @@ of each of its components.</p>
 for redundent uses of operations. It sometimes performs more complex searches than
 direct equivalency by “canonicalizing” the code. This essentially means that code
 which may look different like</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>x - 1
-x + -1</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">x</span> <span class="o">+</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
 <p>are recognized as the same by forcing all code to follow the same rules. IE, it temporarily
 makes all subtractions addition of negatives.</p>
 <p>I believe that this pass would have limited use since it is somewhat difficult to perform on small

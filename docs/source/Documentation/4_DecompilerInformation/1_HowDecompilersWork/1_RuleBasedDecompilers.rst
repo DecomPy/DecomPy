@@ -65,18 +65,15 @@ This section presents code-improving transformations used by a **decompiler**
 . The aim of these optimizations is to remove low-level language concepts and
 introduce high-level concepts that involve more than two operands.
 
-Dead-Register Elimination eliminates registers from code that is no longer used.
+    * Dead-Register Elimination eliminates registers from code that is no longer used.
 
-Dead-Condition Code Elimination removes condition codes that are never used.
+    * Dead-Condition Code Elimination removes condition codes that are never used.
 
-Condition Code Propagation compresses the remaining conditions from
-Dead-Condition Code Elimination into more compact higher-level instructions.
+    * Condition Code Propagation compresses the remaining conditions from Dead-Condition Code Elimination into more compact higher-level instructions.
 
-Register Arguments compresses multiple instructions that contain arguments
-into a single high-level instructions.
+    * Register Arguments compresses multiple instructions that contain arguments into a single high-level instructions.
 
-Function Return Register(s) compress multiple instructions for returning
-registers from a function into a single high-level instruction.
+    * Function Return Register(s) compress multiple instructions for returning registers from a function into a single high-level instruction.
 
 The rest of the section follows a similar pattern to the portion already
 covered; multiple instructions that are part of the same subroutine are

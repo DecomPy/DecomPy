@@ -27,36 +27,36 @@ operation, ``%4`` for another variable, and ``3`` for a constant.
 The only header is ``Transform.hpp``, which contains a bunch of LLVM includes which are helpful. I lost track of what does what, and probably put too many
 includes in that file.
 
-    using namespace llvm
+    ``using namespace llvm``
 
 Using this namespace just saves me a lot of trouble because otherwise I'd have to type ``llvm`` a lot.
 
-    void print()
+    ``void print()``
 
 Just a nice function so I don't have to type ``std::cout << someString << std::endl`` everytime I want to see something.
 
-    int main()
+    ``int main()``
 
 The fun stuff
 
-    LLVMContext context
+    ``LLVMContext context``
 
 I don't know how to describe it, it's just important. I use it later to read in LLVM bitcode.
 
-    SMDiagnostic error
+    ``SMDiagnostic error``
 
 Also no idea what this does. This is also needed to read in LLVM bitcode.
 
-    Instruction \*fromInstruction, \*toInstruction
+    ``Instruction \*fromInstruction, \*toInstruction``
 
 These are placeholders for instructions that will be replaced later. I'm sure there's a better way than what I'm doing it, but it works without breaking
 anything.
 
-    std::unique_ptr<Module> module = parseIRFile("example.bc", error, context);
+    ``std::unique_ptr<Module> module = parseIRFile("example.bc", error, context);``
 
 Reads in the bitcode file so I can manipulate it.
 
-    for (Module::iterator function = module->begin(); function != module->end(); function++)
+    ``for (Module::iterator function = module->begin(); function != module->end(); function++)``
 
 Iterator for functions within a module. It can be more compact written as ``for (auto &function : module)``, but I feel like the way I wrote it makes it more
 obvious what's going on.
@@ -65,15 +65,15 @@ obvious what's going on.
 
 Same as the other for loop, but for BasicBlocks
 
-    basicBlock->print(errs());
+    ``basicBlock->print(errs());``
 
 LLVM's way to print information to the terminal.
 
-    for (BasicBlock::iterator instruction = basicBlock->begin(); instruction != basicBlock->end(); instruction++)
+    ``for (BasicBlock::iterator instruction = basicBlock->begin(); instruction != basicBlock->end(); instruction++)``
 
 Same as the other two for loops, just for Instructions this time.
 
-    if (isa<BinaryOperator>(instruction))
+    ``if (isa<BinaryOperator>(instruction))``
 
 The basically checks if ``Instruction`` "is a" ``BinaryOperator``. Important for this example because addition is a binary operator, and I want to change all
 binary operations to multiply.
@@ -84,14 +84,16 @@ Casts ``instruction`` (which is class ``Instruction``) to ``BinaryOperator``, wh
 casting an object of one type to another. This line and the previous line can be merges int ``if (BinaryOperator *binOp = dyn_cast<BinaryOperator>
 (instruction))``, but I thought the way I did it makes it bit more clear.
 
-    instruction->print(errs());
+    ``instruction->print(errs());``
 
 prints instruction to terminal
 
-    fromInstruction = binOp;
+    ``fromInstruction = binOp;``
 
 Since I know that the ``binOp`` is an instruction I want to replace, I save the pointer to it so I can replace it outside the loop. Attempting to change it
 inside the loop causes segmentation faults, probably because the iterator breaks.
+
+::
 
     toInstruction = BinaryOperator::Create(
 
@@ -108,7 +110,7 @@ list of ``BinaryOps`` can be found at https://github.com/llvm-mirror/llvm/blob/m
 ``binOps`` (or ``instruction``, they're really the same thing, one is just cast into the other) to create the new multiplication instruction. The new
 instruction is just stored because it can't replace the current instruction yet.
 
-    ReplaceInstWithInstr(fromInstruction, toInstruction);
+    ``ReplaceInstWithInstr(fromInstruction, toInstruction);``
 
 This does the actual replacing of instructions. It takes care of keeping replacing, keeping the lvalue in place, deleting the old instruction, deallocating
 memory, etc.

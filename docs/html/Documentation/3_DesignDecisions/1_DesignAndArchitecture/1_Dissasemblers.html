@@ -84,6 +84,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design and Architecture</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Choosing a Disassembler for DecomPy</a><ul>
@@ -101,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../6_LLVMComparison/index.html">LLVM Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_EquivilancyClasses/index.html">LLVM Comparison</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
@@ -428,11 +430,16 @@ use and therefore not well suited for this project. The Bastard Dissasembler had
 integrate because there was little information on both the library it provides/uses and the dissasembler tool itself. Objdump would also
 not be a good choice because it does not output in an easily processable format and would take a lot of work to fix (essentially, many
 dissasemblers use objdump and interpret it more usefully, so we would be writing a dissasembler).</p>
-<p>This leaves:
-* Capstone
-* udis86
-* Objconv
-* ldasm</p>
+<dl class="docutils">
+<dt>This leaves:</dt>
+<dd><ul class="first last simple">
+<li>Capstone</li>
+<li>udis86</li>
+<li>Objconv</li>
+<li>ldasm</li>
+</ul>
+</dd>
+</dl>
 </div>
 <div class="section" id="best-x86-generation">
 <h3>Best x86 Generation<a class="headerlink" href="#best-x86-generation" title="Permalink to this headline">¶</a></h3>
@@ -441,11 +448,16 @@ would do two things. First, it would make the machine learning’s job easier in
 dissasemblers we would hope our tool would be paired with.</p>
 <p>Since it would be difficult to make the call of what dissasembler has “good enough” x86, I will simply rank the remaining dissasemblers in terms
 of apparent use and support assuming that more community usage implies that the dissasembler does better.</p>
-<p>Out of the remaining tools, the most supported are:
-1. ldasm
-2. Capstone
-3. udis86
-4. Objconv</p>
+<dl class="docutils">
+<dt>Out of the remaining tools, the most supported are:</dt>
+<dd><ol class="first last arabic simple">
+<li>ldasm</li>
+<li>Capstone</li>
+<li>udis86</li>
+<li>Objconv</li>
+</ol>
+</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="overall-suggestion-for-the-project">
