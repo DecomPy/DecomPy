@@ -5,7 +5,6 @@ import pathlib
 #from decompy.RL.Model import Model
 
 libreward_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libRewardFunction.so")
-print(libreward_path)
 libreward = ctypes.CDLL(str(libreward_path))
 
 
@@ -40,6 +39,12 @@ class RewardFunction:
 
     @staticmethod
     def __wrap_llvm_reward_function(original, changed, goal):
+        print('"%s"' % original.replace("\n", "\\n").replace('"', '\\"'))
+        print("*" * 25, "original", "*" * 25)
+        print('"%s"' % changed.replace("\n", "\\n").replace('"', '\\"'))
+        print("*" * 25, "changed", "*" * 25)
+        print('"%s"' % goal.replace("\n", "\\n").replace('"', '\\"'))
+        print("*" * 25, "goal", "*" * 25)
         original_charp = ctypes.create_string_buffer(str.encode(original))
         changed_charp = ctypes.create_string_buffer(str.encode(changed))
         goal_charp = ctypes.create_string_buffer(str.encode(goal))

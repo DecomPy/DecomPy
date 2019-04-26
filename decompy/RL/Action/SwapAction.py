@@ -1,5 +1,6 @@
 from decompy.RL.Action.Action import Action
 from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
+import re
 
 
 class SwapAction(Action):
@@ -27,12 +28,17 @@ class SwapAction(Action):
         an action performed based off swap action.
         :return: the new llvm state after applying the action
         """
+        start, end = [m.span(0) for m in re.finditer(r"{.*?}", current_state, re.DOTALL)][0]
         module_tokens = Tokenizer.tokenize(current_state, False)
         snippet_tokens = Tokenizer.tokenize(self.llvm, True)
         new_state_tokens = module_tokens[:self.starting_token] + \
-               snippet_tokens + \
-               module_tokens[self.ending_token:]
-        return Tokenizer.reassemble(new_state_tokens)
+                           snippet_tokens + \
+                           module_tokens[self.ending_token:]
+        result = current_state[:start] + \
+               "{\n  " + \
+               Tokenizer.reassemble(new_state_tokens).replace(" \n", "\n  ")[:-2] + "}" + \
+               current_state[end:-1]
+        return result
 
 
 # test to see it if runs
