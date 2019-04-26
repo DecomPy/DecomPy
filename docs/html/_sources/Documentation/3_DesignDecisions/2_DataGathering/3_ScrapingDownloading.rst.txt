@@ -1,9 +1,10 @@
 Scraping and Downloading Files from GitHub using GitHubScraper
-##############################################################
+##################################################################
 
 :Authors and Last Update:
     | YiZhuang Garrard, November 20, 2018
     | ygarrar1@asu.edu
+    | revised April 25, 2019
 
 .. contents:: Table of Contents
     :local:
@@ -17,16 +18,14 @@ other miscellaneous things that a person trying to figure out what's going on wo
 
 Relevant Classes
 ===================
-The classes that pertain to this section are GitHubScraper and it's parent, WebNavigator. Zachary Monroe made the
-WebNavigator class, and I just piggybacked off of it because it works. It's also well commented. I did have to
-modify it a bit so that when thing's don't work as intended I could fix it. The content on this page will all relate
-to GitHubScraper.
+The classes that pertain to this section are GitHubScraper.
 
 Relevant Methods
 ================
 The only method that anybody not maintaining or improving on GitHubScraper is
 
-.. highlights::
+::
+
     download_all_file(repo_urls, target_directories=None)
 
 If you are maintaining or improving this class, then everything will be covered further down.
@@ -35,14 +34,16 @@ How To Use
 ==========
 Pass in equally-long lists of GitHub repository URLs and directories to download into into
 
-.. highlights::
+::
+
     GitHubScraper.download_all_files(repo_urls, target_directories=None)
 
 If repo_urls is longer than 1, than target_directories must be specified.
 
 Valid examples of calling this are:
 
-.. highlights::
+::
+
     GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
 
     GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
@@ -61,7 +62,8 @@ Entry Point
 -----------
 The entry point of the scraping process is when a user passes in two lists into
 
-.. highlights::
+::
+
     GitHubScraper.download_all_files(repo_urls, target_directories=None).
 
 The first list is a list of URLs to GitHub repositories. The URL can lead to the top level of the repository, or any
@@ -85,7 +87,8 @@ Getting Page Contents
 ---------------------
 Look at
 
-.. highlights::
+::
+
     WebNavigator.getContent(link)
 
 The program sends out a request, and gets the page back. Most of the time.
@@ -96,7 +99,8 @@ Extracting URLs from Page Content
 ---------------------------------
 Look at
 
-.. highlights::
+::
+
     WebNavigator.getAbsoluteLinksFromPage(link, domain=None)
 
 I actually don't know how it works, so if you want to know, you actually have to look at it.
@@ -107,7 +111,8 @@ The URLs that are useful are the ones that lead to subdirectories within the rep
 There are two separate lists to store these URLs, and they are extended every time a page is scraped and URLs
 extracted. The method is
 
-.. highlights::
+::
+
     GitHubScraper.__scrape_page_urls(url).
 
 The first list is called subfolder_links and it holds the URLs to subdirectories. It is extended with every URL that has
@@ -160,16 +165,16 @@ is a UnicodeEncodeError, but I just print the error and ignore it because I don'
 The method is called GitHubScraper.__file_content_into_storage(content_url_tuple, target_directory), where
 content_url_tuple is the tuple, and target_directory is the directory to store the file.
 
-Updating META file
+Updating json file
 --------------------------------------------
-Only the target directory is needed to update the META file within that directory. The relevant method is
+Only the target directory is needed to update the json file within that directory. The relevant method is
 GitHubScraper.__update_meta(target_directory). If the directory doesn't exist, that means that there were no C files
-to download, so it just returns. If the directory does exist, it is checked to see if the META file exists. If it
+to download, so it just returns. If the directory does exist, it is checked to see if the json file exists. If it
 exists, then update it using the datetime package, and if it doesn't exist, create the file. The date is written
 in YYYY-MM-DD HH:MM:SS format so that the database can query it or something. I don't actually know how databases work.
 
-How Does GitHubScraper Multithread?
-===================================
+How Does GitHubScraper Multithread work?
+===========================================
 Because scraping is a highly IO dependent process, it is better to utilize threads rather than processes.
 
 GitHubScraper uses ThreadPoolExecutor to manage all the threads and futures. There are three sources of futures:

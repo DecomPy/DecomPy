@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tokenizing LLVM &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Tokenizing LLVM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/7_EquivilancyClasses/3_llvm_tokenizing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tokenizing-llvm">
+<h1>Tokenizing LLVM<a class="headerlink" href="#tokenizing-llvm" title="Permalink to this headline">¶</a></h1>
+<p><strong>Motivation</strong></p>
+<p>The reason LLVM needs to be tokenized is so those tokens can be used to generate a trie. The trie is used to figure out if sections of the decompiled code
+match with any snippets that we create so that it is known that they can be swapped.</p>
+<p><strong>Possible Methods</strong></p>
+<p>There are two methods to tokenize LLVM: the first is the treat the LLVM textual assembly as strings, and the second is to build custom tokens out of the the
+LLVM IR using the LLVM API.</p>
+<p><strong>Advantages and Disadvantages of using String Manipulation</strong></p>
+<p><em>Advantages</em></p>
+<p>String manipulation is very easy to tokenize compared to trying to tokenize via the LLVM API. Typical delimitation rules are followed i.e. tokens are delimited
+by delimiters such as whitespace, commas, braces, etc.</p>
+<p>Creating the trie with strings is much more straightforward than using LLVM classes.</p>
+<p><em>Disadvantages</em></p>
+<p>I can’t think of any disadvantages. Information will be lost with using string manipulation, but it won’t be harmful unless that information is needed.</p>
+<p><strong>Advantages and Disadvantages of using LLVM API</strong></p>
+<p><em>Advantages</em></p>
+<p>As much information about every aspect of every instruction can be preserved. For example, if a <code class="docutils literal notranslate"><span class="pre">BinaryOperator</span></code> is tokenized, it’s <code class="docutils literal notranslate"><span class="pre">ValueName</span></code>, both
+<code class="docutils literal notranslate"><span class="pre">Operands</span></code>, the relations of each <code class="docutils literal notranslate"><span class="pre">Operand</span></code> with previous instructions. It may turn out that this information is needed, but I can’t think of a use case
+where this information is needed.</p>
+<p><em>Disadvantages</em></p>
+<p>Working with the LLVM API is very tedious, and it may be the case that every child of the <em>Value</em> class will need it’s own code to tokenize, as there is no
+built-in tokenizing code within LLVM.</p>
+<p><strong>Current Plan of Action</strong></p>
+<p>Currently, tokenizing will take place by normalizing all the variables from the start point onwards, then doing a token-by-token walk through the decompiled
+code comparing it with the tree to find if there are matching snippets. We will use string manipulation because that is all that is needed effectively
+tokenize.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

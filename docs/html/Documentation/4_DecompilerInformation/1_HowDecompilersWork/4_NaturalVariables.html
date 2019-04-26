@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Meaningful Variable Names for Decompiled Code [3]: &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Evolving Exact Decompilation [1]:" href="5_EvolvingExactDecompilation.html" />
+    <link rel="prev" title="Heuristics in HexRays" href="3_Heurstics.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Decompiler Information</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">How Rule Based Decompilers Work</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_RuleBasedDecompilers.html">How Rule-Based Decompilers Work</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_OptimizationPassesInRetdec.html">Optimization Passes in RetDec</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_Heurstics.html">Heuristics in HexRays</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Meaningful Variable Names for Decompiled Code [3]:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bibliography">Bibliography</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_EvolvingExactDecompilation.html">Evolving Exact Decompilation [1]:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_EvolvingExactDecompilation.html#bibliography">Bibliography</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_CurrentSuggestion.html">Current Suggestion and Closing Remarks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Decompiler Information</a> &raquo;</li>
+        
+          <li><a href="index.html">How Rule Based Decompilers Work</a> &raquo;</li>
+        
+      <li>Meaningful Variable Names for Decompiled Code [3]:</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/4_DecompilerInformation/1_HowDecompilersWork/4_NaturalVariables.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="meaningful-variable-names-for-decompiled-code-3">
+<h1>Meaningful Variable Names for Decompiled Code [3]:<a class="headerlink" href="#meaningful-variable-names-for-decompiled-code-3" title="Permalink to this headline">¶</a></h1>
+<p>The authors of this paper take advantage of how natural code (code written by
+people) is highly reptitive and predicatable based on the context. They
+consider the output of the decompiler to be a noisy distortion of the
+original source. They use “standard statistical machine translation
+approaches to choose natural identifiers, combining a translation model
+trained on a parallel corpus with a language model trained on unmodified C
+code.” They generate the corpus with 1.2 TB of C source code from GitHub.
+They estimate that their thing work 16.2% of the time. Their largest issue
+is that decompilers output code that humans would never write, independent
+of variable naming. An example of there work is in the below image.</p>
+<img alt="../../../_images/NaturalVariables.PNG" src="../../../_images/NaturalVariables.PNG" />
+</div>
+<div class="section" id="bibliography">
+<h1>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h1>
+<p>[1] A. Jaffe, J. Lacomis, E. J. Schwartz, C. L. Goues, and B. Vasilescu,
+“Meaningful variable names for decompiled code,” Proceedings of the 26th
+Conference on Program Comprehension -ICPC 18, 2018.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="5_EvolvingExactDecompilation.html" class="btn btn-neutral float-right" title="Evolving Exact Decompilation [1]:" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="3_Heurstics.html" class="btn btn-neutral" title="Heuristics in HexRays" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

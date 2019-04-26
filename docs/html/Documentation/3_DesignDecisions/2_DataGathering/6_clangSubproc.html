@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Compiling C Source to Various Formats &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Database" href="../3_Database/index.html" />
+    <link rel="prev" title="Generating LLVM IR from C Source" href="5_llvmGen.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_DataGatheringOverview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_RepoFiltering.html">Filtering the Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Compiling C Source to Various Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_LLVMComparison/index.html">LLVM Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">Data Gathering</a> &raquo;</li>
+        
+      <li>Compiling C Source to Various Formats</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/2_DataGathering/6_clangSubproc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="compiling-c-source-to-various-formats">
+<h1>Compiling C Source to Various Formats<a class="headerlink" href="#compiling-c-source-to-various-formats" title="Permalink to this headline">¶</a></h1>
+<p>The ClangCompiler class compiles indicated C Source files into a the following
+formats: elf executable, x86 assembly, optimized and unoptimized LLVM. The class
+compiles the C source files listed in a txt file generated by the user. The compiled
+files are stored in a folder specified by the user, and the new file names are
+listed in an output file specified by the user. There is an option to also create
+a list of C files that successfully compiled.</p>
+<p>After this class generates the specified files, those files will populate the database
+that will be used to train the ML Agent.</p>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Choice of file type</dt>
+<dd>The file types were chosen to correspond with how we wanted to train the ML
+Agent. We have considered a variety of options, as will beoutlined in the ML
+Design Decision</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Using optimized and unoptimized LLVM to train the ML Agent</dt>
+<dd>This approach has been chosen due to its ease of implementation. The ML Agent will attempt to bring optimized LLVM into unoptimized LLVM. The will allow it to transform any LLVM that is generated by lifting Clang-made executables. However, using  optimized LLVM as input heavily biases the model. The model will not be trained on realistic data. Additionally, more reasearch needs to be done to determine what other transformations are applied to the LLVM besides optimizations.</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Default optimization level is none</dt>
+<dd>The default optimization level if not specified by the user is none. This does not mean that no passes are made. Rather, this level does the same passes that would be performed if a user did not include an optimization flag, and that is why it was chosem. The ability to change the optimization levels is provided in case it is later decided that this is insufficient. Level two (-O2, or -O) is the recommended opt-level to be used in that case, as this is the default used when ooptimization is specified, but no level is specified.
+Source on LLVM Default Opt-Levels: <a class="reference external" href="https://clang.llvm.org/docs/ClangCommandLineReference.html#optimization-level">https://clang.llvm.org/docs/ClangCommandLineReference.html#optimization-level</a></dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>New location can be automatically created</dt>
+<dd>If the folder to hold the generated LLVM files does not exists, it can be specified and generated by the LLVM generator. This is to allow the folder structure to be built while using the tool. This can allow greater flixibility, perhaps allowing certain part of the data base to be stored in some folders and while others are stored elsewhere.</dd>
+</dl>
+<hr class="docutils" />
+<p>A video demoing the use of the tool is below:</p>
+<video controls src="../../_static/videos/compileC.mp4"></video></div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../3_Database/index.html" class="btn btn-neutral float-right" title="Database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="5_llvmGen.html" class="btn btn-neutral" title="Generating LLVM IR from C Source" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

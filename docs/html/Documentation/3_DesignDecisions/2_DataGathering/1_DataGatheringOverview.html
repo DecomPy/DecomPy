@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Filtering the Repositories" href="2_RepoFiltering.html" />
+    <link rel="prev" title="Data Gathering" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-is-this-necessary">Why is this necessary?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-process">What is the process?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-start">How to Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-use">How to Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overview-of-each-step">Overview of Each Step</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="2_RepoFiltering.html">Filtering the Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_clangSubproc.html">Compiling C Source to Various Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_LLVMComparison/index.html">LLVM Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_EquivilancyClasses/index.html">LLVM Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">Data Gathering</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/2_DataGathering/1_DataGatheringOverview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>This is a log of major design decisions and reasoning for the Data Gathering portion of DecomPy.</p>
+<hr class="docutils" />
+<div class="section" id="why-is-this-necessary">
+<h2>Why is this necessary?<a class="headerlink" href="#why-is-this-necessary" title="Permalink to this headline">¶</a></h2>
+<p>Machine Learning requires a substantial amount of data to train off of. Additionally, machine learning needs the best,
+valid data (in our case it compiles and filtered out a few header files; see other sections). Lastly, the Decompy team
+has aimed to make this modular so that other users can build off of and use this for gathering their own data for their
+own parameters like a language or filter.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="what-is-the-process">
+<h2>What is the process?<a class="headerlink" href="#what-is-the-process" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="../../../_images/hierarchy_flow.png"><img alt="heirarchy flow." class="align-center" src="../../../_images/hierarchy_flow.png" style="width: 355.5px; height: 298.5px;" /></a>
+<p>The above image displays the general flow for gathering data for our ML agent. We first utilize GitHub’s API to search for
+our specific language (in our case C language) and generate metadata for the repo.
+In stage two, we then filter out the C files from that repo and store them into an Unfiltered folder.
+Once that has finished, the third stage reads from the Unfiltered folder and looks to see what is good data for our ML agent.
+This stage looks to make sure we have compilable data, and data that pass our filters (correct headers, file size, not too complex).
+Finally, in stage 4, we compile the filtered (valid) C files into unoptimized and optimized files which will prepare us to bulk load into the database.
+As of January 30, 2019, the team has decided to store all META data into one JSON file for ease of use called “repo.json”.
+The process is still valid and should be seen as a reference and motivation for the one JSON file.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="how-to-start">
+<h2>How to Start<a class="headerlink" href="#how-to-start" title="Permalink to this headline">¶</a></h2>
+<p>Depending on which stage you want, you can run the various methods that match their stage in the CreateLocalData.py class.
+To begin, it is important to pay close attention to the default parameters and override them as seen fit. For example, it has
+a default file path to store the unfiltered repos into, a destination path once done, file names, filters for Github, what
+language to download from Github into the database, the name of the database, override parameters for the database transactions, and more.
+It is this reason why the documentation should be referenced not only at every step, but at creating the object as well.
+Additionally, a config file is utilized to further speed up the process and allow more requests, you may find yourself rate limited otherwise.
+This config file needs to be of JSON format like so:
+<code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">&quot;github&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;username&quot;:</span> <span class="pre">&quot;github_username_here&quot;,</span> <span class="pre">&quot;password&quot;:</span> <span class="pre">&quot;github_password_here&quot;}</span> <span class="pre">}</span></code></p>
+</div>
+<div class="section" id="how-to-use">
+<h2>How to Use<a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h2>
+<p>If you are running this purely from the root of the project via command line you may do something as below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span>
+<span class="o">&gt;&gt;&gt;</span><span class="kn">from</span> <span class="nn">decompy.DataGathering.CreateLocalData</span> <span class="kn">import</span> <span class="n">CreateLocalData</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">cld</span> <span class="o">=</span> <span class="n">createLocalData</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">cld</span><span class="o">.</span><span class="n">all_stages_increment</span><span class="p">(</span><span class="s2">&quot;2014-04-11&quot;</span><span class="p">,</span> <span class="s2">&quot;2019-01-30&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A couple of things to note. You are importing the CreateLocalData module, then creating a DEFAULT constructor. Read above if you would want other
+data and more customization than what is defaulted. Finally, the <code class="docutils literal notranslate"><span class="pre">all_stages_increment()</span></code> function utilizes the five steps of our process
+and combines it into one. You can organize this by the date range and page numbers (if you wanted separate processes for example).</p>
+</div>
+<div class="section" id="overview-of-each-step">
+<h2>Overview of Each Step<a class="headerlink" href="#overview-of-each-step" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">There is a <code class="docutils literal notranslate"><span class="pre">.stage1_gather_repo_meta()</span></code> function which grabs the repos and generates metadata into a <cite>repo.json</cite> based off of the date and page range.</div>
+<div class="line">There is a <code class="docutils literal notranslate"><span class="pre">.stage2_get_repos()</span></code> function that grabs the C (or specified language in the object) files from the repo and later stores dates into the <code class="docutils literal notranslate"><span class="pre">repo.json</span></code>.</div>
+<div class="line">There is a <code class="docutils literal notranslate"><span class="pre">.stage3_filter_files()</span></code> function which filters out the data based off of our constraints.</div>
+<div class="line">There is a <code class="docutils literal notranslate"><span class="pre">.stage4_generate_llvm()</span></code> function that compiles the C code into unoptimized, optimized, elf, and object LLVM code.</div>
+<div class="line">There is a <code class="docutils literal notranslate"><span class="pre">.stage5_insert_database()</span></code> function that inserts all the data matching our constraints into the database.</div>
+<div class="line">Finally, there is an all_stages_increment() method which will run all stages.</div>
+<div class="line">To see more information regarding each stage, continue reading this documentation and the source code documentation.</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="2_RepoFiltering.html" class="btn btn-neutral float-right" title="Filtering the Repositories" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Data Gathering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

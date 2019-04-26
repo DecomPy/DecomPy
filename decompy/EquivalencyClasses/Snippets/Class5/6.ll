@@ -1,0 +1,4 @@
+; $SWAP=NONE
+; $SIGNED_INTEGERS=5
+; $RESULTS=-3,NEGATE,3,C0
+%1 = add nsw i32 5, -3

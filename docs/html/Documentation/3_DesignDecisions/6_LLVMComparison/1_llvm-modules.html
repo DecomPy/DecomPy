@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Comparing the LLVM Classes that Describe a Program &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="LLVM Comparison for Tracking Decompiling Progress" href="2_llvm-reward-function.html" />
+    <link rel="prev" title="LLVM Comparison" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">LLVM Comparison</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Comparing the LLVM Classes that Describe a Program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_llvm-reward-function.html">LLVM Comparison for Tracking Decompiling Progress</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">LLVM Comparison</a> &raquo;</li>
+        
+      <li>Comparing the LLVM Classes that Describe a Program</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/6_LLVMComparison/1_llvm-modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="comparing-the-llvm-classes-that-describe-a-program">
+<h1>Comparing the LLVM Classes that Describe a Program<a class="headerlink" href="#comparing-the-llvm-classes-that-describe-a-program" title="Permalink to this headline">¶</a></h1>
+<p>LLVM provides a variety of classes that  are used to describe a program, function, or instruction. These can be used
+to compare LLVM programs. In addition to that, LLVM has its own comparison program, which we may be able to use in
+part or whole. Additionally, we may be able to use techniques from code clone detectors, such as comparing the
+abstract syntax tree of an LLVM program, like the application CloneDR does (<a class="reference external" href="http://www.semanticdesigns">http://www.semanticdesigns</a>
+.com/Products/Clone/HowCloneDRWorks.html). The Clang AST (<a class="reference external" href="http://clang.llvm.org/docs/IntroductionToTheClangAST">http://clang.llvm.org/docs/IntroductionToTheClangAST</a>
+.html) provides a way for us to create the AST.</p>
+<p>Text comparison is likely not the best solution as variable names and instruction order might change, without the
+code being very different. For this reason, basic text comparison algorithms are not being considered as
+much as other comparison metrics.</p>
+<p>This documentation begins with a list of useful functions in the LLVM API that we might use to compare LLVM
+modules. Then, there is a discussion on how the LLVM API comparison classes work and how useful they might be.
+Lastly, there is a discussion of different techniques and tools for comparing code, and how they might be useful.</p>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Useful Member Functions and Variables in the LLVMModule Class</dt>
+<dd><p class="first">The LLVM Module objects that our module will be manipulating have a variety of useful member functions and
+variables that we can use to compare two modules:</p>
+<ul class="simple">
+<li>getInstructionCount(): Returns the number of non-debug instructions in the module.</li>
+<li>LLVM modules have functions which return the list of functions, globals, and symbol tables.</li>
+</ul>
+<p class="last">LLVM Documentation: <a class="reference external" href="https://llvm.org/doxygen/classllvm_1_1Module.html">https://llvm.org/doxygen/classllvm_1_1Module.html</a></p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Useful Member Functions and Variables in the LLVMFunction Class</dt>
+<dd><p class="first">LLVM Modules are made of Functions. Comparing these will be very important, especially since we may be training
+the model on a function by function basis</p>
+<ul class="simple">
+<li>getInstructionCount: Returns the number of non-debug instructions in the module.</li>
+<li>getFunctionType: Can compare functions by function type</li>
+<li>getReturnType: Commpare functions by return type</li>
+<li>getAttributes: Compare functions by attributes</li>
+<li>viewCFG: Compare functions with Control Flow Graph</li>
+<li>getBasicBlockLst: Compare the functions basic blocks</li>
+<li>getValueSymbolTable: Compare the function’s symbol table</li>
+</ul>
+<p class="last">LLVM Documention: <a class="reference external" href="http://llvm.org/doxygen/classllvm_1_1Function.html">http://llvm.org/doxygen/classllvm_1_1Function.html</a></p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Useful Member Functions and Variables in the BasicBlock Class</dt>
+<dd><p class="first">Functions and modules are made of basic blocks. Basic blocks are made of instructions that make up the program.</p>
+<ul class="simple">
+<li>instructionsWithoutDebug: Compare basic blocks by instructions.</li>
+</ul>
+<p class="last">LLVM Documentation: <a class="reference external" href="http://llvm.org/doxygen/classllvm_1_1BasicBlock.html">http://llvm.org/doxygen/classllvm_1_1BasicBlock.html</a></p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>Useful Member Functions and Variables in the Instruction Class</dt>
+<dd><p class="first">Instructions make up the most basic pieces of program.</p>
+<ul class="simple">
+<li>isIdenticalTo: Returns true if two instructions are exactly identical. We may not need all instructions to be
+<em>exactly</em> identical, so this function is useful but not the only metric we should use.</li>
+<li>isSameOperationAs: Compare two instructions to see if they are the same operation.</li>
+<li>getMetadata: Returns metadata that may be useful for comparison. Should contain information such as operands.</li>
+<li>There are a variety of functions that will return the details of the instruction, like isBitwiseLogicOp or
+isUnaryOp</li>
+</ul>
+<p class="last">LLVM Documention: <a class="reference external" href="https://llvm.org/doxygen/classllvm_1_1Instruction.html#ac9422ce2b7c1a541da2e14f637cb4c10">https://llvm.org/doxygen/classllvm_1_1Instruction.html#ac9422ce2b7c1a541da2e14f637cb4c10</a></p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="docutils">
+<dt>LLVM Function Comparator</dt>
+<dd>This class (documentation here: <a class="reference external" href="http://llvm.org/doxygen/classllvm_1_1FunctionComparator.html#details">http://llvm.org/doxygen/classllvm_1_1FunctionComparator.html#details</a> ) is used to
+compare the behavior of two functions. It is conservative and errs to the side of saying the functions are
+different. The constructor of the function comparator class takes in the two function to be compared. It has two
+public member functions: compare and functionHash. Compare returns an int which is negative if the fist function
+is “greater” than the second, positive if the second is “greater,” and zero if they are equal. This makes the
+function only mildly useful for our purposes, but the class has a variety of protected member functions that are
+used for comparison. The team could possibly extend this class and use its functions to create a comparison
+metric. For reference: The llvm-diff flag (<a class="reference external" href="https://llvm.org/docs/CommandGuide/llvm-diff.html">https://llvm.org/docs/CommandGuide/llvm-diff.html</a>) seems  to either
+use this class or provide very similar functionality.</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="2_llvm-reward-function.html" class="btn btn-neutral float-right" title="LLVM Comparison for Tracking Decompiling Progress" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="LLVM Comparison" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

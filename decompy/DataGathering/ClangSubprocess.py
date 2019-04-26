@@ -14,21 +14,17 @@ class Clang:
         pass
 
     @staticmethod
-    def compile_cfile(file_in, outfile, newlocation, output_type, filter_file, args):
+    def compile_cfile(file_in, newlocation, output_type, args):
         """
         Compiles the specified C file with Clang, using the specified args.
-        Stores this file in the specified location and lists the new file in
-        the output file. If this is being used to filter the input file and
-        if the C file successfully compiles it will be entered in the filter file
-        
-        :param file_in: File with list of C file names to compile
-        :param outfile: If the file is successfully compiled, the output
-            file is listed in this file
+        Stores this file in the specified location and returns the location as a string.
+        If this is being used to filter the input file and
+        if the C file successfully compiles it will be entered in the filter file.
+
+        :param file_in: File to compile
         :param newlocation: location to save LLVM files to
         :param output_type: the type that the file must be compiled to, such as
-            "elf'
-        :param filter_file: If the file is successfully compiled, the name of
-            the C file is listed in this file
+            "elf"
         :param args: Arguments for the compiler to use while compiling
         """
 
@@ -36,117 +32,117 @@ class Clang:
         location_path = Path(newlocation)
 
         file_out = str(location_path.joinpath(file_name + output_type).resolve())
-        command = "clang -Wno-everything " + file_in + " " + args + " -o " +\
-                  file_out
-        result = subprocess.run(command, shell=True).returncode #, check=True)
+        command = "clang -shared -undefined dynamic_lookup -Wno-everything -fPIC " + file_in + " " + args + " -o " + file_out
+
+        result = subprocess.run(command, shell=True).returncode  # , check=True)
 
         if result == 0:
-            outfile.write(file_out + "\n")
-            if filter_file:
-                filter_file.write(file_in + "\n")
+            return newlocation + "/" + file_name + output_type
 
     @staticmethod
-    def compile_all(input_file, output_file, newlocation, out_type, filter_file="", args=""):
+    def compile_all(file_path, newlocation, out_type, args=""):
         """
-        Compiles all C files listed in the input file with Clang, using the
-        specified args. Stores these files in the specified location and lists
-        the new files in the output file. If this is being used to filter the
-        input files, the C files that successfully compile will be entered in
-        
-        :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output file
-            is listed in this file
+        Compiles the C file given as a path with Clang, using the specified args.
+        Writes to a file by calling compile_cfile then returns the
+        specified location of the file path. If this is being used
+        to filter the input files, the C files that successfully
+        compile will be entered in.
+
+        :param file_path: File with list of C file names to compile
         :param newlocation: location to save LLVM files to
         :param out_type: the type that the file must be compiled to, such as "elf"
-        :param filter_file: If the file is successfully compiled, the name of the C file is listed in this file
         :param args: Arguments for the compiler to use while compiling
         """
 
-        file_of_cfiles = open(input_file, 'r')
+        # check if file path exists
+        input_file_path = Path(file_path)
 
-        location_path = Path(newlocation)
+        # check if my file exists
+        if input_file_path.exists():
 
-        if not location_path.is_dir():
-            location_path.mkdir()
+            # creates new directory if one does not exist.
+            location_path = Path(newlocation)
+            if not location_path.is_dir():
+                location_path.mkdir()
 
-        outpath = Path(output_file)
-        if not outpath.is_file():
-            outfile = open(output_file, 'w+')
+            # then compile it and return the data
+            return Clang.compile_cfile(file_path, newlocation, out_type, args=args)
         else:
-            outfile = open(output_file, 'a+')
-
-        filteredC = None
-        if filter_file:
-            filteredC = Path(filter_file)
-            if not filteredC.is_file():
-                filteredC = open(filter_file, 'w+')
-            else:
-                filteredC = open(filter_file, 'a+')
-
-        for cfile in file_of_cfiles:
-            cfile = cfile.rstrip()
-            Clang.compile_cfile(cfile, outfile, newlocation, out_type,
-                                filter_file=filteredC, args=args)
-        file_of_cfiles.close()
+            print("File not Found", file_path)
 
     @staticmethod
-    def to_assembly(input_file, output_file, newlocation):
+    def to_assembly(file_path, newlocation):
         """
-        compiles all C files listed in the input file to x86 assembly.
-        Writes the name of successful files to output file
-        
-        :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output
-            file is listed in this file
+        Compiles the C file given as a path to x86 assembly.
+        Writes to a file by calling compile_cfile through compile_all
+        then returns the specified location of the file path.
+
+        :param file_path: file path to compile
         :param newlocation: location to save assembly files to
+        :return: the file location which llvm_unopt was saved to.
+        :rtype: str or None
         """
         args = "-S -masm=intel"
         out_type = "-assembly.asm"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, args=args)
+        return Clang.compile_all(file_path, newlocation, out_type, args=args)
 
     @staticmethod
-    def to_elf(input_file, output_file, newlocation, filter_file):
+    def to_elf(file_path, newlocation):
         """
-        compiles all C files listed in the input file to elf executables.
-        Writes the name of successful files to output file. Writes the name of
-        successful C files to filter file
-        
-        :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output
-            file is listed in this file
+        Compiles the C file given as a path to elf executables.
+        Writes to a file by calling compile_cfile through compile_all
+        then returns the specified location of the file path.
+
+        :param file_path: file path to compile
         :param newlocation: location to save LLVM files to
-        :param filter_file: If the file is successfully compiled, the name of
-            the C file is listed in this file
         """
         out_type = "-elf.elf"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, filter_file)
+        return Clang.compile_all(file_path, newlocation, out_type)
 
     @staticmethod
-    def to_llvm_opt(input_file, output_file, newlocation, optlevel = ""):
+    def to_llvm_opt(file_path, newlocation, optlevel=""):
         """
-        compiles all C files listed in the input file to optimized LLVM IR, at
-        the specified opt level. Writes the name of successful files to output file
-        
-        :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output
-            file is listed in this file
+        Compiles the C file given as a path to optimized LLVM IR, at
+        the specified opt level. Writes to a file by calling compile_cfile
+        through compile_all then returns the specified location of the file path.
+
+        :param file_path: File with list of C file names to compile
         :param newlocation: location to save LLVM files to
+        :return: the file location which llvm_unopt was saved to.
+        :rtype: str or None
         """
         args = "-S -emit-llvm " + optlevel
         out_type = "-opt.ll"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, args)
+        return Clang.compile_all(file_path, newlocation, out_type, args=args)
 
     @staticmethod
-    def to_llvm_unopt(input_file, output_file, newlocation):
+    def to_llvm_unopt(file_path, newlocation):
         """
-        compiles all C files listed in the input file to unoptimized LLVM IR.
-        Writes the name of successful files to output file
-        
-        :param input_file: File with list of C file names to compile
-        :param output_file: If the file is successfully compiled, the output
-            file is listed in this file
+        Compiles the C file given as a path to unoptimized LLVM IR.
+        Writes to a file by calling compile_cfile through compile_all
+        then returns the specified location of the file path.
+
+        :param file_path: File with list of C file names to compile
         :param newlocation: location to save LLVM files to
+        :return: the file location which llvm_unopt was saved to.
+        :rtype: str or None
         """
         args = "-O1 -Xclang -disable-llvm-passes -S -emit-llvm"
         out_type = "-unopt.ll"
-        Clang.compile_all(input_file, output_file, newlocation, out_type, args)
+        return Clang.compile_all(file_path, newlocation, out_type, args=args)
+
+    @staticmethod
+    def to_object_file(file_path, newlocation):
+        """
+        Compiles the C file given as a path to an object file.
+        Writes to a file by calling compile_cfile
+        through compile_all then returns the specified location of the file path.
+
+        :param file_path: File with list of C file names to compile
+        :param newlocation: location to save Object files to
+        :return: the file location which llvm_unopt was saved to.
+        :rtype: str or None
+        """
+        args = "-c "
+        out_type = ".o"
+        return Clang.compile_all(file_path, newlocation, out_type, args=args)

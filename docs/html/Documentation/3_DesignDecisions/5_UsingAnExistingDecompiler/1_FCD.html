@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using FCD &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="LLVM Comparison" href="../6_LLVMComparison/index.html" />
+    <link rel="prev" title="Using an Existing Decompiler" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Using an Existing Decompiler</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Using FCD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#making-a-module-in-fcd">Making a Module in FCD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pros-and-cons">Pros and Cons</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../6_LLVMComparison/index.html">LLVM Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Design Decisions</a> &raquo;</li>
+        
+          <li><a href="index.html">Using an Existing Decompiler</a> &raquo;</li>
+        
+      <li>Using FCD</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/3_DesignDecisions/5_UsingAnExistingDecompiler/1_FCD.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-fcd">
+<h1>Using FCD<a class="headerlink" href="#using-fcd" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="making-a-module-in-fcd">
+<h2>Making a Module in FCD<a class="headerlink" href="#making-a-module-in-fcd" title="Permalink to this headline">¶</a></h2>
+<p>FCD is designed to be very easy to add “optimization” passes to. Doing so requires a
+very simple python script to be passed to FCD at runtime. The python script needs to
+follow a simple structure. It defines a “passName” global variable which does exactly
+what it sounds – just gives a name to your “optimization” pass. It must also define
+certain functions which will be called at specific times during llvm’s processing.</p>
+<p>More detailed information can be found from <a class="reference external" href="http://zneak.github.io/fcd/2016/02/21/csaw-wyvern.html">this</a>
+page on FCD’s GitHub.
+There is also a <a class="reference external" href="http://zneak.github.io/fcd/help/">manual</a>
+which provides a good deal of information</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fcd</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">n</span> <span class="o">-</span><span class="n">e</span> <span class="mh">0x4014b0</span> <span class="o">-</span><span class="n">e</span> <span class="mh">0x401cc0</span> <span class="n">output</span><span class="o">.</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">output</span><span class="o">.</span><span class="n">ll</span>
+<span class="n">fcd</span> <span class="o">-</span><span class="n">m</span> <span class="o">--</span><span class="n">cc</span><span class="o">=</span><span class="n">x86_64</span><span class="o">/</span><span class="n">sysv</span> <span class="o">-</span><span class="n">O</span> <span class="n">outCustomPass</span><span class="o">.</span><span class="n">py</span> <span class="n">output</span><span class="o">.</span><span class="n">ll</span>
+</pre></div>
+</div>
+<p>The above two commands were used by the author of fcd to add a custom pass. The first
+command essentially just raises a specific function from a piece of code (by passing in
+the virtual address) to llvm. The second performs a custom pass on the resulting llvm.</p>
+<p>objdump can be used to detect what addresses to pass into FCD. For example, if you wish
+to decompile a program starting at the main function and decompiling everything from there,
+simply call fcd on the address of main from objdump. For example, the following commands
+should generically be able to compile a C file named test.c and then decompile it assuming
+the test.c file contains a main as it’s only entry point and is not overly complicated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>clang test.c -o test.out
+./fcd -p -n -e 0x`objdump -M intel -d test.out | grep &quot;&lt;main&gt;:&quot; | sed &#39;s/[^0-9]//g&#39;` test.out &gt; test.ll
+./fcd -m -cc=x86_64/sysv -O SimpleModule.py test.ll
+</pre></div>
+</div>
+<p>Modules in FCD directly plug into the clang/LLVM optimization pass modules. The structure is
+fairly simple. You can define either a runOnFunction or a runOnModule method in the python
+code. These functions will automatically be called for either every function or module in the
+llvm code that fcd generates. From there, you can get instructions and modify these instructions.
+The runOnFunction takes in an LLVM::Value class which represents a “Basic Block” (an LLVM term
+for a section with single exit/entry). This Basic Block is a python binding for the C++ lib
+for llvm and can be manipulated through llvm’s api.</p>
+</div>
+<div class="section" id="pros-and-cons">
+<h2>Pros and Cons<a class="headerlink" href="#pros-and-cons" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Pros</dt>
+<dd><ul class="first last simple">
+<li>FCD seems to be the easiest choice - it is convenient to add python modules to it
+to implement the behaviour we need.</li>
+<li>It is possible to target functions individually. We might be able to use this to
+perform machine learning on small sections of larger programs (increasing our data
+set)</li>
+<li>It produces reasonably readable C code</li>
+</ul>
+</dd>
+<dt>Cons</dt>
+<dd><ul class="first last simple">
+<li>FCD is based around Python2 modules, not Python3.</li>
+<li>While the C code is fairly simple to understand - The llvm code is not. This will
+make it difficult to modify with machine learning</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../6_LLVMComparison/index.html" class="btn btn-neutral float-right" title="LLVM Comparison" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Using an Existing Decompiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

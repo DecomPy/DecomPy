@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Current Suggestion and Closing Remarks &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="LLVM Transformations" href="../../5_LLVMTransformations/index.html" />
+    <link rel="prev" title="Evolving Exact Decompilation [1]:" href="5_EvolvingExactDecompilation.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Decompiler Information</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">How Rule Based Decompilers Work</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_RuleBasedDecompilers.html">How Rule-Based Decompilers Work</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_OptimizationPassesInRetdec.html">Optimization Passes in RetDec</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_Heurstics.html">Heuristics in HexRays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_NaturalVariables.html">Meaningful Variable Names for Decompiled Code [3]:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_NaturalVariables.html#bibliography">Bibliography</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_EvolvingExactDecompilation.html">Evolving Exact Decompilation [1]:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_EvolvingExactDecompilation.html#bibliography">Bibliography</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Current Suggestion and Closing Remarks</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#current-suggestion">Current Suggestion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#closing-remarks">Closing Remarks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Decompiler Information</a> &raquo;</li>
+        
+          <li><a href="index.html">How Rule Based Decompilers Work</a> &raquo;</li>
+        
+      <li>Current Suggestion and Closing Remarks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/4_DecompilerInformation/1_HowDecompilersWork/6_CurrentSuggestion.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="current-suggestion-and-closing-remarks">
+<h1>Current Suggestion and Closing Remarks<a class="headerlink" href="#current-suggestion-and-closing-remarks" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="current-suggestion">
+<h2>Current Suggestion<a class="headerlink" href="#current-suggestion" title="Permalink to this headline">¶</a></h2>
+<p>Rule based decompilation – or essentially hand coding a list of options
+for the ML agent to choose from and letting it choose only combinations
+of those actions seems to be holistically impossible. Other ideas that
+the team has begun to explore show much more promise and hopefully will
+be of more use. I suggest whole heartedly that we pursue such endeavors.</p>
+</div>
+<div class="section" id="closing-remarks">
+<h2>Closing Remarks<a class="headerlink" href="#closing-remarks" title="Permalink to this headline">¶</a></h2>
+<p>My suggestion not withstanding, some of the ideas that we discovered
+might come of use. While concrete, invariable rules are not only likely
+beyond us but would not be very successful, on a small scale, they might
+be of aid during the decompilation process. Borrowing the ideas of many
+other decompilers and providing the simpler actions at the very least
+would give the ML agent a step up into being able to handle complex
+decompilation.</p>
+<p>For example, one idea that the team has been exploring has been an
+episodic RL agent which essentially has a lookup table of semantically
+equivalent copies of small snippets. The agent would be able to search
+for occurences and perform substituions throughout the code. This would
+allow a decompiler which does it’s job quite lazilly – perhaps generating
+goto style statements instead of while loops for example – to be fixed
+to produce readable, ellegant code. If the ML agent were able to perform
+substituions and then, after performing some substitions, run llvm passes
+to clean the results before continuing, it is possible it might learn
+quicker.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../5_LLVMTransformations/index.html" class="btn btn-neutral float-right" title="LLVM Transformations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="5_EvolvingExactDecompilation.html" class="btn btn-neutral" title="Evolving Exact Decompilation [1]:" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

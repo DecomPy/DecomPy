@@ -1,0 +1,720 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>LLVM Summaries &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Merge Constants" href="../LLVMTransformMergeConstants/index.html" />
+    <link rel="prev" title="LLVM Summaries" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">LLVM Summaries</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LLVM Summaries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction"><strong>Introduction</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obtaining-information-for-summaries"><strong>Obtaining Information for Summaries</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#likely-information-for-summaries"><strong>Likely Information for Summaries</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sources"><strong>Sources</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Opt/index.html">Opt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
+        
+          <li><a href="index.html">LLVM Summaries</a> &raquo;</li>
+        
+      <li>LLVM Summaries</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/LLVMSummaries/LLVM_Summaries.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="llvm-summaries">
+<h1>LLVM Summaries<a class="headerlink" href="#llvm-summaries" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2><strong>Introduction</strong><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>LLVM summaries are a summary of whatever LLVM IR. They are part of Decisions within the Model.
+Ideally, LLVM summaries look identical to the ActionChooser for LLVM IR that is structurally
+and behaviourally the same, but this is difficult. It is important that LLVM summaries for
+similar code to NOT differ wildly.</p>
+</div>
+<div class="section" id="obtaining-information-for-summaries">
+<h2><strong>Obtaining Information for Summaries</strong><a class="headerlink" href="#obtaining-information-for-summaries" title="Permalink to this headline">¶</a></h2>
+<p><strong>LLVM Analysis Passes</strong></p>
+<p>LLVM Analysis Passes are passes that can be run via <cite>opt</cite>. They provide a variety of information
+that are useful for other passes that need additional information, and may also be useful for
+developers that are creating their own LLVM code.</p>
+<p>An example of passes are in <cite>decompy/RL/LLVMSummary</cite></p>
+<p>Some of the most promising LLVM Analysis Passes are -instcount and -loops.</p>
+<p><strong>-instcout</strong></p>
+<p>Instcount collects the count of all instructions and reports them. [1]</p>
+<p>The pass can be run on LLVM IR files and outputted to a file via the following command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">opt</span> <span class="pre">-stats</span> <span class="pre">-analyze</span> <span class="pre">-instcount</span> <span class="pre">input.ll</span> <span class="pre">&amp;&gt;</span> <span class="pre">output.txt</span></code></p>
+<p>The output looks like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Counts the various types of Instructions&#39;</span> <span class="k">for</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="p">:</span>
+<span class="o">===-------------------------------------------------------------------------===</span>
+                          <span class="o">...</span> <span class="n">Statistics</span> <span class="n">Collected</span> <span class="o">...</span>
+<span class="o">===-------------------------------------------------------------------------===</span>
+
+<span class="mi">14</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">Add</span> <span class="n">insts</span>
+ <span class="mi">8</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">Alloca</span> <span class="n">insts</span>
+<span class="mi">24</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">Br</span> <span class="n">insts</span>
+ <span class="mi">6</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">ICmp</span> <span class="n">insts</span>
+<span class="mi">21</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">Load</span> <span class="n">insts</span>
+ <span class="mi">1</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">Ret</span> <span class="n">insts</span>
+<span class="mi">21</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">Store</span> <span class="n">insts</span>
+<span class="mi">25</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">basic</span> <span class="n">blocks</span>
+ <span class="mi">1</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">non</span><span class="o">-</span><span class="n">external</span> <span class="n">functions</span>
+<span class="mi">95</span> <span class="n">instcount</span> <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">instructions</span> <span class="p">(</span><span class="n">of</span> <span class="nb">all</span> <span class="n">types</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is not a well-formatted output for machines, but it can be processed afterward to extract
+the useful information.</p>
+<p>Part of the processing afterward is to reduce the number of permutations of the number of
+instructions so that programs that only differ by a few instructions don’t look extremely
+different. One way of doing this is to take the ceiling of the logarithm of each instruction.</p>
+<p><strong>-loops</strong></p>
+<p>Loops identifies natural loops and determine the loop depth of various nodes of the CFG. Note
+that the loops identified may actually be several natural loops that share the same header
+node, not just a single natural loop. [1]</p>
+<p>The pass can be run on LLVM IR files and outputted to a file via the following command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">opt</span> <span class="pre">-stats</span> <span class="pre">-analyze</span> <span class="pre">-loops</span> <span class="pre">input.ll</span> <span class="pre">&amp;&gt;</span> <span class="pre">output.txt</span></code></p>
+<p>The output looks like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Natural Loop Information&#39;</span> <span class="k">for</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="p">:</span>
+<span class="n">Loop</span> <span class="n">at</span> <span class="n">depth</span> <span class="mi">1</span> <span class="n">containing</span><span class="p">:</span> <span class="o">%</span><span class="mi">64</span><span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;&lt;</span><span class="n">exiting</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">67</span><span class="p">,</span><span class="o">%</span><span class="mi">70</span><span class="o">&lt;</span><span class="n">latch</span><span class="o">&gt;</span>
+<span class="n">Loop</span> <span class="n">at</span> <span class="n">depth</span> <span class="mi">1</span> <span class="n">containing</span><span class="p">:</span> <span class="o">%</span><span class="mi">46</span><span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;&lt;</span><span class="n">exiting</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">49</span><span class="p">,</span><span class="o">%</span><span class="mi">50</span><span class="p">,</span><span class="o">%</span><span class="mi">59</span><span class="p">,</span><span class="o">%</span><span class="mi">60</span><span class="o">&lt;</span><span class="n">latch</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">53</span><span class="p">,</span><span class="o">%</span><span class="mi">56</span>
+    <span class="n">Loop</span> <span class="n">at</span> <span class="n">depth</span> <span class="mi">2</span> <span class="n">containing</span><span class="p">:</span> <span class="o">%</span><span class="mi">50</span><span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;&lt;</span><span class="n">exiting</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">53</span><span class="p">,</span><span class="o">%</span><span class="mi">56</span><span class="o">&lt;</span><span class="n">latch</span><span class="o">&gt;</span>
+<span class="n">Loop</span> <span class="n">at</span> <span class="n">depth</span> <span class="mi">1</span> <span class="n">containing</span><span class="p">:</span> <span class="o">%</span><span class="mi">20</span><span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;&lt;</span><span class="n">exiting</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">23</span><span class="p">,</span><span class="o">%</span><span class="mi">24</span><span class="p">,</span><span class="o">%</span><span class="mi">41</span><span class="p">,</span><span class="o">%</span><span class="mi">42</span><span class="o">&lt;</span><span class="n">latch</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">27</span><span class="p">,</span><span class="o">%</span><span class="mi">28</span><span class="p">,</span><span class="o">%</span><span class="mi">37</span><span class="p">,</span><span class="o">%</span><span class="mi">38</span><span class="p">,</span><span class="o">%</span><span class="mi">31</span><span class="p">,</span><span class="o">%</span><span class="mi">34</span>
+    <span class="n">Loop</span> <span class="n">at</span> <span class="n">depth</span> <span class="mi">2</span> <span class="n">containing</span><span class="p">:</span> <span class="o">%</span><span class="mi">24</span><span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;&lt;</span><span class="n">exiting</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">27</span><span class="p">,</span><span class="o">%</span><span class="mi">28</span><span class="p">,</span><span class="o">%</span><span class="mi">37</span><span class="p">,</span><span class="o">%</span><span class="mi">38</span><span class="o">&lt;</span><span class="n">latch</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">31</span><span class="p">,</span><span class="o">%</span><span class="mi">34</span>
+        <span class="n">Loop</span> <span class="n">at</span> <span class="n">depth</span> <span class="mi">3</span> <span class="n">containing</span><span class="p">:</span> <span class="o">%</span><span class="mi">28</span><span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;&lt;</span><span class="n">exiting</span><span class="o">&gt;</span><span class="p">,</span><span class="o">%</span><span class="mi">31</span><span class="p">,</span><span class="o">%</span><span class="mi">34</span><span class="o">&lt;</span><span class="n">latch</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>I don’t know how to read this except for the depth of nested loops.</p>
+<p><strong>-aa-eval</strong></p>
+<p>Exhaustive Alias Analysis Precision Evaluator basically checks if multiple pointers point to
+the same thing. <cite>No Alias</cite> is the best kind of alias, though I’m not too sure why. Maybe
+it means that there are never two pointers that point at the same thing? The res of the
+analysis result are progressively worse kinds of aliases. The output looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>===== Alias Analysis Evaluator Report =====
+  28 Total Alias Queries Performed
+  28 no alias responses (100.0%)
+  0 may alias responses (0.0%)
+  0 partial alias responses (0.0%)
+  0 must alias responses (0.0%)
+  Alias Analysis Evaluator Pointer Alias Summary: 100%/0%/0%/0%
+  Alias Analysis Mod/Ref Evaluator Summary: no mod/ref!
+Printing analysis &#39;Exhaustive Alias Analysis Precision Evaluator&#39; for function &#39;_Z7examplei&#39;:
+Pass::print not implemented for pass: &#39;Exhaustive Alias Analysis Precision Evaluator&#39;!
+</pre></div>
+</div>
+<p><strong>-basicaa</strong></p>
+<p>Basic Alias Analysis doesn’t print anything, so I don’t know how to use it.</p>
+<p><strong>-count-aa</strong></p>
+<p>Doesn’t exist.</p>
+<p><strong>-da</strong></p>
+<p>I don’t know how to explain Dependency Analysis. I also won’t paste an example of the output
+here for brevity’s sake. I’m pretty sure it’s not useful, though.</p>
+<p><strong>-debug-aa</strong></p>
+<p>Not using this because it’s just another aa pass. Refer to -aa-eval if you want info on that.</p>
+<p><strong>-domfrontier</strong></p>
+<p>Dominance Frontier Construction. No idea what this is about. Here’s some sample output, though:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Dominance Frontier Construction&#39;</span> <span class="k">for</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="p">:</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">1</span> <span class="ow">is</span><span class="p">:</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">20</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">20</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">23</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">20</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">45</span> <span class="ow">is</span><span class="p">:</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">24</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">20</span> <span class="o">%</span><span class="mi">24</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">27</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">24</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">41</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">20</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">28</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">24</span> <span class="o">%</span><span class="mi">28</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">31</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">28</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">37</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">24</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">34</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">28</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">38</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">24</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">42</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">20</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">46</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">46</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">49</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">46</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">63</span> <span class="ow">is</span><span class="p">:</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">50</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">46</span> <span class="o">%</span><span class="mi">50</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">53</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">50</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">59</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">46</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">56</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">50</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">60</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">46</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">64</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">64</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">67</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">64</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">73</span> <span class="ow">is</span><span class="p">:</span>
+  <span class="n">DomFrontier</span> <span class="k">for</span> <span class="n">BB</span> <span class="o">%</span><span class="mi">70</span> <span class="ow">is</span><span class="p">:</span>         <span class="o">%</span><span class="mi">64</span>
+</pre></div>
+</div>
+<p><strong>-domtree</strong></p>
+<p>Dominator Tree Construction. No idea what it means. Here’s some example output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Dominator Tree Construction&#39;</span> <span class="k">for</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="p">:</span>
+<span class="o">=============================--------------------------------</span>
+<span class="n">Inorder</span> <span class="n">Dominator</span> <span class="n">Tree</span><span class="p">:</span> <span class="n">DFSNumbers</span> <span class="n">invalid</span><span class="p">:</span> <span class="mi">0</span> <span class="n">slow</span> <span class="n">queries</span><span class="o">.</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="mi">1</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span><span class="mi">20</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="mi">23</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">%</span><span class="mi">24</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+          <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">27</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">28</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">31</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">34</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">37</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">38</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+          <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">41</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">42</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+      <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="mi">45</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">%</span><span class="mi">46</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+          <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">49</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">50</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">53</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">56</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">59</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">60</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+          <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">63</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">64</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">67</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">70</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">73</span> <span class="p">{</span><span class="mi">4294967295</span><span class="p">,</span><span class="mi">4294967295</span><span class="p">}</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>-dot-(anything)</strong></p>
+<p>Anything that starts with a <cite>-dot</cite> isn’t useful nor can I describe them. Here’s the output of <cite>-dot-cfg</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">digraph</span> <span class="s2">&quot;CFG for &#39;_Z7examplei&#39; function&quot;</span> <span class="p">{</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CFG for &#39;_Z7examplei&#39; function&quot;</span><span class="p">;</span>
+
+    <span class="n">Node0x7ffff4d9fac0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%1:\l  %2 = alloca i32, align 4\l  %3 = alloca i32, align 4\l  %4 = alloca i32, align 4\l  %5 = alloca i32, align 4\l  %6 = alloca i32, align 4\l  %7 = alloca i32, align 4\l  %8 = alloca i32, align 4\l  %9 = alloca i32, align 4\l  store i32 %0, i32* %2, align 4\l  %10 = load i32, i32* %2, align 4\l  %11 = add nsw i32 %10, 3\l  store i32 %11, i32* %3, align 4\l  %12 = load i32, i32* %2, align 4\l  %13 = add nsw i32 %12, 4\l  store i32 %13, i32* %3, align 4\l  %14 = load i32, i32* %3, align 4\l  %15 = add nsw i32 %14, 1\l  store i32 %15, i32* %3, align 4\l  %16 = load i32, i32* %3, align 4\l  %17 = add nsw i32 %16, 1\l  store i32 %17, i32* %3, align 4\l  %18 = load i32, i32* %3, align 4\l  %19 = add nsw i32 %18, 1\l  store i32 %19, i32* %3, align 4\l  store i32 0, i32* %4, align 4\l  br label %20\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4d9fac0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da02e0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da02e0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%20:\l\l  %21 = load i32, i32* %4, align 4\l  %22 = icmp slt i32 %21, 10\l  br i1 %22, label %23, label %45\l|{&lt;s0&gt;T|&lt;s1&gt;F}}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da02e0</span><span class="p">:</span><span class="n">s0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da0e60</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da02e0</span><span class="p">:</span><span class="n">s1</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da0eb0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da0e60</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%23:\l\l  store i32 0, i32* %5, align 4\l  br label %24\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da0e60</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da0fc0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da0fc0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%24:\l\l  %25 = load i32, i32* %5, align 4\l  %26 = icmp slt i32 %25, 10\l  br i1 %26, label %27, label %41\l|{&lt;s0&gt;T|&lt;s1&gt;F}}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da0fc0</span><span class="p">:</span><span class="n">s0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1140</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da0fc0</span><span class="p">:</span><span class="n">s1</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1190</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1140</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%27:\l\l  store i32 0, i32* %6, align 4\l  br label %28\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1140</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da12a0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da12a0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%28:\l\l  %29 = load i32, i32* %6, align 4\l  %30 = icmp slt i32 %29, 10\l  br i1 %30, label %31, label %37\l|{&lt;s0&gt;T|&lt;s1&gt;F}}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da12a0</span><span class="p">:</span><span class="n">s0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1420</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da12a0</span><span class="p">:</span><span class="n">s1</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1470</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1420</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%31:\l\l  %32 = load i32, i32* %3, align 4\l  %33 = add nsw i32 %32, 1\l  store i32 %33, i32* %3, align 4\l  br label %34\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1420</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1860</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1860</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%34:\l\l  %35 = load i32, i32* %6, align 4\l  %36 = add nsw i32 %35, 1\l  store i32 %36, i32* %6, align 4\l  br label %28\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1860</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da12a0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1470</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%37:\l\l  br label %38\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1470</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1ac0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1ac0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%38:\l\l  %39 = load i32, i32* %5, align 4\l  %40 = add nsw i32 %39, 1\l  store i32 %40, i32* %5, align 4\l  br label %24\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1ac0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da0fc0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1190</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%41:\l\l  br label %42\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1190</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da1d20</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da1d20</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%42:\l\l  %43 = load i32, i32* %4, align 4\l  %44 = add nsw i32 %43, 1\l  store i32 %44, i32* %4, align 4\l  br label %20\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da1d20</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da02e0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da0eb0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%45:\l\l  store i32 0, i32* %7, align 4\l  br label %46\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da0eb0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2000</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2000</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%46:\l\l  %47 = load i32, i32* %7, align 4\l  %48 = icmp slt i32 %47, 10\l  br i1 %48, label %49, label %63\l|{&lt;s0&gt;T|&lt;s1&gt;F}}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2000</span><span class="p">:</span><span class="n">s0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2180</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2000</span><span class="p">:</span><span class="n">s1</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da21d0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2180</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%49:\l\l  store i32 0, i32* %8, align 4\l  br label %50\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2180</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da22a0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da22a0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%50:\l\l  %51 = load i32, i32* %8, align 4\l  %52 = icmp slt i32 %51, 10\l  br i1 %52, label %53, label %59\l|{&lt;s0&gt;T|&lt;s1&gt;F}}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da22a0</span><span class="p">:</span><span class="n">s0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2420</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da22a0</span><span class="p">:</span><span class="n">s1</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2470</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2420</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%53:\l\l  %54 = load i32, i32* %3, align 4\l  %55 = add nsw i32 %54, 1\l  store i32 %55, i32* %3, align 4\l  br label %56\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2420</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2610</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2610</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%56:\l\l  %57 = load i32, i32* %8, align 4\l  %58 = add nsw i32 %57, 1\l  store i32 %58, i32* %8, align 4\l  br label %50\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2610</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da22a0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2470</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%59:\l\l  br label %60\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2470</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2870</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2870</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%60:\l\l  %61 = load i32, i32* %7, align 4\l  %62 = add nsw i32 %61, 1\l  store i32 %62, i32* %7, align 4\l  br label %46\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2870</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2000</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da21d0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%63:\l\l  store i32 0, i32* %9, align 4\l  br label %64\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da21d0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2b50</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2b50</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%64:\l\l  %65 = load i32, i32* %9, align 4\l  %66 = icmp slt i32 %65, 10\l  br i1 %66, label %67, label %73\l|{&lt;s0&gt;T|&lt;s1&gt;F}}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da2b50</span><span class="p">:</span><span class="n">s0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da30e0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da2b50</span><span class="p">:</span><span class="n">s1</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da3130</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da30e0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%67:\l\l  %68 = load i32, i32* %3, align 4\l  %69 = add nsw i32 %68, 1\l  store i32 %69, i32* %3, align 4\l  br label %70\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da30e0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da32d0</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da32d0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%70:\l\l  %71 = load i32, i32* %9, align 4\l  %72 = add nsw i32 %71, 1\l  store i32 %72, i32* %9, align 4\l  br label %64\l}&quot;</span><span class="p">];</span>
+    <span class="n">Node0x7ffff4da32d0</span> <span class="o">-&gt;</span> <span class="n">Node0x7ffff4da2b50</span><span class="p">;</span>
+    <span class="n">Node0x7ffff4da3130</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">record</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;{%73:\l\l  %74 = load i32, i32* %3, align 4\l  ret i32 %74\l}&quot;</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>-globalsmodref-aa</strong></p>
+<p>It’s actually <cite>-globals-aa</cite>, and it doesn’t print anything.</p>
+<p><strong>-intervals</strong></p>
+<p>I’m not sure what this does, and the output is really long. Not usable for summaries.</p>
+<p><strong>-iv-users</strong></p>
+<p>Has to do with induction variables. No idea if it’s useful, and no idea how to interpret
+it.</p>
+<p><strong>-lazy-value-info</strong></p>
+<p>Doesn’t print anything.</p>
+<p><strong>-libcall-aa</strong></p>
+<p>Doesn’t print anything</p>
+<p><strong>-lint</strong></p>
+<p>Doesn’t print anything</p>
+<p><strong>-print-externalfnconstants</strong></p>
+<p>Doesn’t print anything</p>
+<p><strong>-print-function</strong></p>
+<p>Prints the function in LLVM IR ASM. Not usable for summary because it’s literally not consolidating any information.</p>
+<p><strong>-print-module</strong></p>
+<p>Prints the module in LLVM IR ASM. Not usable for summary because it’s literally not consolidating any information.</p>
+<p><strong>-print-used-types</strong></p>
+<p>Not implemented</p>
+<p><strong>-regions</strong></p>
+<p>Not sure what regions are, but it does provide statistics that can be put in the summary.
+Sample output below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Detect single entry single exit regions&#39;</span> <span class="k">for</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="p">:</span>
+<span class="n">Region</span> <span class="n">tree</span><span class="p">:</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="o">&lt;</span><span class="n">Function</span> <span class="n">Return</span><span class="o">&gt;</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="mi">20</span> <span class="o">=&gt;</span> <span class="o">%</span><span class="mi">45</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span><span class="mi">24</span> <span class="o">=&gt;</span> <span class="o">%</span><span class="mi">41</span>
+      <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="mi">28</span> <span class="o">=&gt;</span> <span class="o">%</span><span class="mi">37</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="mi">46</span> <span class="o">=&gt;</span> <span class="o">%</span><span class="mi">63</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span><span class="mi">50</span> <span class="o">=&gt;</span> <span class="o">%</span><span class="mi">59</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="mi">64</span> <span class="o">=&gt;</span> <span class="o">%</span><span class="mi">73</span>
+<span class="n">End</span> <span class="n">region</span> <span class="n">tree</span>
+<span class="o">===-------------------------------------------------------------------------===</span>
+                          <span class="o">...</span> <span class="n">Statistics</span> <span class="n">Collected</span> <span class="o">...</span>
+<span class="o">===-------------------------------------------------------------------------===</span>
+
+<span class="mi">7</span> <span class="n">region</span> <span class="o">-</span> <span class="n">The</span> <span class="c1"># of regions</span>
+<span class="mi">6</span> <span class="n">region</span> <span class="o">-</span> <span class="n">The</span> <span class="c1"># of simple regions</span>
+</pre></div>
+</div>
+<p><strong>-scalar-evolution</strong></p>
+<p>It might mean how scalars change over time, but I don’t know and it doesn’t provide consolidated information I can use for the summary. Sample output below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Scalar Evolution Analysis&#39;</span> <span class="k">for</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="p">:</span>
+<span class="n">Classifying</span> <span class="n">expressions</span> <span class="k">for</span><span class="p">:</span> <span class="nd">@_Z7examplei</span>
+  <span class="o">%</span><span class="mi">2</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">2</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">3</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">3</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">4</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">4</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">5</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">5</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">6</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">6</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">7</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">7</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">8</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">8</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">9</span> <span class="o">=</span> <span class="n">alloca</span> <span class="n">i32</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">9</span> <span class="n">U</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="n">S</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">,</span><span class="mi">9223372036854775805</span><span class="p">)</span>
+  <span class="o">%</span><span class="mi">10</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">2</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">10</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">11</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="o">%</span><span class="mi">10</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">12</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">2</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">12</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">13</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="o">%</span><span class="mi">12</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">14</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">14</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">15</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">14</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">14</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">16</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">16</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">17</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">16</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">16</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">18</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">18</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">19</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">18</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">18</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+  <span class="o">%</span><span class="mi">21</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">4</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">21</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Invariant</span><span class="p">,</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">25</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">5</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">25</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">29</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">6</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">29</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">32</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">32</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">33</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">32</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">32</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">35</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">6</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">35</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">36</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">35</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">35</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">39</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">5</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">39</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">40</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">39</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">39</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">43</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">4</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">43</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Invariant</span><span class="p">,</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">44</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">43</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">43</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Invariant</span><span class="p">,</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">47</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">7</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">47</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">51</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">8</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">51</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">54</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">54</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">55</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">54</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">54</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">57</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">8</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">57</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">58</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">57</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">57</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">61</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">7</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">61</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">62</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">61</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">61</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Invariant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">65</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">9</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">65</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">68</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">68</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">69</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">68</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">68</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">71</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">9</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">71</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>          <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">72</span> <span class="o">=</span> <span class="n">add</span> <span class="n">nsw</span> <span class="n">i32</span> <span class="o">%</span><span class="mi">71</span><span class="p">,</span> <span class="mi">1</span>
+  <span class="o">--&gt;</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">%</span><span class="mi">71</span><span class="p">)</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>            <span class="n">Exits</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">Unknown</span><span class="o">&gt;&gt;</span>              <span class="n">LoopDispositions</span><span class="p">:</span> <span class="p">{</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Variant</span> <span class="p">}</span>
+  <span class="o">%</span><span class="mi">74</span> <span class="o">=</span> <span class="n">load</span> <span class="n">i32</span><span class="p">,</span> <span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span> <span class="mi">4</span>
+  <span class="o">--&gt;</span>  <span class="o">%</span><span class="mi">74</span> <span class="n">U</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span> <span class="n">S</span><span class="p">:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+<span class="n">Determining</span> <span class="n">loop</span> <span class="n">execution</span> <span class="n">counts</span> <span class="k">for</span><span class="p">:</span> <span class="nd">@_Z7examplei</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="nb">max</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">64</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">predicated</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="nb">max</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">50</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">predicated</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="nb">max</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">46</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">predicated</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="nb">max</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">28</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">predicated</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="nb">max</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">24</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">predicated</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="nb">max</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+<span class="n">Loop</span> <span class="o">%</span><span class="mi">20</span><span class="p">:</span> <span class="n">Unpredictable</span> <span class="n">predicated</span> <span class="n">backedge</span><span class="o">-</span><span class="n">taken</span> <span class="n">count</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>-scev-aa</strong></p>
+<p>Doesn’t print text</p>
+<p><strong>-stack-safety</strong></p>
+<p>Not quite sure what it does, and I don’t know what the data means so I can’t create a summary with it. Example output below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Printing</span> <span class="n">analysis</span> <span class="s1">&#39;Stack Safety Analysis&#39;</span><span class="p">:</span>
+  <span class="nd">@_Z7examplei</span>
+    <span class="n">args</span> <span class="n">uses</span><span class="p">:</span>
+      <span class="p">[]:</span> <span class="n">full</span><span class="o">-</span><span class="nb">set</span>
+    <span class="n">allocas</span> <span class="n">uses</span><span class="p">:</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>-targetdata</strong></p>
+<p>Not implemented</p>
+<p><strong>-memdemp</strong>
+An analysis that determines what memory operation it depended on for a given memory operation. It builds off of alias analysis information.
+I could not find an output, and a Pass::print does not exist for this. In terms of an LLVM Summary, it is not useful.
+However, from its descrption it is useful, and may have some important logic behind the scenes.</p>
+<p>Doesn’t print anything</p>
+<p><strong>-module-debuginfo</strong>
+Prints decoded debug info as human-readable metadata. May be useful for debugging info, but for an LLVM Summary, most likely not.</p>
+<p>Doesn’t print anything (except for debug info)</p>
+<p><strong>-postdomfrontier</strong>
+Could not get this to run.</p>
+<p>Doesn’t print anything</p>
+<p><strong>-print-alias-sets</strong>
+Prints the aliases (I assume pointers?) of the module. LLVM docs does not have anything on this</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Alias</span> <span class="n">Set</span> <span class="n">Tracker</span><span class="p">:</span> <span class="mi">8</span> <span class="n">alias</span> <span class="n">sets</span> <span class="k">for</span> <span class="mi">8</span> <span class="n">pointer</span> <span class="n">values</span><span class="o">.</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x2351ad0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x2351b70</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">b</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x2351c10</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">i</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x2351cb0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">j</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x23595f0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">k</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x2359690</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">i1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x2359730</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">j2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">AliasSet</span><span class="p">[</span><span class="mh">0x23597d0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="n">must</span> <span class="n">alias</span><span class="p">,</span> <span class="n">Mod</span><span class="o">/</span><span class="n">Ref</span>   <span class="n">Pointers</span><span class="p">:</span> <span class="p">(</span><span class="n">i32</span><span class="o">*</span> <span class="o">%</span><span class="n">i3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>-print-callgraph</strong>
+Prints a call graph to human-readable form. Used for functions. May be useful if we could somehow interpret it?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CallGraph</span> <span class="n">Root</span> <span class="ow">is</span><span class="p">:</span> <span class="o">&lt;&lt;</span><span class="n">null</span> <span class="n">function</span><span class="p">:</span> <span class="mh">0x0</span><span class="n">x256c4b0</span><span class="o">&gt;&gt;</span>
+<span class="n">Call</span> <span class="n">graph</span> <span class="n">node</span> <span class="o">&lt;&lt;</span><span class="n">null</span> <span class="n">function</span><span class="o">&gt;&gt;&lt;&lt;</span><span class="mh">0x256c4b0</span><span class="o">&gt;&gt;</span>  <span class="c1">#uses=0</span>
+    <span class="n">CS</span><span class="o">&lt;</span><span class="mh">0x0</span><span class="o">&gt;</span> <span class="n">calls</span> <span class="n">function</span> <span class="s1">&#39;_Z7examplei&#39;</span>
+
+<span class="n">Call</span> <span class="n">graph</span> <span class="n">node</span> <span class="k">for</span> <span class="n">function</span><span class="p">:</span> <span class="s1">&#39;_Z7examplei&#39;</span><span class="o">&lt;&lt;</span><span class="mh">0x257b4b0</span><span class="o">&gt;&gt;</span>  <span class="c1">#uses=1</span>
+</pre></div>
+</div>
+<p><strong>-print-callgraph-sccs</strong>
+Another callgraph but this is for strongly connected components. Not sure how this will be useful for an LLVM summary.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SCCs</span> <span class="k">for</span> <span class="n">the</span> <span class="n">program</span> <span class="ow">in</span> <span class="n">PostOrder</span><span class="p">:</span>
+<span class="n">SCC</span> <span class="c1">#1 : _Z7examplei,</span>
+<span class="n">SCC</span> <span class="c1">#2 : external node,</span>
+</pre></div>
+</div>
+<p><strong>-print-cfg-sccs</strong>
+Another callgraph but this is for strongly connected components. such as functions Not sure how this will be useful for an LLVM summary.
+Refer to the example.c code to further understand this (these are nested for loops).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SCCs</span> <span class="k">for</span> <span class="n">Function</span> <span class="n">_Z7examplei</span> <span class="ow">in</span> <span class="n">PostOrder</span><span class="p">:</span>
+<span class="n">SCC</span> <span class="c1">#1 : ,</span>
+<span class="n">SCC</span> <span class="c1">#2 : , , ,</span>
+<span class="n">SCC</span> <span class="c1">#3 : ,</span>
+<span class="n">SCC</span> <span class="c1">#4 : , , , , , , ,</span>
+<span class="n">SCC</span> <span class="c1">#5 : ,</span>
+<span class="n">SCC</span> <span class="c1">#6 : , , , , , , , , , , ,</span>
+<span class="n">SCC</span> <span class="c1">#7 : ,</span>
+</pre></div>
+</div>
+<p><strong>-print-dom-info</strong>
+Prints a dom tree. Not sure how useful tree or graphs are for LLVM summaries.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">Inorder</span> <span class="n">Dominator</span> <span class="n">Tree</span><span class="p">:</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="mi">0</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">49</span><span class="p">}</span>
+  <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span><span class="mi">12</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">48</span><span class="p">}</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="mi">15</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">21</span><span class="p">}</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">%</span><span class="mi">16</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">20</span><span class="p">}</span>
+        <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">19</span> <span class="p">{</span><span class="mi">4</span><span class="p">,</span><span class="mi">15</span><span class="p">}</span>
+          <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">20</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="mi">14</span><span class="p">}</span>
+            <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">23</span> <span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">}</span>
+              <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">26</span> <span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">}</span>
+            <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">29</span> <span class="p">{</span><span class="mi">10</span><span class="p">,</span><span class="mi">13</span><span class="p">}</span>
+              <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">30</span> <span class="p">{</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">}</span>
+        <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">33</span> <span class="p">{</span><span class="mi">16</span><span class="p">,</span><span class="mi">19</span><span class="p">}</span>
+          <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">34</span> <span class="p">{</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">}</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="mi">37</span> <span class="p">{</span><span class="mi">22</span><span class="p">,</span><span class="mi">47</span><span class="p">}</span>
+      <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">%</span><span class="mi">38</span> <span class="p">{</span><span class="mi">23</span><span class="p">,</span><span class="mi">46</span><span class="p">}</span>
+        <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">41</span> <span class="p">{</span><span class="mi">24</span><span class="p">,</span><span class="mi">35</span><span class="p">}</span>
+          <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">42</span> <span class="p">{</span><span class="mi">25</span><span class="p">,</span><span class="mi">34</span><span class="p">}</span>
+            <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">45</span> <span class="p">{</span><span class="mi">26</span><span class="p">,</span><span class="mi">29</span><span class="p">}</span>
+              <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">48</span> <span class="p">{</span><span class="mi">27</span><span class="p">,</span><span class="mi">28</span><span class="p">}</span>
+            <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">51</span> <span class="p">{</span><span class="mi">30</span><span class="p">,</span><span class="mi">33</span><span class="p">}</span>
+              <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">52</span> <span class="p">{</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">}</span>
+        <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">%</span><span class="mi">55</span> <span class="p">{</span><span class="mi">36</span><span class="p">,</span><span class="mi">45</span><span class="p">}</span>
+          <span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">%</span><span class="mi">56</span> <span class="p">{</span><span class="mi">37</span><span class="p">,</span><span class="mi">44</span><span class="p">}</span>
+            <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">59</span> <span class="p">{</span><span class="mi">38</span><span class="p">,</span><span class="mi">41</span><span class="p">}</span>
+              <span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">%</span><span class="mi">62</span> <span class="p">{</span><span class="mi">39</span><span class="p">,</span><span class="mi">40</span><span class="p">}</span>
+            <span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">%</span><span class="mi">65</span> <span class="p">{</span><span class="mi">42</span><span class="p">,</span><span class="mi">43</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="likely-information-for-summaries">
+<h2><strong>Likely Information for Summaries</strong><a class="headerlink" href="#likely-information-for-summaries" title="Permalink to this headline">¶</a></h2>
+<p>After running through all the analysis passes, I think <cite>instcout</cite>,  <cite>aa-eval</cite>, <cite>loops</cite>, and <cite>regions</cite> are the best candidates for collecting summary
+information with. <cite>instcount</cite> outputs the number of each type of instruction, and this information can be used to decide if actions like <cite>instcombine</cite> should
+take place. <cite>aa-eval</cite> does things with pointers, and I don’t know how it can be useful, but since the information is summarized nicely the RL agent might
+find a useful way to interpret the data. <cite>loops</cite> can be used to count the number of loops as well as their depths, which relates to actions like <cite>loop-unroll</cite>
+and related. <cite>regions</cite> outputs regions, and similarly to <cite>aa-eval</cite>, I don’t know what they are but the RL agent might be able to find them useful.</p>
+<p>Other data can be collected if effort is used to use the LLVM API, but for now this is good enough.</p>
+</div>
+<div class="section" id="sources">
+<h2><strong>Sources</strong><a class="headerlink" href="#sources" title="Permalink to this headline">¶</a></h2>
+<p>[1] <a class="reference external" href="https://llvm.org/docs/Passes.html#loop-simplify-canonicalize-natural-loops">https://llvm.org/docs/Passes.html#loop-simplify-canonicalize-natural-loops</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../LLVMTransformMergeConstants/index.html" class="btn btn-neutral float-right" title="Merge Constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="LLVM Summaries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -80,6 +80,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../2_DataGathering/index.html">Data Gathering</a></li>
@@ -89,8 +90,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_LLVMComparison/index.html">LLVM Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_EquivilancyClasses/index.html">LLVM Comparison</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
 </ul>
 
             
@@ -164,19 +171,17 @@
 <p>This is a log of major design decisions and reasoning made during creation of the database section of decompy.
 At the time of writing this, this is made up of one class based off of the design diagram.</p>
 <hr class="docutils" />
-<a class="reference internal image-reference" href="../../../_images/initial-db-design.png"><img alt="database design." class="align-center" src="../../../_images/initial-db-design.png" style="width: 642.0px; height: 407.5px;" /></a>
+<a class="reference internal image-reference" href="../../../_images/initial-db-design.png"><img alt="database design." class="align-center" src="../../../_images/initial-db-design.png" style="width: 502.5px; height: 493.5px;" /></a>
 <dl class="docutils">
 <dt>Diagram</dt>
-<dd>The diagram shows that the “alldata” table is the overall collection and shall not be used.
-It only serves as visual representation of the data we collect from each repo.
-The tables to use with the sqlite database include “meta” and “ml”.
+<dd>The tables to use with the sqlite database include “meta” and “ml”.
 The meta data is all of the data that the ML agent will not use, but needs a reference to.
-In this case, it is the repo name, license, url, author, and dates.
-The ML agent table then uses this as a primary key and foreign key.
+In this case, it is the author repo key pair, repo name, license, url, author, and dates.
+The ML agent table then uses this as a foreign key and the file path as a primary key.
 The ML table then stores the file_path as a primary key, and because the repo name must be unique,
 we are storing unique pairs of repo name and file path for each file.
-The C source code as text, the object file, as a blob to store as is, the llvm unoptimized and
-optimized as text as well. This table represents what the ML agent will be using for training
+The C source code as text, cleaned (well formated C code) as text, the object and elf file as a blob to store as is,
+and the llvm unoptimized and optimized as text as well. This table represents what the ML agent will be using for training
 and testing against for an accurate model.</dd>
 </dl>
 <hr class="docutils" />
@@ -185,7 +190,7 @@ and testing against for an accurate model.</dd>
 <dd>The team has decided to use a sqlite database as per our sponsor’s agreement.
 This means that the ML agent and database will have to be on the same system.
 This is useful because sqlite can be easily transferred and only needs to be
-written to once and not require consistent write queries.</dd>
+written to once and not require consistent write queries like mysql or postgres database is designed for.</dd>
 </dl>
 </div>
 

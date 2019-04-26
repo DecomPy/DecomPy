@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Looking at opt Passes &mdash; DecomPy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/extend_rtd.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="List of Optimizations" href="3_ListOfOptimizations.html" />
+    <link rel="prev" title="References" href="1_References.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> DecomPy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../DeadCodeEliminationPasses/index.html">Dead Code Elimination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EquivClasses/index.html">Equivalency Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMSingleLineReplacement/index.html">SingleLineReplacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMSummaries/index.html">LLVM Summaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../LLVMTransformMergeConstants/index.html">Merge Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Llc/index.html">llc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OpenMP/index.html">OpenMP</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Opt</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_References.html">References</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Looking at opt Passes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simplifycfg">-simplifycfg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sroa">-sroa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instcombine">-instcombine</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="3_ListOfOptimizations.html">List of Optimizations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_OptimizationOrder.html">Optimization Order</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_UsingPython.html">Using Python to Track Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../WhatAreLLVMModules/index.html">What Are LLVM Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DecomPy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">LLVM Transformations</a> &raquo;</li>
+        
+          <li><a href="index.html">Opt</a> &raquo;</li>
+        
+      <li>Looking at opt Passes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/Documentation/5_LLVMTransformations/Opt/2_OptPasses.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="looking-at-opt-passes">
+<h1>Looking at opt Passes<a class="headerlink" href="#looking-at-opt-passes" title="Permalink to this headline">¶</a></h1>
+<p>The following summaries are based on the longer blog post by John Regehr
+which can be found at <a class="reference external" href="https://blog.regehr.org/archives/1603">his site</a></p>
+<div class="section" id="simplifycfg">
+<h2>-simplifycfg<a class="headerlink" href="#simplifycfg" title="Permalink to this headline">¶</a></h2>
+<p>Simplifies the control flow graph of the code. This works by searching for
+basic blocks of llvm which have a single predeccessor and merging them into
+their predecesor. This prevents useless branching. It also merges branch
+instructions produced from code like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</pre></div>
+</div>
+<p>and reduces them into the more simple</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</pre></div>
+</div>
+<p>This pass could be useful, but I am unsure of some of the implications. It
+results in what is essentially dead code removal and I worry that in larger
+contexts, conclusions drawn on smaller pieces of code might not apply.</p>
+</div>
+<div class="section" id="sroa">
+<h2>-sroa<a class="headerlink" href="#sroa" title="Permalink to this headline">¶</a></h2>
+<p>Stands for “Scalar replacement of aggregates”. It’s goal is to make optimizations
+inteded to work for scalar values (single value variables) work for aggregates (for
+example structs in C). This works by replacing occurences of these aggregates in favor
+of each of its components.</p>
+<p>I believe this pass would be useful for our goals.</p>
+</div>
+<div class="section" id="instcombine">
+<h2>-instcombine<a class="headerlink" href="#instcombine" title="Permalink to this headline">¶</a></h2>
+<p>Instruction combiner is literally a large collection of operations that searches
+for redundent uses of operations. It sometimes performs more complex searches than
+direct equivalency by “canonicalizing” the code. This essentially means that code
+which may look different like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">x</span> <span class="o">+</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>are recognized as the same by forcing all code to follow the same rules. IE, it temporarily
+makes all subtractions addition of negatives.</p>
+<p>I believe that this pass would have limited use since it is somewhat difficult to perform on small
+operations, but do not thing it would be wholly unusefull.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="3_ListOfOptimizations.html" class="btn btn-neutral float-right" title="List of Optimizations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="1_References.html" class="btn btn-neutral" title="References" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Goralczyk, Salman Ahmed, Vatricia Edgar, YiZhuang Garrard, Zachary Monroe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Compiling C Source to Various Formats" href="4_clangSubproc.html" />
-    <link rel="prev" title="Filtering the Files" href="2_FilterFiles.html" /> 
+    <link rel="next" title="Filtering the Files" href="4_FilterFiles.html" />
+    <link rel="prev" title="Filtering the Repositories" href="2_RepoFiltering.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -80,11 +80,12 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Design Decisions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="1_RepoFiltering.html">Filtering the Repositories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="2_FilterFiles.html">Filtering the Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_DataGatheringOverview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_RepoFiltering.html">Filtering the Repositories</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Scraping and Downloading Files from GitHub using GitHubScraper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#relevant-classes">Relevant Classes</a></li>
@@ -92,19 +93,26 @@
 <li class="toctree-l4"><a class="reference internal" href="#how-to-use">How To Use</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-scrape">How does GitHubScraper Scrape?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-deal-with-files">How Does GitHubScraper Deal With Files?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-multithread">How Does GitHubScraper Multithread?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-does-githubscraper-multithread-work">How Does GitHubScraper Multithread work?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#what-is-the-performance-of-githubscraper">What is the Performance of GitHubScraper?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-is-githubscraper-tested">How Is GitHubScraper Tested?</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="4_clangSubproc.html">Compiling C Source to Various Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_clangSubproc.html">Compiling C Source to Various Formats</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../3_Database/index.html">Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../4_BinaryLifting/index.html">Binary Lifting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_UsingAnExistingDecompiler/index.html">Using an Existing Decompiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_LLVMComparison/index.html">LLVM Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_EquivilancyClasses/index.html">LLVM Comparison</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_PatternMatchingAndNormalization/index.html">Pattern Matching and Normalization</a></li>
 </ul>
 
             
@@ -183,6 +191,7 @@
 <tr class="field-odd field"><td>&#160;</td><td class="field-body"><div class="first last line-block">
 <div class="line">YiZhuang Garrard, November 20, 2018</div>
 <div class="line"><a class="reference external" href="mailto:ygarrar1&#37;&#52;&#48;asu&#46;edu">ygarrar1<span>&#64;</span>asu<span>&#46;</span>edu</a></div>
+<div class="line">revised April 25, 2019</div>
 </div>
 </td>
 </tr>
@@ -207,10 +216,10 @@
 <li><a class="reference internal" href="#how-does-githubscraper-deal-with-files" id="id12">How Does GitHubScraper Deal With Files?</a><ul>
 <li><a class="reference internal" href="#downloading-files" id="id13">Downloading Files</a></li>
 <li><a class="reference internal" href="#storing-files" id="id14">Storing Files</a></li>
-<li><a class="reference internal" href="#updating-meta-file" id="id15">Updating META file</a></li>
+<li><a class="reference internal" href="#updating-json-file" id="id15">Updating json file</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#how-does-githubscraper-multithread" id="id16">How Does GitHubScraper Multithread?</a></li>
+<li><a class="reference internal" href="#how-does-githubscraper-multithread-work" id="id16">How Does GitHubScraper Multithread work?</a></li>
 <li><a class="reference internal" href="#what-is-the-performance-of-githubscraper" id="id17">What is the Performance of GitHubScraper?</a></li>
 <li><a class="reference internal" href="#how-is-githubscraper-tested" id="id18">How Is GitHubScraper Tested?</a></li>
 </ul>
@@ -223,32 +232,35 @@ other miscellaneous things that a person trying to figure out what’s going on 
 </div>
 <div class="section" id="relevant-classes">
 <h2><a class="toc-backref" href="#id2">Relevant Classes</a><a class="headerlink" href="#relevant-classes" title="Permalink to this headline">¶</a></h2>
-<p>The classes that pertain to this section are GitHubScraper and it’s parent, WebNavigator. Zachary Monroe made the
-WebNavigator class, and I just piggybacked off of it because it works. It’s also well commented. I did have to
-modify it a bit so that when thing’s don’t work as intended I could fix it. The content on this page will all relate
-to GitHubScraper.</p>
+<p>The classes that pertain to this section are GitHubScraper.</p>
 </div>
 <div class="section" id="relevant-methods">
 <h2><a class="toc-backref" href="#id3">Relevant Methods</a><a class="headerlink" href="#relevant-methods" title="Permalink to this headline">¶</a></h2>
 <p>The only method that anybody not maintaining or improving on GitHubScraper is</p>
-<blockquote class="highlights">
-<div>download_all_file(repo_urls, target_directories=None)</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">download_all_file</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>If you are maintaining or improving this class, then everything will be covered further down.</p>
 </div>
 <div class="section" id="how-to-use">
 <h2><a class="toc-backref" href="#id4">How To Use</a><a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h2>
 <p>Pass in equally-long lists of GitHub repository URLs and directories to download into into</p>
-<blockquote class="highlights">
-<div>GitHubScraper.download_all_files(repo_urls, target_directories=None)</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>If repo_urls is longer than 1, than target_directories must be specified.</p>
 <p>Valid examples of calling this are:</p>
-<blockquote class="highlights">
-<div><p>GitHubScraper.download_all_files(“<a class="reference external" href="https://github.com/hexagon5un/AVR-Programming">https://github.com/hexagon5un/AVR-Programming</a>”, “Medium sized repo”)</p>
-<p>GitHubScraper.download_all_files(“<a class="reference external" href="https://github.com/hexagon5un/AVR-Programming">https://github.com/hexagon5un/AVR-Programming</a>”)</p>
-<p>GitHubScraper.download_all_files([“<a class="reference external" href="https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM">https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM</a>”], “FolderA”)</p>
-<p>GitHubScraper.download_all_files([“<a class="reference external" href="https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM">https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM</a>”,”<a class="reference external" href="https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input">https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input</a>”], [“FolderA”, “FolderB”])</p>
-<p>GitHubScraper.download_all_files(“<a class="reference external" href="https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher">https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher</a>”)</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming&quot;</span><span class="p">,</span> <span class="s2">&quot;Medium sized repo&quot;</span><span class="p">)</span>
+
+<span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming&quot;</span><span class="p">)</span>
+
+<span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">([</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM&quot;</span><span class="p">],</span> <span class="s2">&quot;FolderA&quot;</span><span class="p">)</span>
+
+<span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">([</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM&quot;</span><span class="p">,</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter06_Digital-Input&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;FolderA&quot;</span><span class="p">,</span> <span class="s2">&quot;FolderB&quot;</span><span class="p">])</span>
+
+<span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="s2">&quot;https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter19_EEPROM/vigenereCipher&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="how-does-githubscraper-scrape">
 <h2><a class="toc-backref" href="#id5">How does GitHubScraper Scrape?</a><a class="headerlink" href="#how-does-githubscraper-scrape" title="Permalink to this headline">¶</a></h2>
@@ -256,8 +268,9 @@ to GitHubScraper.</p>
 <div class="section" id="entry-point">
 <h3><a class="toc-backref" href="#id6">Entry Point</a><a class="headerlink" href="#entry-point" title="Permalink to this headline">¶</a></h3>
 <p>The entry point of the scraping process is when a user passes in two lists into</p>
-<blockquote class="highlights">
-<div>GitHubScraper.download_all_files(repo_urls, target_directories=None).</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">download_all_files</span><span class="p">(</span><span class="n">repo_urls</span><span class="p">,</span> <span class="n">target_directories</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
 <p>The first list is a list of URLs to GitHub repositories. The URL can lead to the top level of the repository, or any
 subdirectory within the repository, and only files that are in the directory and children directory will be downloaded.
 The second list if the names of the target directories that files will be downloaded into. I did this because other
@@ -276,8 +289,9 @@ list.</p>
 <div class="section" id="getting-page-contents">
 <h3><a class="toc-backref" href="#id7">Getting Page Contents</a><a class="headerlink" href="#getting-page-contents" title="Permalink to this headline">¶</a></h3>
 <p>Look at</p>
-<blockquote class="highlights">
-<div>WebNavigator.getContent(link)</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WebNavigator</span><span class="o">.</span><span class="n">getContent</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The program sends out a request, and gets the page back. Most of the time.
 If the same GitHub URL is requested too many times, the GitHub server will give you one of the HTTP errors about
 sending too many requests.</p>
@@ -285,8 +299,9 @@ sending too many requests.</p>
 <div class="section" id="extracting-urls-from-page-content">
 <h3><a class="toc-backref" href="#id8">Extracting URLs from Page Content</a><a class="headerlink" href="#extracting-urls-from-page-content" title="Permalink to this headline">¶</a></h3>
 <p>Look at</p>
-<blockquote class="highlights">
-<div>WebNavigator.getAbsoluteLinksFromPage(link, domain=None)</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WebNavigator</span><span class="o">.</span><span class="n">getAbsoluteLinksFromPage</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>I actually don’t know how it works, so if you want to know, you actually have to look at it.</p>
 </div>
 <div class="section" id="filtering-useful-urls-from-urls">
@@ -294,8 +309,9 @@ sending too many requests.</p>
 <p>The URLs that are useful are the ones that lead to subdirectories within the repository as well as links to C files.
 There are two separate lists to store these URLs, and they are extended every time a page is scraped and URLs
 extracted. The method is</p>
-<blockquote class="highlights">
-<div>GitHubScraper.__scrape_page_urls(url).</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GitHubScraper</span><span class="o">.</span><span class="n">__scrape_page_urls</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
 <p>The first list is called subfolder_links and it holds the URLs to subdirectories. It is extended with every URL that has
 the substring “/tree/master/”, doesn’t have “#”, isn’t the current page URL, and the length of the URL is longer that
 the URL of the current page. “/tree/master/” makes sure that any URL that is selected is within the master branch. The
@@ -344,17 +360,17 @@ is a UnicodeEncodeError, but I just print the error and ignore it because I don�
 The method is called GitHubScraper.__file_content_into_storage(content_url_tuple, target_directory), where
 content_url_tuple is the tuple, and target_directory is the directory to store the file.</p>
 </div>
-<div class="section" id="updating-meta-file">
-<h3><a class="toc-backref" href="#id15">Updating META file</a><a class="headerlink" href="#updating-meta-file" title="Permalink to this headline">¶</a></h3>
-<p>Only the target directory is needed to update the META file within that directory. The relevant method is
+<div class="section" id="updating-json-file">
+<h3><a class="toc-backref" href="#id15">Updating json file</a><a class="headerlink" href="#updating-json-file" title="Permalink to this headline">¶</a></h3>
+<p>Only the target directory is needed to update the json file within that directory. The relevant method is
 GitHubScraper.__update_meta(target_directory). If the directory doesn’t exist, that means that there were no C files
-to download, so it just returns. If the directory does exist, it is checked to see if the META file exists. If it
+to download, so it just returns. If the directory does exist, it is checked to see if the json file exists. If it
 exists, then update it using the datetime package, and if it doesn’t exist, create the file. The date is written
 in YYYY-MM-DD HH:MM:SS format so that the database can query it or something. I don’t actually know how databases work.</p>
 </div>
 </div>
-<div class="section" id="how-does-githubscraper-multithread">
-<h2><a class="toc-backref" href="#id16">How Does GitHubScraper Multithread?</a><a class="headerlink" href="#how-does-githubscraper-multithread" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-does-githubscraper-multithread-work">
+<h2><a class="toc-backref" href="#id16">How Does GitHubScraper Multithread work?</a><a class="headerlink" href="#how-does-githubscraper-multithread-work" title="Permalink to this headline">¶</a></h2>
 <p>Because scraping is a highly IO dependent process, it is better to utilize threads rather than processes.</p>
 <p>GitHubScraper uses ThreadPoolExecutor to manage all the threads and futures. There are three sources of futures:
 subfolder_links, file_links, and file_name_url_content_tuples. subfolder_links is a list of links that need to be
@@ -394,10 +410,10 @@ it’s pretty slow.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="4_clangSubproc.html" class="btn btn-neutral float-right" title="Compiling C Source to Various Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="4_FilterFiles.html" class="btn btn-neutral float-right" title="Filtering the Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="2_FilterFiles.html" class="btn btn-neutral" title="Filtering the Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="2_RepoFiltering.html" class="btn btn-neutral" title="Filtering the Repositories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

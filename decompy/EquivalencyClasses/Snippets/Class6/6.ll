@@ -1,0 +1,4 @@
+; $SWAP=NONE
+; $POSITIVE_INTEGERS=5
+; $RESULTS=-3,NEGATE,3,C0
+%1 = sub nsw i32 5, -3

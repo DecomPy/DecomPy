@@ -1,0 +1,3 @@
+; $SWAP=NONE
+; $POSITIVE_INTEGERS=12
+store i32 12, i32* %1, align 4

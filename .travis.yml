@@ -1,17 +1,15 @@
+dist: xenial
 language: python
 cache: pip
 python:
   - "3.6"
 
-# This will install any apt dependencies in travis-apt-requirements.txt
 before_install:
-  - sudo apt update
-  - cat travis-apt-requirements.txt | xargs sudo apt install
+  - sudo bash llvm-requirements.sh xenial
 
 # command to install dependencies for python using pip
 install:
   - pip install -r requirements.txt
-
 
 # add your test scripts here.
 script:
