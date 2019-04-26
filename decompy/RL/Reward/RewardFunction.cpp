@@ -28,37 +28,39 @@
 int Reward::calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
     static llvm::LLVMContext TheContext;
     llvm::SMDiagnostic diag;// = llvm::SMDiagnostic();
-//    std::cout << "Abt to parse first" <<std::endl;
+    std::cout << "Abt to parse first" <<std::endl;
 
     llvm::MemoryBufferRef mbRefOld = llvm::MemoryBufferRef(llvm::StringRef(oldLLVM), llvm::StringRef("oldLLVM"));
     std::unique_ptr<llvm::Module> oldMod = llvm::parseIR(mbRefOld, *(&diag), TheContext);
-//    std::cout << "Abt to get first fnc" <<std::endl;
+    std::cout << "Abt to get first fnc" <<std::endl;
 
     auto of = oldMod->getFunctionList().begin();
     llvm::Function* oldLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&of));
-//    std::cout << "Abt to parse second" <<std::endl;
+    std::cout << "Abt to parse second" <<std::endl;
 
     //toLLVMFunction(oldLLVM, "oldLLVM", oldLLVMFnc);
-
+    std::cout << newLLVM << std::endl;
     llvm::MemoryBufferRef mbRefNew = llvm::MemoryBufferRef(llvm::StringRef(newLLVM), llvm::StringRef("newLLVM"));
     std::unique_ptr<llvm::Module> newMod = llvm::parseIR(mbRefNew, *(&diag), TheContext);
+    std::cout << "Abt to get fnc list" << diag.getMessage().str() << std::endl;
 
     auto nf = newMod->getFunctionList().begin();
+    std::cout << "Abt to cast fnc" <<std::endl;
     llvm::Function* newLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&nf));
 
     //llvm::Function* newLLVMFnc = toLLVMFunction(newLLVM, "newLLVM");
-
+    std::cout << "Abt to parse third" <<std::endl;
     llvm::MemoryBufferRef mbRefGoal = llvm::MemoryBufferRef(llvm::StringRef(goalLLVM), llvm::StringRef("goalLLVM"));
     std::unique_ptr<llvm::Module> goalMod = llvm::parseIR(mbRefGoal, *(&diag), TheContext);
-
+    std::cout << "Abt to get fnc list" <<std::endl;
     auto gf = goalMod->getFunctionList().begin();
     llvm::Function* goalLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&gf));
 
     //llvm::Function* goalLLVMFnc = toLLVMFunction(goalLLVM, "goalLLVM");
 
-//    std::cout << "Abt to calc difference" <<std::endl;
+    std::cout << "Abt to calc difference" <<std::endl;
     int newDifference = myersDiff(*(newLLVMFnc), *(goalLLVMFnc));
-//    std::cout << "Abt to 2nd calc difference" <<std::endl;
+    std::cout << "Abt to 2nd calc difference" <<std::endl;
 
     int oldDifference = myersDiff(*(oldLLVMFnc), *(goalLLVMFnc));
 
@@ -77,9 +79,9 @@ extern "C" {
 int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
     int instructionCount1 = fnc1.getInstructionCount();
     int instructionCount2 = fnc2.getInstructionCount();
-//    std::cout<<"finnished counting 2ins " << instructionCount2 <<"\n";
+    std::cout<<"finnished counting 2ins " << instructionCount2 <<"\n";
 
-//    std::cout<<"finnished counting ins" << instructionCount1 <<"\n";
+    std::cout<<"finnished counting ins" << instructionCount1 <<"\n";
 
     llvm::Instruction* ins1[instructionCount1];
     int iter = 0;
@@ -94,7 +96,7 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
     }
 
 
-//    std::cout<<"Finished loading fist set of ins\n";
+    std::cout<<"Finished loading fist set of ins\n";
     llvm::Instruction* ins2[instructionCount2];
 
     iter = 0;
@@ -107,7 +109,7 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
             }
         }
     }
-//    std::cout<<"Finished loading 2nd set of ins\n";
+    std::cout<<"Finished loading 2nd set of ins\n";
     int maxSteps = instructionCount1 + instructionCount2;
     int xValues[maxSteps*2+1];
     for(int i = 0; i < (maxSteps*2+1); i++){
@@ -238,10 +240,9 @@ bool Reward::isSameOperationAs(const llvm::Instruction *I, const llvm::Instructi
 //}
 
 int main(){
-    const char* llvmOld = "; ModuleID = \'example1.c\'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %1 = alloca i32, align 4\n  %2 = alloca i32, align 4\n  %3 = alloca i32, align 4\n  store i32 -12, i32* %1, align 4\n  store i32 1, i32* %2, align 4\n  %4 = load i32, i32* %2, align 4\n  %5 = load i32, i32* %1, align 4\n  %6 = add nsw i32 %4, %5\n  store i32 %6, i32* %3, align 4\n  ret i32 0\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n";
-    const char* llvmNew = "; ModuleID = \'module.ll\'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  ret i32 0\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-\nelim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"\n+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}";
-    const char* llvmGoal = "; ModuleID = \'example1.c\'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %1 = alloca i32, align 4\n  %2 = alloca i32, align 4\n  %3 = alloca i32, align 4\n  store i32 -12, i32* %1, align 4\n  store i32 1, i32* %2, align 4\n  %4 = load i32, i32* %2, align 4\n  %5 = load i32, i32* %1, align 4\n  %6 = add nsw i32 %4, %5\n  store i32 %6, i32* %3, align 4\n  ret i32 0\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n";
-
+    const char* llvmOld = "; ModuleID = 'example1.c'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %num1 = alloca i32, align 4\n  %num2 = alloca i32, align 4\n  %num3 = alloca i32, align 4\n  store i32 -12, i32* %num1, align 4\n  store i32 1, i32* %num2, align 4\n  %num4 = load i32, i32* %num2, align 4\n  %num5 = load i32, i32* %num1, align 4\n  %num6 = add nsw i32 %num4, %num5\n  store i32 %num6, i32* %num3, align 4\n  ret i32 %num6\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n\n";
+    const char* llvmNew = "; ModuleID = 'example1.c'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %num1 = alloca i32, align 4\n  %num3 = alloca i32, align 4\n  %num2 = alloca i32, align 4\n  store i32 -12, i32* %num1, align 4\n  store i32 1, i32* %num2, align 4\n  %num4 = load i32, i32* %num2, align 4\n  %num5 = load i32, i32* %num1, align 4\n  %num6 = add nsw i32 %num4, %num5\n  store i32 %num6, i32* %num3, align 4\n  ret i32 %num6\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n\n";
+    const char* llvmGoal = "; ModuleID = 'example1.c'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %num1 = alloca i32, align 4\n  %num2 = alloca i32, align 4\n  %num3 = alloca i32, align 4\n  store i32 -12, i32* %num1, align 4\n  store i32 1, i32* %num2, align 4\n  %num4 = load i32, i32* %num2, align 4\n  %num5 = load i32, i32* %num1, align 4\n  %num6 = add nsw i32 %num4, %num5\n  store i32 %num6, i32* %num3, align 4\n  ret i32 %num6\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n\n";
     std::cout << Reward::calcReward(llvmOld, llvmNew, llvmGoal) << std::endl;
 
     return 1;
