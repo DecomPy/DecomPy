@@ -32,7 +32,10 @@ class RepoFilter:
         :param per_page: The number of results to gather "per page"
         :type: int
         :param username: the user's github name
+        :type: str
         :param password: the user's github password for authentication for more repos
+        :type: str
+
         """
 
         if blacklist is None:
@@ -46,15 +49,14 @@ class RepoFilter:
 
     def get_results(self, date, page):
         """
-        Makes a single request to the GitGub api for a page with results matching
-        the search criteria
+        Makes a single request to the GitGub api for a page with results matching the search criteria.
 
         :param date: because github only allows us 1000 results because they are bad at making an api.
-        :type; str
-
-        :param self:
-        :param page: Which page of results should be fetched
+        :type: str
+        :param page: Which page of results should be fetched.
         :type: int
+
+        :return: void
         """
 
         language_string = ""

@@ -8,7 +8,7 @@ At the time of writing this, this is made up of two classes, the RepoFiltering c
 
 Relevant Classes
 ===================
-The classes that pertain to this section are RepoFilter and RepoStructure.
+The classes that pertain to this section are ``RepoFilter.py`` and ``RepoStructure.py``.
 
 -----------------------------------------------------------------------------------------------------------------
 

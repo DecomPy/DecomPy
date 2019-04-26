@@ -150,10 +150,10 @@ not be a good choice because it does not output in an easily processable format 
 dissasemblers use objdump and interpret it more usefully, so we would be writing a dissasembler).
 
 This leaves:
-* Capstone
-* udis86
-* Objconv
-* ldasm
+    * Capstone
+    * udis86
+    * Objconv
+    * ldasm
 
 Best x86 Generation
 -------------------
@@ -166,10 +166,10 @@ Since it would be difficult to make the call of what dissasembler has "good enou
 of apparent use and support assuming that more community usage implies that the dissasembler does better.
 
 Out of the remaining tools, the most supported are:
-1. ldasm
-2. Capstone
-3. udis86
-4. Objconv
+    1. ldasm
+    2. Capstone
+    3. udis86
+    4. Objconv
 
 Overall Suggestion for the Project
 ==================================

@@ -113,14 +113,33 @@ class SnippetRepository:
         return building
 
     def signed_integers(self, args, building):
+        """
+        Looks for and stores signed integers in the snippets for swaps.
+        :param args: the llvm file arguments.
+        :param building: the array to hold the built arguments.
+        :return:
+        """
         building["signed_integer_consts"] = [str(int(val)) for val in args.split(",")]
         return building
 
     def negative_integers(self, args, building):
+        """
+        Looks for and stores negative integers in the snippets for swaps.
+        :param args: the llvm file arguments.
+        :type: list str
+        :param building: the array to hold the built arguments.
+        :return:
+        """
         building["negative_integer_consts"] = [str(int(val)) for val in args.split(",")]
         return building
 
     def positive_integers(self, args, building):
+        """
+        Looks for and stores positive integers in the snippets for swaps.
+        :param args: the llvm file arguments.
+        :param building: the array to hold the built arguments.
+        :return:
+        """
         building["positive_integer_consts"] = [str(int(val)) for val in args.split(",")]
         return building
 

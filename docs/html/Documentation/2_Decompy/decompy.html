@@ -27,7 +27,9 @@
   <link rel="stylesheet" href="../../_static/css/extend_rtd.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="decompy.DataGathering package" href="decompy.DataGathering.html" />
+    <link rel="prev" title="decompy" href="index.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -76,8 +78,21 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">decompy</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">decompy package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="decompy.DataGathering.html">decompy.DataGathering package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.database.html">decompy.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompy.tests.html">decompy.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-decompy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../4_DecompilerInformation/index.html">Decompiler Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
@@ -127,6 +142,8 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
+          <li><a href="index.html">decompy</a> &raquo;</li>
+        
       <li>decompy package</li>
     
     
@@ -157,8 +174,6 @@
 <li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.ClangSubprocess">decompy.DataGathering.ClangSubprocess module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.CreateLocalData">decompy.DataGathering.CreateLocalData module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.FilterC">decompy.DataGathering.FilterC module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#decompy-datagathering-filtercompile-module">decompy.DataGathering.FilterCompile module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#decompy-datagathering-githubscraper-module">decompy.DataGathering.GitHubScraper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoFilter">decompy.DataGathering.RepoFilter module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.RepoStructure">decompy.DataGathering.RepoStructure module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decompy.DataGathering.html#module-decompy.DataGathering.WebNavigator">decompy.DataGathering.WebNavigator module</a></li>
@@ -177,12 +192,6 @@
 <li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_ClangSubprocess.html#module-decompy.tests.test_ClangSubprocess">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html">decompy.tests.test_GitHubNavigator package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#decompy-tests-test-githubnavigator-test-us58-module">decompy.tests.test_GitHubNavigator.test_US58 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_GitHubNavigator.html#module-decompy.tests.test_GitHubNavigator">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html">decompy.tests.test_RepoFiltering package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_RepoFiltering.html#module-decompy.tests.test_RepoFiltering.test_RepoStructure">decompy.tests.test_RepoFiltering.test_RepoStructure module</a></li>
@@ -191,7 +200,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="decompy.tests.test_filtercfiles.html">decompy.tests.test_filtercfiles package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#decompy-tests-test-filtercfiles-test-compile-file-module">decompy.tests.test_filtercfiles.test_compile_file module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles.test_filter_c_file">decompy.tests.test_filtercfiles.test_filter_c_file module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decompy.tests.test_filtercfiles.html#module-decompy.tests.test_filtercfiles">Module contents</a></li>
 </ul>
@@ -214,6 +222,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="decompy.DataGathering.html" class="btn btn-neutral float-right" title="decompy.DataGathering package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="decompy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

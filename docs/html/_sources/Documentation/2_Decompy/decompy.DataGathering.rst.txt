@@ -28,22 +28,6 @@ decompy.DataGathering.FilterC module
     :undoc-members:
     :show-inheritance:
 
-decompy.DataGathering.FilterCompile module
-------------------------------------------
-
-.. automodule:: decompy.DataGathering.FilterCompile
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-decompy.DataGathering.GitHubScraper module
-------------------------------------------
-
-.. automodule:: decompy.DataGathering.GitHubScraper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 decompy.DataGathering.RepoFilter module
 ---------------------------------------
 

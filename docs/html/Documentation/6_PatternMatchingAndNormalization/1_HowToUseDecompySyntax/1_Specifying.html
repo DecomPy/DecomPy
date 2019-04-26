@@ -79,6 +79,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../5_LLVMTransformations/index.html">LLVM Transformations</a></li>
@@ -169,10 +170,9 @@ can be parsed by the llvm API. The comments specify what to do to tokenize it an
 irrelevant data. For example, if the code has a number hard coded in, but that number
 is not needed for the snippet to make the swap (only the fact that it stays the same)
 then you could specify:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>; $POSITIVE_INTEGERS=4</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>; $POSITIVE_INTEGERS=4
+</pre></div>
+</div>
 <p>where 4 is that number. You can arbitrarily match any sentinal value, so if there are
 other number that actually MUST be there (i.e. an alloca align 4, where the 4 can’t
 change) you can change the sentinal to any other number, as long as python can read
@@ -181,12 +181,11 @@ it in (python can read in really large ints….).</p>
 and be prefixed with “; $” to indicate that it is a command. Other comments SHOULD
 be allowed (they are not extensively tested in the middle of commands at this time).
 The commands available are as follows:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>; $SWAP=
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>; $SWAP=
 ; $POSTIVE_INTEGERS=
-; $RESULTS=</dd>
-</dl>
+; $RESULTS=
+</pre></div>
+</div>
 <p>All commands are case sensitive and are all capital letters.</p>
 <p>SWAP must appear first and follow one of the two following syntaxes:
 1. ; $SWAP=NONE
@@ -204,10 +203,9 @@ takes in a comma seperated list of integers. Spaces SHOULD be supported but are 
 against at this time. (It is not well tested).</p>
 <p>The last an most complicated command is $RESULTS. Unlike the other commands, it is
 allowed to specify more than one result. The result must take the form:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>; $RESULTS=Value, OPERATOR, Int,Int</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>; $RESULTS=Value, OPERATOR, Int,Int
+</pre></div>
+</div>
 <p>Where Value is the value to tokenize as a result object (meaning it will only match the
 value computed by the result), OPERATOR is an operator (as listed in operators.py, I will
 talk more about this further down), and Int is a POSITIVE_INTEGER specified in the swap
@@ -221,17 +219,15 @@ It is also useful for implementing operators which work on a single value. For e
 since the RESULT command works by applying the reduce command from python to the result of
 a list, the operator ABS (absolute value) which takes in a single value is impossible to run.
 To make it work, we can modify it to use the following lambda expression instead:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>lambda x, y: abs(x)</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The result of this is that every value except the first in the list will be tossed out and the
 only remaining value will be the absolute value of the first thing in the list. This means
 we can now specifiy and absolute value result like follows:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>$ RESULTS=9, ABS, -9, C0</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ RESULTS=9, ABS, -9, C0
+</pre></div>
+</div>
 </div>
 
 

@@ -16,12 +16,14 @@ their predecesor. This prevents useless branching. It also merges branch
 instructions produced from code like
 
 ::
+
     if(x) {
         if(y) {
 
 and reduces them into the more simple
 
 ::
+
     if(x & y) {
 
 This pass could be useful, but I am unsure of some of the implications. It
@@ -49,6 +51,7 @@ direct equivalency by "canonicalizing" the code. This essentially means that cod
 which may look different like
 
 ::
+
     x - 1
     x + -1
 

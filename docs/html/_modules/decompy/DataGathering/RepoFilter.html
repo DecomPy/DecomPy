@@ -82,6 +82,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Documentation/2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/4_DecompilerInformation/index.html">Decompiler Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Documentation/5_LLVMTransformations/index.html">LLVM Transformations</a></li>
@@ -183,7 +184,10 @@
 <span class="sd">        :param per_page: The number of results to gather &quot;per page&quot;</span>
 <span class="sd">        :type: int</span>
 <span class="sd">        :param username: the user&#39;s github name</span>
+<span class="sd">        :type: str</span>
 <span class="sd">        :param password: the user&#39;s github password for authentication for more repos</span>
+<span class="sd">        :type: str</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">blacklist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -197,15 +201,14 @@
 
 <div class="viewcode-block" id="RepoFilter.get_results"><a class="viewcode-back" href="../../../Documentation/2_Decompy/decompy.DataGathering.html#decompy.DataGathering.RepoFilter.RepoFilter.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">page</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Makes a single request to the GitGub api for a page with results matching</span>
-<span class="sd">        the search criteria</span>
+<span class="sd">        Makes a single request to the GitGub api for a page with results matching the search criteria.</span>
 
 <span class="sd">        :param date: because github only allows us 1000 results because they are bad at making an api.</span>
-<span class="sd">        :type; str</span>
-
-<span class="sd">        :param self:</span>
-<span class="sd">        :param page: Which page of results should be fetched</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        :param page: Which page of results should be fetched.</span>
 <span class="sd">        :type: int</span>
+
+<span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">language_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>

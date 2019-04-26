@@ -24,7 +24,8 @@ Relevant Methods
 ================
 The only method that anybody not maintaining or improving on GitHubScraper is
 
-.. highlights::
+::
+
     download_all_file(repo_urls, target_directories=None)
 
 If you are maintaining or improving this class, then everything will be covered further down.
@@ -33,14 +34,16 @@ How To Use
 ==========
 Pass in equally-long lists of GitHub repository URLs and directories to download into into
 
-.. highlights::
+::
+
     GitHubScraper.download_all_files(repo_urls, target_directories=None)
 
 If repo_urls is longer than 1, than target_directories must be specified.
 
 Valid examples of calling this are:
 
-.. highlights::
+::
+
     GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming", "Medium sized repo")
 
     GitHubScraper.download_all_files("https://github.com/hexagon5un/AVR-Programming")
@@ -59,7 +62,8 @@ Entry Point
 -----------
 The entry point of the scraping process is when a user passes in two lists into
 
-.. highlights::
+::
+
     GitHubScraper.download_all_files(repo_urls, target_directories=None).
 
 The first list is a list of URLs to GitHub repositories. The URL can lead to the top level of the repository, or any
@@ -83,7 +87,8 @@ Getting Page Contents
 ---------------------
 Look at
 
-.. highlights::
+::
+
     WebNavigator.getContent(link)
 
 The program sends out a request, and gets the page back. Most of the time.
@@ -94,7 +99,8 @@ Extracting URLs from Page Content
 ---------------------------------
 Look at
 
-.. highlights::
+::
+
     WebNavigator.getAbsoluteLinksFromPage(link, domain=None)
 
 I actually don't know how it works, so if you want to know, you actually have to look at it.
@@ -105,7 +111,8 @@ The URLs that are useful are the ones that lead to subdirectories within the rep
 There are two separate lists to store these URLs, and they are extended every time a page is scraped and URLs
 extracted. The method is
 
-.. highlights::
+::
+
     GitHubScraper.__scrape_page_urls(url).
 
 The first list is called subfolder_links and it holds the URLs to subdirectories. It is extended with every URL that has

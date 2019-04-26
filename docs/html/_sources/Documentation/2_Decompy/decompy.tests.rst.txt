@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
     decompy.tests.test_ClangSubprocess
-    decompy.tests.test_GitHubNavigator
     decompy.tests.test_RepoFiltering
     decompy.tests.test_filtercfiles
 

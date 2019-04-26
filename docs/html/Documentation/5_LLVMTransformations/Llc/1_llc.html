@@ -80,6 +80,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../1_Installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_Decompy/index.html">decompy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../3_DesignDecisions/index.html">Design Decisions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../4_DecompilerInformation/index.html">Decompiler Information</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">LLVM Transformations</a><ul class="current">
@@ -187,16 +188,14 @@ function from the results). One issue with this is
 that many of the issues we would be able to fix with
 minimal work using this method are isolated changes.
 I.E. the infamous fcd problem</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>c = b - a;
-if (c != 0 &amp;&amp; (c &amp; 9223372036854775808) == (((b ^ c) &amp; (b ^ a) &amp; 9223372036854775808)))</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&amp;</span> <span class="mi">9223372036854775808</span><span class="p">)</span> <span class="o">==</span> <span class="p">(((</span><span class="n">b</span> <span class="o">^</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">b</span> <span class="o">^</span> <span class="n">a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">9223372036854775808</span><span class="p">)))</span>
+</pre></div>
+</div>
 <p>to</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>if (b &gt; a)</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Unfortunately, these changes mostly occur not in
 the llvm itself during opt transformations, but at
 the level of target specific optimizations which

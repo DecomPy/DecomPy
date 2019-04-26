@@ -14,6 +14,7 @@ is not needed for the snippet to make the swap (only the fact that it stays the 
 then you could specify:
 
 ::
+
     ; $POSITIVE_INTEGERS=4
 
 where 4 is that number. You can arbitrarily match any sentinal value, so if there are
@@ -27,6 +28,7 @@ be allowed (they are not extensively tested in the middle of commands at this ti
 The commands available are as follows:
 
 ::
+
     ; $SWAP=
     ; $POSTIVE_INTEGERS=
     ; $RESULTS=
@@ -54,6 +56,7 @@ The last an most complicated command is $RESULTS. Unlike the other commands, it 
 allowed to specify more than one result. The result must take the form:
 
 ::
+
     ; $RESULTS=Value, OPERATOR, Int,Int
 
 Where Value is the value to tokenize as a result object (meaning it will only match the 
@@ -72,6 +75,7 @@ a list, the operator ABS (absolute value) which takes in a single value is impos
 To make it work, we can modify it to use the following lambda expression instead:
 
 ::
+
     lambda x, y: abs(x)
 
 The result of this is that every value except the first in the list will be tossed out and the
@@ -79,6 +83,7 @@ only remaining value will be the absolute value of the first thing in the list. 
 we can now specifiy and absolute value result like follows:
 
 ::
+
     $ RESULTS=9, ABS, -9, C0
 
 

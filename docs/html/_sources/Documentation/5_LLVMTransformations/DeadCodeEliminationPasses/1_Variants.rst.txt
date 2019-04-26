@@ -10,6 +10,7 @@ instructions, then rechecks after eliminations have occurred. This allows
 removal of functions such as
 
 ::
+
     void A() {
         B();
     }

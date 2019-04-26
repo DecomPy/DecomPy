@@ -24,12 +24,14 @@ minimal work using this method are isolated changes.
 I.E. the infamous fcd problem
 
 ::
+
     c = b - a;
     if (c != 0 && (c & 9223372036854775808) == (((b ^ c) & (b ^ a) & 9223372036854775808))) 
 
 to
 
 ::
+
     if (b > a)
     
 Unfortunately, these changes mostly occur not in
