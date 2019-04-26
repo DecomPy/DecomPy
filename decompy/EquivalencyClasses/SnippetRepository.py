@@ -1,6 +1,6 @@
 import os
 import errno
-
+import pathlib
 import re
 
 from decompy.EquivalencyClasses.ResultSnippet import ResultSnippet
@@ -37,6 +37,7 @@ class SnippetRepository:
         parsed = self._filter_meta_instructions(unprocessed)
         ready_to_assemble = self._run_meta_instructions(parsed)
         unconnected = self._snippet_assembler(ready_to_assemble)
+
         return unconnected
 
     def _snippet_assembler(self, ready):
@@ -158,6 +159,7 @@ class SnippetRepository:
         :type: str
         :return:
         """
+
         snippets = []
         if file_path is None:
             # use our repo path instead
@@ -213,7 +215,10 @@ if __name__ == "__main__":
     import pathlib
 
     repo = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./Snippets"))
-    s = repo.get_snippets()[0]
+    snippets = repo.get_snippets()
+    for s in snippets:
+        print(s.get_unrendered_swaps())
+        print()
     # s.variable_dict["%2"] == "%1"
     # s.variable_dict["%3"] == "%5"
     # s.positive_integer_dict["4"] == 12

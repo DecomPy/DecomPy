@@ -1,4 +1,4 @@
-; $SWAP=Class6/5.ll,Class5/6.ll,Class5/5.ll
+; $SWAP=NONE
 ; $POSITIVE_INTEGERS=5
-; $NEGATIVE_INTEGERS=3
-%1 = sub nsw i32 5, 3
+; $RESULTS=-3,NEGATE,3,C0
+%1 = sub nsw i32 5, -3

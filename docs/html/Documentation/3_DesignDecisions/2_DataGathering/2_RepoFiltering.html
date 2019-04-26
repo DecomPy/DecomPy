@@ -84,7 +84,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../1_DesignAndArchitecture/index.html">Design and Architecture</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Gathering</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="1_DataGatheringOverview.html">Overview</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Filtering the Repositories</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Filtering the Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#relevant-classes">Relevant Classes</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="3_ScrapingDownloading.html">Scraping and Downloading Files from GitHub using GitHubScraper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_FilterFiles.html">Filtering the Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_llvmGen.html">Generating LLVM IR from C Source</a></li>
@@ -170,11 +173,15 @@
             
   <div class="section" id="filtering-the-repositories">
 <h1>Filtering the Repositories<a class="headerlink" href="#filtering-the-repositories" title="Permalink to this headline">¶</a></h1>
-<p>This is a log of major design decisions and reasoning made during creation of the Repo Filtering section of decompy.
+<p>This is a log of major design decisions and reasoning made during creation of the Repo Filtering section of DecomPy.
 At the time of writing this, this is made up of two classes, the RepoFiltering class, and the RepoStructure class.</p>
 <hr class="docutils" />
+<div class="section" id="relevant-classes">
+<h2>Relevant Classes<a class="headerlink" href="#relevant-classes" title="Permalink to this headline">¶</a></h2>
+<p>The classes that pertain to this section are RepoFilter and RepoStructure.</p>
+<hr class="docutils" />
 <dl class="docutils">
-<dt>Repo filtering is based around storing stages to json files</dt>
+<dt>Repo Filtering is Based Around Storing Stages to JSON Files</dt>
 <dd>Partially, this decision was driven by the fact that I would not have
 internet most of the time I was writing it. I do think that the end result
 has some merit however, since it allows modularly redoing sections as we
@@ -182,21 +189,24 @@ improve and doesn’t overly utilize requests to GitHub (rate limiting).</dd>
 </dl>
 <hr class="docutils" />
 <dl class="docutils">
-<dt>Using GitHub’s api</dt>
-<dd>By using GitHub’s api, it was much easier to generate a list of acceptable
+<dt>Using GitHub’s API</dt>
+<dd>By using GitHub’s API, it was much easier to generate a list of acceptable
 repos without doing costly web scrapping. There are some downsides though,
-since the request has a limited amount of info. For example, the license is
-not included, which may mean scraping is needed anyways, but at least we
-can limit it.</dd>
+since the request has a limited amount of info. Using GitHub’s latest api (the non GraphQL one)
+we have all the information we need. However, the process is too fast, so we need to authenticate ourselves.
+Luckily, this is just your GitHub’s username and password. HOWEVER, do not store it in the python file or on GitHub!
+Instead, store it in the ignored (local file) named as <code class="docutils literal notranslate"><span class="pre">config.json</span></code>.</dd>
 </dl>
-<hr class="docutils" />
-<dl class="docutils">
-<dt>Using GitHub’s legacy api</dt>
-<dd>For me, this one feels odd. GitHub’s new api has a lot more features and
-seems really nice. However, it has two major problems. At the momement, it
-never seems to get nearly as good of results. It will find unrelated repos
-and I have to filter out way more. It also is much harder to use.</dd>
-</dl>
+<p>Store it like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;github&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;YOUR GITHUB USERNAME&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;YOUR GITHUB PASSWORD&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 

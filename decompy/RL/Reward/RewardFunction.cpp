@@ -9,6 +9,8 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Pass.h"
+
+#include <iostream>
 /* This will:
  *      Take in three strings which represent: PastLLVMFunction, CurrentLLVMFunction, NewLLVMFunction
  *      Convert those to LLVM Function objects
@@ -26,12 +28,15 @@
 int Reward::calcReward(const char* oldLLVM, const char* newLLVM, const char* goalLLVM) {
     static llvm::LLVMContext TheContext;
     llvm::SMDiagnostic diag;// = llvm::SMDiagnostic();
+//    std::cout << "Abt to parse first" <<std::endl;
 
     llvm::MemoryBufferRef mbRefOld = llvm::MemoryBufferRef(llvm::StringRef(oldLLVM), llvm::StringRef("oldLLVM"));
     std::unique_ptr<llvm::Module> oldMod = llvm::parseIR(mbRefOld, *(&diag), TheContext);
+//    std::cout << "Abt to get first fnc" <<std::endl;
 
     auto of = oldMod->getFunctionList().begin();
     llvm::Function* oldLLVMFnc = llvm::dyn_cast<llvm::Function>(*(&of));
+//    std::cout << "Abt to parse second" <<std::endl;
 
     //toLLVMFunction(oldLLVM, "oldLLVM", oldLLVMFnc);
 
@@ -51,8 +56,11 @@ int Reward::calcReward(const char* oldLLVM, const char* newLLVM, const char* goa
 
     //llvm::Function* goalLLVMFnc = toLLVMFunction(goalLLVM, "goalLLVM");
 
-    int oldDifference = myersDiff(*(oldLLVMFnc), *(goalLLVMFnc));
+//    std::cout << "Abt to calc difference" <<std::endl;
     int newDifference = myersDiff(*(newLLVMFnc), *(goalLLVMFnc));
+//    std::cout << "Abt to 2nd calc difference" <<std::endl;
+
+    int oldDifference = myersDiff(*(oldLLVMFnc), *(goalLLVMFnc));
 
     int reward = oldDifference - newDifference;
     return reward;
@@ -69,6 +77,9 @@ extern "C" {
 int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
     int instructionCount1 = fnc1.getInstructionCount();
     int instructionCount2 = fnc2.getInstructionCount();
+//    std::cout<<"finnished counting 2ins " << instructionCount2 <<"\n";
+
+//    std::cout<<"finnished counting ins" << instructionCount1 <<"\n";
 
     llvm::Instruction* ins1[instructionCount1];
     int iter = 0;
@@ -81,7 +92,10 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
             }
         }
     }
-    llvm::Instruction* ins2[instructionCount1];
+
+
+//    std::cout<<"Finished loading fist set of ins\n";
+    llvm::Instruction* ins2[instructionCount2];
 
     iter = 0;
 
@@ -93,39 +107,52 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
             }
         }
     }
-
+//    std::cout<<"Finished loading 2nd set of ins\n";
     int maxSteps = instructionCount1 + instructionCount2;
     int xValues[maxSteps*2+1];
+    for(int i = 0; i < (maxSteps*2+1); i++){
+        xValues[i] = 0;
+    }
 
     //xValues are technically indexed from -d to +d. Hw do I do that without negative index
     //index = k+maxSteps
+//
+//    xValues[2+maxSteps] = 0; // the x value at 1 must be 0 to start (1+maxsteps is the middle of the array)
 
-    xValues[1+maxSteps] = 0; // the x value at 1 must be 0 to start
-
+//    std::cout<<"abt to begin algo\n";
     for(int d = 0; d < maxSteps; d++){
+//        std::cout<<"first loop\n";
         for(int k = -d; k <= d; k+=2){
-            int index = k + maxSteps;
+//        std::cout<<"2nd loop\n";
+            int index = k + maxSteps+1;
             int x = 0;
+//            std::cout<<"b4 if\n";
             if(k==-d ||(k!=d && xValues[index-1] < xValues[index+1])){
                 x = xValues[index+1];
             }
             else{
-                x = xValues[index-1];
+                x = xValues[index-1] + 1;
             }
-
+//            std::cout<<"b4 while\n";
             int y = x - k;
+//            std::cout<< "y " << y <<"\n";
+//            std::cout<< "x " << x <<"\n";
+//            std::cout<< "k " << k <<"\n";
             while(x < instructionCount1 && y < instructionCount2 && isSameOperationAs(ins1[x], ins2[y])){
                 x++;
                 y++;
             }
-
+//            std::cout<<"b4 2nd if\n";
             xValues[index] = x;
             if(x >= instructionCount1 && y >= instructionCount2){
+//                std::cout << "Result" << d << "\n";
                 return d; //this is the number of differences
             }
 
         }
     }
+
+//    std::cout<<"finished algo\n";
     return -1;
 }
 
@@ -145,13 +172,18 @@ int Reward::myersDiff(llvm::Function &fnc1, llvm::Function &fnc2){
  //===----------------------------------------------------------------------===//
 
 bool Reward::isSameOperationAs(const llvm::Instruction *I, const llvm::Instruction *I2){
-   if (I2->getOpcode() != I->getOpcode() ||
-       I2->getNumOperands() != I->getNumOperands()){
+//    std::cout<<"same op\n";
+//    std::cout << I2 <<"\n";
+//   std::cout << y << " here \n";
+   if (I2->getOpcode() != I->getOpcode() || I2->getNumOperands() != I->getNumOperands()){
         return false;
     }
-   for (unsigned i = 0, e = I2->getNumOperands(); i != e; ++i)
-     if (I2->getOperand(i)->getType()->getTypeID() != I->getOperand(i)->getType()->getTypeID()){
-     return false;
+//   std::cout<<"b4 for\n";
+   for (unsigned i = 0, e = I2->getNumOperands(); i != e; ++i){
+//        std::cout << "in for\n";
+        if (I2->getOperand(i)->getType()->getTypeID() != I->getOperand(i)->getType()->getTypeID()){
+            return false;
+        }
     }
    return true;
  }
@@ -205,12 +237,12 @@ bool Reward::isSameOperationAs(const llvm::Instruction *I, const llvm::Instructi
 //    return reward;
 //}
 
-//int main(){
-//    const char* llvmOld = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}";
-//    const char* llvmNew = "define i32 @mul_add(i32 %x, i32 %y) {\n entry:\n  %tmp = mul i32 %x, %y\n  ret i32 %tmp\n}";
-//    const char* llvmGoal = "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\n entry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add i32 %tmp, %z\n  %tmp3 = add i32 %tmp2, %z\n  ret i32 %tmp3\n}";
-//
-//    std::cout << Reward::calcReward(llvmOld, llvmNew, llvmGoal) << std::endl;
-//
-//    return 1;
-//}
+int main(){
+    const char* llvmOld = "; ModuleID = \'example1.c\'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %1 = alloca i32, align 4\n  %2 = alloca i32, align 4\n  %3 = alloca i32, align 4\n  store i32 -12, i32* %1, align 4\n  store i32 1, i32* %2, align 4\n  %4 = load i32, i32* %2, align 4\n  %5 = load i32, i32* %1, align 4\n  %6 = add nsw i32 %4, %5\n  store i32 %6, i32* %3, align 4\n  ret i32 0\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n";
+    const char* llvmNew = "; ModuleID = \'module.ll\'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  ret i32 0\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-\nelim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"\n+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}";
+    const char* llvmGoal = "; ModuleID = \'example1.c\'\nsource_filename = \"example1.c\"\ntarget datalayout = \"e-m:e-i64:64-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: noinline nounwind uwtable\ndefine dso_local i32 @main() #0 {\n  %1 = alloca i32, align 4\n  %2 = alloca i32, align 4\n  %3 = alloca i32, align 4\n  store i32 -12, i32* %1, align 4\n  store i32 1, i32* %2, align 4\n  %4 = load i32, i32* %2, align 4\n  %5 = load i32, i32* %1, align 4\n  %6 = add nsw i32 %4, %5\n  store i32 %6, i32* %3, align 4\n  ret i32 0\n}\n\nattributes #0 = { noinline nounwind uwtable \"correctly-rounded-divide-sqrt-fp-math\"=\"false\" \"disable-tail-calls\"=\"false\" \"less-precise-fpmad\"=\"false\" \"min-legal-vector-width\"=\"0\" \"no-frame-pointer-elim\"=\"true\" \"no-frame-pointer-elim-non-leaf\" \"no-infs-fp-math\"=\"false\" \"no-jump-tables\"=\"false\" \"no-nans-fp-math\"=\"false\" \"no-signed-zeros-fp-math\"=\"false\" \"no-trapping-math\"=\"false\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+fxsr,+mmx,+sse,+sse2,+x87\" \"unsafe-fp-math\"=\"false\" \"use-soft-float\"=\"false\" }\n\n!llvm.module.flags = !{!0}\n!llvm.ident = !{!1}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{!\"clang version 8.0.0-svn354892-1~exp1~20190226195658.47 (branches/release_80)\"}\n";
+
+    std::cout << Reward::calcReward(llvmOld, llvmNew, llvmGoal) << std::endl;
+
+    return 1;
+}

@@ -1,5 +1,4 @@
 ; $SWAP=Class2/2.ll
-; $POSITIVE_INTEGERS=12,22
-store i32 12, i32* %x, align 4
-%0 = load i32* %x, align 4
-%add = add nsw i32 %0, 22
+; $POSITIVE_INTEGERS=12
+store i32 12, i32* %0, align 4
+%1 = load i32* %0, align 4

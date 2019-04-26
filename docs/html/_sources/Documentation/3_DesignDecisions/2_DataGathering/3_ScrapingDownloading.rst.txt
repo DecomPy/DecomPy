@@ -4,6 +4,7 @@ Scraping and Downloading Files from GitHub using GitHubScraper
 :Authors and Last Update:
     | YiZhuang Garrard, November 20, 2018
     | ygarrar1@asu.edu
+    | revised April 25, 2019
 
 .. contents:: Table of Contents
     :local:
@@ -17,10 +18,7 @@ other miscellaneous things that a person trying to figure out what's going on wo
 
 Relevant Classes
 ===================
-The classes that pertain to this section are GitHubScraper and it's parent, WebNavigator. Zachary Monroe made the
-WebNavigator class, and I just piggybacked off of it because it works. It's also well commented. I did have to
-modify it a bit so that when thing's don't work as intended I could fix it. The content on this page will all relate
-to GitHubScraper.
+The classes that pertain to this section are GitHubScraper.
 
 Relevant Methods
 ================

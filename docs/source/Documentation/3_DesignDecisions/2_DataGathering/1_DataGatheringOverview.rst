@@ -1,7 +1,7 @@
 Overview
 **************************
 
-This is a log of major design decisions and reasoning for the Data Gathering portion of Decompy.
+This is a log of major design decisions and reasoning for the Data Gathering portion of DecomPy.
 
 -----------------------------------------------------------------------------------------------------------------
 

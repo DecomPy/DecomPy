@@ -16,7 +16,7 @@ class OptPassActionGenerator:
 
         for opt in opt_list:
             opt_pass = OptPassAction(opt[1:])
-            opt_pass.command_line_command = "opt " + opt + " -S module.ll -o output.ll"
+            opt_pass.command_line_command = "opt-8 " + opt + " -S module.ll -o output.ll"
             opt_pass_list.append(opt_pass)
 
         return opt_pass_list

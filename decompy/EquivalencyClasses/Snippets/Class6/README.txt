@@ -1,11 +1,7 @@
+In this directory, a math expression is swapped. This example is as follows:
 
-In this directory, pointer arithmetic is performed. I'm unsure of how useful this will actually be, but LLVM IR does represent it in different ways.
+z = 5 + -3
+which is equivalent to
+z = 5 - - 3
 
-For example:
-    // int a[4];
-    * (a + 4) = 5;
-
-    // is the same as, however the lower does fewer operations
-
-    // int a[4];
-    a[3] = 5;
+this is the inverse of Class5. It is mainly here to preserve reversability

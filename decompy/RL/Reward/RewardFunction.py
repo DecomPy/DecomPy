@@ -5,7 +5,6 @@ import pathlib
 #from decompy.RL.Model import Model
 
 libreward_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "libRewardFunction.so")
-print(libreward_path)
 libreward = ctypes.CDLL(str(libreward_path))
 
 
@@ -40,6 +39,12 @@ class RewardFunction:
 
     @staticmethod
     def __wrap_llvm_reward_function(original, changed, goal):
+        print('"%s"' % original.replace("\n", "\\n").replace('"', '\\"'))
+        print("*" * 25, "original", "*" * 25)
+        print('"%s"' % changed.replace("\n", "\\n").replace('"', '\\"'))
+        print("*" * 25, "changed", "*" * 25)
+        print('"%s"' % goal.replace("\n", "\\n").replace('"', '\\"'))
+        print("*" * 25, "goal", "*" * 25)
         original_charp = ctypes.create_string_buffer(str.encode(original))
         changed_charp = ctypes.create_string_buffer(str.encode(changed))
         goal_charp = ctypes.create_string_buffer(str.encode(goal))
@@ -50,6 +55,6 @@ class RewardFunction:
 
 if __name__ == "__main__":
     print(RewardFunction().create_reward(
-        "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}",
+        "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\nentry:\n  %1 = alloca i32, align 4\n  %tmp = mul i32 %x, %y\n  %tmp2 = add  i32 %tmp, %z\n  ret i32 %tmp2\n}",
         "define i32 @mul_add(i32 %x, i32 %y) {\n entry:\n  %tmp = mul i32 %x, %y\n  ret i32 %tmp\n}",
         "define i32 @mul_add(i32 %x, i32 %y, i32 %z) {\n entry:\n  %tmp = mul i32 %x, %y\n  %tmp2 = add i32 %tmp, %z\n  %tmp3 = add i32 %tmp2, %z\n  ret i32 %tmp3\n}"))

@@ -1,4 +1,5 @@
 from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
+from decompy.EquivalencyClasses.Tokenizers.Tokens.Token import Token
 from decompy.RL.Action.SwapAction import SwapAction
 
 
@@ -27,11 +28,10 @@ class CodeSearcher:
 
         tokens = Tokenizer.tokenize(llvm_current_state, False)
         for starting_cursor in range(len(tokens)):
-            identified = [(prefix, starting_cursor) for prefix in trie.prefixes(tokens[starting_cursor:])]
-
+            identified = [(prefix, starting_cursor) for prefix in self.trie.prefixes(tokens[starting_cursor:])]
             for snippet, location in identified:
                 for option in snippet.get_swaps():
-                    swaps.append(SwapAction(option.render(), location))
+                    swaps.append(SwapAction(option.render(), location, location + len(option.get_meta_tokens())))
 
         return swaps
 

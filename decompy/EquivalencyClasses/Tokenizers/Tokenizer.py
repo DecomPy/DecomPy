@@ -105,6 +105,7 @@ class Tokenizer:
             if out_q.qsize() > 0:
                 instruction_str = out_q.get()
             else:
+                print("Invalid Module.")
                 return tuple()
         # Didn't get appropriate data
         else:
@@ -122,7 +123,10 @@ class Tokenizer:
     def reassemble(tokens):
         rendered_llvm = ""
         for i in range(len(tokens)):
-            rendered_llvm += str(Token.resolve(tokens[i]))
+            try:
+                rendered_llvm += str(Token.resolve(tokens[i]))
+            except AttributeError as e:
+                raise ValueError(e, "Cannot resolve token: %s in: %s" % (tokens[i], str(tokens)))
             if tokens[i] != "\n" and i != (len(tokens) - 1) and tokens[i + 1] != ",":
                 rendered_llvm += " "
         return rendered_llvm

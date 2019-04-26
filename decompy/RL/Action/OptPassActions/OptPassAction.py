@@ -1,9 +1,9 @@
 from decompy.RL.Action.PassAction import PassAction
-from decompy.EquivalencyClasses.Tokenizers.Tokenizer import Tokenizer
 
 import ctypes
 import pathlib
 import subprocess
+import os
 
 libextract_path = pathlib.PurePath.joinpath(pathlib.Path(__file__).resolve().parent, "MakeLLFile.so")
 libextract = ctypes.CDLL(str(libextract_path))
@@ -22,11 +22,18 @@ class OptPassAction(PassAction):
         OptPassAction._make_llvm_module_file(self, llvm_str)
 
         # Run the command line command
-        subprocess.Popen(self.command_line_command.split())
+        subprocess.call(self.command_line_command.split())
 
         # Retokenize the module
         with open('output.ll') as g:
-            return g.read()
+            ret_str = g.read()
+
+        # Clean up generated files
+        os.remove('output.ll')
+        os.remove('module.ll')
+
+        # Return modified llvm so it can be tokenized
+        return ret_str
 
     def _make_llvm_module_file(self, llvm_str):
         """
@@ -41,7 +48,7 @@ class OptPassAction(PassAction):
         libextract.extract_instructions(module_charp)
 
     def __str__(self):
-        return "pass_name: " + self.pass_name + "\ncmd: " + self.command_line_command
+        return "Opt Pass: " + self.pass_name
 
 
 if __name__ == "__main__":

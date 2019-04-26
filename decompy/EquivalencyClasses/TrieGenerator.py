@@ -12,7 +12,6 @@ class TrieGenerator:
 
     def __init__(self):
         self.database = SnippetRepository(pathlib.PurePath.joinpath(pathlib.PurePath(__file__).parent, "./Snippets"))
-        pass
 
     def generates_trie(self):
         """
