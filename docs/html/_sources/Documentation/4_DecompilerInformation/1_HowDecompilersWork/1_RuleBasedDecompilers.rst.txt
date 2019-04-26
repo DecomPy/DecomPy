@@ -2,11 +2,11 @@ How Rule-Based Decompilers Work
 ##############################################################
 
 :Authors and Last Update:
-| YiZhuang Garrard, February 6, 2019
-| ygarrar1@asu.edu
+    | YiZhuang Garrard, February 6, 2019
+    | ygarrar1@asu.edu
 
 .. contents:: Table of Contents
-:local:
+    :local:
 
 -----------------------------------------------------------------------------------------------------------------
 
