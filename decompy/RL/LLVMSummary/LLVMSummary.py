@@ -44,3 +44,4 @@ class LLVMSummary:
         :return: hash int
         :rtype: int
         """
+        return hash((self.instcounts, self.loops, self.aa, self.regions))
